@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B87FD052405C3F0007AB630 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 4B87FD042405C3F0007AB630 /* GRDB */; };
+		4B87FD062405C599007AB630 /* Thing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BCF2405771900E31D93 /* Thing.swift */; };
+		4B87FD072405CE94007AB630 /* AppDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14C182405B81900E31D93 /* AppDatabase.swift */; };
 		4BF14BB82405730700E31D93 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB72405730700E31D93 /* AppDelegate.swift */; };
 		4BF14BBA2405730700E31D93 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB92405730700E31D93 /* SceneDelegate.swift */; };
 		4BF14BBC2405730700E31D93 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBB2405730700E31D93 /* MasterViewController.swift */; };
@@ -17,6 +20,7 @@
 		4BF14BD02405771900E31D93 /* Thing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BCF2405771900E31D93 /* Thing.swift */; };
 		4BF14C0C240580B900E31D93 /* ORBIT_Camera_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14C0B240580B900E31D93 /* ORBIT_Camera_Tests.swift */; };
 		4BF14C172405952500E31D93 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 4BF14C162405952500E31D93 /* GRDB */; };
+		4BF14C192405B81900E31D93 /* AppDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14C182405B81900E31D93 /* AppDatabase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +47,7 @@
 		4BF14C09240580B900E31D93 /* ORBIT Camera Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ORBIT Camera Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BF14C0B240580B900E31D93 /* ORBIT_Camera_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ORBIT_Camera_Tests.swift; sourceTree = "<group>"; };
 		4BF14C0D240580B900E31D93 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4BF14C182405B81900E31D93 /* AppDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,18 +63,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B87FD052405C3F0007AB630 /* GRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4B87FD032405C3F0007AB630 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		4BF14BAB2405730700E31D93 = {
 			isa = PBXGroup;
 			children = (
 				4BF14BB62405730700E31D93 /* ORBIT Camera */,
 				4BF14C0A240580B900E31D93 /* ORBIT Camera Tests */,
 				4BF14BB52405730700E31D93 /* Products */,
+				4B87FD032405C3F0007AB630 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -86,6 +100,7 @@
 			isa = PBXGroup;
 			children = (
 				4BF14BB72405730700E31D93 /* AppDelegate.swift */,
+				4BF14C182405B81900E31D93 /* AppDatabase.swift */,
 				4BF14BB92405730700E31D93 /* SceneDelegate.swift */,
 				4BF14BBB2405730700E31D93 /* MasterViewController.swift */,
 				4BF14BBD2405730700E31D93 /* DetailViewController.swift */,
@@ -144,6 +159,9 @@
 				4BF14C0F240580B900E31D93 /* PBXTargetDependency */,
 			);
 			name = "ORBIT Camera Tests";
+			packageProductDependencies = (
+				4B87FD042405C3F0007AB630 /* GRDB */,
+			);
 			productName = "ORBIT Camera Tests";
 			productReference = 4BF14C09240580B900E31D93 /* ORBIT Camera Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -214,6 +232,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BF14C192405B81900E31D93 /* AppDatabase.swift in Sources */,
 				4BF14BB82405730700E31D93 /* AppDelegate.swift in Sources */,
 				4BF14BBA2405730700E31D93 /* SceneDelegate.swift in Sources */,
 				4BF14BBC2405730700E31D93 /* MasterViewController.swift in Sources */,
@@ -226,6 +245,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B87FD072405CE94007AB630 /* AppDatabase.swift in Sources */,
+				4B87FD062405C599007AB630 /* Thing.swift in Sources */,
 				4BF14C0C240580B900E31D93 /* ORBIT_Camera_Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -494,6 +515,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		4B87FD042405C3F0007AB630 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4BF14C152405952500E31D93 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
 		4BF14C162405952500E31D93 /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 4BF14C152405952500E31D93 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
