@@ -14,7 +14,19 @@
 		4BF14BC12405730700E31D93 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4BF14BBF2405730700E31D93 /* Main.storyboard */; };
 		4BF14BC32405730900E31D93 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4BF14BC22405730900E31D93 /* Assets.xcassets */; };
 		4BF14BC62405730900E31D93 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4BF14BC42405730900E31D93 /* LaunchScreen.storyboard */; };
+		4BF14BD02405771900E31D93 /* Thing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BCF2405771900E31D93 /* Thing.swift */; };
+		4BF14C0C240580B900E31D93 /* ORBIT_Camera_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14C0B240580B900E31D93 /* ORBIT_Camera_Tests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4BF14C0E240580B900E31D93 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4BF14BAC2405730700E31D93 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4BF14BB32405730700E31D93;
+			remoteInfo = "ORBIT Camera";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		4BF14BB42405730700E31D93 /* ORBIT Camera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ORBIT Camera.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -26,10 +38,21 @@
 		4BF14BC22405730900E31D93 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4BF14BC52405730900E31D93 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4BF14BC72405730900E31D93 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4BF14BCF2405771900E31D93 /* Thing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Thing.swift; sourceTree = "<group>"; };
+		4BF14C09240580B900E31D93 /* ORBIT Camera Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ORBIT Camera Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4BF14C0B240580B900E31D93 /* ORBIT_Camera_Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ORBIT_Camera_Tests.swift; sourceTree = "<group>"; };
+		4BF14C0D240580B900E31D93 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		4BF14BB12405730700E31D93 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4BF14C06240580B900E31D93 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -43,6 +66,7 @@
 			isa = PBXGroup;
 			children = (
 				4BF14BB62405730700E31D93 /* ORBIT Camera */,
+				4BF14C0A240580B900E31D93 /* ORBIT Camera Tests */,
 				4BF14BB52405730700E31D93 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -51,6 +75,7 @@
 			isa = PBXGroup;
 			children = (
 				4BF14BB42405730700E31D93 /* ORBIT Camera.app */,
+				4BF14C09240580B900E31D93 /* ORBIT Camera Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -62,12 +87,22 @@
 				4BF14BB92405730700E31D93 /* SceneDelegate.swift */,
 				4BF14BBB2405730700E31D93 /* MasterViewController.swift */,
 				4BF14BBD2405730700E31D93 /* DetailViewController.swift */,
+				4BF14BCF2405771900E31D93 /* Thing.swift */,
 				4BF14BBF2405730700E31D93 /* Main.storyboard */,
 				4BF14BC22405730900E31D93 /* Assets.xcassets */,
 				4BF14BC42405730900E31D93 /* LaunchScreen.storyboard */,
 				4BF14BC72405730900E31D93 /* Info.plist */,
 			);
 			path = "ORBIT Camera";
+			sourceTree = "<group>";
+		};
+		4BF14C0A240580B900E31D93 /* ORBIT Camera Tests */ = {
+			isa = PBXGroup;
+			children = (
+				4BF14C0B240580B900E31D93 /* ORBIT_Camera_Tests.swift */,
+				4BF14C0D240580B900E31D93 /* Info.plist */,
+			);
+			path = "ORBIT Camera Tests";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -90,6 +125,24 @@
 			productReference = 4BF14BB42405730700E31D93 /* ORBIT Camera.app */;
 			productType = "com.apple.product-type.application";
 		};
+		4BF14C08240580B900E31D93 /* ORBIT Camera Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4BF14C10240580B900E31D93 /* Build configuration list for PBXNativeTarget "ORBIT Camera Tests" */;
+			buildPhases = (
+				4BF14C05240580B900E31D93 /* Sources */,
+				4BF14C06240580B900E31D93 /* Frameworks */,
+				4BF14C07240580B900E31D93 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4BF14C0F240580B900E31D93 /* PBXTargetDependency */,
+			);
+			name = "ORBIT Camera Tests";
+			productName = "ORBIT Camera Tests";
+			productReference = 4BF14C09240580B900E31D93 /* ORBIT Camera Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -102,6 +155,10 @@
 				TargetAttributes = {
 					4BF14BB32405730700E31D93 = {
 						CreatedOnToolsVersion = 11.3.1;
+					};
+					4BF14C08240580B900E31D93 = {
+						CreatedOnToolsVersion = 11.3.1;
+						TestTargetID = 4BF14BB32405730700E31D93;
 					};
 				};
 			};
@@ -119,6 +176,7 @@
 			projectRoot = "";
 			targets = (
 				4BF14BB32405730700E31D93 /* ORBIT Camera */,
+				4BF14C08240580B900E31D93 /* ORBIT Camera Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -134,6 +192,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4BF14C07240580B900E31D93 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -144,11 +209,28 @@
 				4BF14BB82405730700E31D93 /* AppDelegate.swift in Sources */,
 				4BF14BBA2405730700E31D93 /* SceneDelegate.swift in Sources */,
 				4BF14BBC2405730700E31D93 /* MasterViewController.swift in Sources */,
+				4BF14BD02405771900E31D93 /* Thing.swift in Sources */,
 				4BF14BBE2405730700E31D93 /* DetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4BF14C05240580B900E31D93 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4BF14C0C240580B900E31D93 /* ORBIT_Camera_Tests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4BF14C0F240580B900E31D93 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4BF14BB32405730700E31D93 /* ORBIT Camera */;
+			targetProxy = 4BF14C0E240580B900E31D93 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		4BF14BBF2405730700E31D93 /* Main.storyboard */ = {
@@ -320,6 +402,46 @@
 			};
 			name = Release;
 		};
+		4BF14C11240580B900E31D93 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = XVA8384FUL;
+				INFOPLIST_FILE = "ORBIT Camera Tests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "uk.ac.city.ORBIT-Camera-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ORBIT Camera.app/ORBIT Camera";
+			};
+			name = Debug;
+		};
+		4BF14C12240580B900E31D93 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = XVA8384FUL;
+				INFOPLIST_FILE = "ORBIT Camera Tests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "uk.ac.city.ORBIT-Camera-Tests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ORBIT Camera.app/ORBIT Camera";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -337,6 +459,15 @@
 			buildConfigurations = (
 				4BF14BCB2405730900E31D93 /* Debug */,
 				4BF14BCC2405730900E31D93 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4BF14C10240580B900E31D93 /* Build configuration list for PBXNativeTarget "ORBIT Camera Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4BF14C11240580B900E31D93 /* Debug */,
+				4BF14C12240580B900E31D93 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
