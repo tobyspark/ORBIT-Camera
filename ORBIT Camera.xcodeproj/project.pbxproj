@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,6 +16,7 @@
 		4BF14BC62405730900E31D93 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4BF14BC42405730900E31D93 /* LaunchScreen.storyboard */; };
 		4BF14BD02405771900E31D93 /* Thing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BCF2405771900E31D93 /* Thing.swift */; };
 		4BF14C0C240580B900E31D93 /* ORBIT_Camera_Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14C0B240580B900E31D93 /* ORBIT_Camera_Tests.swift */; };
+		4BF14C172405952500E31D93 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 4BF14C162405952500E31D93 /* GRDB */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BF14C172405952500E31D93 /* GRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -121,6 +123,9 @@
 			dependencies = (
 			);
 			name = "ORBIT Camera";
+			packageProductDependencies = (
+				4BF14C162405952500E31D93 /* GRDB */,
+			);
 			productName = "ORBIT Camera";
 			productReference = 4BF14BB42405730700E31D93 /* ORBIT Camera.app */;
 			productType = "com.apple.product-type.application";
@@ -171,6 +176,9 @@
 				Base,
 			);
 			mainGroup = 4BF14BAB2405730700E31D93;
+			packageReferences = (
+				4BF14C152405952500E31D93 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
+			);
 			productRefGroup = 4BF14BB52405730700E31D93 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -473,6 +481,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4BF14C152405952500E31D93 /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4BF14C162405952500E31D93 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4BF14C152405952500E31D93 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 4BF14BAC2405730700E31D93 /* Project object */;
 }
