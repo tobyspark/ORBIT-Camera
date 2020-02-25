@@ -9,10 +9,14 @@
 ///  Abstract: the representation of a 'thing', the basic data type of the ORBIT Dataset.
 
 import Foundation
+import GRDB
 
 /// A 'thing' that is important to a visually impaired person, and for a which a phone might be useful as a tool to pick it out of a scene.
 /// For the ORBIT Dataset, to train and test computer vision / machine learning algorithms, this becomes a label – "what is it" – and set of videos – "this is what it looks like".
-struct Thing {
+struct Thing: Codable, Equatable {
+    /// A unique ID for this struct (within this app), populated on write to database
+    var id: Int64?
+    
     /// The label the participant gives it. This may contain personally identifying information.
     var labelParticipant: String
     /// The label used in the ORBIT Dataset. This is assigned by the research team. Goals: anonymised, regularised across dataset.
@@ -29,9 +33,17 @@ struct Thing {
     ///
     /// Parameter label: The label the participant wants to give the thing.
     init(withLabel label: String) {
+        self.id = nil
         self.labelParticipant = label
         self.labelDataset = nil
         self.videosTrain = []
         self.videosTest = []
+    }
+}
+
+extension Thing: FetchableRecord, MutablePersistableRecord {
+    // Update auto-incremented id upon successful insertion
+    mutating func didInsert(with rowID: Int64, for column: String?) {
+        id = rowID
     }
 }
