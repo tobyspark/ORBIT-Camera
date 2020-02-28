@@ -31,6 +31,14 @@ struct AppDatabase {
     static var migrator: DatabaseMigrator {
         var migrator = DatabaseMigrator()
         
+        migrator.registerMigration("createParticipant") { db in
+            try db.create(table: "participant") { t in
+                // Column names as per CodingKeys
+                t.column("id", .integer)
+                t.column("authCredential", .text)
+            }
+        }
+        
         migrator.registerMigration("createThing") { db in
             try db.create(table: "thing") { t in
                 // Column names as per CodingKeys
@@ -41,11 +49,6 @@ struct AppDatabase {
                 t.column("videosTest", .blob)
             }
         }
-        
-//        // Migrations for future application versions will be inserted here:
-//        migrator.registerMigration(...) { db in
-//            ...
-//        }
         
         return migrator
     }
