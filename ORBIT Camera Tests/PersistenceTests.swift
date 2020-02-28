@@ -1,5 +1,5 @@
 //
-//  ORBIT_Camera_Tests.swift
+//  ThingTests.swift
 //  ORBIT Camera Tests
 //
 //  Created by Toby Harris on 25/02/2020.
@@ -9,7 +9,7 @@
 import XCTest
 import GRDB
 
-class ORBITCameraTests: XCTestCase {
+class PersistenceTests: XCTestCase {
     var dbQueue: DatabaseQueue!
 
     override func setUp() {
@@ -23,6 +23,17 @@ class ORBITCameraTests: XCTestCase {
 
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+    }
+    
+    /// Persist a participant. Create it, write it to storage, read it from storage, check it's the same.
+    func testPersistParticipant() throws {
+        let participant = Participant(id: 123, authCredential: "qwertyuiop")
+        try dbQueue.write { db in
+            try participant.save(db)
+            let participants = try Participant.fetchAll(db)
+            XCTAssertEqual(participants.count, 1, "Persisting a participant should result in one thing persisted")
+            XCTAssertEqual(participant, participants[0], "Retreiving a persisted participant should return an identical participant")
+        }
     }
     
     /// Persist a thing. Create it, write it to storage, read it from storage, check it's the same.
@@ -54,12 +65,4 @@ class ORBITCameraTests: XCTestCase {
             XCTAssertEqual(thing.videosTest.map { $0.absoluteString }, things[0].videosTest.map { $0.absoluteString })
         }
     }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
 }
