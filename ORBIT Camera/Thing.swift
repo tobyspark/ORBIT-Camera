@@ -17,6 +17,9 @@ struct Thing: Codable, Equatable {
     /// A unique ID for this struct (within this app), populated on write to database
     var id: Int64?
     
+    /// A unique ID for the thing in the ORBIT dataset (or rather, the database the dataset will be produced from)
+    var orbitID: UploadStatus
+    
     /// The label the participant gives it. This may contain personally identifying information.
     var labelParticipant: String
     /// The label used in the ORBIT Dataset. This is assigned by the research team. Goals: anonymised, regularised across dataset.
@@ -34,6 +37,7 @@ struct Thing: Codable, Equatable {
     /// Parameter label: The label the participant wants to give the thing.
     init(withLabel label: String) {
         self.id = nil
+        self.orbitID = .noID
         self.labelParticipant = label
         self.labelDataset = nil
         self.videosTrain = []

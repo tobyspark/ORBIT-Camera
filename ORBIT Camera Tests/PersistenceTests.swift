@@ -25,6 +25,14 @@ class PersistenceTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
     
+    /// Encode an UploadStatus. Encode all cases, checking decoding gets back the same.
+    func testEncodeUploadStatus() throws {
+        let values: [UploadStatus] = [.noID, .upload(123), .server(456)]
+        for status in values {
+            XCTAssertEqual(status, try JSONDecoder().decode(UploadStatus.self, from: JSONEncoder().encode(status)))
+        }
+    }
+    
     /// Persist a participant. Create it, write it to storage, read it from storage, check it's the same.
     func testPersistParticipant() throws {
         let participant = Participant(id: 123, authCredential: "qwertyuiop")
@@ -48,6 +56,7 @@ class PersistenceTests: XCTestCase {
             XCTAssertEqual(thing, things[0], "Retreiving a persisted thing should return an identical thing")
         }
 
+        thing.orbitID = .server(123)
         thing.labelParticipant = "labelParticipant"
         thing.labelDataset = "labelDataset"
         thing.videosTrain = [URL(fileURLWithPath: "path/to/1"), URL(fileURLWithPath: "path/to/2")]
@@ -59,6 +68,7 @@ class PersistenceTests: XCTestCase {
             // "path/to/1 -- file:///" != "file:///path/to/1"
             //XCTAssertEqual(thing, things[0], "Retreiving a persisted thing should return an identical thing")
             XCTAssertEqual(thing.id, things[0].id)
+            XCTAssertEqual(thing.orbitID, things[0].orbitID)
             XCTAssertEqual(thing.labelParticipant, things[0].labelParticipant)
             XCTAssertEqual(thing.labelDataset, things[0].labelDataset)
             XCTAssertEqual(thing.videosTrain.map { $0.absoluteString }, things[0].videosTrain.map { $0.absoluteString })
