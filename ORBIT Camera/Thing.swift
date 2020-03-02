@@ -17,8 +17,13 @@ struct Thing: Codable, Equatable {
     /// A unique ID for this struct (within this app), populated on write to database
     var id: Int64?
     
+    /// An ID to track an in-progress upload, corresponds to URLSessionTask.taskIdentifier
+    // Note this was handled more elegantly by orbitID being an UploadStatus enum, but the supporting code was getting ridiculous.
+    var uploadID: Int?
+    
     /// A unique ID for the thing in the ORBIT dataset (or rather, the database the dataset will be produced from)
-    var orbitID: UploadStatus
+    // Note this was handled more elegantly by orbitID being an UploadStatus enum, but the supporting code was getting ridiculous.
+    var orbitID: Int?
     
     /// The label the participant gives it. This may contain personally identifying information.
     var labelParticipant: String
@@ -37,7 +42,8 @@ struct Thing: Codable, Equatable {
     /// Parameter label: The label the participant wants to give the thing.
     init(withLabel label: String) {
         self.id = nil
-        self.orbitID = .noID
+        self.uploadID = nil
+        self.orbitID = nil
         self.labelParticipant = label
         self.labelDataset = nil
         self.videosTrain = []
