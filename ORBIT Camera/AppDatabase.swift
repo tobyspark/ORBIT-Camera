@@ -43,7 +43,8 @@ struct AppDatabase {
             try db.create(table: "thing") { t in
                 // Column names as per CodingKeys
                 t.autoIncrementedPrimaryKey("id")
-                t.column("orbitID", .blob)
+                t.column("uploadID", .integer)
+                t.column("orbitID", .integer)
                 t.column("labelParticipant", .text).notNull()
                 t.column("labelDataset", .text)
                 t.column("videosTrain", .blob)
