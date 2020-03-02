@@ -10,8 +10,6 @@
 		4B87FD052405C3F0007AB630 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 4B87FD042405C3F0007AB630 /* GRDB */; };
 		4B87FD062405C599007AB630 /* Thing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BCF2405771900E31D93 /* Thing.swift */; };
 		4B87FD072405CE94007AB630 /* AppDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14C182405B81900E31D93 /* AppDatabase.swift */; };
-		4B87FD0924069A77007AB630 /* UploadStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD0824069A77007AB630 /* UploadStatus.swift */; };
-		4B87FD0A24069A77007AB630 /* UploadStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD0824069A77007AB630 /* UploadStatus.swift */; };
 		4B87FD0C2406A074007AB630 /* PersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD0B2406A074007AB630 /* PersistenceTests.swift */; };
 		4B87FD0E2406A5DF007AB630 /* Thing+upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD0D2406A5DF007AB630 /* Thing+upload.swift */; };
 		4B87FD0F2406A5DF007AB630 /* Thing+upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD0D2406A5DF007AB630 /* Thing+upload.swift */; };
@@ -19,7 +17,13 @@
 		4B87FD1224098D57007AB630 /* Participant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD1024098D57007AB630 /* Participant.swift */; };
 		4B87FD142409B678007AB630 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD132409B678007AB630 /* Settings.swift */; };
 		4B87FD152409B678007AB630 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD132409B678007AB630 /* Settings.swift */; };
-		4BF14BB82405730700E31D93 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB72405730700E31D93 /* AppDelegate.swift */; };
+		4B87FD1B240D403A007AB630 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB72405730700E31D93 /* AppDelegate.swift */; };
+		4B87FD1E240D4E93007AB630 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD1D240D4E93007AB630 /* Video.swift */; };
+		4B87FD1F240D4E93007AB630 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD1D240D4E93007AB630 /* Video.swift */; };
+		4B87FD24240D72C3007AB630 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB92405730700E31D93 /* SceneDelegate.swift */; };
+		4B87FD25240D72CB007AB630 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBB2405730700E31D93 /* MasterViewController.swift */; };
+		4B87FD26240D72CD007AB630 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBD2405730700E31D93 /* DetailViewController.swift */; };
+		4B87FD27240D72ED007AB630 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB72405730700E31D93 /* AppDelegate.swift */; };
 		4BF14BBA2405730700E31D93 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB92405730700E31D93 /* SceneDelegate.swift */; };
 		4BF14BBC2405730700E31D93 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBB2405730700E31D93 /* MasterViewController.swift */; };
 		4BF14BBE2405730700E31D93 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBD2405730700E31D93 /* DetailViewController.swift */; };
@@ -42,11 +46,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		4B87FD0824069A77007AB630 /* UploadStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UploadStatus.swift; sourceTree = "<group>"; };
 		4B87FD0B2406A074007AB630 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
 		4B87FD0D2406A5DF007AB630 /* Thing+upload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Thing+upload.swift"; sourceTree = "<group>"; };
 		4B87FD1024098D57007AB630 /* Participant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Participant.swift; sourceTree = "<group>"; };
 		4B87FD132409B678007AB630 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		4B87FD1D240D4E93007AB630 /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		4BF14BB42405730700E31D93 /* ORBIT Camera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ORBIT Camera.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BF14BB72405730700E31D93 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4BF14BB92405730700E31D93 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -119,7 +123,7 @@
 				4B87FD1024098D57007AB630 /* Participant.swift */,
 				4BF14BCF2405771900E31D93 /* Thing.swift */,
 				4B87FD0D2406A5DF007AB630 /* Thing+upload.swift */,
-				4B87FD0824069A77007AB630 /* UploadStatus.swift */,
+				4B87FD1D240D4E93007AB630 /* Video.swift */,
 				4B87FD132409B678007AB630 /* Settings.swift */,
 				4BF14BBF2405730700E31D93 /* Main.storyboard */,
 				4BF14BC22405730900E31D93 /* Assets.xcassets */,
@@ -197,7 +201,6 @@
 					};
 					4BF14C08240580B900E31D93 = {
 						CreatedOnToolsVersion = 11.3.1;
-						TestTargetID = 4BF14BB32405730700E31D93;
 					};
 				};
 			};
@@ -249,14 +252,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				4BF14C192405B81900E31D93 /* AppDatabase.swift in Sources */,
-				4BF14BB82405730700E31D93 /* AppDelegate.swift in Sources */,
 				4B87FD1124098D57007AB630 /* Participant.swift in Sources */,
 				4BF14BBA2405730700E31D93 /* SceneDelegate.swift in Sources */,
 				4B87FD142409B678007AB630 /* Settings.swift in Sources */,
-				4B87FD0924069A77007AB630 /* UploadStatus.swift in Sources */,
 				4BF14BBC2405730700E31D93 /* MasterViewController.swift in Sources */,
 				4BF14BD02405771900E31D93 /* Thing.swift in Sources */,
+				4B87FD1E240D4E93007AB630 /* Video.swift in Sources */,
 				4BF14BBE2405730700E31D93 /* DetailViewController.swift in Sources */,
+				4B87FD1B240D403A007AB630 /* AppDelegate.swift in Sources */,
 				4B87FD0E2406A5DF007AB630 /* Thing+upload.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -265,12 +268,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4B87FD0A24069A77007AB630 /* UploadStatus.swift in Sources */,
 				4B87FD0F2406A5DF007AB630 /* Thing+upload.swift in Sources */,
+				4B87FD25240D72CB007AB630 /* MasterViewController.swift in Sources */,
+				4B87FD26240D72CD007AB630 /* DetailViewController.swift in Sources */,
 				4B87FD072405CE94007AB630 /* AppDatabase.swift in Sources */,
 				4B87FD062405C599007AB630 /* Thing.swift in Sources */,
 				4B87FD152409B678007AB630 /* Settings.swift in Sources */,
+				4B87FD24240D72C3007AB630 /* SceneDelegate.swift in Sources */,
+				4B87FD27240D72ED007AB630 /* AppDelegate.swift in Sources */,
 				4B87FD0C2406A074007AB630 /* PersistenceTests.swift in Sources */,
+				4B87FD1F240D4E93007AB630 /* Video.swift in Sources */,
 				4B87FD1224098D57007AB630 /* Participant.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -458,7 +465,6 @@
 		4BF14C11240580B900E31D93 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XVA8384FUL;
 				INFOPLIST_FILE = "ORBIT Camera Tests/Info.plist";
@@ -471,14 +477,12 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ORBIT Camera.app/ORBIT Camera";
 			};
 			name = Debug;
 		};
 		4BF14C12240580B900E31D93 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = XVA8384FUL;
 				INFOPLIST_FILE = "ORBIT Camera Tests/Info.plist";
@@ -491,7 +495,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ORBIT Camera.app/ORBIT Camera";
 			};
 			name = Release;
 		};

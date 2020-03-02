@@ -63,8 +63,17 @@ struct AppDatabase {
                 t.column("orbitID", .integer)
                 t.column("labelParticipant", .text).notNull()
                 t.column("labelDataset", .text)
-                t.column("videosTrain", .blob)
-                t.column("videosTest", .blob)
+            }
+        }
+        
+        migrator.registerMigration("createVideo") { db in
+            try db.create(table: "video") { t in
+                // Column names as per CodingKeys
+                t.autoIncrementedPrimaryKey("id")
+                t.column("thingID", .integer).notNull().references("thing", onDelete: .cascade) // FIXME: Don't leave orphan video files on device
+                t.column("url", .blob).notNull()
+                t.column("uploadID", .integer)
+                t.column("orbitID", .integer)
             }
         }
         

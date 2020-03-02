@@ -32,10 +32,25 @@ struct Thing: Codable, Equatable {
     
     /// URLs to videos the participant has recorded of the thing, following the ORBIT procedure for capturing 'training' data.
     /// e.g. Blank background, rotate [around] the thing
-    var videosTrain: [URL]
+    var videosTrain: [Video] {
+        return try! dbQueue.read { db in
+            try Video
+                .filter(Video.Columns.thingID == self.id)
+                // FIXME: filter for this type
+                .fetchAll(db)
+        }
+    }
+
     /// URLs to videos the participant has recorded of the thing, following the ORBIT procedure for capturing 'test' data.
     /// e.g. Film the thing 'in the wild'. The more locations (and their differing backgrounds) the better.
-    var videosTest: [URL]
+    var videosTest: [Video] {
+        return try! dbQueue.read { db in
+            try Video
+                .filter(Video.Columns.thingID == self.id)
+                // FIXME: filter for this type
+                .fetchAll(db)
+        }
+    }
     
     /// Initialises a new thing, with the information we have at the time: what the participant calls it.
     ///
@@ -46,12 +61,18 @@ struct Thing: Codable, Equatable {
         self.orbitID = nil
         self.labelParticipant = label
         self.labelDataset = nil
-        self.videosTrain = []
-        self.videosTest = []
     }
 }
 
 extension Thing: FetchableRecord, MutablePersistableRecord {
+    enum Columns {
+        static let id = Column(CodingKeys.id)
+        static let uploadID = Column(CodingKeys.uploadID)
+        static let orbitID = Column(CodingKeys.orbitID)
+        static let labelParticipant = Column(CodingKeys.labelParticipant)
+        static let labelDataset = Column(CodingKeys.labelDataset)
+    }
+    
     // Update auto-incremented id upon successful insertion
     mutating func didInsert(with rowID: Int64, for column: String?) {
         id = rowID
