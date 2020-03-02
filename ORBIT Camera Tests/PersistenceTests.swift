@@ -38,33 +38,49 @@ class PersistenceTests: XCTestCase {
     func testPersistThing() throws {
         var thing = Thing(withLabel: "labelParticipant")
         XCTAssertEqual(thing.id, nil, "Unstored thing should have no ID")
-        try dbQueue.write { db in
-            try thing.save(db)
-            XCTAssertNotNil(thing.id, "Stored thing should have an ID")
-            let things = try Thing.fetchAll(db)
-            XCTAssertEqual(things.count, 1, "Persisting a thing should result in one thing persisted")
-            XCTAssertEqual(thing, things[0], "Retreiving a persisted thing should return an identical thing")
-        }
+        try dbQueue.write { db in try thing.save(db) }
+        XCTAssertNotNil(thing.id, "Stored thing should have an ID")
+        try dbQueue.write { db in try thing.save(db) } // Extra save, should not insert new
+        
+        var things = try dbQueue.read { db in try Thing.fetchAll(db) }
+        XCTAssertEqual(things.count, 1, "Persisting a thing should result in one thing persisted")
+        XCTAssertEqual(thing, things[0], "Retreiving a persisted thing should return an identical thing")
 
         thing.uploadID = 123
         thing.orbitID = 456
         thing.labelParticipant = "labelParticipant"
         thing.labelDataset = "labelDataset"
-        thing.videosTrain = [URL(fileURLWithPath: "path/to/1"), URL(fileURLWithPath: "path/to/2")]
-        thing.videosTest = [URL(fileURLWithPath: "path/to/3"), URL(fileURLWithPath: "path/to/4")]
-        try dbQueue.write { db in
-            try thing.save(db)
-            let things = try Thing.fetchAll(db)
-            // WTF: Equating the original URL with the encoded and decoded URLs fails!
-            // "path/to/1 -- file:///" != "file:///path/to/1"
-            //XCTAssertEqual(thing, things[0], "Retreiving a persisted thing should return an identical thing")
-            XCTAssertEqual(thing.id, things[0].id)
-            XCTAssertEqual(thing.uploadID, things[0].uploadID)
-            XCTAssertEqual(thing.orbitID, things[0].orbitID)
-            XCTAssertEqual(thing.labelParticipant, things[0].labelParticipant)
-            XCTAssertEqual(thing.labelDataset, things[0].labelDataset)
-            XCTAssertEqual(thing.videosTrain.map { $0.absoluteString }, things[0].videosTrain.map { $0.absoluteString })
-            XCTAssertEqual(thing.videosTest.map { $0.absoluteString }, things[0].videosTest.map { $0.absoluteString })
-        }
+        try dbQueue.write { db in try thing.save(db) }
+        
+        things = try dbQueue.read { db in try Thing.fetchAll(db) }
+        XCTAssertEqual(thing, things[0])
+    }
+    
+    /// Persist a video. Create it, write it to storage, read it from storage, check it's the same. Check the Thing's video property returns the video.
+    func testPersistVideo() throws {
+        var thing = Thing(withLabel: "labelParticipant")
+        try dbQueue.write { db in try thing.save(db) }
+        var video = Video(thingID: thing.id!, url: URL(fileURLWithPath: "path/to/1"))
+        try dbQueue.write { db in try video.save(db) }
+        try dbQueue.write { db in try video.save(db) } // Extra save, should not insert new
+        
+        var videos = try dbQueue.read { db in try Video.fetchAll(db) }
+        XCTAssertEqual(videos.count, 1, "Persisting a video should result in one thing persisted")
+        // WTF: Equating the original URL with the encoded and decoded URLs fails!
+        // "path/to/1 -- file:///" != "file:///path/to/1"
+        //XCTAssertEqual(video, videos[0], "Retreiving a persisted thing should return an identical thing")
+        XCTAssertEqual(video.thingID, videos[0].thingID, "Retreiving a persisted thing should return an identical thing")
+        XCTAssertEqual(video.url.absoluteString, videos[0].url.absoluteString, "Retreiving a persisted thing should return an identical thing")
+        XCTAssertEqual(video.uploadID, videos[0].uploadID, "Retreiving a persisted thing should return an identical thing")
+        XCTAssertEqual(video.orbitID, videos[0].orbitID, "Retreiving a persisted thing should return an identical thing")
+        
+        video.uploadID = 123
+        video.orbitID = 456
+        try dbQueue.write { db in try video.save(db) }
+        
+        videos = try dbQueue.read { db in try Video.fetchAll(db) }
+        XCTAssertEqual(video.uploadID, videos[0].uploadID,"Retreiving a persisted thing should return an identical thing")
+        XCTAssertEqual(video.orbitID, videos[0].orbitID, "Retreiving a persisted thing should return an identical thing")
+        XCTAssertEqual([video].map { $0.url.absoluteString }, thing.videosTest.map { $0.url.absoluteString }, "The thing's video property should return the video")
     }
 }
