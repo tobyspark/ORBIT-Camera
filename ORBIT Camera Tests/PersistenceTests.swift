@@ -10,8 +10,6 @@ import XCTest
 import GRDB
 
 class PersistenceTests: XCTestCase {
-    var dbQueue: DatabaseQueue!
-
     override func setUp() {
         dbQueue = DatabaseQueue()
         do {
