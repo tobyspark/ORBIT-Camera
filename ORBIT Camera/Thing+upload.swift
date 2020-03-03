@@ -11,7 +11,7 @@
 import UIKit
 import GRDB
 
-extension Thing {
+extension Thing: Uploadable {
     /// Thing endpoint request body JSON structure
     /// ```json
     /// {
@@ -64,52 +64,14 @@ extension Thing {
         // Action task
         task.resume()
     }
-    
-    /// Check all Things on uploadDidComplete for uploadID, orbitID consistency. Reset both to nil on failed upload.
-    static func uploadDidComplete(for uploadID: Int) throws {
-        // On task completion, a successful upload will by now have their orbitID set, and uploadID unset.
-        // If that is not the case, unset both to allow a new upload attempt.
-        try dbQueue.write { db in
-            var things = try Thing
-                .filter(Columns.uploadID == uploadID)
-                .fetchAll(db)
-            switch things.count {
-            case 0: // No stale uploadIDs, good.
-                return
-            case 1: // Failed uploadTask.
-                print("Failed upload task: \(things[0])")
-                things[0].uploadID = nil
-                things[0].orbitID = nil
-                try things[0].update(db)
-            default: // Uh-oh.
-                assertionFailure("Multiple Things with same uploadID on task completion.")
-            }
-        }
-    }
 
     /// Assign orbitID from returned data
-    static func uploadDidReceive(for uploadID: Int, data: Data) throws {
-        try dbQueue.write { db in
-            var things = try Thing
-                .filter(Columns.uploadID == uploadID)
-                .fetchAll(db)
-            guard
-                things.count == 1
-            else {
-                assertionFailure("Multiple Things (or none) with same uploadID on receive data")
-                return
-            }
-            guard
-                let apiResponse = try? JSONDecoder().decode(APIResponse.self, from: data)
-            else {
-                let dataString = String(data: data, encoding: .utf8) ?? "Could not interpret return data: \(data)"
-                assertionFailure("Could not parse upload response data:\n\(dataString)")
-                return
-            }
-            things[0].uploadID = nil
-            things[0].orbitID = apiResponse.id
-            try things[0].update(db)
-        }
+    mutating func uploadDidReceive(_ data: Data) throws {
+        print("Thing uploadDidReceive")
+        let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
+        uploadID = nil
+        orbitID = apiResponse.id
+        try dbQueue.write { db in try update(db) }
         
         // TODO: Now action upload of next video
     }
