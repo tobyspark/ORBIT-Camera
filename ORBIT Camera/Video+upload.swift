@@ -8,6 +8,7 @@
 
 import Foundation
 import GRDB
+import os
 
 extension Video: Uploadable {
     /// Thing endpoint response body JSON structure
@@ -27,11 +28,21 @@ extension Video: Uploadable {
     
     /// Upload the video. This should create a server record for the thing, and return that record's ID.
     mutating func upload(by participant: Participant, using session: URLSession) throws {
+        guard uploadID == nil else {
+            os_log("Attempted to upload Video that is already being uploaded")
+            return
+        }
+        guard orbitID == nil else {
+            os_log("Attempted to upload Video that has already been uploaded")
+            return
+        }
+        
         guard
             let thing = try dbQueue.read { db in try Thing.filter(key: thingID).fetchOne(db) },
             let thingOrbitID = thing.orbitID
         else {
-            assertionFailure("Cannot upload without yet having orbitID of thing")
+            os_log("Attempted to upload Video without orbitID of thing")
+            assertionFailure()
             return
         }
         
@@ -39,14 +50,15 @@ extension Video: Uploadable {
             let formFile = try? MultipartFormFile(
                     fields: [
                         (name: "thing", value: "\(thingOrbitID)"),
-                        (name: "technique", value: "R"), // FIXME: placeholder value
+                        (name: "technique", value: "N"), // FIXME: placeholder value
                         ],
                     files: [
                         (name: "file", value: url)
                         ]
                     )
         else {
-            assertionFailure("Can't upload, could not create form data")
+            os_log("Failed attempt to upload Video, could not create form data")
+            assertionFailure()
             return
         }
         
@@ -70,7 +82,6 @@ extension Video: Uploadable {
 
     /// Assign orbitID from returned data
     mutating func uploadDidReceive(_ data: Data) throws {
-        print("Video uploadDidReceive")
         let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
         uploadID = nil
         orbitID = apiResponse.id
