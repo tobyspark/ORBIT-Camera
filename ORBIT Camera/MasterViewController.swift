@@ -68,6 +68,15 @@ class MasterViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
         let thing = things[indexPath.row]
         cell.textLabel!.text = thing.labelParticipant
+        // FIXME: Use NSLocalizedString pluralization
+        switch thing.videosTrain.count {
+        case 0:
+            cell.detailTextLabel!.text = "No videos"
+        case 1:
+            cell.detailTextLabel!.text = "1 video"
+        default:
+            cell.detailTextLabel!.text = "\(thing.videosTrain.count) videos"
+        }
         return cell
     }
 
