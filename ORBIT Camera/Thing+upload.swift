@@ -10,6 +10,7 @@
 
 import UIKit
 import GRDB
+import os
 
 extension Thing: Uploadable {
     /// Thing endpoint request body JSON structure
@@ -40,6 +41,15 @@ extension Thing: Uploadable {
     
     /// Upload the thing. This should create a server record for the thing, and return that record's ID.
     mutating func upload(by participant: Participant, using session: URLSession) throws {
+        guard uploadID == nil else {
+            os_log("Attempted to upload Thing that is already being uploaded")
+            return
+        }
+        guard orbitID == nil else {
+            os_log("Attempted to upload Video that has already been uploaded")
+            return
+        }
+        
         // Create upload request
         let url = URL(string: Settings.endpointThing)!
         var request = URLRequest(url: url)
@@ -67,7 +77,6 @@ extension Thing: Uploadable {
 
     /// Assign orbitID from returned data
     mutating func uploadDidReceive(_ data: Data) throws {
-        print("Thing uploadDidReceive")
         let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
         uploadID = nil
         orbitID = apiResponse.id
