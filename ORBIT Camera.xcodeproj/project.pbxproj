@@ -15,11 +15,13 @@
 		4B87FD0F2406A5DF007AB630 /* Thing+upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD0D2406A5DF007AB630 /* Thing+upload.swift */; };
 		4B87FD1124098D57007AB630 /* Participant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD1024098D57007AB630 /* Participant.swift */; };
 		4B87FD1224098D57007AB630 /* Participant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD1024098D57007AB630 /* Participant.swift */; };
+		4B87FD1A240D402D007AB630 /* AppNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD162409D4A4007AB630 /* AppNetwork.swift */; };
 		4B87FD1B240D403A007AB630 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB72405730700E31D93 /* AppDelegate.swift */; };
 		4B87FD1E240D4E93007AB630 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD1D240D4E93007AB630 /* Video.swift */; };
 		4B87FD1F240D4E93007AB630 /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD1D240D4E93007AB630 /* Video.swift */; };
 		4B87FD21240D53FC007AB630 /* Video+upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD20240D53FC007AB630 /* Video+upload.swift */; };
 		4B87FD22240D53FC007AB630 /* Video+upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD20240D53FC007AB630 /* Video+upload.swift */; };
+		4B87FD23240D72BF007AB630 /* AppNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD162409D4A4007AB630 /* AppNetwork.swift */; };
 		4B87FD24240D72C3007AB630 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB92405730700E31D93 /* SceneDelegate.swift */; };
 		4B87FD25240D72CB007AB630 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBB2405730700E31D93 /* MasterViewController.swift */; };
 		4B87FD26240D72CD007AB630 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBD2405730700E31D93 /* DetailViewController.swift */; };
@@ -58,6 +60,7 @@
 		4B87FD0D2406A5DF007AB630 /* Thing+upload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Thing+upload.swift"; sourceTree = "<group>"; };
 		4B87FD1024098D57007AB630 /* Participant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Participant.swift; sourceTree = "<group>"; };
 		4B87FD132409B678007AB630 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		4B87FD162409D4A4007AB630 /* AppNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppNetwork.swift; sourceTree = "<group>"; };
 		4B87FD1D240D4E93007AB630 /* Video.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		4B87FD20240D53FC007AB630 /* Video+upload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Video+upload.swift"; sourceTree = "<group>"; };
 		4B87FD28240E758F007AB630 /* UploadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadTests.swift; sourceTree = "<group>"; };
@@ -130,6 +133,7 @@
 			isa = PBXGroup;
 			children = (
 				4BF14BB72405730700E31D93 /* AppDelegate.swift */,
+				4B87FD162409D4A4007AB630 /* AppNetwork.swift */,
 				4BF14C182405B81900E31D93 /* AppDatabase.swift */,
 				4BF14BB92405730700E31D93 /* SceneDelegate.swift */,
 				4BF14BBB2405730700E31D93 /* MasterViewController.swift */,
@@ -273,6 +277,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4BF14C192405B81900E31D93 /* AppDatabase.swift in Sources */,
+				4B87FD1A240D402D007AB630 /* AppNetwork.swift in Sources */,
 				4B87FD1124098D57007AB630 /* Participant.swift in Sources */,
 				4B87FD30240EC757007AB630 /* MultipartFormData.swift in Sources */,
 				4BF14BBA2405730700E31D93 /* SceneDelegate.swift in Sources */,
@@ -293,6 +298,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4B87FD0F2406A5DF007AB630 /* Thing+upload.swift in Sources */,
+				4B87FD23240D72BF007AB630 /* AppNetwork.swift in Sources */,
 				4B87FD25240D72CB007AB630 /* MasterViewController.swift in Sources */,
 				4B87FD26240D72CD007AB630 /* DetailViewController.swift in Sources */,
 				4B87FD34240EF4A0007AB630 /* Uploadable.swift in Sources */,
