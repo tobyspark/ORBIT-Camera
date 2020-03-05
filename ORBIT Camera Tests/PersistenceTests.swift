@@ -84,4 +84,58 @@ class PersistenceTests: XCTestCase {
         XCTAssertEqual(video.orbitID, videos[0].orbitID, "Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual([video].map { $0.url.absoluteString }, thing.videosTest.map { $0.url.absoluteString }, "The thing's video property should return the video")
     }
+    
+    /// Load test data, checking it's what we expect
+    func testLoadTestData() throws {
+        try AppDatabase.loadTestData()
+        var participants = try dbQueue.read { db in try Participant.fetchAll(db) }
+        var things = try dbQueue.read { db in try Thing.fetchAll(db) }
+        XCTAssertEqual(participants.count, 1, "Test (pilot) data should only load one participant")
+        XCTAssertEqual(things.count, 5, "Test (pilot) data should have five things")
+        XCTAssertEqual(things[0].videosTrain.count, 5, "Test (pilot) data should have five videos for a thing")
+        
+        try AppDatabase.loadTestData()
+        participants = try dbQueue.read { db in try Participant.fetchAll(db) }
+        things = try dbQueue.read { db in try Thing.fetchAll(db) }
+        XCTAssertEqual(participants.count, 1, "Test (pilot) data should only ever load one participant")
+        XCTAssertEqual(things.count, 5, "Test (pilot) data should only ever have five things")
+        XCTAssertEqual(things[0].videosTrain.count, 5, "Test (pilot) data should only ever have five videos for a thing")
+    }
+    
+    /// Load test data, delete the one Participant, check it's gone.
+    func testParticipantDelete() throws {
+        try AppDatabase.loadTestData()
+        
+        let deletedCount = try dbQueue.write { db in try Participant.filter(key: 1).deleteAll(db) }
+        XCTAssertEqual(deletedCount, 1, "The participant should have been deleted")
+        
+        let participantCount = try dbQueue.read { db in try Participant.fetchCount(db) }
+        XCTAssertEqual(participantCount, 0, "The participant should have been deleted")
+    }
+    
+    /// Load test data, delete the first Thing, check it's gone, and check it's videos have also gone.
+    func testThingDelete() throws {
+        try AppDatabase.loadTestData()
+                
+        var thingCount = try dbQueue.read { db in try Thing.filter(key: 1).fetchCount(db) }
+        XCTAssertEqual(thingCount, 1, "The thing should be loaded from test data")
+        
+        var videoCount = try dbQueue.read { db in try Video.filter(Video.Columns.thingID == 1).fetchCount(db) }
+        XCTAssertEqual(videoCount, 5, "The thing's videos should be loaded from test data")
+        
+        let deletedCount = try dbQueue.write { db in try Thing.filter(key: 1).deleteAll(db) }
+        XCTAssertEqual(deletedCount, 1, "The thing should have been deleted")
+        
+        thingCount = try dbQueue.read { db in try Thing.filter(key: 1).fetchCount(db) }
+        XCTAssertEqual(thingCount, 0, "The thing should have been deleted")
+        
+        videoCount = try dbQueue.read { db in try Video.filter(Video.Columns.thingID == 1).fetchCount(db) }
+        XCTAssertEqual(videoCount, 0, "The thing's videos should have been deleted")
+        
+        thingCount = try dbQueue.read { db in try Thing.fetchCount(db) }
+        XCTAssertEqual(thingCount, 4, "No other things should have been deleted")
+        
+        videoCount = try dbQueue.read { db in try Video.fetchCount(db) }
+        XCTAssertEqual(videoCount, 20, "No other videos should have been deleted")
+    }
 }
