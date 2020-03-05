@@ -77,4 +77,28 @@ extension Thing: FetchableRecord, MutablePersistableRecord {
     mutating func didInsert(with rowID: Int64, for column: String?) {
         id = rowID
     }
+    
+    /// Return a thing based on a contiguous index, newest first
+    static func at(index: Int) throws -> Thing {
+        var thing: Thing?
+        try dbQueue.read { db in
+            let ids = try Int64.fetchAll(db, Thing.select(Thing.Columns.id))
+            assert(ids == ids.sorted(), "Expediency, uncovered")
+            let id = ids[ids.count - 1 - index]
+            thing = try Thing.filter(key: id).fetchOne(db)
+            if thing == nil { assertionFailure("Could not find Thing") } // FIXME: throw an error
+        }
+        return thing!
+    }
+    
+    /// Delete a thing based on a contiguous index, newest first
+    static func deleteAt(index: Int) throws {
+        try dbQueue.write { db in
+            let ids = try Int64.fetchAll(db, Thing.select(Thing.Columns.id))
+            assert(ids == ids.sorted(), "Expediency, uncovered")
+            let id = ids[ids.count - 1 - index]
+            let deleteCount = try Thing.filter(key: id).deleteAll(db)
+            if deleteCount != 1 { assertionFailure("Could not delete Thing") } // FIXME: throw an error
+        }
+    }
 }

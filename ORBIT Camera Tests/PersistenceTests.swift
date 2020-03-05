@@ -138,4 +138,35 @@ class PersistenceTests: XCTestCase {
         videoCount = try dbQueue.read { db in try Video.fetchCount(db) }
         XCTAssertEqual(videoCount, 20, "No other videos should have been deleted")
     }
+    
+    func testThingIndexing() throws {
+        try AppDatabase.loadTestData()
+        
+        try dbQueue.read { db in
+            XCTAssertEqual(try Thing.filter(key: 1).fetchOne(db)?.labelParticipant, "House keys")
+            XCTAssertEqual(try Thing.filter(key: 2).fetchOne(db)?.labelParticipant, "Rucksack")
+            XCTAssertEqual(try Thing.filter(key: 3).fetchOne(db)?.labelParticipant, "White guide cane")
+            XCTAssertEqual(try Thing.filter(key: 4).fetchOne(db)?.labelParticipant, "LG remote control")
+            XCTAssertEqual(try Thing.filter(key: 5).fetchOne(db)?.labelParticipant, "Lifemax talking watch")
+        }
+        
+        XCTAssertEqual(try Thing.at(index: 4).labelParticipant, "House keys")
+        XCTAssertEqual(try Thing.at(index: 3).labelParticipant, "Rucksack")
+        XCTAssertEqual(try Thing.at(index: 2).labelParticipant, "White guide cane")
+        XCTAssertEqual(try Thing.at(index: 1).labelParticipant, "LG remote control")
+        XCTAssertEqual(try Thing.at(index: 0).labelParticipant, "Lifemax talking watch")
+        
+        _ = try dbQueue.write { db in try Thing.filter(key: 3).deleteAll(db) }
+        
+        XCTAssertEqual(try Thing.at(index: 3).labelParticipant, "House keys")
+        XCTAssertEqual(try Thing.at(index: 2).labelParticipant, "Rucksack")
+        XCTAssertEqual(try Thing.at(index: 1).labelParticipant, "LG remote control")
+        XCTAssertEqual(try Thing.at(index: 0).labelParticipant, "Lifemax talking watch")
+        
+        try Thing.deleteAt(index: 1)
+        
+        XCTAssertEqual(try Thing.at(index: 2).labelParticipant, "House keys")
+        XCTAssertEqual(try Thing.at(index: 1).labelParticipant, "Rucksack")
+        XCTAssertEqual(try Thing.at(index: 0).labelParticipant, "Lifemax talking watch")
+    }
 }
