@@ -26,6 +26,16 @@ struct Video: Codable, Equatable {
     /// A unique ID for the thing in the ORBIT dataset (or rather, the database the dataset will be produced from)
     // Note this was handled more elegantly by orbitID being an UploadStatus enum, but the supporting code was getting ridiculous.
     var orbitID: Int?
+    
+    /// The kind of video this is.
+    /// Current terminology: videos are taken with one of two goals: "registration" or "recognition", with two "techniques" used for registration videos: "zoom" and "rotate".
+    // Note String rather than Character is currently required for automatic codable compliance
+    enum Kind: String, Codable {
+        case registerRotate = "R"
+        case registerZoom = "Z"
+        case recognition = "N" // On the server, as per pilot, this is "No technique", hence the 'N'
+    }
+    var kind: Kind
 }
 
 extension Video: FetchableRecord, MutablePersistableRecord {
@@ -35,6 +45,7 @@ extension Video: FetchableRecord, MutablePersistableRecord {
         static let url = Column(CodingKeys.url)
         static let uploadID = Column(CodingKeys.uploadID)
         static let orbitID = Column(CodingKeys.orbitID)
+        static let kind = Column(CodingKeys.kind)
     }
     
     // Update auto-incremented id upon successful insertion

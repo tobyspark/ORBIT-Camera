@@ -60,7 +60,7 @@ class PersistenceTests: XCTestCase {
     func testPersistVideo() throws {
         var thing = Thing(withLabel: "labelParticipant")
         try dbQueue.write { db in try thing.save(db) }
-        var video = Video(thingID: thing.id!, url: URL(fileURLWithPath: "path/to/1"))
+        var video = Video(thingID: thing.id!, url: URL(fileURLWithPath: "path/to/1"), kind:.recognition)
         try dbQueue.write { db in try video.save(db) }
         try dbQueue.write { db in try video.save(db) } // Extra save, should not insert new
         
@@ -73,6 +73,7 @@ class PersistenceTests: XCTestCase {
         XCTAssertEqual(video.url.absoluteString, videos[0].url.absoluteString, "Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual(video.uploadID, videos[0].uploadID, "Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual(video.orbitID, videos[0].orbitID, "Retreiving a persisted thing should return an identical thing")
+        XCTAssertEqual(video.kind, videos[0].kind, "Retreiving a persisted thing should return an identical thing")
         
         video.uploadID = 123
         video.orbitID = 456

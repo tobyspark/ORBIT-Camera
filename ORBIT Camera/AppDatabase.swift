@@ -74,6 +74,7 @@ struct AppDatabase {
                 t.column("url", .blob).notNull()
                 t.column("uploadID", .integer)
                 t.column("orbitID", .integer)
+                t.column("kind", .text)
             }
         }
         
