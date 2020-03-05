@@ -7,12 +7,11 @@
 //
 
 import UIKit
+import os
 
 class MasterViewController: UITableViewController {
 
     var detailViewController: DetailViewController? = nil
-    var things: [Thing] = []
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +24,8 @@ class MasterViewController: UITableViewController {
             let controllers = split.viewControllers
             detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
         }
+        
+        try! AppDatabase.loadTestData()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -34,7 +35,8 @@ class MasterViewController: UITableViewController {
 
     @objc
     func insertNewObject(_ sender: Any) {
-        things.insert(Thing(withLabel: "A new thing"), at: 0)
+        var thing = Thing(withLabel: "A new thing")
+        try! dbQueue.write { db in try thing.save(db) } // FIXME: try!
         let indexPath = IndexPath(row: 0, section: 0)
         tableView.insertRows(at: [indexPath], with: .automatic)
     }
@@ -44,7 +46,7 @@ class MasterViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetail" {
             if let indexPath = tableView.indexPathForSelectedRow {
-                let thing = things[indexPath.row]
+                let thing = try! Thing.at(index: indexPath.row) // FIXME: try!
                 let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
                 controller.detailItem = thing
                 controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
@@ -61,12 +63,12 @@ class MasterViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return things.count
+        return try! dbQueue.read { db in try Thing.fetchCount(db) } // FIXME: try!
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        let thing = things[indexPath.row]
+        let thing = try! Thing.at(index: indexPath.row) // FIXME: try!
         cell.textLabel!.text = thing.labelParticipant
         // FIXME: Use NSLocalizedString pluralization
         switch thing.videosTrain.count {
@@ -87,7 +89,7 @@ class MasterViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            things.remove(at: indexPath.row)
+            try! Thing.deleteAt(index: indexPath.row) // FIXME: try!
             tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
