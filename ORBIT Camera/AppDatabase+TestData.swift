@@ -15,11 +15,11 @@ fileprivate let testParticipant = Participant(
 )
 
 fileprivate let pilotData = [
-    "House keys": ["No technique": ["vntfptbnfp.mp4", "nnqykolszu.mp4", "sgfgkuronb.mp4"], "Rotate": ["ejkkfgrini.mp4"], "Zoom": ["scadigobdh.mp4"]],
-    "Rucksack": ["No technique": ["iulqidvzyy.mp4", "gpfxtwcboq.mp4", "bmeddeqyzy.mp4"], "Rotate": ["dmfwfgqkqo.mp4"], "Zoom": ["kfogadrjvp.mp4"]],
-    "White guide cane": ["No technique": ["nhypjmcteu.mp4", "xvhfnfpdlw.mp4", "ulcxypbtbr.mp4"], "Rotate": ["mjyfppcjcj.mp4"], "Zoom": ["kqgbslyhnp.mp4"]],
-    "LG remote control": ["No technique": ["cggxjvrhzv.mp4", "bntumpdugq.mp4", "clwegalczo.mp4"], "Rotate": ["usdkfvycdi.mp4"], "Zoom": ["xovdsjalqn.mp4"]],
-    "Lifemax talking watch": ["No technique": ["vgdvfwzkll.mp4", "knyitmaxiz.mp4", "oruwakvkvv.mp4"], "Rotate": ["wvdmxmssuv.mp4"], "Zoom": ["wsavgniidy.mp4"]]
+    ("House keys", ["No technique": ["vntfptbnfp.mp4", "nnqykolszu.mp4", "sgfgkuronb.mp4"], "Rotate": ["ejkkfgrini.mp4"], "Zoom": ["scadigobdh.mp4"]]),
+    ("Rucksack", ["No technique": ["iulqidvzyy.mp4", "gpfxtwcboq.mp4", "bmeddeqyzy.mp4"], "Rotate": ["dmfwfgqkqo.mp4"], "Zoom": ["kfogadrjvp.mp4"]]),
+    ("White guide cane", ["No technique": ["nhypjmcteu.mp4", "xvhfnfpdlw.mp4", "ulcxypbtbr.mp4"], "Rotate": ["mjyfppcjcj.mp4"], "Zoom": ["kqgbslyhnp.mp4"]]),
+    ("LG remote control", ["No technique": ["cggxjvrhzv.mp4", "bntumpdugq.mp4", "clwegalczo.mp4"], "Rotate": ["usdkfvycdi.mp4"], "Zoom": ["xovdsjalqn.mp4"]]),
+    ("Lifemax talking watch", ["No technique": ["vgdvfwzkll.mp4", "knyitmaxiz.mp4", "oruwakvkvv.mp4"], "Rotate": ["wvdmxmssuv.mp4"], "Zoom": ["wsavgniidy.mp4"]])
     ]
 
 enum TestDataError: Error {
