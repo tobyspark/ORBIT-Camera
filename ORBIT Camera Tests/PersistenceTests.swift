@@ -82,7 +82,7 @@ class PersistenceTests: XCTestCase {
         videos = try dbQueue.read { db in try Video.fetchAll(db) }
         XCTAssertEqual(video.uploadID, videos[0].uploadID,"Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual(video.orbitID, videos[0].orbitID, "Retreiving a persisted thing should return an identical thing")
-        XCTAssertEqual([video].map { $0.url.absoluteString }, thing.videosTest.map { $0.url.absoluteString }, "The thing's video property should return the video")
+        XCTAssertEqual([video].map { $0.url.absoluteString }, thing.videos.map { $0.url.absoluteString }, "The thing's video property should return the video")
     }
     
     /// Load test data, checking it's what we expect
@@ -92,14 +92,14 @@ class PersistenceTests: XCTestCase {
         var things = try dbQueue.read { db in try Thing.fetchAll(db) }
         XCTAssertEqual(participants.count, 1, "Test (pilot) data should only load one participant")
         XCTAssertEqual(things.count, 5, "Test (pilot) data should have five things")
-        XCTAssertEqual(things[0].videosTrain.count, 5, "Test (pilot) data should have five videos for a thing")
+        XCTAssertEqual(things[0].videosCount, 5, "Test (pilot) data should have five videos for a thing")
         
         try AppDatabase.loadTestData()
         participants = try dbQueue.read { db in try Participant.fetchAll(db) }
         things = try dbQueue.read { db in try Thing.fetchAll(db) }
         XCTAssertEqual(participants.count, 1, "Test (pilot) data should only ever load one participant")
         XCTAssertEqual(things.count, 5, "Test (pilot) data should only ever have five things")
-        XCTAssertEqual(things[0].videosTrain.count, 5, "Test (pilot) data should only ever have five videos for a thing")
+        XCTAssertEqual(things[0].videosCount, 5, "Test (pilot) data should only ever have five videos for a thing")
     }
     
     /// Load test data, delete the one Participant, check it's gone.
@@ -168,5 +168,7 @@ class PersistenceTests: XCTestCase {
         XCTAssertEqual(try Thing.at(index: 2).labelParticipant, "House keys")
         XCTAssertEqual(try Thing.at(index: 1).labelParticipant, "Rucksack")
         XCTAssertEqual(try Thing.at(index: 0).labelParticipant, "Lifemax talking watch")
+        
+        // TODO: Think about thing.videoAt(index:) once have determined desirable indexing etc.
     }
 }

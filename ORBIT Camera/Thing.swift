@@ -30,28 +30,6 @@ struct Thing: Codable, Equatable {
     /// The label used in the ORBIT Dataset. This is assigned by the research team. Goals: anonymised, regularised across dataset.
     var labelDataset: String?
     
-    /// URLs to videos the participant has recorded of the thing, following the ORBIT procedure for capturing 'training' data.
-    /// e.g. Blank background, rotate [around] the thing
-    var videosTrain: [Video] {
-        return try! dbQueue.read { db in
-            try Video
-                .filter(Video.Columns.thingID == self.id)
-                // FIXME: filter for this type
-                .fetchAll(db)
-        }
-    }
-
-    /// URLs to videos the participant has recorded of the thing, following the ORBIT procedure for capturing 'test' data.
-    /// e.g. Film the thing 'in the wild'. The more locations (and their differing backgrounds) the better.
-    var videosTest: [Video] {
-        return try! dbQueue.read { db in
-            try Video
-                .filter(Video.Columns.thingID == self.id)
-                // FIXME: filter for this type
-                .fetchAll(db)
-        }
-    }
-    
     /// Initialises a new thing, with the information we have at the time: what the participant calls it.
     ///
     /// Parameter label: The label the participant wants to give the thing.
@@ -99,6 +77,39 @@ extension Thing: FetchableRecord, MutablePersistableRecord {
             let id = ids[ids.count - 1 - index]
             let deleteCount = try Thing.filter(key: id).deleteAll(db)
             if deleteCount != 1 { assertionFailure("Could not delete Thing") } // FIXME: throw an error
+        }
+    }
+    
+    // MARK: Videos (reverse relationship)
+    
+    /// The count of all videos of this thing
+    var videosCount: Int {
+        return try! dbQueue.read { db in // FIXME: try!
+            try Video
+                .filter(Video.Columns.thingID == self.id)
+                .fetchCount(db)
+        }
+    }
+    
+    /// The count of all videos of this thing
+    var videos: [Video] {
+        return try! dbQueue.read { db in // FIXME: try!
+            try Video
+                .filter(Video.Columns.thingID == self.id)
+                .fetchAll(db)
+        }
+    }
+    
+    /// Attempt to return the nth video of the thing. Zero-based.
+    func videoAt(index: Int) throws -> Video? {
+        try dbQueue.read { db in // FIXME: try!
+            let request = Video
+                .filter(Video.Columns.thingID == self.id)
+                .select(Video.Columns.id)
+            let ids = try Int64.fetchAll(db, request)
+            assert(ids == ids.sorted(), "Expediency, uncovered")
+            let id = ids[ids.count - 1 - index]
+            return try Video.filter(key: id).fetchOne(db)
         }
     }
 }

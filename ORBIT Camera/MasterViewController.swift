@@ -71,13 +71,13 @@ class MasterViewController: UITableViewController {
         let thing = try! Thing.at(index: indexPath.row) // FIXME: try!
         cell.textLabel!.text = thing.labelParticipant
         // FIXME: Use NSLocalizedString pluralization
-        switch thing.videosTrain.count {
+        switch thing.videosCount {
         case 0:
             cell.detailTextLabel!.text = "No videos"
         case 1:
             cell.detailTextLabel!.text = "1 video"
         default:
-            cell.detailTextLabel!.text = "\(thing.videosTrain.count) videos"
+            cell.detailTextLabel!.text = "\(thing.videosCount) videos"
         }
         return cell
     }
