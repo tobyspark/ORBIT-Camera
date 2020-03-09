@@ -51,8 +51,9 @@ class DetailViewController: UIViewController {
                 assertionFailure()
                 return
         }
+        
         // Set title for screen
-        thingNavigationItem.title = thing.labelParticipant
+        self.title = thing.labelParticipant
         
         // FIXME: INEXPLICABLE TOOLING FAILURE: videoCollectionView and videoPageView are nil, despite being hooked up in the storyboard.
         videoCollectionView = view.subviews[0] as! UICollectionView
