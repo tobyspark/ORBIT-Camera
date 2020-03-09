@@ -35,6 +35,7 @@ class DetailViewController: UIViewController {
                 )
             }
             videoPageControl.currentPage = videoIndex
+            videoPageControl.accessibilityValue = "video \(videoPageControl.currentPage + 1) of \(videoPageControl.numberOfPages)"
         }
     }
     
