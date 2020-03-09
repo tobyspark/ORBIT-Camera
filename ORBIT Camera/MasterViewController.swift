@@ -23,9 +23,17 @@ class MasterViewController: UITableViewController {
         if let split = splitViewController {
             let controllers = split.viewControllers
             detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
+            
+            // If nothing is selected, and we're coming from a detailViewController, make the corresponding selection. This happens on e.g. iPad first-run.
+            if let detailViewController = detailViewController,
+                let thing = detailViewController.detailItem,
+                let thingIndex = try? thing.index(),
+                tableView.indexPathForSelectedRow == nil
+            {
+                let path = IndexPath(row: thingIndex, section: 0)
+                tableView.selectRow(at: path, animated: false, scrollPosition: .middle)
+            }
         }
-        
-        try! AppDatabase.loadTestData()
     }
 
     override func viewWillAppear(_ animated: Bool) {
