@@ -169,6 +169,11 @@ class PersistenceTests: XCTestCase {
         XCTAssertEqual(try Thing.at(index: 1).labelParticipant, "Rucksack")
         XCTAssertEqual(try Thing.at(index: 0).labelParticipant, "Lifemax talking watch")
         
+        XCTAssertEqual(try Thing(withLabel: "Label").index(), nil)
+        XCTAssertEqual(try Thing.at(index: 2).index(), 2)
+        XCTAssertEqual(try Thing.at(index: 1).index(), 1)
+        XCTAssertEqual(try Thing.at(index: 0).index(), 0)
+        
         // TODO: Think about thing.videoAt(index:) once have determined desirable indexing etc.
     }
 }

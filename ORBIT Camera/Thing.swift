@@ -56,6 +56,15 @@ extension Thing: FetchableRecord, MutablePersistableRecord {
         id = rowID
     }
     
+    /// Return an index, newest first, for the thing in Things
+    func index() throws -> Int? {
+        try dbQueue.read { db in
+            let ids = try Int64.fetchAll(db, Thing.select(Thing.Columns.id))
+            assert(ids == ids.sorted(), "Expediency, uncovered")
+            return ids.reversed().firstIndex(of: id ?? -1)
+        }
+    }
+    
     /// Return a thing based on a contiguous index, newest first
     static func at(index: Int) throws -> Thing {
         var thing: Thing?

@@ -69,6 +69,10 @@ class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // On load without MasterViewController instantiated (e.g. iPad), display an item
+        if detailItem == nil {
+            detailItem = try? dbQueue.read { db in try Thing.fetchOne(db) }
+        }
         configureView()
     }
 }

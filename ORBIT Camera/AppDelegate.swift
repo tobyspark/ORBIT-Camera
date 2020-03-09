@@ -15,6 +15,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         try! AppDatabase.setup(application)
         try! AppNetwork.setup(delegate: self)
+        
+        // FIXME: Dev only!
+        try! AppDatabase.loadTestData()
+        
         return true
     }
     
