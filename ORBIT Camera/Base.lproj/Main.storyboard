@@ -31,10 +31,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="5oc-lW-9vf">
-                                <rect key="frame" x="0.0" y="88" width="414" height="414"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="5oc-lW-9vf">
+                                <rect key="frame" x="0.0" y="88" width="414" height="415"/>
                                 <color key="backgroundColor" systemColor="linkColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="5oc-lW-9vf" secondAttribute="height" multiplier="414:415" id="GdA-GP-YX0"/>
+                                </constraints>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Ohh-Tn-Oz6">
                                     <size key="itemSize" width="414" height="414"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -43,7 +45,7 @@
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="Video Cell" id="6Ir-kq-fcP" customClass="VideoViewCell" customModule="ORBIT_Camera" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="414"/>
+                                        <rect key="frame" x="0.0" y="0.5" width="414" height="414"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="414"/>
@@ -56,15 +58,26 @@
                                     <outlet property="delegate" destination="JEX-9P-axG" id="LGa-oN-Oui"/>
                                 </connections>
                             </collectionView>
-                            <pageControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="NGm-Yk-zeV">
-                                <rect key="frame" x="8" y="429" width="398" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="NGm-Yk-zeV">
+                                <rect key="frame" x="0.0" y="503" width="414" height="37"/>
+                                <color key="pageIndicatorTintColor" systemColor="placeholderTextColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="currentPageIndicatorTintColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <connections>
                                     <action selector="pageControlActionWithSender:" destination="JEX-9P-axG" eventType="primaryActionTriggered" id="Q52-hK-yWm"/>
                                 </connections>
                             </pageControl>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="5oc-lW-9vf" firstAttribute="centerX" secondItem="NGm-Yk-zeV" secondAttribute="centerX" id="2ch-84-gNo"/>
+                            <constraint firstItem="NGm-Yk-zeV" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" id="VFt-05-dAa"/>
+                            <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="NGm-Yk-zeV" secondAttribute="trailing" id="WM7-3V-uFB"/>
+                            <constraint firstItem="NGm-Yk-zeV" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="aXk-a6-aDh"/>
+                            <constraint firstItem="5oc-lW-9vf" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="cg7-Tz-YVK"/>
+                            <constraint firstItem="NGm-Yk-zeV" firstAttribute="top" secondItem="5oc-lW-9vf" secondAttribute="bottom" id="e8I-2y-h50"/>
+                            <constraint firstItem="5oc-lW-9vf" firstAttribute="top" secondItem="VUw-jc-0yf" secondAttribute="top" id="isE-jO-OHL"/>
+                            <constraint firstItem="5oc-lW-9vf" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" id="qnx-CY-4ZX"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="VUw-jc-0yf"/>
                     </view>
                     <toolbarItems/>
