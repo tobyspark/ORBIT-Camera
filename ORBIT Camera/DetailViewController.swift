@@ -15,12 +15,31 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var videoCollectionView: UICollectionView!
     @IBOutlet weak var videoPageControl: UIPageControl!
     
+    /// The thing this detail view is to show the detail of
     var detailItem: Thing? {
         didSet {
             // Update the view.
             configureView()
         }
     }
+    
+    /// The index of the currently selected video of the thing, as per `thing.videoAt(index:)`
+    var videoIndex: Int! {
+        didSet {
+            // Don't animate to new position if the position is being set by direct manipulation
+            if !isManuallyScrolling {
+                videoCollectionView.scrollToItem(
+                    at: IndexPath(row: videoIndex, section: 0),
+                    at: .centeredHorizontally,
+                    animated: true
+                )
+            }
+            videoPageControl.currentPage = videoIndex
+        }
+    }
+    
+    /// Implementation detail: need to be able to differentiate whether scrolling is happening due to direct manipulation or actioned animation
+    var isManuallyScrolling = false
     
     /// Update the user interface for the detail item.
     func configureView() {
@@ -39,21 +58,23 @@ class DetailViewController: UIViewController {
         videoPageControl = view.subviews[1] as! UIPageControl
         
         // Set number of videos in paging control
+        videoIndex = 0
         videoPageControl.numberOfPages = thing.videosCount
     }
     
+    /// Action the video corresponding to page
     @IBAction func pageControlAction(sender: UIPageControl) {
-        videoCollectionView.scrollToItem(at: IndexPath(row: videoPageControl.currentPage, section: 0), at: .centeredHorizontally, animated: true)
+        videoIndex = sender.currentPage
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
         configureView()
     }
 }
 
 extension DetailViewController: UICollectionViewDataSource {
+    /// The videoCollectionView should contain all the videos
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         guard
             let thing = detailItem
@@ -65,8 +86,8 @@ extension DetailViewController: UICollectionViewDataSource {
         return thing.videosCount
     }
     
+    /// The videoCollectionView cells should display the video
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        print("collectionView cellForItemAt: \(indexPath)")
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Video Cell", for: indexPath) as! VideoViewCell
         guard
             let thing = detailItem,
@@ -81,21 +102,25 @@ extension DetailViewController: UICollectionViewDataSource {
     }
 }
 
+extension DetailViewController: UICollectionViewDelegateFlowLayout {
+    /// The videoCollectionView cells should fill the view
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return videoCollectionView.bounds.size
+    }
+}
+
 extension DetailViewController: UIScrollViewDelegate {
-    /// Utility to determine the path of the most visible item
-    // Note UICollectionView.visible cells wasn't proving reliable, possibly as cell is 1px smaller than collection view or somesuch.
-    func visiblePath() -> IndexPath? {
-        var center = CGPoint(x: videoCollectionView.bounds.midX, y:videoCollectionView.bounds.midY)
-        if let path = videoCollectionView.indexPathForItem(at: center) {
-            return path
+    /// Update current video based on user scrolling through direct manipulation
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if isManuallyScrolling {
+            // Note `UICollectionView.indexPathsForVisibleItems` wasn't proving reliable
+            let center = CGPoint(x: videoCollectionView.bounds.midX, y:videoCollectionView.bounds.midY)
+            if let indexPath = videoCollectionView.indexPathForItem(at: center) {
+                videoIndex = indexPath.row
+            }
         }
-        // fuzzy match, don't return nil between images
-        center.x += 50 // a magic number. should be spacing between cells.
-        return videoCollectionView.indexPathForItem(at: center)
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        guard let indexPath = visiblePath() else { return }
-        videoPageControl.currentPage = indexPath.row
-    }
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) { isManuallyScrolling = true }
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) { isManuallyScrolling = false }
 }
