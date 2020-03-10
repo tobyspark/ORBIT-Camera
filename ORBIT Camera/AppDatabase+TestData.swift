@@ -10,7 +10,6 @@ import Foundation
 import GRDB
 
 fileprivate let testParticipant = Participant(
-    id: 0,
     authCredential: "Basic " + Data("0:xxx".utf8).base64EncodedString()
 )
 

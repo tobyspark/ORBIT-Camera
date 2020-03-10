@@ -50,7 +50,7 @@ struct AppDatabase {
         migrator.registerMigration("createParticipant") { db in
             try db.create(table: "participant") { t in
                 // Column names as per CodingKeys
-                t.column("id", .integer)
+                t.autoIncrementedPrimaryKey("id")
                 t.column("authCredential", .text)
             }
         }
