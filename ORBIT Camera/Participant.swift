@@ -10,18 +10,36 @@
 
 import Foundation
 import GRDB
+import os
 
 /// A participant in an ORBIT data collection phase
 struct Participant: Codable, Equatable {
     
-    /// The ORBIT Participant ID
-    // Note this isn't the app DB rowID. Scope for confusion is limited however as there should be only one participant per app instance.
-    let id: Int
+    /// A unique ID for this struct (within this app), populated on write to database
+    /// Note this is not the ORBIT participant ID! We don't actually need that at present, further at present it's encoded into the authCredential.
+    var id: Int64?
     
     /// Authorisation string for HTTP requests made for this participant
     var authCredential: String
 }
 
-extension Participant: FetchableRecord, PersistableRecord {
-    // We don't care about obtaining app DB rowID.
+extension Participant: FetchableRecord, MutablePersistableRecord {
+    // Update auto-incremented id upon successful insertion
+    mutating func didInsert(with rowID: Int64, for column: String?) {
+        id = rowID
+    }
+    
+    /// The app is designed for only one participant. This returns the one participant from the database.
+    static func appParticipant() throws -> Participant? {
+        try dbQueue.read { db in
+            guard
+                 try Participant.fetchCount(db) == 1
+            else {
+                os_log("Multiple participants in app database")
+                assertionFailure()
+                return nil
+            }
+            return try Participant.fetchOne(db)
+        }
+    }
 }

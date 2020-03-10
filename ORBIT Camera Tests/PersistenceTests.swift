@@ -25,19 +25,21 @@ class PersistenceTests: XCTestCase {
     
     /// Persist a participant. Create it, write it to storage, read it from storage, check it's the same.
     func testPersistParticipant() throws {
-        let participant = Participant(id: 123, authCredential: "qwertyuiop")
-        try dbQueue.write { db in
-            try participant.save(db)
-            let participants = try Participant.fetchAll(db)
-            XCTAssertEqual(participants.count, 1, "Persisting a participant should result in one thing persisted")
-            XCTAssertEqual(participant, participants[0], "Retreiving a persisted participant should return an identical participant")
-        }
+        var participant = Participant(authCredential: "qwertyuiop") 
+        XCTAssertNil(participant.id, "Unstored thing should have no ID")
+        try dbQueue.write { db in try participant.save(db) }
+        XCTAssertNotNil(participant.id, "Stored thing should have an ID")
+        try dbQueue.write { db in try participant.save(db) } // Extra save, should not insert new
+        
+        let participants = try dbQueue.read { db in try Participant.fetchAll(db) }
+        XCTAssertEqual(participants.count, 1, "Persisting a participant should result in one thing persisted")
+        XCTAssertEqual(participant, participants[0], "Retreiving a persisted participant should return an identical participant")
     }
     
     /// Persist a thing. Create it, write it to storage, read it from storage, check it's the same.
     func testPersistThing() throws {
         var thing = Thing(withLabel: "labelParticipant")
-        XCTAssertEqual(thing.id, nil, "Unstored thing should have no ID")
+        XCTAssertNil(thing.id, "Unstored thing should have no ID")
         try dbQueue.write { db in try thing.save(db) }
         XCTAssertNotNil(thing.id, "Stored thing should have an ID")
         try dbQueue.write { db in try thing.save(db) } // Extra save, should not insert new
