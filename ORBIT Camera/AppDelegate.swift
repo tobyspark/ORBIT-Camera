@@ -16,8 +16,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         try! AppDatabase.setup(application)
         try! AppNetwork.setup(delegate: self)
         
-        // FIXME: Dev only!
-        try! AppDatabase.loadTestData()
+        // The simulator does not have a camera device, so must load test data
+        #if targetEnvironment(simulator)
+            try! AppDatabase.loadTestData()
+        #endif
         
         return true
     }
