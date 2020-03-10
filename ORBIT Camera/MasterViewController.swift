@@ -18,8 +18,8 @@ class MasterViewController: UITableViewController {
         // Do any additional setup after loading the view.
         navigationItem.leftBarButtonItem = editButtonItem
 
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)))
-        navigationItem.rightBarButtonItem = addButton
+//        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)))
+//        navigationItem.rightBarButtonItem = addButton
         if let split = splitViewController {
             let controllers = split.viewControllers
             detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
@@ -62,6 +62,10 @@ class MasterViewController: UITableViewController {
                 detailViewController = controller
             }
         }
+    }
+    
+    @IBAction func unwindAction(unwindSegue: UIStoryboardSegue) {
+        // The presence of the method is enough to allow the unwind on the storyboard.
     }
 
     // MARK: - Table View
