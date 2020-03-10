@@ -209,6 +209,9 @@
                                 <state key="normal" image="xmark.circle" catalog="system">
                                     <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="22" scale="medium"/>
                                 </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityLabel" value="Dismiss info sheet"/>
+                                </userDefinedRuntimeAttributes>
                                 <connections>
                                     <segue destination="1Sf-T3-s2e" kind="unwind" unwindAction="unwindActionWithUnwindSegue:" id="geI-5G-bDl"/>
                                 </connections>
