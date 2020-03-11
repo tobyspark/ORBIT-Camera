@@ -6,9 +6,11 @@
 //  Copyright © 2020 Toby Harris. All rights reserved.
 //
 
-import Foundation
+import QuartzCore
 
 struct Settings {
     static let endpointThing = "https://orbit-data.city.ac.uk/phaseone/api/thing/"
     static let endpointVideo = "https://orbit-data.city.ac.uk/phaseone/api/video/"
+    
+    static let recordButtonRingWidth: CGFloat = 6
 }
