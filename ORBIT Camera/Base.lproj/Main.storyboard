@@ -82,6 +82,9 @@
                                     <constraint firstAttribute="width" constant="100" id="PCf-9f-upf"/>
                                     <constraint firstAttribute="height" constant="100" id="thZ-nO-zdg"/>
                                 </constraints>
+                                <connections>
+                                    <action selector="recordButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="6fg-tj-52s"/>
+                                </connections>
                             </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>

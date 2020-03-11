@@ -85,6 +85,23 @@ class DetailViewController: UIViewController {
         videoIndex = sender.currentPage
     }
     
+    @IBAction func recordButtonAction(sender: RecordButton) {
+        switch sender.recordingState {
+        case .active:
+            guard let url = try? FileManager.default
+                .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+                .appendingPathComponent(NSUUID().uuidString)
+                .appendingPathExtension("mov")
+            else {
+                os_log("Could not create URL for recordStart")
+                return
+            }
+            camera.recordStart(to: url)
+        case .idle:
+            camera.recordStop()
+        }
+    }
+    
     enum CollectionSection: Int, CaseIterable {
         case camera
         case videos
