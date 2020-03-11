@@ -34,6 +34,14 @@ struct Video: Codable, Equatable {
         case registerRotate = "R"
         case registerZoom = "Z"
         case recognition = "N" // On the server, as per pilot, this is "No technique", hence the 'N'
+        
+        func description() -> String {
+            switch self {
+            case .registerRotate: return "rotate technique"
+            case .registerZoom: return "zoom technique"
+            case .recognition: return "recognition example"
+            }
+        }
     }
     var kind: Kind
 }

@@ -75,39 +75,82 @@
                                     <action selector="pageControlActionWithSender:" destination="JEX-9P-axG" eventType="primaryActionTriggered" id="Q52-hK-yWm"/>
                                 </connections>
                             </pageControl>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1ke-NA-qCX" customClass="RecordButton" customModule="ORBIT_Camera" customModuleProvider="target">
-                                <rect key="frame" x="157" y="646" width="100" height="100"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="971-XG-rDU">
+                                <rect key="frame" x="10" y="540" width="394" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JUV-UT-Gbo">
+                                <rect key="frame" x="152" y="764" width="111" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Re-record video"/>
+                            </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c1p-EG-7ue">
+                                <rect key="frame" x="20" y="662" width="374" height="234"/>
+                                <subviews>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1ke-NA-qCX" customClass="RecordButton" customModule="ORBIT_Camera" customModuleProvider="target">
+                                        <rect key="frame" x="137" y="50" width="100" height="100"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="100" id="PCf-9f-upf"/>
+                                            <constraint firstAttribute="height" constant="100" id="thZ-nO-zdg"/>
+                                        </constraints>
+                                        <connections>
+                                            <action selector="recordButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="6fg-tj-52s"/>
+                                        </connections>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="100" id="PCf-9f-upf"/>
-                                    <constraint firstAttribute="height" constant="100" id="thZ-nO-zdg"/>
+                                    <constraint firstItem="1ke-NA-qCX" firstAttribute="centerX" secondItem="c1p-EG-7ue" secondAttribute="centerX" id="0Yj-33-CcE"/>
+                                    <constraint firstItem="1ke-NA-qCX" firstAttribute="top" secondItem="c1p-EG-7ue" secondAttribute="top" constant="50" id="1Pa-ML-xR1"/>
+                                    <constraint firstAttribute="height" constant="234" id="XyU-oE-jbW"/>
                                 </constraints>
-                                <connections>
-                                    <action selector="recordButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="6fg-tj-52s"/>
-                                </connections>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="20"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
+                                        <real key="value" value="0.5"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="point" keyPath="layer.shadowOffset">
+                                        <point key="value" x="0.0" y="0.0"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstAttribute="bottom" secondItem="c1p-EG-7ue" secondAttribute="bottom" id="27Y-Dc-F5G"/>
                             <constraint firstItem="5oc-lW-9vf" firstAttribute="centerX" secondItem="NGm-Yk-zeV" secondAttribute="centerX" id="2ch-84-gNo"/>
-                            <constraint firstItem="1ke-NA-qCX" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="3VJ-3E-Ckd"/>
-                            <constraint firstItem="1ke-NA-qCX" firstAttribute="top" secondItem="svH-Pt-448" secondAttribute="top" constant="646" id="CBy-g3-Z6V"/>
+                            <constraint firstItem="971-XG-rDU" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="10" id="62P-Pg-T1w"/>
+                            <constraint firstItem="971-XG-rDU" firstAttribute="top" secondItem="NGm-Yk-zeV" secondAttribute="bottom" id="9lG-VI-7lG"/>
+                            <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="c1p-EG-7ue" secondAttribute="trailing" constant="20" id="NHa-xp-jew"/>
                             <constraint firstItem="NGm-Yk-zeV" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" id="VFt-05-dAa"/>
                             <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="NGm-Yk-zeV" secondAttribute="trailing" id="WM7-3V-uFB"/>
                             <constraint firstItem="NGm-Yk-zeV" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="aXk-a6-aDh"/>
                             <constraint firstItem="5oc-lW-9vf" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="cg7-Tz-YVK"/>
                             <constraint firstItem="NGm-Yk-zeV" firstAttribute="top" secondItem="5oc-lW-9vf" secondAttribute="bottom" id="e8I-2y-h50"/>
+                            <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="971-XG-rDU" secondAttribute="trailing" constant="10" id="flN-wX-Mgn"/>
+                            <constraint firstItem="c1p-EG-7ue" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="hia-0X-qyk"/>
                             <constraint firstItem="5oc-lW-9vf" firstAttribute="top" secondItem="VUw-jc-0yf" secondAttribute="top" id="isE-jO-OHL"/>
+                            <constraint firstItem="c1p-EG-7ue" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="nxv-yP-v1F"/>
                             <constraint firstItem="5oc-lW-9vf" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" id="qnx-CY-4ZX"/>
-                            <constraint firstItem="VUw-jc-0yf" firstAttribute="bottom" secondItem="1ke-NA-qCX" secondAttribute="bottom" constant="116" id="txZ-oW-zfr"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="VUw-jc-0yf"/>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="mOI-FS-AaM"/>
                     <connections>
+                        <outlet property="cameraControlConstraint" destination="27Y-Dc-F5G" id="pwH-ph-j7G"/>
+                        <outlet property="cameraControlView" destination="c1p-EG-7ue" id="ICN-PS-Way"/>
                         <outlet property="thingNavigationItem" destination="mOI-FS-AaM" id="jez-io-TVJ"/>
                         <outlet property="videoCollectionView" destination="5oc-lW-9vf" id="uQ7-7e-jO7"/>
+                        <outlet property="videoLabel" destination="971-XG-rDU" id="FmP-Ky-nRI"/>
                         <outlet property="videoPageControl" destination="NGm-Yk-zeV" id="bhQ-Kb-r2h"/>
                     </connections>
                 </viewController>
