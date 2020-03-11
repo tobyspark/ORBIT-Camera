@@ -44,13 +44,14 @@ class Camera {
             }
             
             guard
-                let videoFileOutput = self.videoFileOutput
+                let videoFileOutput = self.videoFileOutput,
+                let delegate = self.delegate
             else {
-                os_log("No videoFileOutput on recordStart")
+                os_log("No videoFileOutput and/or recordingDelegate on recordStart")
                 return
             }
             
-            videoFileOutput.startRecording(to: url, recordingDelegate: self.delegate)
+            videoFileOutput.startRecording(to: url, recordingDelegate: delegate)
         }
     }
     
@@ -60,6 +61,8 @@ class Camera {
             videoFileOutput.stopRecording()
         }
     }
+    
+    var delegate: AVCaptureFileOutputRecordingDelegate?
     
     init() {
         queue.async {
@@ -85,13 +88,4 @@ class Camera {
     private let queue = DispatchQueue(label: "cameraSerialQueue")
     
     private var videoFileOutput: AVCaptureMovieFileOutput?
-    
-    private var delegate = CameraDelegate()
-}
-
-class CameraDelegate: NSObject, AVCaptureFileOutputRecordingDelegate {
-    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
-        // TODO: Create Video object and update UI
-        print("CameraDelegate didFinishRecording", error)
-    }
 }
