@@ -15,6 +15,9 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var thingNavigationItem: UINavigationItem!
     @IBOutlet weak var videoCollectionView: UICollectionView!
     @IBOutlet weak var videoPageControl: UIPageControl!
+    @IBOutlet weak var videoLabel: UILabel!
+    @IBOutlet weak var cameraControlView: UIView!
+    @IBOutlet weak var cameraControlConstraint: NSLayoutConstraint!
     
     /// The thing this detail view is to show the detail of
     var detailItem: Thing? {
@@ -27,7 +30,9 @@ class DetailViewController: UIViewController {
     /// The index of the currently selected video of the thing, as per `thing.videoAt(index:)`
     var videoIndex: Int! {
         didSet {
+            guard oldValue != videoIndex else { return}
             let indexPath = collectionPath(withIndex: videoIndex)
+            let collectionSection = CollectionSection(rawValue: indexPath.section)!
             
             // Update collection
             // Don't animate to new position if the position is being set by direct manipulation
@@ -41,15 +46,40 @@ class DetailViewController: UIViewController {
             
             // Update page control
             videoPageControl.currentPage = videoIndex
-            switch indexPath.section {
-            case CollectionSection.camera.rawValue:
-                videoPageControl.accessibilityValue = "Take new video"
-            case CollectionSection.videos.rawValue:
-                videoPageControl.accessibilityValue = "video \(indexPath.row + 1) of \(collectionView(videoCollectionView, numberOfItemsInSection: CollectionSection.videos.rawValue))"
-            default:
-                assertionFailure("videoIndex failure")
+            let pageDescription: String
+            switch collectionSection {
+            case .camera:
+                pageDescription = "Take new video"
+            case .videos:
+                let number = indexPath.row + 1
+                let total = collectionView(videoCollectionView, numberOfItemsInSection: CollectionSection.videos.rawValue)
+                let kind = try! detailItem!.videoAt(index: indexPath.row)!.kind.description() // FIXME: kinda crazy
+                pageDescription = "Video \(number) of \(total): \(kind)"
             }
+            videoLabel.text = pageDescription
+            videoPageControl.accessibilityValue = pageDescription
             
+            // Update camera control
+            // Don't update if visibility is being set by direct manipulation
+            if !isManuallyScrolling {
+                switch collectionSection {
+                case .camera:
+                    print("camera")
+                    cameraControlVisibility = 1
+                case .videos:
+                    print("videos")
+                    cameraControlVisibility = 0
+                }
+            }
+        }
+    }
+    
+    /// The 'visibility' of the cameraControlView, where 0 is offscreen and 1 is onscreen
+    var cameraControlVisibility: CGFloat = 1 {
+        didSet {
+            cameraControlConstraint.constant = -(1 - cameraControlVisibility)*cameraControlView.frame.size.height
+            view.layoutIfNeeded()
+            print(cameraControlConstraint.constant)
         }
     }
     
@@ -74,7 +104,7 @@ class DetailViewController: UIViewController {
         
         // FIXME: INEXPLICABLE TOOLING FAILURE: videoCollectionView and videoPageView are nil, despite being hooked up in the storyboard.
         videoCollectionView = view.subviews[0] as! UICollectionView
-        videoPageControl = view.subviews[1] as! UIPageControl
+        //videoPageControl = view.subviews[1] as! UIPageControl
         
         // Set number of videos in paging control
         videoIndex = 0
@@ -217,6 +247,7 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout {
 extension DetailViewController: UIScrollViewDelegate {
     /// Update current video based on user scrolling through direct manipulation
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Set videoIndex from scroll position, if direct manipulation
         if isManuallyScrolling {
             // Note `UICollectionView.indexPathsForVisibleItems` wasn't proving reliable
             let center = CGPoint(x: videoCollectionView.bounds.midX, y:videoCollectionView.bounds.midY)
@@ -224,6 +255,10 @@ extension DetailViewController: UIScrollViewDelegate {
                 videoIndex = collectionIndex(withPath: indexPath)
             }
         }
+        
+        // Bring on camera with camera cell scroll
+        // Hard-coded assumes camera is first cell and cell is width of collectionView
+        cameraControlVisibility = 1 - min(1, scrollView.contentOffset.x / scrollView.frame.width)
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) { isManuallyScrolling = true }
@@ -231,6 +266,7 @@ extension DetailViewController: UIScrollViewDelegate {
 }
 
 extension DetailViewController: AVCaptureFileOutputRecordingDelegate {
+    /// Act on the video file the camera has just produced: create a Video record, and update the UI.
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
         guard
             let thing = detailItem,
