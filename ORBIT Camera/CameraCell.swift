@@ -12,7 +12,10 @@ import AVFoundation
 /// A collection view cell that can preview video capture
 class CameraCell: UICollectionViewCell {
     var previewLayer: AVCaptureVideoPreviewLayer {
-        return layer as! AVCaptureVideoPreviewLayer
+        let previewLayer = layer as! AVCaptureVideoPreviewLayer
+        // FIXME: This might be moot when/if capturing square video
+        previewLayer.videoGravity = .resizeAspectFill
+        return previewLayer
     }
     
     override class var layerClass: AnyClass {
