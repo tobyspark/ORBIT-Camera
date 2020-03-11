@@ -75,10 +75,20 @@
                                     <action selector="pageControlActionWithSender:" destination="JEX-9P-axG" eventType="primaryActionTriggered" id="Q52-hK-yWm"/>
                                 </connections>
                             </pageControl>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1ke-NA-qCX" customClass="RecordButton" customModule="ORBIT_Camera" customModuleProvider="target">
+                                <rect key="frame" x="157" y="646" width="100" height="100"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="100" id="PCf-9f-upf"/>
+                                    <constraint firstAttribute="height" constant="100" id="thZ-nO-zdg"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="5oc-lW-9vf" firstAttribute="centerX" secondItem="NGm-Yk-zeV" secondAttribute="centerX" id="2ch-84-gNo"/>
+                            <constraint firstItem="1ke-NA-qCX" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="3VJ-3E-Ckd"/>
+                            <constraint firstItem="1ke-NA-qCX" firstAttribute="top" secondItem="svH-Pt-448" secondAttribute="top" constant="646" id="CBy-g3-Z6V"/>
                             <constraint firstItem="NGm-Yk-zeV" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" id="VFt-05-dAa"/>
                             <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="NGm-Yk-zeV" secondAttribute="trailing" id="WM7-3V-uFB"/>
                             <constraint firstItem="NGm-Yk-zeV" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="aXk-a6-aDh"/>
@@ -86,6 +96,7 @@
                             <constraint firstItem="NGm-Yk-zeV" firstAttribute="top" secondItem="5oc-lW-9vf" secondAttribute="bottom" id="e8I-2y-h50"/>
                             <constraint firstItem="5oc-lW-9vf" firstAttribute="top" secondItem="VUw-jc-0yf" secondAttribute="top" id="isE-jO-OHL"/>
                             <constraint firstItem="5oc-lW-9vf" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" id="qnx-CY-4ZX"/>
+                            <constraint firstItem="VUw-jc-0yf" firstAttribute="bottom" secondItem="1ke-NA-qCX" secondAttribute="bottom" constant="116" id="txZ-oW-zfr"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="VUw-jc-0yf"/>
                     </view>
