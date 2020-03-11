@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 import os
 
 class DetailViewController: UIViewController {
@@ -78,6 +79,9 @@ class DetailViewController: UIViewController {
         // Set number of videos in paging control
         videoIndex = 0
         videoPageControl.numberOfPages = collectionCount()
+        
+        // Set delegate for camera, to pass in new recordings
+        camera.delegate = self
     }
     
     /// Action the video corresponding to page
@@ -224,4 +228,30 @@ extension DetailViewController: UIScrollViewDelegate {
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) { isManuallyScrolling = true }
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) { isManuallyScrolling = false }
+}
+
+extension DetailViewController: AVCaptureFileOutputRecordingDelegate {
+    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+        guard
+            let thing = detailItem,
+            let thingID = thing.id
+        else {
+            os_log("DetailView with no detailItem")
+            return
+        }
+        
+        // Create Video
+        var video = Video(thingID: thingID, url: outputFileURL, kind: .recognition)
+        do {
+            try dbQueue.write { db in try video.save(db) }
+        } catch {
+            os_log("Could not save video to database")
+        }
+        
+        // Update UI
+        let insertionPath = IndexPath(row: 0, section: CollectionSection.videos.rawValue)
+        videoIndex = collectionIndex(withPath: insertionPath)
+        videoPageControl.numberOfPages = collectionCount()
+        videoCollectionView.insertItems(at: [insertionPath])
+    }
 }
