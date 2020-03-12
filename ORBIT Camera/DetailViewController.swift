@@ -269,15 +269,19 @@ extension DetailViewController: AVCaptureFileOutputRecordingDelegate {
     /// Act on the video file the camera has just produced: create a Video record, and update the UI.
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
         guard
-            let thing = detailItem,
-            let thingID = thing.id
+            let thing = detailItem
         else {
             os_log("DetailView with no detailItem")
             return
         }
         
         // Create Video
-        var video = Video(thingID: thingID, url: outputFileURL, kind: .recognition)
+        guard
+            var video = Video(of: thing, url: outputFileURL, kind: .recognition)
+        else {
+            os_log("Could not create video")
+            return
+        }
         do {
             try dbQueue.write { db in try video.save(db) }
         } catch {

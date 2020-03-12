@@ -62,7 +62,7 @@ class PersistenceTests: XCTestCase {
     func testPersistVideo() throws {
         var thing = Thing(withLabel: "labelParticipant")
         try dbQueue.write { db in try thing.save(db) }
-        var video = Video(thingID: thing.id!, url: URL(fileURLWithPath: "path/to/1"), kind:.recognition)
+        var video = Video(of: thing, url: URL(fileURLWithPath: "path/to/1"), kind:.recognition)!
         try dbQueue.write { db in try video.save(db) }
         try dbQueue.write { db in try video.save(db) } // Extra save, should not insert new
         
@@ -73,6 +73,7 @@ class PersistenceTests: XCTestCase {
         //XCTAssertEqual(video, videos[0], "Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual(video.thingID, videos[0].thingID, "Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual(video.url.absoluteString, videos[0].url.absoluteString, "Retreiving a persisted thing should return an identical thing")
+        XCTAssertEqual(video.recorded.description, videos[0].recorded.description, "Retreiving a persisted thing should return an identical thing") // Floating point internal representation is rounded to three decimal places on coding, so for expediency let's just compare the description.
         XCTAssertEqual(video.uploadID, videos[0].uploadID, "Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual(video.orbitID, videos[0].orbitID, "Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual(video.kind, videos[0].kind, "Retreiving a persisted thing should return an identical thing")

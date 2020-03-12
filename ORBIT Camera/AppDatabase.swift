@@ -72,6 +72,7 @@ struct AppDatabase {
                 t.autoIncrementedPrimaryKey("id")
                 t.column("thingID", .integer).notNull().references("thing", onDelete: .cascade) // FIXME: Don't leave orphan video files on device
                 t.column("url", .blob).notNull()
+                t.column("recorded", .blob).notNull()
                 t.column("uploadID", .integer)
                 t.column("orbitID", .integer)
                 t.column("kind", .text)
