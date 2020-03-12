@@ -18,6 +18,8 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var videoLabel: UILabel!
     @IBOutlet weak var cameraControlView: UIView!
     @IBOutlet weak var cameraControlConstraint: NSLayoutConstraint!
+    @IBOutlet weak var recordButton: RecordButton!
+    @IBOutlet weak var videoRerecordButton: UIButton!
     
     /// The thing this detail view is to show the detail of
     var detailItem: Thing? {
@@ -60,16 +62,14 @@ class DetailViewController: UIViewController {
             videoPageControl.accessibilityValue = pageDescription
             
             // Update camera control
-            // Don't update if visibility is being set by direct manipulation
-            if !isManuallyScrolling {
-                switch collectionSection {
-                case .camera:
-                    print("camera")
-                    cameraControlVisibility = 1
-                case .videos:
-                    print("videos")
-                    cameraControlVisibility = 0
-                }
+            // Note animation on/off is set by cameraControlVisibility which is set by scrollViewDidScroll
+            switch collectionSection {
+            case .camera:
+                videoRerecordButton.isAccessibilityElement = false
+                recordButton.isAccessibilityElement = true
+            case .videos:
+                videoRerecordButton.isAccessibilityElement = true
+                recordButton.isAccessibilityElement = false
             }
         }
     }
@@ -77,9 +77,9 @@ class DetailViewController: UIViewController {
     /// The 'visibility' of the cameraControlView, where 0 is offscreen and 1 is onscreen
     var cameraControlVisibility: CGFloat = 1 {
         didSet {
+            // This animates the control view on, from the bottom of the screen, in sync with the collection view
             cameraControlConstraint.constant = -(1 - cameraControlVisibility)*cameraControlView.frame.size.height
             view.layoutIfNeeded()
-            print(cameraControlConstraint.constant)
         }
     }
     
