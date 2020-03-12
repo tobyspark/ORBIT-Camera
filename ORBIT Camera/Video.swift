@@ -8,6 +8,7 @@
 
 import Foundation
 import GRDB
+import os
 
 struct Video: Codable, Equatable {
     /// A unique ID for this struct (within this app), populated on write to database
@@ -18,6 +19,9 @@ struct Video: Codable, Equatable {
     
     /// On-device file URL of a video the participant has recorded
     var url: URL
+    
+    /// When the video was recorded
+    var recorded: Date
     
     /// An ID to track an in-progress upload, corresponds to URLSessionTask.taskIdentifier
     // Note this was handled more elegantly by orbitID being an UploadStatus enum, but the supporting code was getting ridiculous.
@@ -44,6 +48,23 @@ struct Video: Codable, Equatable {
         }
     }
     var kind: Kind
+    
+    init?(of thing: Thing, url: URL, kind: Kind) {
+        guard
+            let thingID = thing.id
+        else {
+            os_log("Could not create Video as thing has no ID")
+            assertionFailure()
+            return nil
+        }
+        self.id = nil
+        self.thingID = thingID
+        self.url = url
+        self.recorded = Date()
+        self.uploadID = nil
+        self.orbitID = nil
+        self.kind = kind
+    }
 }
 
 extension Video: FetchableRecord, MutablePersistableRecord {
@@ -51,6 +72,7 @@ extension Video: FetchableRecord, MutablePersistableRecord {
         static let id = Column(CodingKeys.id)
         static let thingID = Column(CodingKeys.thingID)
         static let url = Column(CodingKeys.url)
+        static let recorded = Column(CodingKeys.recorded)
         static let uploadID = Column(CodingKeys.uploadID)
         static let orbitID = Column(CodingKeys.orbitID)
         static let kind = Column(CodingKeys.kind)

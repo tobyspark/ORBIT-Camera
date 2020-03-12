@@ -56,7 +56,7 @@ extension AppDatabase {
                 for videoFilename in videoFilenames{
                     let videoURL = URL(fileURLWithPath: videoFilename, relativeTo: videoDirectory)
                     try _ = videoURL.checkResourceIsReachable()
-                    var video = Video(thingID: thing.id!, url: videoURL, kind: videoKind)
+                    var video = Video(of: thing, url: videoURL, kind: videoKind)!
                     if !dbURLs.contains(video.url) {
                         try dbQueue.write { db in try video.save(db) }
                     }
