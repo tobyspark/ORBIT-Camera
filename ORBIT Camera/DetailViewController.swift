@@ -30,6 +30,8 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var videoPublishedIcon: UIImageView!
     @IBOutlet weak var videoPublishedLabel: UILabel!
     
+    @IBOutlet weak var videoDeleteButton: UIButton!
+    
     @IBOutlet weak var cameraControlView: UIView!
     @IBOutlet weak var cameraControlConstraint: NSLayoutConstraint!
     @IBOutlet weak var recordButton: RecordButton!
