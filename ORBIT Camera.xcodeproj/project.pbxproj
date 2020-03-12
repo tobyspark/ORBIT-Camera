@@ -22,9 +22,6 @@
 		4B87FD21240D53FC007AB630 /* Video+upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD20240D53FC007AB630 /* Video+upload.swift */; };
 		4B87FD22240D53FC007AB630 /* Video+upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD20240D53FC007AB630 /* Video+upload.swift */; };
 		4B87FD23240D72BF007AB630 /* AppNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD162409D4A4007AB630 /* AppNetwork.swift */; };
-		4B87FD24240D72C3007AB630 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB92405730700E31D93 /* SceneDelegate.swift */; };
-		4B87FD25240D72CB007AB630 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBB2405730700E31D93 /* MasterViewController.swift */; };
-		4B87FD26240D72CD007AB630 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBD2405730700E31D93 /* DetailViewController.swift */; };
 		4B87FD27240D72ED007AB630 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB72405730700E31D93 /* AppDelegate.swift */; };
 		4B87FD29240E758F007AB630 /* UploadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD28240E758F007AB630 /* UploadTests.swift */; };
 		4B87FD2B240E7621007AB630 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD2A240E7621007AB630 /* Settings.swift */; };
@@ -37,15 +34,10 @@
 		4B87FD3624111E57007AB630 /* AppDatabase+TestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD3524111E57007AB630 /* AppDatabase+TestData.swift */; };
 		4B87FD37241130E8007AB630 /* AppDatabase+TestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD3524111E57007AB630 /* AppDatabase+TestData.swift */; };
 		4B87FD3924126110007AB630 /* VideoViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD3824126110007AB630 /* VideoViewCell.swift */; };
-		4B87FD3A24126111007AB630 /* VideoViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD3824126110007AB630 /* VideoViewCell.swift */; };
 		4B9AA9F62417A63C002380B1 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9AA9F52417A63C002380B1 /* InfoViewController.swift */; };
-		4B9AA9F72417A63C002380B1 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9AA9F52417A63C002380B1 /* InfoViewController.swift */; };
 		4B9AA9FA2417E4A8002380B1 /* CameraCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9AA9F82417E4A7002380B1 /* CameraCell.swift */; };
-		4B9AA9FB2417E4A8002380B1 /* CameraCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9AA9F82417E4A7002380B1 /* CameraCell.swift */; };
 		4B9AA9FC2417E4A8002380B1 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9AA9F92417E4A7002380B1 /* Camera.swift */; };
-		4B9AA9FD2417E4A8002380B1 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9AA9F92417E4A7002380B1 /* Camera.swift */; };
 		4B9AA9FF2418EA49002380B1 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9AA9FE2418EA49002380B1 /* RecordButton.swift */; };
-		4B9AAA002418EA49002380B1 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9AA9FE2418EA49002380B1 /* RecordButton.swift */; };
 		4BF14BBA2405730700E31D93 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB92405730700E31D93 /* SceneDelegate.swift */; };
 		4BF14BBC2405730700E31D93 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBB2405730700E31D93 /* MasterViewController.swift */; };
 		4BF14BBE2405730700E31D93 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBD2405730700E31D93 /* DetailViewController.swift */; };
@@ -327,18 +319,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4B87FD3A24126111007AB630 /* VideoViewCell.swift in Sources */,
-				4B9AA9FB2417E4A8002380B1 /* CameraCell.swift in Sources */,
 				4B87FD0F2406A5DF007AB630 /* Thing+upload.swift in Sources */,
 				4B87FD23240D72BF007AB630 /* AppNetwork.swift in Sources */,
-				4B87FD25240D72CB007AB630 /* MasterViewController.swift in Sources */,
-				4B9AA9FD2417E4A8002380B1 /* Camera.swift in Sources */,
-				4B9AAA002418EA49002380B1 /* RecordButton.swift in Sources */,
-				4B87FD26240D72CD007AB630 /* DetailViewController.swift in Sources */,
 				4B87FD34240EF4A0007AB630 /* Uploadable.swift in Sources */,
 				4B87FD072405CE94007AB630 /* AppDatabase.swift in Sources */,
 				4B87FD062405C599007AB630 /* Thing.swift in Sources */,
-				4B87FD24240D72C3007AB630 /* SceneDelegate.swift in Sources */,
 				4B87FD29240E758F007AB630 /* UploadTests.swift in Sources */,
 				4B87FD31240EC757007AB630 /* MultipartFormData.swift in Sources */,
 				4B87FD2B240E7621007AB630 /* Settings.swift in Sources */,
@@ -348,7 +333,6 @@
 				4B87FD37241130E8007AB630 /* AppDatabase+TestData.swift in Sources */,
 				4B87FD1F240D4E93007AB630 /* Video.swift in Sources */,
 				4B87FD1224098D57007AB630 /* Participant.swift in Sources */,
-				4B9AA9F72417A63C002380B1 /* InfoViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
