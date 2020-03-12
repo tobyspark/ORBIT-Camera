@@ -51,7 +51,7 @@ class DetailViewController: UIViewController {
             let pageDescription: String
             switch collectionSection {
             case .camera:
-                pageDescription = "Take new video"
+                pageDescription = "Add new video to collection"
             case .videos:
                 let number = indexPath.row + 1
                 let total = collectionView(videoCollectionView, numberOfItemsInSection: CollectionSection.videos.rawValue)
