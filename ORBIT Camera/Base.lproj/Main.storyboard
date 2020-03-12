@@ -154,10 +154,12 @@
                     <connections>
                         <outlet property="cameraControlConstraint" destination="27Y-Dc-F5G" id="pwH-ph-j7G"/>
                         <outlet property="cameraControlView" destination="c1p-EG-7ue" id="ICN-PS-Way"/>
+                        <outlet property="recordButton" destination="1ke-NA-qCX" id="ezf-Xd-TUp"/>
                         <outlet property="thingNavigationItem" destination="mOI-FS-AaM" id="jez-io-TVJ"/>
                         <outlet property="videoCollectionView" destination="5oc-lW-9vf" id="uQ7-7e-jO7"/>
-                        <outlet property="videoLabel" destination="971-XG-rDU" id="FmP-Ky-nRI"/>
+                        <outlet property="videoLabel" destination="971-XG-rDU" id="lgl-aR-nyM"/>
                         <outlet property="videoPageControl" destination="NGm-Yk-zeV" id="bhQ-Kb-r2h"/>
+                        <outlet property="videoRerecordButton" destination="JUV-UT-Gbo" id="7Bb-Vc-yAC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
