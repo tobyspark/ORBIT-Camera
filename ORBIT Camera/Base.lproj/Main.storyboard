@@ -71,6 +71,9 @@
                                 <rect key="frame" x="0.0" y="503" width="414" height="37"/>
                                 <color key="pageIndicatorTintColor" systemColor="placeholderTextColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="currentPageIndicatorTintColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityLabel" value="Video selector"/>
+                                </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="pageControlActionWithSender:" destination="JEX-9P-axG" eventType="primaryActionTriggered" id="Q52-hK-yWm"/>
                                 </connections>
