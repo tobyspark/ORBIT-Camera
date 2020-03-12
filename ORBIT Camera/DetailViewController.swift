@@ -91,9 +91,19 @@ class DetailViewController: UIViewController {
             switch collectionSection {
             case .camera:
                 videoRerecordButton.isAccessibilityElement = false
+                videoRecordedLabel.isAccessibilityElement = false
+                videoUploadedLabel.isAccessibilityElement = false
+                videoVerifiedLabel.isAccessibilityElement = false
+                videoPublishedLabel.isAccessibilityElement = false
+                videoDeleteButton.isAccessibilityElement = false
                 recordButton.isAccessibilityElement = true
             case .videos:
                 videoRerecordButton.isAccessibilityElement = true
+                videoRecordedLabel.isAccessibilityElement = true
+                videoUploadedLabel.isAccessibilityElement = true
+                videoVerifiedLabel.isAccessibilityElement = true
+                videoPublishedLabel.isAccessibilityElement = true
+                videoDeleteButton.isAccessibilityElement = true
                 recordButton.isAccessibilityElement = false
             }
         }
