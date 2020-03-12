@@ -14,6 +14,13 @@ class RecordButton: UIControl {
         case active(Date)
     }
     
+    var recordingState = RecordingState.idle
+
+    override var accessibilityLabel: String? {
+        get { "Record" }
+        set {}
+    }
+    
     func toggleRecord() {
         switch recordingState {
         case .idle:
@@ -25,8 +32,6 @@ class RecordButton: UIControl {
         }
         setNeedsDisplay()
     }
-    
-    var recordingState = RecordingState.idle
     
     override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
         if isTouchInside {
