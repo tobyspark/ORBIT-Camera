@@ -21,6 +21,16 @@ class RecordButton: UIControl {
         set {}
     }
     
+    override var accessibilityHint: String? {
+        get { "Records a video" }
+        set {}
+    }
+    
+    override var accessibilityTraits: UIAccessibilityTraits {
+        get { [super.accessibilityTraits, .button] }
+        set {}
+    }
+    
     func toggleRecord() {
         switch recordingState {
         case .idle:
