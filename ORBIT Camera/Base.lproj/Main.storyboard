@@ -175,8 +175,8 @@
                                     <constraint firstAttribute="height" constant="1" id="PAi-DM-cu3"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c1p-EG-7ue">
-                                <rect key="frame" x="20" y="576" width="374" height="320"/>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c1p-EG-7ue">
+                                <rect key="frame" x="20" y="822" width="374" height="320"/>
                                 <subviews>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1ke-NA-qCX" customClass="RecordButton" customModule="ORBIT_Camera" customModuleProvider="target">
                                         <rect key="frame" x="137" y="50" width="100" height="100"/>
@@ -272,7 +272,15 @@
                         <outlet property="videoCollectionView" destination="5oc-lW-9vf" id="uQ7-7e-jO7"/>
                         <outlet property="videoLabel" destination="971-XG-rDU" id="lgl-aR-nyM"/>
                         <outlet property="videoPageControl" destination="NGm-Yk-zeV" id="bhQ-Kb-r2h"/>
+                        <outlet property="videoPublishedIcon" destination="jJn-6j-63Y" id="blB-9r-jxW"/>
+                        <outlet property="videoPublishedLabel" destination="UL9-2k-MLA" id="h72-1n-eiN"/>
+                        <outlet property="videoRecordedIcon" destination="COH-CL-lcJ" id="EkN-Z9-QGF"/>
+                        <outlet property="videoRecordedLabel" destination="nE7-zn-h22" id="oap-lA-V8N"/>
                         <outlet property="videoRerecordButton" destination="JUV-UT-Gbo" id="7Bb-Vc-yAC"/>
+                        <outlet property="videoUploadedIcon" destination="ulB-SJ-tRL" id="6qB-mn-d9v"/>
+                        <outlet property="videoUploadedLabel" destination="wRr-7L-rvD" id="Cws-4J-JvZ"/>
+                        <outlet property="videoVerifiedIcon" destination="Y4a-6U-N4L" id="eHg-Rk-32m"/>
+                        <outlet property="videoVerifiedLabel" destination="In2-xa-GCu" id="OE2-e9-6k1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>

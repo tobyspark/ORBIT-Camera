@@ -16,10 +16,23 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var videoCollectionView: UICollectionView!
     @IBOutlet weak var videoPageControl: UIPageControl!
     @IBOutlet weak var videoLabel: UILabel!
+    
+    @IBOutlet weak var videoRecordedIcon: UIImageView!
+    @IBOutlet weak var videoRecordedLabel: UILabel!
+    @IBOutlet weak var videoRerecordButton: UIButton!
+    
+    @IBOutlet weak var videoUploadedIcon: UIImageView!
+    @IBOutlet weak var videoUploadedLabel: UILabel!
+    
+    @IBOutlet weak var videoVerifiedIcon: UIImageView!
+    @IBOutlet weak var videoVerifiedLabel: UILabel!
+    
+    @IBOutlet weak var videoPublishedIcon: UIImageView!
+    @IBOutlet weak var videoPublishedLabel: UILabel!
+    
     @IBOutlet weak var cameraControlView: UIView!
     @IBOutlet weak var cameraControlConstraint: NSLayoutConstraint!
     @IBOutlet weak var recordButton: RecordButton!
-    @IBOutlet weak var videoRerecordButton: UIButton!
     
     /// The thing this detail view is to show the detail of
     var detailItem: Thing? {
@@ -35,6 +48,7 @@ class DetailViewController: UIViewController {
             guard oldValue != videoIndex else { return}
             let indexPath = collectionPath(withIndex: videoIndex)
             let collectionSection = CollectionSection(rawValue: indexPath.section)!
+            let video = try? detailItem!.videoAt(index: indexPath.row)
             
             // Update collection
             // Don't animate to new position if the position is being set by direct manipulation
@@ -55,11 +69,20 @@ class DetailViewController: UIViewController {
             case .videos:
                 let number = indexPath.row + 1
                 let total = collectionView(videoCollectionView, numberOfItemsInSection: CollectionSection.videos.rawValue)
-                let kind = try! detailItem!.videoAt(index: indexPath.row)!.kind.description() // FIXME: kinda crazy
+                let kind = video!.kind.description()
                 pageDescription = "Video \(number) of \(total): \(kind)"
             }
             videoLabel.text = pageDescription
             videoPageControl.accessibilityValue = pageDescription
+            
+            // Update statuses
+            if collectionSection == .videos {
+                videoRecordedLabel.text = "Recorded on \(Settings.dateFormatter.string(from:video!.recorded))"
+                videoUploadedIcon.image = video!.uploadID == nil ? UIImage(systemName: "arrow.up.circle") : UIImage(systemName: "arrow.up.circle.fill")
+                videoUploadedLabel.text = video!.uploadID == nil ? "Not yet uploaded" : "Uploaded"
+                // TODO: videoVerified
+                // TODO: videoPublished
+            }
             
             // Update camera control
             // Note animation on/off is set by cameraControlVisibility which is set by scrollViewDidScroll
