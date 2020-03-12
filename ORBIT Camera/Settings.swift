@@ -13,4 +13,10 @@ struct Settings {
     static let endpointVideo = "https://orbit-data.city.ac.uk/phaseone/api/video/"
     
     static let recordButtonRingWidth: CGFloat = 6
+    
+    static let dateFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.dateFormat = "dd/MM" // TODO: Localise
+        return df
+    }()
 }
