@@ -315,9 +315,13 @@ extension DetailViewController: UIScrollViewDelegate {
         }
         
         // Bring on camera with camera cell scroll
-        // Hard-coded assumes camera is first cell and cell is width of collectionView
-        //cameraControlVisibility = 1 - min(1, scrollView.contentOffset.x / scrollView.frame.width)
-        cameraControlVisibility = cameraPageIndexes.contains(pageIndex) ? 1 : 0 // TODO: animate
+        let position = scrollView.contentOffset.x / view.bounds.width
+        let leftIndex = position.rounded(.down)
+        let rightIndex = position.rounded(.up)
+        let transition = position - leftIndex
+        let isLeftCamera = cameraPageIndexes.contains(Int(leftIndex))
+        let isRightCamera = cameraPageIndexes.contains(Int(rightIndex))
+        cameraControlVisibility = (1 - transition) * (isLeftCamera ? 1.0 : 0.0) + transition * (isRightCamera ? 1.0 : 0.0)
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) { isManuallyScrolling = true }
