@@ -305,20 +305,17 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout {
 extension DetailViewController: UIScrollViewDelegate {
     /// Update current video based on user scrolling through direct manipulation
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        // Set videoIndex from scroll position, if direct manipulation
-        if isManuallyScrolling {
-            // Note `UICollectionView.indexPathsForVisibleItems` wasn't proving reliable
-            let center = CGPoint(x: videoCollectionView.bounds.midX, y:videoCollectionView.bounds.midY)
-            if let indexPath = videoCollectionView.indexPathForItem(at: center) {
-                pageIndex = indexPath.row
-            }
-        }
-        
-        // Bring on camera with camera cell scroll
         let position = scrollView.contentOffset.x / view.bounds.width
         let leftIndex = position.rounded(.down)
         let rightIndex = position.rounded(.up)
         let transition = position - leftIndex
+        
+        // Set videoIndex from scroll position, if direct manipulation
+        if isManuallyScrolling {
+            pageIndex = transition < 0.5 ? Int(leftIndex) : Int(rightIndex)
+        }
+        
+        // Bring on camera with scroll around camera cells
         let isLeftCamera = cameraPageIndexes.contains(Int(leftIndex))
         let isRightCamera = cameraPageIndexes.contains(Int(rightIndex))
         cameraControlVisibility = (1 - transition) * (isLeftCamera ? 1.0 : 0.0) + transition * (isRightCamera ? 1.0 : 0.0)
