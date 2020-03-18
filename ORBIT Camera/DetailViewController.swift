@@ -33,7 +33,8 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var videoDeleteButton: UIButton!
     
     @IBOutlet weak var cameraControlView: UIView!
-    @IBOutlet weak var cameraControlConstraint: NSLayoutConstraint!
+    @IBOutlet weak var cameraControlYConstraint: NSLayoutConstraint!
+    @IBOutlet weak var cameraControlHConstraint: NSLayoutConstraint!
     @IBOutlet weak var recordButton: RecordButton!
     
     /// The thing this detail view is to show the detail of
@@ -148,7 +149,7 @@ class DetailViewController: UIViewController {
     var cameraControlVisibility: CGFloat = 1 {
         didSet {
             // This animates the control view on, from the bottom of the screen, in sync with the collection view
-            cameraControlConstraint.constant = -(1 - cameraControlVisibility)*cameraControlView.frame.size.height
+            cameraControlYConstraint.constant = -(1 - cameraControlVisibility)*cameraControlView.frame.size.height
             view.layoutIfNeeded()
         }
     }
@@ -240,6 +241,12 @@ class DetailViewController: UIViewController {
             detailItem = try? dbQueue.read { db in try Thing.fetchOne(db) }
         }
         configureView()
+    }
+    
+    // Note: I'd have thought `updateViewConstraints` was the override to use, but it doesn't have the required effect here
+    override func viewDidLayoutSubviews() {
+        // Set height of camera control view
+        cameraControlHConstraint.constant = view.bounds.height - videoRecordedIcon.frame.minY
     }
 }
 
