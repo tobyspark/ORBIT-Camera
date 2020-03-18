@@ -14,6 +14,7 @@ import os
 class Camera {
     // TODO: Consider detach?
     func attachPreview(to layer: AVCaptureVideoPreviewLayer) {
+        #if !targetEnvironment(simulator)
         queue.async {
             // First start on Camera queue
             self.captureSession.startRunning()
@@ -22,9 +23,11 @@ class Camera {
                 layer.session = self.captureSession
             }
         }
+        #endif
     }
     
     func recordStart(to url: URL) {
+        #if !targetEnvironment(simulator)
         queue.async {
             // Configure file output on demand
             if self.videoFileOutput == nil {
@@ -53,18 +56,22 @@ class Camera {
             
             videoFileOutput.startRecording(to: url, recordingDelegate: delegate)
         }
+        #endif
     }
     
     func recordStop() {
+        #if !targetEnvironment(simulator)
         guard let videoFileOutput = videoFileOutput else { return }
         queue.async {
             videoFileOutput.stopRecording()
         }
+        #endif
     }
     
     var delegate: AVCaptureFileOutputRecordingDelegate?
     
     init() {
+        #if !targetEnvironment(simulator)
         queue.async {
             // Configure the AVCaptureSession sufficient for preview
             self.captureSession.beginConfiguration()
@@ -79,6 +86,7 @@ class Camera {
             self.captureSession.addInput(videoDeviceInput)
             self.captureSession.commitConfiguration()
         }
+        #endif
     }
     
     /// The `AVCaptureSession` behind this "Camera"
