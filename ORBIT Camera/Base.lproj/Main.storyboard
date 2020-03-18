@@ -191,11 +191,18 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Delete video"/>
                             </button>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c1p-EG-7ue">
-                                <rect key="frame" x="20" y="870" width="374" height="320"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c1p-EG-7ue">
+                                <rect key="frame" x="0.0" y="576" width="414" height="320"/>
                                 <subviews>
+                                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0NL-dH-rxH">
+                                        <rect key="frame" x="20" y="20" width="374" height="1"/>
+                                        <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="1" id="4PI-FG-6C1"/>
+                                        </constraints>
+                                    </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1ke-NA-qCX" customClass="RecordButton" customModule="ORBIT_Camera" customModuleProvider="target">
-                                        <rect key="frame" x="137" y="50" width="100" height="100"/>
+                                        <rect key="frame" x="157" y="50" width="100" height="100"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="100" id="PCf-9f-upf"/>
@@ -210,22 +217,11 @@
                                 <constraints>
                                     <constraint firstItem="1ke-NA-qCX" firstAttribute="centerX" secondItem="c1p-EG-7ue" secondAttribute="centerX" id="0Yj-33-CcE"/>
                                     <constraint firstItem="1ke-NA-qCX" firstAttribute="top" secondItem="c1p-EG-7ue" secondAttribute="top" constant="50" id="1Pa-ML-xR1"/>
+                                    <constraint firstAttribute="trailing" secondItem="0NL-dH-rxH" secondAttribute="trailing" constant="20" symbolic="YES" id="5Iy-PQ-ZTP"/>
+                                    <constraint firstItem="0NL-dH-rxH" firstAttribute="leading" secondItem="c1p-EG-7ue" secondAttribute="leading" constant="20" symbolic="YES" id="FkI-W5-qqQ"/>
                                     <constraint firstAttribute="height" constant="320" id="XyU-oE-jbW"/>
+                                    <constraint firstItem="0NL-dH-rxH" firstAttribute="top" secondItem="c1p-EG-7ue" secondAttribute="top" constant="20" symbolic="YES" id="ecl-Lw-BdN"/>
                                 </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="20"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowOpacity">
-                                        <real key="value" value="0.5"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="point" keyPath="layer.shadowOffset">
-                                        <point key="value" x="0.0" y="0.0"/>
-                                    </userDefinedRuntimeAttribute>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.shadowRadius">
-                                        <integer key="value" value="5"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
                             </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -243,7 +239,7 @@
                             <constraint firstItem="COH-CL-lcJ" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="GAe-NZ-6OO"/>
                             <constraint firstItem="nn8-ar-dSc" firstAttribute="trailing" secondItem="Hmw-03-rOL" secondAttribute="trailing" id="Hem-VL-Bjs"/>
                             <constraint firstItem="nn8-ar-dSc" firstAttribute="leading" secondItem="zYV-1E-bjd" secondAttribute="leading" id="K8K-pT-MhI"/>
-                            <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="c1p-EG-7ue" secondAttribute="trailing" constant="20" id="NHa-xp-jew"/>
+                            <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="c1p-EG-7ue" secondAttribute="trailing" id="NHa-xp-jew"/>
                             <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="JUV-UT-Gbo" secondAttribute="trailing" symbolic="YES" id="Ove-mH-obD"/>
                             <constraint firstItem="nn8-ar-dSc" firstAttribute="top" secondItem="jJn-6j-63Y" secondAttribute="bottom" constant="20" id="PED-9T-3Oh"/>
                             <constraint firstItem="jJn-6j-63Y" firstAttribute="top" secondItem="Y4a-6U-N4L" secondAttribute="bottom" constant="10" id="RYe-VZ-wzt"/>
@@ -262,7 +258,7 @@
                             <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="971-XG-rDU" secondAttribute="trailing" constant="10" id="flN-wX-Mgn"/>
                             <constraint firstItem="ulB-SJ-tRL" firstAttribute="leading" secondItem="COH-CL-lcJ" secondAttribute="leading" id="gGa-Lc-bJ2"/>
                             <constraint firstItem="zYV-1E-bjd" firstAttribute="leading" secondItem="svH-Pt-448" secondAttribute="leading" constant="20" id="gbS-cN-GOT"/>
-                            <constraint firstItem="c1p-EG-7ue" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="hia-0X-qyk"/>
+                            <constraint firstItem="c1p-EG-7ue" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" id="hia-0X-qyk"/>
                             <constraint firstItem="5oc-lW-9vf" firstAttribute="top" secondItem="VUw-jc-0yf" secondAttribute="top" id="isE-jO-OHL"/>
                             <constraint firstItem="JUV-UT-Gbo" firstAttribute="leading" secondItem="nE7-zn-h22" secondAttribute="trailing" constant="20" id="kUD-4T-hlc"/>
                             <constraint firstItem="Hmw-03-rOL" firstAttribute="trailing" secondItem="svH-Pt-448" secondAttribute="trailingMargin" id="kYh-oQ-xNH"/>
