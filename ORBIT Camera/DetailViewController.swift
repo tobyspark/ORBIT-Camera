@@ -68,7 +68,7 @@ class DetailViewController: UIViewController {
             if isCameraPage {
                 pageDescription = "Add new video to collection"
             } else if let video = video {
-                let number = pageVideoIndex() + 1
+                let number = pageVideoIndex()! + 1
                 let total = collectionView(videoCollectionView, numberOfItemsInSection: 0)
                 let kind = video.kind.description()
                 pageDescription = "Video \(number) of \(total): \(kind)"
@@ -111,26 +111,37 @@ class DetailViewController: UIViewController {
         }
     }
     
+    /// The page index where the camera to take new videos is placed. Currently the first, but an alternative could be the last
     let addNewPageIndex = 0
+    
+    /// The page index where just recorded videos are inserted.
     let insertionPageIndex = 1
-    var retakePageIndexes = IndexSet()
+    
+    /// A dynamic set of page indexes where the videos are flagged for re-recording
+    var rerecordPageIndexes = IndexSet()
+    
+    /// All pages that need the camera displayed, i.e. `rerecordPageIndexes` and `addNewPageIndex`
     var cameraPageIndexes: IndexSet {
-        IndexSet(retakePageIndexes.union(IndexSet(integer: addNewPageIndex)))
+        rerecordPageIndexes.union(IndexSet(integer: addNewPageIndex))
     }
-    func pageVideoIndex(_ pageIndex:Int? = nil) -> Int! {
+    
+    /// The video index desired at that page index
+    func pageVideoIndex(_ pageIndex:Int? = nil) -> Int? {
         let index = pageIndex ?? self.pageIndex
         if index == addNewPageIndex { return nil }
         if index > addNewPageIndex { return index - 1 }
         return index
     }
-    func pageVideo(_ index: Int? = nil) -> Video! {
+    
+    /// The actual video at that page index
+    func pageVideo(_ index: Int? = nil) -> Video? {
         guard
             let thing = detailItem,
             let videoIndex = pageVideoIndex(index)
         else {
             return nil
         }
-        return try? thing.videoAt(index: videoIndex)
+        return try? thing.video(with: videoIndex)
     }
     
     /// The 'visibility' of the cameraControlView, where 0 is offscreen and 1 is onscreen
@@ -178,21 +189,48 @@ class DetailViewController: UIViewController {
         pageIndex = sender.currentPage
     }
     
+    /// Action a video recording. This might be a new video, or the re-recording of an existing one.
     @IBAction func recordButtonAction(sender: RecordButton) {
         switch sender.recordingState {
         case .active:
-            guard let url = try? FileManager.default
-                .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-                .appendingPathComponent(NSUUID().uuidString)
-                .appendingPathExtension("mov")
-            else {
-                os_log("Could not create URL for recordStart")
-                return
+            if rerecordPageIndexes.contains(pageIndex) {
+                guard
+                    let video = pageVideo()
+                else {
+                    os_log("Could not get video for re-record recordStart")
+                    return
+                }
+                do {
+                    try FileManager.default.removeItem(at: video.url)
+                } catch {
+                    os_log("Could not delete previous recording to re-record")
+                    return
+                }
+                camera.recordStart(to: video.url)
+            } else {
+                guard
+                    let url = try? FileManager.default
+                        .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+                        .appendingPathComponent(NSUUID().uuidString)
+                        .appendingPathExtension("mov")
+                else {
+                    os_log("Could not create URL for recordStart")
+                    return
+                }
+                camera.recordStart(to: url)
             }
-            camera.recordStart(to: url)
         case .idle:
             camera.recordStop()
         }
+    }
+    
+    /// Put a video in a state to re-record
+    @IBAction func rerecordButtonAction(sender: UIButton) {
+        rerecordPageIndexes.insert(pageIndex)
+        
+        // Update UI
+        cameraControlVisibility = 1.0
+        videoCollectionView.reloadItems(at: [IndexPath(row: pageIndex, section: 0)])
     }
     
     override func viewDidLoad() {
@@ -280,7 +318,9 @@ extension DetailViewController: UIScrollViewDelegate {
 }
 
 extension DetailViewController: AVCaptureFileOutputRecordingDelegate {
-    /// Act on the video file the camera has just produced: create a Video record, and update the UI.
+    /// Act on the video file the camera has just produced.
+    /// If new, create a Video record, and update the UI.
+    /// If a replacement, update the re-record state and UI
     func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
         guard
             let thing = detailItem
@@ -289,26 +329,25 @@ extension DetailViewController: AVCaptureFileOutputRecordingDelegate {
             return
         }
         
-        // Create Video
-        guard
-            var video = Video(of: thing, url: outputFileURL, kind: .recognition)
-        else {
-            os_log("Could not create video")
-            return
-        }
-        do {
-            try dbQueue.write { db in try video.save(db) }
-        } catch {
-            os_log("Could not save video to database")
-        }
-        
-        // Update UI
-        if pageIndex == addNewPageIndex {
+        if let videoIndex = thing.videoIndex(with: outputFileURL) {
+            let videoPageIndex = videoIndex < addNewPageIndex ? videoIndex : videoIndex + 1
+            rerecordPageIndexes.remove(videoPageIndex)
+            videoCollectionView.reloadItems(at: [IndexPath(row: videoPageIndex, section: 0)])
+        } else {
+            guard
+                var video = Video(of: thing, url: outputFileURL, kind: .recognition)
+            else {
+                os_log("Could not create video")
+                return
+            }
+            do {
+                try dbQueue.write { db in try video.save(db) }
+            } catch {
+                os_log("Could not save video to database")
+            }
             videoPageControl.numberOfPages = collectionView(videoCollectionView, numberOfItemsInSection: 0)
             videoCollectionView.insertItems(at: [IndexPath(row: insertionPageIndex, section: 0)])
             pageIndex = insertionPageIndex
-        } else {
-            videoCollectionView.reloadItems(at: [IndexPath(row: pageIndex, section: 0)])
         }
     }
 }

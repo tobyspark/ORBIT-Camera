@@ -100,7 +100,7 @@ extension Thing: FetchableRecord, MutablePersistableRecord {
         }
     }
     
-    /// The count of all videos of this thing
+    /// All videos of this thing
     var videos: [Video] {
         return try! dbQueue.read { db in // FIXME: try!
             try Video
@@ -110,15 +110,26 @@ extension Thing: FetchableRecord, MutablePersistableRecord {
     }
     
     /// Attempt to return the nth video of the thing. Zero-based.
-    func videoAt(index: Int) throws -> Video? {
+    func video(with index: Int) throws -> Video? {
         try dbQueue.read { db in // FIXME: try!
             let request = Video
                 .filter(Video.Columns.thingID == self.id)
+                .order(Video.Columns.recorded.desc)
                 .select(Video.Columns.id)
             let ids = try Int64.fetchAll(db, request)
-            assert(ids == ids.sorted(), "Expediency, uncovered")
-            let id = ids[ids.count - 1 - index]
+            let id = ids[index]
             return try Video.filter(key: id).fetchOne(db)
+        }
+    }
+    
+    /// Attempt to return the nth video index of the video with URL.
+    func videoIndex(with url: URL) -> Int? {
+        try! dbQueue.read { db in // FIXME: try!
+            let videos = try Video
+                .filter(Video.Columns.thingID == self.id)
+                .order(Video.Columns.recorded.desc)
+                .fetchAll(db)
+            return videos.firstIndex { $0.url == url}
         }
     }
 }
