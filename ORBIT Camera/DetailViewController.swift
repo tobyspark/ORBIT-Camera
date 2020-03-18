@@ -46,18 +46,17 @@ class DetailViewController: UIViewController {
     
     /// The selected page, i.e. index of the currently visible videoCollection item.
     /// This is as per `thing.videoAt(index:)`, modified by any 'add new' camera cell.
-    var pageIndex: Int! {
+    var pageIndex: Int = 0 {
         didSet {
             guard oldValue != pageIndex else { return}
-            let indexPath = collectionPath(withIndex: pageIndex)
-            let collectionSection = CollectionSection(rawValue: indexPath.section)!
-            let video = try? detailItem!.videoAt(index: indexPath.row)
+            let isCameraPage = cameraPageIndexes.contains(pageIndex)
+            let video = pageVideo()
             
             // Update collection
             // Don't animate to new position if the position is being set by direct manipulation
             if !isManuallyScrolling {
                 videoCollectionView.scrollToItem(
-                    at: indexPath,
+                    at: IndexPath(row: pageIndex, section: 0),
                     at: .centeredHorizontally,
                     animated: true
                 )
@@ -66,31 +65,33 @@ class DetailViewController: UIViewController {
             // Update page control
             videoPageControl.currentPage = pageIndex
             let pageDescription: String
-            switch collectionSection {
-            case .camera:
+            if isCameraPage {
                 pageDescription = "Add new video to collection"
-            case .videos:
-                let number = indexPath.row + 1
-                let total = collectionView(videoCollectionView, numberOfItemsInSection: CollectionSection.videos.rawValue)
-                let kind = video!.kind.description()
+            } else if let video = video {
+                let number = pageVideoIndex() + 1
+                let total = collectionView(videoCollectionView, numberOfItemsInSection: 0)
+                let kind = video.kind.description()
                 pageDescription = "Video \(number) of \(total): \(kind)"
+            } else {
+                os_log("Page is not camera and has no video")
+                assertionFailure()
+                pageDescription = ""
             }
             videoLabel.text = pageDescription
             videoPageControl.accessibilityValue = pageDescription
             
             // Update statuses
-            if collectionSection == .videos {
-                videoRecordedLabel.text = "Recorded on \(Settings.dateFormatter.string(from:video!.recorded))"
-                videoUploadedIcon.image = video!.uploadID == nil ? UIImage(systemName: "arrow.up.circle") : UIImage(systemName: "arrow.up.circle.fill")
-                videoUploadedLabel.text = video!.uploadID == nil ? "Not yet uploaded" : "Uploaded"
+            if let video = video {
+                videoRecordedLabel.text = "Recorded on \(Settings.dateFormatter.string(from:video.recorded))"
+                videoUploadedIcon.image = video.uploadID == nil ? UIImage(systemName: "arrow.up.circle") : UIImage(systemName: "arrow.up.circle.fill")
+                videoUploadedLabel.text = video.uploadID == nil ? "Not yet uploaded" : "Uploaded"
                 // TODO: videoVerified
                 // TODO: videoPublished
             }
             
             // Update camera control
             // Note animation on/off is set by cameraControlVisibility which is set by scrollViewDidScroll
-            switch collectionSection {
-            case .camera:
+            if isCameraPage {
                 videoRerecordButton.isAccessibilityElement = false
                 videoRecordedLabel.isAccessibilityElement = false
                 videoUploadedLabel.isAccessibilityElement = false
@@ -98,7 +99,7 @@ class DetailViewController: UIViewController {
                 videoPublishedLabel.isAccessibilityElement = false
                 videoDeleteButton.isAccessibilityElement = false
                 recordButton.isAccessibilityElement = true
-            case .videos:
+            } else {
                 videoRerecordButton.isAccessibilityElement = true
                 videoRecordedLabel.isAccessibilityElement = true
                 videoUploadedLabel.isAccessibilityElement = true
@@ -108,6 +109,28 @@ class DetailViewController: UIViewController {
                 recordButton.isAccessibilityElement = false
             }
         }
+    }
+    
+    let addNewPageIndex = 0
+    let insertionPageIndex = 1
+    var retakePageIndexes = IndexSet()
+    var cameraPageIndexes: IndexSet {
+        IndexSet(retakePageIndexes.union(IndexSet(integer: addNewPageIndex)))
+    }
+    func pageVideoIndex(_ pageIndex:Int? = nil) -> Int! {
+        let index = pageIndex ?? self.pageIndex
+        if index == addNewPageIndex { return nil }
+        if index > addNewPageIndex { return index - 1 }
+        return index
+    }
+    func pageVideo(_ index: Int? = nil) -> Video! {
+        guard
+            let thing = detailItem,
+            let videoIndex = pageVideoIndex(index)
+        else {
+            return nil
+        }
+        return try? thing.videoAt(index: videoIndex)
     }
     
     /// The 'visibility' of the cameraControlView, where 0 is offscreen and 1 is onscreen
@@ -144,7 +167,7 @@ class DetailViewController: UIViewController {
         
         // Set number of videos in paging control
         pageIndex = 0
-        videoPageControl.numberOfPages = collectionCount()
+        videoPageControl.numberOfPages = collectionView(videoCollectionView, numberOfItemsInSection: 0)
         
         // Set delegate for camera, to pass in new recordings
         camera.delegate = self
@@ -172,38 +195,6 @@ class DetailViewController: UIViewController {
         }
     }
     
-    enum CollectionSection: Int, CaseIterable {
-        case camera
-        case videos
-    }
-    
-    func collectionIndex(withPath path: IndexPath) -> Int {
-        var aIndex = 0
-        for section in 0..<path.section {
-            aIndex += collectionView(videoCollectionView, numberOfItemsInSection: section)
-        }
-        return aIndex + path.row
-    }
-    
-    func collectionPath(withIndex index: Int) -> IndexPath {
-        var rIndex = index
-        for section in CollectionSection.allCases {
-            if rIndex < collectionView(videoCollectionView, numberOfItemsInSection: section.rawValue) {
-                return IndexPath(row: rIndex, section: section.rawValue)
-            } else {
-                rIndex -= collectionView(videoCollectionView, numberOfItemsInSection: section.rawValue)
-            }
-        }
-        assertionFailure("indexPath error")
-        return IndexPath(row: 0, section: 0)
-    }
-    
-    func collectionCount() -> Int {
-        CollectionSection.allCases.reduce(0) { result, section in
-            result + collectionView(videoCollectionView, numberOfItemsInSection: section.rawValue)
-        }
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         // On load without MasterViewController instantiated (e.g. iPad), display an item
@@ -217,58 +208,44 @@ class DetailViewController: UIViewController {
 extension DetailViewController: UICollectionViewDataSource {
     /// The videoCollectionView should contain camera section and video section
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return CollectionSection.allCases.count
+        return 1
     }
     
     /// The videoCollectionView camera section should contain the camera, and the video section contain all the videos
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch section {
-        case CollectionSection.camera.rawValue:
-            return 1
-        case CollectionSection.videos.rawValue:
-            guard
-                let thing = detailItem
-            else {
-                    os_log("DetailView with no detailItem")
-                    assertionFailure()
-                    return 0
-            }
-            return thing.videosCount
-        default:
-            assertionFailure("collectionView numberOfItemsInSection indexPath error")
-            return 0
+        guard
+            let thing = detailItem
+        else {
+                os_log("DetailView with no detailItem")
+                assertionFailure()
+                return 0
         }
-        
+        return thing.videosCount + 1 // Add the 'add new' camera item
     }
     
-    /// The videoCollectionView cells should display the video
+    /// The videoCollectionView cells should display the camera and videos
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        switch indexPath.section {
-        case CollectionSection.camera.rawValue:
+        if cameraPageIndexes.contains(indexPath.row) {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Camera Cell", for: indexPath) as? CameraCell else {
                 fatalError("Expected a `\(CameraCell.self)` but did not receive one.")
             }
             camera.attachPreview(to: cell.previewLayer)
             return cell
-        case CollectionSection.videos.rawValue:
+        } else {
             guard
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Video Cell", for: indexPath) as? VideoViewCell
             else {
                 fatalError("Expected a `\(VideoViewCell.self)` but did not receive one.")
             }
             guard
-                let thing = detailItem,
-                let video = try? thing.videoAt(index: indexPath.row)
+                let video = pageVideo(indexPath.row)
             else {
-                    os_log("DetailView with no detailItem")
-                    assertionFailure()
-                    return cell
+                os_log("No video found")
+                assertionFailure()
+                return cell
             }
             cell.videoURL = video.url
             return cell
-        default:
-            assertionFailure("collectionView cellForItemAt indexPath error")
-            return UICollectionViewCell()
         }
     }
 }
@@ -288,13 +265,14 @@ extension DetailViewController: UIScrollViewDelegate {
             // Note `UICollectionView.indexPathsForVisibleItems` wasn't proving reliable
             let center = CGPoint(x: videoCollectionView.bounds.midX, y:videoCollectionView.bounds.midY)
             if let indexPath = videoCollectionView.indexPathForItem(at: center) {
-                pageIndex = collectionIndex(withPath: indexPath)
+                pageIndex = indexPath.row
             }
         }
         
         // Bring on camera with camera cell scroll
         // Hard-coded assumes camera is first cell and cell is width of collectionView
-        cameraControlVisibility = 1 - min(1, scrollView.contentOffset.x / scrollView.frame.width)
+        //cameraControlVisibility = 1 - min(1, scrollView.contentOffset.x / scrollView.frame.width)
+        cameraControlVisibility = cameraPageIndexes.contains(pageIndex) ? 1 : 0 // TODO: animate
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) { isManuallyScrolling = true }
@@ -325,9 +303,12 @@ extension DetailViewController: AVCaptureFileOutputRecordingDelegate {
         }
         
         // Update UI
-        let insertionPath = IndexPath(row: 0, section: CollectionSection.videos.rawValue)
-        pageIndex = collectionIndex(withPath: insertionPath)
-        videoPageControl.numberOfPages = collectionCount()
-        videoCollectionView.insertItems(at: [insertionPath])
+        if pageIndex == addNewPageIndex {
+            videoPageControl.numberOfPages = collectionView(videoCollectionView, numberOfItemsInSection: 0)
+            videoCollectionView.insertItems(at: [IndexPath(row: insertionPageIndex, section: 0)])
+            pageIndex = insertionPageIndex
+        } else {
+            videoCollectionView.reloadItems(at: [IndexPath(row: pageIndex, section: 0)])
+        }
     }
 }
