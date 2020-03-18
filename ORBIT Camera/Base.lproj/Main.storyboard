@@ -97,6 +97,9 @@
                                 <rect key="frame" x="164" y="599.5" width="124" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Re-record video"/>
+                                <connections>
+                                    <action selector="rerecordButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="Xxj-qU-qDS"/>
+                                </connections>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="camera.circle.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="COH-CL-lcJ">
                                 <rect key="frame" x="20" y="601.5" width="30" height="29"/>
@@ -293,7 +296,7 @@
                         <outlet property="videoPublishedLabel" destination="UL9-2k-MLA" id="h72-1n-eiN"/>
                         <outlet property="videoRecordedIcon" destination="COH-CL-lcJ" id="EkN-Z9-QGF"/>
                         <outlet property="videoRecordedLabel" destination="nE7-zn-h22" id="oap-lA-V8N"/>
-                        <outlet property="videoRerecordButton" destination="JUV-UT-Gbo" id="7Bb-Vc-yAC"/>
+                        <outlet property="videoRerecordButton" destination="JUV-UT-Gbo" id="X6C-TM-HAB"/>
                         <outlet property="videoUploadedIcon" destination="ulB-SJ-tRL" id="6qB-mn-d9v"/>
                         <outlet property="videoUploadedLabel" destination="wRr-7L-rvD" id="Cws-4J-JvZ"/>
                         <outlet property="videoVerifiedIcon" destination="Y4a-6U-N4L" id="eHg-Rk-32m"/>
