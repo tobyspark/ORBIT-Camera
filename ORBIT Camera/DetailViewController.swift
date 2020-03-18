@@ -44,11 +44,12 @@ class DetailViewController: UIViewController {
         }
     }
     
-    /// The index of the currently selected video of the thing, as per `thing.videoAt(index:)`
-    var videoIndex: Int! {
+    /// The selected page, i.e. index of the currently visible videoCollection item.
+    /// This is as per `thing.videoAt(index:)`, modified by any 'add new' camera cell.
+    var pageIndex: Int! {
         didSet {
-            guard oldValue != videoIndex else { return}
-            let indexPath = collectionPath(withIndex: videoIndex)
+            guard oldValue != pageIndex else { return}
+            let indexPath = collectionPath(withIndex: pageIndex)
             let collectionSection = CollectionSection(rawValue: indexPath.section)!
             let video = try? detailItem!.videoAt(index: indexPath.row)
             
@@ -63,7 +64,7 @@ class DetailViewController: UIViewController {
             }
             
             // Update page control
-            videoPageControl.currentPage = videoIndex
+            videoPageControl.currentPage = pageIndex
             let pageDescription: String
             switch collectionSection {
             case .camera:
@@ -142,7 +143,7 @@ class DetailViewController: UIViewController {
         //videoPageControl = view.subviews[1] as! UIPageControl
         
         // Set number of videos in paging control
-        videoIndex = 0
+        pageIndex = 0
         videoPageControl.numberOfPages = collectionCount()
         
         // Set delegate for camera, to pass in new recordings
@@ -151,7 +152,7 @@ class DetailViewController: UIViewController {
     
     /// Action the video corresponding to page
     @IBAction func pageControlAction(sender: UIPageControl) {
-        videoIndex = sender.currentPage
+        pageIndex = sender.currentPage
     }
     
     @IBAction func recordButtonAction(sender: RecordButton) {
@@ -287,7 +288,7 @@ extension DetailViewController: UIScrollViewDelegate {
             // Note `UICollectionView.indexPathsForVisibleItems` wasn't proving reliable
             let center = CGPoint(x: videoCollectionView.bounds.midX, y:videoCollectionView.bounds.midY)
             if let indexPath = videoCollectionView.indexPathForItem(at: center) {
-                videoIndex = collectionIndex(withPath: indexPath)
+                pageIndex = collectionIndex(withPath: indexPath)
             }
         }
         
@@ -325,7 +326,7 @@ extension DetailViewController: AVCaptureFileOutputRecordingDelegate {
         
         // Update UI
         let insertionPath = IndexPath(row: 0, section: CollectionSection.videos.rawValue)
-        videoIndex = collectionIndex(withPath: insertionPath)
+        pageIndex = collectionIndex(withPath: insertionPath)
         videoPageControl.numberOfPages = collectionCount()
         videoCollectionView.insertItems(at: [insertionPath])
     }
