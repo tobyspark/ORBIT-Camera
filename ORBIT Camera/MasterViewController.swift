@@ -62,7 +62,7 @@ class MasterViewController: UITableViewController {
                 let thingIndex = try? thing.index(),
                 tableView.indexPathForSelectedRow == nil
             {
-                let path = IndexPath(row: thingIndex, section: 0)
+                let path = IndexPath(row: thingIndex, section: ThingSection.things.rawValue)
                 tableView.selectRow(at: path, animated: false, scrollPosition: .middle)
             }
         }
