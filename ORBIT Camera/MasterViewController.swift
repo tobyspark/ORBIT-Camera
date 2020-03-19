@@ -13,13 +13,45 @@ class MasterViewController: UITableViewController {
 
     var detailViewController: DetailViewController? = nil
 
+    /// The label to make the 'add new' thing with, to be set upon some editing action
+    @CleanString var candidateLabel: String
+    
+    /// A test of the adequacy of the 'add new' label.
+    /// Currently, minimum character count of 2
+    func candidateLabelTest() -> Bool {
+            candidateLabel.count > 2 // Does it have enough characters?
+    }
+    
+    /// A string that 'cleans' its value when set
+    /// Currently, trimming whitespace
+    @propertyWrapper struct CleanString {
+        private var label: String
+        init() { self.label = "" }
+        var wrappedValue: String {
+            get { return label }
+            set { label = newValue.trimmingCharacters(in: .whitespacesAndNewlines) }
+        }
+    }
+
+    /// The add new text field's primary action, e.g. what happens when 'go' is pressed on the keyboard
+    @IBAction func addNewFieldAction(sender: UITextField) {
+        // Stop editing
+        sender.resignFirstResponder()
+        
+        // Assign to candidate
+        candidateLabel = sender.text ?? ""
+        
+        // Go! (or don't)
+        if shouldPerformSegue(withIdentifier: "showDetail", sender: self) {
+            performSegue(withIdentifier: "showDetail", sender: self)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         navigationItem.leftBarButtonItem = editButtonItem
 
-//        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(insertNewObject(_:)))
-//        navigationItem.rightBarButtonItem = addButton
         if let split = splitViewController {
             let controllers = split.viewControllers
             detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
@@ -41,62 +73,103 @@ class MasterViewController: UITableViewController {
         super.viewWillAppear(animated)
     }
 
-    @objc
-    func insertNewObject(_ sender: Any) {
-        var thing = Thing(withLabel: "A new thing")
-        try! dbQueue.write { db in try thing.save(db) } // FIXME: try!
-        let indexPath = IndexPath(row: 0, section: 0)
-        tableView.insertRows(at: [indexPath], with: .automatic)
-    }
-
     // MARK: - Segues
+    
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        if identifier == "showDetail" {
+            let indexPath = tableView.indexPathForSelectedRow ?? addNewPath
+            switch ThingSection(rawValue: indexPath.section)! {
+            case .addNew:
+                return candidateLabelTest()
+            case .things:
+                return true
+            }
+        }
+        return false
+    }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showDetail" {
-            if let indexPath = tableView.indexPathForSelectedRow {
-                let thing = try! Thing.at(index: indexPath.row) // FIXME: try!
-                let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
-                controller.detailItem = thing
-                controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
-                controller.navigationItem.leftItemsSupplementBackButton = true
-                detailViewController = controller
+            let indexPath = tableView.indexPathForSelectedRow ?? addNewPath
+
+            // Create or get thing to detail
+            var thing: Thing
+            switch ThingSection(rawValue: indexPath.section)! {
+                case .addNew:
+                    // candidateLabel verified in `shouldPerformSegue`
+                    thing = Thing(withLabel: candidateLabel)
+                    try! dbQueue.write { db in try thing.save(db) } // FIXME: try!
+                case .things:
+                    thing = try! Thing.at(index: indexPath.row) // FIXME: try!
             }
+            
+            // Segue to detail
+            let controller = (segue.destination as! UINavigationController).topViewController as! DetailViewController
+            controller.detailItem = thing
+            controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
+            controller.navigationItem.leftItemsSupplementBackButton = true
+            detailViewController = controller
         }
     }
-    
-    @IBAction func unwindAction(unwindSegue: UIStoryboardSegue) {
-        // The presence of the method is enough to allow the unwind on the storyboard.
-    }
+
+// FIXME: This isn't called, and unwind happens even when commented out!?
+//    @IBAction func unwindAction(unwindSegue: UIStoryboardSegue) {
+//        // The presence of the method is enough to allow the unwind on the storyboard.
+//        print("reload")
+//        tableView.reloadData()
+//    }
 
     // MARK: - Table View
+    
+    enum ThingSection: Int, CaseIterable {
+        case addNew
+        case things
+    }
+    
+    let addNewPath = IndexPath(row: 0, section: ThingSection.addNew.rawValue)
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return ThingSection.allCases.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return try! dbQueue.read { db in try Thing.fetchCount(db) } // FIXME: try!
+        switch ThingSection(rawValue: section)! {
+        case .addNew:
+            return 1
+        case .things:
+            return try! dbQueue.read { db in try Thing.fetchCount(db) } // FIXME: try!
+        }
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        let thing = try! Thing.at(index: indexPath.row) // FIXME: try!
-        cell.textLabel!.text = thing.labelParticipant
-        // FIXME: Use NSLocalizedString pluralization
-        switch thing.videosCount {
-        case 0:
-            cell.detailTextLabel!.text = "No videos"
-        case 1:
-            cell.detailTextLabel!.text = "1 video"
-        default:
-            cell.detailTextLabel!.text = "\(thing.videosCount) videos"
+        switch ThingSection(rawValue: indexPath.section)! {
+        case .addNew:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Add new cell", for: indexPath)
+            return cell
+        case .things:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+            let thing = try! Thing.at(index: indexPath.row) // FIXME: try!
+            cell.textLabel!.text = thing.labelParticipant
+            // FIXME: Use NSLocalizedString pluralization
+            switch thing.videosCount {
+            case 0:
+                cell.detailTextLabel!.text = "No videos"
+            case 1:
+                cell.detailTextLabel!.text = "1 video"
+            default:
+                cell.detailTextLabel!.text = "\(thing.videosCount) videos"
+            }
+            return cell
         }
-        return cell
     }
 
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+        switch ThingSection(rawValue: indexPath.section)! {
+        case .addNew:
+            return false
+        case .things:
+            return true
+        }
     }
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
