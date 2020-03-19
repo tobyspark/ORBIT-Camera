@@ -14,6 +14,7 @@ class DetailViewController: UIViewController {
 
     @IBOutlet weak var thingNavigationItem: UINavigationItem!
     @IBOutlet weak var videoCollectionView: UICollectionView!
+    @IBOutlet weak var videoPagingView: UIView!
     @IBOutlet weak var videoPageControl: UIPageControl!
     @IBOutlet weak var videoLabel: UILabel!
     
@@ -246,7 +247,7 @@ class DetailViewController: UIViewController {
     // Note: I'd have thought `updateViewConstraints` was the override to use, but it doesn't have the required effect here
     override func viewDidLayoutSubviews() {
         // Set height of camera control view
-        cameraControlHConstraint.constant = view.bounds.height - videoRecordedIcon.frame.minY
+        cameraControlHConstraint.constant = view.bounds.height - view.convert(videoRecordedIcon.bounds, from: videoRecordedIcon).minY
     }
 }
 
