@@ -50,7 +50,6 @@ class DetailViewController: UIViewController {
     /// This is as per `thing.videoAt(index:)`, modified by any 'add new' camera cell.
     var pageIndex: Int = 0 {
         didSet {
-            guard oldValue != pageIndex else { return}
             let isCameraPage = cameraPageIndexes.contains(pageIndex)
             let video = pageVideo()
             
@@ -313,7 +312,10 @@ extension DetailViewController: UIScrollViewDelegate {
         
         // Set videoIndex from scroll position, if direct manipulation
         if isManuallyScrolling {
-            pageIndex = transition < 0.5 ? Int(leftIndex) : Int(rightIndex)
+            let newIndex = transition < 0.5 ? Int(leftIndex) : Int(rightIndex)
+            if newIndex != pageIndex {
+                pageIndex = newIndex
+            }
         }
         
         // Bring on camera with scroll around camera cells
