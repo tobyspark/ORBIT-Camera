@@ -71,7 +71,6 @@ class MasterViewController: UITableViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        
         clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
         super.viewWillAppear(animated)
     }
@@ -100,7 +99,7 @@ class MasterViewController: UITableViewController {
                 return true
             }
         }
-        return false
+        return true // e.g. info popover segue
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -133,12 +132,11 @@ class MasterViewController: UITableViewController {
         }
     }
 
- // FIXME: This isn't called, and unwind happens even when commented out!?
-    @IBAction func unwindAction(unwindSegue: UIStoryboardSegue) {
-        // The presence of the method is enough to allow the unwind on the storyboard.
-        print("unwindAction")
-        tableView.reloadData()
-    }
+    /// Allow unwind segues to this view controller
+    // This is found by Info Scene's exit doohikey.
+    // Note it is *not* used in the nav controller back button segue, which would be mighty convenient to update state.
+    // The presence of the method is enough to allow the unwind on the storyboard.
+    @IBAction func unwindAction(unwindSegue: UIStoryboardSegue) {}
 
     // MARK: - Table View
     
