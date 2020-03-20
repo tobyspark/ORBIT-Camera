@@ -69,8 +69,8 @@ class DetailViewController: UIViewController {
             if isCameraPage {
                 pageDescription = "Add new video to collection"
             } else if let video = video {
-                let number = pageVideoIndex()! + 1
-                let total = collectionView(videoCollectionView, numberOfItemsInSection: 0)
+                let number = pageVideoIndex()! + 1 // index-based to count-based
+                let total = collectionView(videoCollectionView, numberOfItemsInSection: 0) - 1 // take off count of 'add new' items
                 let kind = video.kind.description()
                 pageDescription = "Video \(number) of \(total): \(kind)"
             } else {
