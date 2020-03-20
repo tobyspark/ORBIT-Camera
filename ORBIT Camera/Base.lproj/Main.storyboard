@@ -436,8 +436,9 @@
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="52"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Add new thing" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="60f-YF-g6L">
+                                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="What is it?" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="60f-YF-g6L">
                                             <rect key="frame" x="16" y="12.5" width="307" height="27"/>
+                                            <accessibility key="accessibilityConfiguration" hint="Enter what you call the thing" label="Thing name"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
                                             <textInputTraits key="textInputTraits" returnKeyType="go"/>
                                             <connections>
@@ -447,6 +448,7 @@
                                         </textField>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8eN-2e-Foy">
                                             <rect key="frame" x="323" y="0.0" width="52" height="52"/>
+                                            <accessibility key="accessibilityConfiguration" hint="Takes what you entered and creates a new thing with it" label="Add thing"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="8eN-2e-Foy" secondAttribute="height" multiplier="1:1" id="Pbu-bJ-ngs"/>
                                             </constraints>
