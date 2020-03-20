@@ -92,7 +92,17 @@ class MasterViewController: UITableViewController {
             let indexPath = tableView.indexPathForSelectedRow ?? addNewPath
             switch ThingSection(rawValue: indexPath.section)! {
             case .addNew:
-                return candidateLabelTest()
+                let shouldSegue = candidateLabelTest()
+                // If the label isn't adequate, set the field to edit
+                if !shouldSegue {
+                    (tableView
+                    .cellForRow(at: addNewPath)?
+                    .contentView
+                    .subviews
+                    .first(where: { $0 is UITextField }) as? UITextField)?
+                    .becomeFirstResponder()
+                }
+                return shouldSegue
             case .things:
                 return true
             }
