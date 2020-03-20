@@ -34,10 +34,10 @@ class MasterViewController: UITableViewController {
     }
     
     /// Segue to detail, creating the new `Thing`
-    // Triggered by 'go' on keyboard, the '+' button
-    // FIXME: Not yet triggered by selection, which seems to be possible despite the above
+    // Triggered by 'go' on keyboard only
+    // cell in storyboard is wired to trigger segue there
     @IBAction func addNewAction() {
-        tableView.selectRow(at: nil, animated: false, scrollPosition: .none) // Or UX-wise, select addNewPath?
+        // Perform segue (or not)
         if shouldPerformSegue(withIdentifier: "showDetail", sender: self) {
             performSegue(withIdentifier: "showDetail", sender: self)
         }
@@ -46,15 +46,6 @@ class MasterViewController: UITableViewController {
     /// The 'cleaned' label is kept updated
     @IBAction func addNewFieldDidEditingChanged(sender: UITextField) {
         candidateLabel = sender.text ?? ""
-    }
-
-    /// The add new text field's primary action, e.g. what happens when 'go' is pressed on the keyboard
-    @IBAction func addNewFieldAction(sender: UITextField) {
-        // Stop editing
-        sender.resignFirstResponder()
-        
-        // Go!
-        addNewAction()
     }
     
     override func viewDidLoad() {
@@ -95,12 +86,10 @@ class MasterViewController: UITableViewController {
                 let shouldSegue = candidateLabelTest()
                 // If the label isn't adequate, set the field to edit
                 if !shouldSegue {
-                    (tableView
-                    .cellForRow(at: addNewPath)?
-                    .contentView
-                    .subviews
-                    .first(where: { $0 is UITextField }) as? UITextField)?
-                    .becomeFirstResponder()
+                    if let cell = tableView.cellForRow(at: addNewPath) as? NewThingCell {
+                        cell.labelField.becomeFirstResponder()
+                        tableView.selectRow(at: nil, animated: false, scrollPosition: .none)
+                    }
                 }
                 return shouldSegue
             case .things:
@@ -119,12 +108,9 @@ class MasterViewController: UITableViewController {
             switch ThingSection(rawValue: indexPath.section)! {
                 case .addNew:
                     // Clear 'new' cell
-                    (tableView
-                        .cellForRow(at: addNewPath)?
-                        .contentView
-                        .subviews
-                        .first(where: { $0 is UITextField }) as? UITextField)?
-                        .text = ""
+                    if let cell = tableView.cellForRow(at: addNewPath) as? NewThingCell {
+                        cell.labelField.text = ""
+                    }
                     
                     // Insert new thing
                     thing = Thing(withLabel: candidateLabel) // candidateLabel verified in `shouldPerformSegue`
