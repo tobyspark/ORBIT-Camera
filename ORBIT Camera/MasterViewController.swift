@@ -84,12 +84,16 @@ class MasterViewController: UITableViewController {
             switch ThingSection(rawValue: indexPath.section)! {
             case .addNew:
                 let shouldSegue = candidateLabelTest()
-                // If the label isn't adequate, set the field to edit
-                if !shouldSegue {
-                    if let cell = tableView.cellForRow(at: addNewPath) as? NewThingCell {
+                if let cell = tableView.cellForRow(at: addNewPath) as? NewThingCell {
+                    if shouldSegue {
+                        // If we're going ahead, we don't want it still focussed when we unwind back
+                        cell.labelField.resignFirstResponder()
+                    } else {
+                        // If the label isn't adequate, set the field to edit
                         cell.labelField.becomeFirstResponder()
-                        tableView.selectRow(at: nil, animated: false, scrollPosition: .none)
                     }
+                    // Any addNew selection should not be kept whether if editing or when we unwind back
+                    tableView.selectRow(at: nil, animated: false, scrollPosition: .none)
                 }
                 return shouldSegue
             case .things:
@@ -129,12 +133,12 @@ class MasterViewController: UITableViewController {
         }
     }
 
-// FIXME: This isn't called, and unwind happens even when commented out!?
-//    @IBAction func myUnwindAction(unwindSegue: UIStoryboardSegue) {
-//        // The presence of the method is enough to allow the unwind on the storyboard.
-//        print("reload")
-//        tableView.reloadData()
-//    }
+ // FIXME: This isn't called, and unwind happens even when commented out!?
+    @IBAction func unwindAction(unwindSegue: UIStoryboardSegue) {
+        // The presence of the method is enough to allow the unwind on the storyboard.
+        print("unwindAction")
+        tableView.reloadData()
+    }
 
     // MARK: - Table View
     

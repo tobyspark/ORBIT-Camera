@@ -446,7 +446,7 @@
                                                 <action selector="addNewFieldDidEditingChangedWithSender:" destination="7bK-jq-Zjz" eventType="editingChanged" id="AfX-DI-Z4t"/>
                                             </connections>
                                         </textField>
-                                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8eN-2e-Foy">
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8eN-2e-Foy">
                                             <rect key="frame" x="323" y="0.0" width="52" height="52"/>
                                             <accessibility key="accessibilityConfiguration" hint="Takes what you entered and creates a new thing with it" label="Add thing"/>
                                             <constraints>
