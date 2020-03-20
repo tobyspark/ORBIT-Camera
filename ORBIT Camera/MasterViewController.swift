@@ -71,6 +71,15 @@ class MasterViewController: UITableViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        // If any `thing` cell is selected, the underlying data might have changed.
+        if let path = tableView.indexPathForSelectedRow,
+            ThingSection(rawValue: path.section) == .things,
+            let thing = try? Thing.at(index: path.row),
+            let label = tableView.cellForRow(at: path)?.detailTextLabel
+        {
+            label.text = thing.shortDescription()
+        }
+        
         clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
         super.viewWillAppear(animated)
     }
