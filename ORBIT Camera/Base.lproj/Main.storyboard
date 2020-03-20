@@ -429,7 +429,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Add new cell" rowHeight="52" id="WCw-Qf-5nD">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Add new cell" rowHeight="52" id="WCw-Qf-5nD" customClass="NewThingCell" customModule="ORBIT_Camera" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="52"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="WCw-Qf-5nD" id="37f-cq-3Eg">
@@ -442,11 +442,11 @@
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
                                             <textInputTraits key="textInputTraits" returnKeyType="go"/>
                                             <connections>
-                                                <action selector="addNewFieldActionWithSender:" destination="7bK-jq-Zjz" eventType="primaryActionTriggered" id="iLX-m2-M0q"/>
+                                                <action selector="addNewAction" destination="7bK-jq-Zjz" eventType="primaryActionTriggered" id="MWr-J4-dkP"/>
                                                 <action selector="addNewFieldDidEditingChangedWithSender:" destination="7bK-jq-Zjz" eventType="editingChanged" id="AfX-DI-Z4t"/>
                                             </connections>
                                         </textField>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8eN-2e-Foy">
+                                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8eN-2e-Foy">
                                             <rect key="frame" x="323" y="0.0" width="52" height="52"/>
                                             <accessibility key="accessibilityConfiguration" hint="Takes what you entered and creates a new thing with it" label="Add thing"/>
                                             <constraints>
@@ -470,6 +470,10 @@
                                     </constraints>
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <connections>
+                                    <outlet property="labelField" destination="60f-YF-g6L" id="JII-f1-BvW"/>
+                                    <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="showDetail" id="M3h-NW-8hv"/>
+                                </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" textLabel="LCS-jR-9Ng" detailTextLabel="JuM-nw-nM6" style="IBUITableViewCellStyleValue1" id="G7o-Gm-suS">
                                 <rect key="frame" x="0.0" y="80" width="375" height="52.5"/>
@@ -508,7 +512,7 @@
                     <navigationItem key="navigationItem" title="Things" id="Zdf-7t-Un8">
                         <barButtonItem key="rightBarButtonItem" title="Info" image="info.circle" catalog="system" id="tLb-og-RZ7">
                             <connections>
-                                <segue destination="hQ4-tG-xkv" kind="popoverPresentation" popoverAnchorBarButtonItem="tLb-og-RZ7" id="Tvo-fV-csi">
+                                <segue destination="hQ4-tG-xkv" kind="popoverPresentation" popoverAnchorBarButtonItem="tLb-og-RZ7" id="ZJu-Cn-xgj">
                                     <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
                                 </segue>
                             </connections>
@@ -639,6 +643,6 @@
         <image name="xmark.circle" catalog="system" width="64" height="60"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="VfW-pl-Nv3"/>
+        <segue reference="M3h-NW-8hv"/>
     </inferredMetricsTieBreakers>
 </document>
