@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4B5A6B992424CB9200A5C45B /* NewThingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5A6B982424CB9200A5C45B /* NewThingCell.swift */; };
+		4B5A6B9B242527A400A5C45B /* Thing+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5A6B9A242527A400A5C45B /* Thing+UI.swift */; };
 		4B87FD052405C3F0007AB630 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 4B87FD042405C3F0007AB630 /* GRDB */; };
 		4B87FD062405C599007AB630 /* Thing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BCF2405771900E31D93 /* Thing.swift */; };
 		4B87FD072405CE94007AB630 /* AppDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14C182405B81900E31D93 /* AppDatabase.swift */; };
@@ -62,6 +63,7 @@
 
 /* Begin PBXFileReference section */
 		4B5A6B982424CB9200A5C45B /* NewThingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewThingCell.swift; sourceTree = "<group>"; };
+		4B5A6B9A242527A400A5C45B /* Thing+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Thing+UI.swift"; sourceTree = "<group>"; };
 		4B87FD0B2406A074007AB630 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
 		4B87FD0D2406A5DF007AB630 /* Thing+upload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Thing+upload.swift"; sourceTree = "<group>"; };
 		4B87FD1024098D57007AB630 /* Participant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Participant.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 				4B87FD32240EF49F007AB630 /* Uploadable.swift */,
 				4BF14BCF2405771900E31D93 /* Thing.swift */,
 				4B87FD0D2406A5DF007AB630 /* Thing+upload.swift */,
+				4B5A6B9A242527A400A5C45B /* Thing+UI.swift */,
 				4B87FD1D240D4E93007AB630 /* Video.swift */,
 				4B87FD20240D53FC007AB630 /* Video+upload.swift */,
 				4B87FD2F240EC756007AB630 /* MultipartFormData.swift */,
@@ -313,6 +316,7 @@
 				4B87FD3624111E57007AB630 /* AppDatabase+TestData.swift in Sources */,
 				4B5A6B992424CB9200A5C45B /* NewThingCell.swift in Sources */,
 				4B87FD21240D53FC007AB630 /* Video+upload.swift in Sources */,
+				4B5A6B9B242527A400A5C45B /* Thing+UI.swift in Sources */,
 				4BF14BBE2405730700E31D93 /* DetailViewController.swift in Sources */,
 				4B87FD1B240D403A007AB630 /* AppDelegate.swift in Sources */,
 				4B87FD0E2406A5DF007AB630 /* Thing+upload.swift in Sources */,
