@@ -32,23 +32,34 @@ class MasterViewController: UITableViewController {
             set { label = newValue.trimmingCharacters(in: .whitespacesAndNewlines) }
         }
     }
+    
+    /// Segue to detail, creating the new `Thing`
+    // Triggered by 'go' on keyboard, the '+' button
+    // FIXME: Not yet triggered by selection, which seems to be possible despite the above
+    @IBAction func addNewAction() {
+        tableView.selectRow(at: nil, animated: false, scrollPosition: .none) // Or UX-wise, select addNewPath?
+        if shouldPerformSegue(withIdentifier: "showDetail", sender: self) {
+            performSegue(withIdentifier: "showDetail", sender: self)
+        }
+    }
+    
+    /// The 'cleaned' label is kept updated
+    @IBAction func addNewFieldDidEditingChanged(sender: UITextField) {
+        candidateLabel = sender.text ?? ""
+    }
 
     /// The add new text field's primary action, e.g. what happens when 'go' is pressed on the keyboard
     @IBAction func addNewFieldAction(sender: UITextField) {
         // Stop editing
         sender.resignFirstResponder()
         
-        // Assign to candidate
-        candidateLabel = sender.text ?? ""
-        
-        // Go! (or don't)
-        if shouldPerformSegue(withIdentifier: "showDetail", sender: self) {
-            performSegue(withIdentifier: "showDetail", sender: self)
-        }
+        // Go!
+        addNewAction()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         // Do any additional setup after loading the view.
         navigationItem.leftBarButtonItem = editButtonItem
 
@@ -69,6 +80,7 @@ class MasterViewController: UITableViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        
         clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
         super.viewWillAppear(animated)
     }
@@ -96,9 +108,18 @@ class MasterViewController: UITableViewController {
             var thing: Thing
             switch ThingSection(rawValue: indexPath.section)! {
                 case .addNew:
-                    // candidateLabel verified in `shouldPerformSegue`
-                    thing = Thing(withLabel: candidateLabel)
+                    // Clear 'new' cell
+                    (tableView
+                        .cellForRow(at: addNewPath)?
+                        .contentView
+                        .subviews
+                        .first(where: { $0 is UITextField }) as? UITextField)?
+                        .text = ""
+                    
+                    // Insert new thing
+                    thing = Thing(withLabel: candidateLabel) // candidateLabel verified in `shouldPerformSegue`
                     try! dbQueue.write { db in try thing.save(db) } // FIXME: try!
+                    tableView.insertRows(at: [IndexPath(row: 0, section: ThingSection.things.rawValue)], with: .automatic)
                 case .things:
                     thing = try! Thing.at(index: indexPath.row) // FIXME: try!
             }
@@ -113,7 +134,7 @@ class MasterViewController: UITableViewController {
     }
 
 // FIXME: This isn't called, and unwind happens even when commented out!?
-//    @IBAction func unwindAction(unwindSegue: UIStoryboardSegue) {
+//    @IBAction func myUnwindAction(unwindSegue: UIStoryboardSegue) {
 //        // The presence of the method is enough to allow the unwind on the storyboard.
 //        print("reload")
 //        tableView.reloadData()
