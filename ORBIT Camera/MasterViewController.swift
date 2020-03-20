@@ -183,7 +183,16 @@ class MasterViewController: UITableViewController {
             return cell
         }
     }
-
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        switch ThingSection(rawValue: section)! {
+        case .addNew:
+            return "Add a new thing"
+        case .things:
+            return "Your things"
+        }
+    }
+    
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         switch ThingSection(rawValue: indexPath.section)! {
         case .addNew:
