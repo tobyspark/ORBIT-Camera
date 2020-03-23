@@ -234,6 +234,34 @@ class DetailViewController: UIViewController {
         videoCollectionView.reloadItems(at: [IndexPath(row: pageIndex, section: 0)])
     }
     
+    /// Delete the video
+    @IBAction func deleteAction(sender: UIButton) {
+        // Are you sure?
+        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Delete video", style: .destructive, handler: { [weak self] _ in
+            guard
+               let self = self,
+               let thing = self.detailItem,
+               let videoIndex = self.pageVideoIndex(),
+               let video = try? thing.video(with: videoIndex)
+            else {
+               os_log("Could not get video to delete")
+               return
+            }
+            // Delete
+            try! dbQueue.write { db in // FIXME: try!
+               _ = try video.delete(db)
+            }
+            // Update UI
+            self.videoCollectionView.deleteItems(at: [IndexPath(row: self.pageIndex, section: 0)])
+            let pageCount = self.collectionView(self.videoCollectionView, numberOfItemsInSection: 0)
+            self.videoPageControl.numberOfPages = pageCount
+            self.pageIndex = self.pageIndex < pageCount ? self.pageIndex : pageCount - 1
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // On load without MasterViewController instantiated (e.g. iPad), display an item
