@@ -356,11 +356,11 @@ extension DetailViewController: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) { isManuallyScrolling = false }
 }
 
-extension DetailViewController: AVCaptureFileOutputRecordingDelegate {
+extension DetailViewController: CameraProtocol {
     /// Act on the video file the camera has just produced.
     /// If new, create a Video record, and update the UI.
     /// If a replacement, update the re-record state and UI
-    func fileOutput(_ output: AVCaptureFileOutput, didFinishRecordingTo outputFileURL: URL, from connections: [AVCaptureConnection], error: Error?) {
+    func didFinishRecording(to outputFileURL: URL) {
         guard
             let thing = detailItem
         else {
