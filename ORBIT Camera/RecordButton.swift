@@ -62,13 +62,13 @@ class RecordButton: UIControl {
         let buttonOrigin = CGPoint(x: bounds.origin.x + 2*Settings.recordButtonRingWidth, y: bounds.origin.y + 2*Settings.recordButtonRingWidth)
         let buttonSize = CGSize(width: outerDiameter - 4*Settings.recordButtonRingWidth, height: outerDiameter - 4*Settings.recordButtonRingWidth)
         
-        context.setStrokeColor(UIColor.darkText.cgColor)
+        context.setStrokeColor(UIColor.label.cgColor)
         context.setLineWidth(Settings.recordButtonRingWidth)
         context.strokeEllipse(in: CGRect(origin: ringOrigin, size: ringSize))
         
         switch recordingState {
         case .idle:
-            context.setFillColor(UIColor.darkText.cgColor)
+            context.setFillColor(UIColor.label.cgColor)
         case .active:
             context.setFillColor(UIColor.systemRed.cgColor)
         }
