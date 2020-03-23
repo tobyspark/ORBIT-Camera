@@ -84,7 +84,7 @@ class InfoViewController: UIViewController {
             }
         }
         task.resume()
-        unlockCodeStatus.textColor = .darkText
+        unlockCodeStatus.textColor = .label
         unlockCodeStatus.text = "Verifying credential..."
     }
     
