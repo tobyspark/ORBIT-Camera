@@ -31,15 +31,24 @@ class Camera {
     // TODO: Consider detach?
     func attachPreview(to layer: AVCaptureVideoPreviewLayer) {
         #if !targetEnvironment(simulator)
+        guard layer.session != self.captureSession
+        else {
+            os_log("Camera.attachPreview already set, %s.", type: .debug, layer.isPreviewing ? "still previewing" : "preview has stopped")
+            return
+        }
+        
+        // Setting the previewLayer's session while the captureSession is running will block that thread.
         queue.async {
-            // First start on Camera queue
-            self.captureSession.startRunning()
-            // Then attach on UI queue
-            DispatchQueue.main.async {
+            os_log("Camera.attachPreview async in", type: .debug)
+            self.captureSession.stopRunning()
+            DispatchQueue.main.sync {
                 layer.videoGravity = .resizeAspectFill
                 layer.session = self.captureSession
             }
+            self.captureSession.startRunning()
+            os_log("Camera.attachPreview async out", type: .debug)
         }
+        
         #endif
     }
     
@@ -139,7 +148,7 @@ class Camera {
                 {
                     let url = writer.outputURL
                     DispatchQueue.main.async {
-                        print("Camera recordStop calling didFinishRecording with \(url)")
+                        os_log("Camera.recordStop calling delegate.didFinishRecording", type: .debug)
                         delegate.didFinishRecording(to: url)
                     }
                 }

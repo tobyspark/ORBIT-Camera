@@ -302,11 +302,13 @@ extension DetailViewController: UICollectionViewDataSource {
     
     /// The videoCollectionView cells should display the camera and videos
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        os_log("DetailViewController.cellForItemAt entered with page %d", type: .debug, indexPath.row)
         if cameraPageIndexes.contains(indexPath.row) {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Camera Cell", for: indexPath) as? CameraCell else {
                 fatalError("Expected a `\(CameraCell.self)` but did not receive one.")
             }
             camera.attachPreview(to: cell.previewLayer)
+            os_log("DetailViewController.cellForItemAt returning camera cell", type: .debug, indexPath.row)
             return cell
         } else {
             guard
@@ -322,6 +324,7 @@ extension DetailViewController: UICollectionViewDataSource {
                 return cell
             }
             cell.videoURL = video.url
+            os_log("DetailViewController.cellForItemAt returning video cell", type: .debug, indexPath.row)
             return cell
         }
     }
@@ -378,6 +381,7 @@ extension DetailViewController: CameraProtocol {
             videoCollectionView.reloadItems(at: [IndexPath(row: videoPageIndex, section: 0)])
             configurePage()
             cameraControlVisibility = 0
+            os_log("DetailViewController.didFinishRecording has updated video on page %d", type: .debug, videoPageIndex)
         } else {
             guard
                 var video = Video(of: thing, url: outputFileURL, kind: .recognition)
@@ -393,6 +397,7 @@ extension DetailViewController: CameraProtocol {
             videoPageControl.numberOfPages = collectionView(videoCollectionView, numberOfItemsInSection: 0)
             videoCollectionView.insertItems(at: [IndexPath(row: insertionPageIndex, section: 0)])
             pageIndex = insertionPageIndex
+            os_log("DetailViewController.didFinishRecording has inserted video", type: .debug)
         }
     }
 }
