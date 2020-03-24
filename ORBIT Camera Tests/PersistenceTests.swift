@@ -256,7 +256,18 @@ class PersistenceTests: XCTestCase {
         XCTAssertEqual(try Thing.at(index: 2).index(), 2)
         XCTAssertEqual(try Thing.at(index: 1).index(), 1)
         XCTAssertEqual(try Thing.at(index: 0).index(), 0)
+    }
+    
+    func testVideoIndexing() throws {
+        testDataIdentifier = Settings.dateFormatter.string(from: Date())
+        try loadTestData()
         
-        // TODO: Think about thing.videoAt(index:) once have determined desirable indexing etc.
+        let thingFive = try Thing.at(index: 0)
+        
+        XCTAssertNil(try thingFive.video(with: 5))
+        XCTAssertEqual(try thingFive.video(with: 0)!.url.absoluteURL, videoURL(thing: "Five", video: "Five").absoluteURL)
+        
+        XCTAssertNil(thingFive.videoIndex(with: URL(fileURLWithPath: "/no/video/here")))
+        XCTAssertEqual(thingFive.videoIndex(with: videoURL(thing: "Five", video: "Five"))!, 0)
     }
 }

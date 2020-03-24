@@ -123,8 +123,11 @@ extension Thing: FetchableRecord, MutablePersistableRecord {
                 .order(Video.Columns.recorded.desc)
                 .select(Video.Columns.id)
             let ids = try Int64.fetchAll(db, request)
-            let id = ids[index]
-            return try Video.filter(key: id).fetchOne(db)
+            if (0 ..< ids.count).contains(index) {
+                let id = ids[index]
+                return try Video.filter(key: id).fetchOne(db)
+            }
+            return nil
         }
     }
     
@@ -135,7 +138,7 @@ extension Thing: FetchableRecord, MutablePersistableRecord {
                 .filter(Video.Columns.thingID == self.id)
                 .order(Video.Columns.recorded.desc)
                 .fetchAll(db)
-            return videos.firstIndex { $0.url == url}
+            return videos.firstIndex { $0.url.absoluteURL == url.absoluteURL }
         }
     }
 }
