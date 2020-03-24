@@ -59,8 +59,8 @@ class RecordButton: UIControl {
         let outerDiameter = min(bounds.width, bounds.height)
         let ringOrigin = CGPoint(x: bounds.origin.x + Settings.recordButtonRingWidth/2, y: bounds.origin.y + Settings.recordButtonRingWidth/2)
         let ringSize = CGSize(width: outerDiameter - Settings.recordButtonRingWidth, height: outerDiameter - Settings.recordButtonRingWidth)
-        let buttonOrigin = CGPoint(x: bounds.origin.x + 2*Settings.recordButtonRingWidth, y: bounds.origin.y + 2*Settings.recordButtonRingWidth)
-        let buttonSize = CGSize(width: outerDiameter - 4*Settings.recordButtonRingWidth, height: outerDiameter - 4*Settings.recordButtonRingWidth)
+        let buttonOrigin = CGPoint(x: bounds.origin.x + 1.5*Settings.recordButtonRingWidth, y: bounds.origin.y + 1.5*Settings.recordButtonRingWidth)
+        let buttonSize = CGSize(width: outerDiameter - 3*Settings.recordButtonRingWidth, height: outerDiameter - 3*Settings.recordButtonRingWidth)
         
         context.setStrokeColor(UIColor.label.cgColor)
         context.setLineWidth(Settings.recordButtonRingWidth)
