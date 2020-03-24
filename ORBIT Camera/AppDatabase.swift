@@ -70,7 +70,7 @@ struct AppDatabase {
             try db.create(table: "video") { t in
                 // Column names as per CodingKeys
                 t.autoIncrementedPrimaryKey("id")
-                t.column("thingID", .integer).notNull().references("thing", onDelete: .cascade) // FIXME: Don't leave orphan video files on device
+                t.column("thingID", .integer).references("thing", onDelete: .setNull)
                 t.column("filename", .text).notNull()
                 t.column("recorded", .blob).notNull()
                 t.column("uploadID", .integer)

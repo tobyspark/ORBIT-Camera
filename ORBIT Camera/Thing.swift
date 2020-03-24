@@ -86,6 +86,12 @@ extension Thing: FetchableRecord, MutablePersistableRecord {
             let id = ids[ids.count - 1 - index]
             let deleteCount = try Thing.filter(key: id).deleteAll(db)
             if deleteCount != 1 { assertionFailure("Could not delete Thing") } // FIXME: throw an error
+            
+            // Delete videos individually to ensure the file clean-up in the struct's delete method is invoked
+            let orphanVideos = try Video.filter(Video.Columns.thingID == nil).fetchAll(db)
+            for video in orphanVideos {
+                try video.delete(db)
+            }
         }
     }
     

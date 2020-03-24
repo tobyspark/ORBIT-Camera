@@ -12,7 +12,12 @@ struct Settings {
     static let endpointThing = "https://xxx.ngrok.io/phaseone/api/thing/"
     static let endpointVideo = "https://xxx.ngrok.io/phaseone/api/video/"
     static let participant = Participant(
-        id: 0,
         authCredential: "Basic " + Data("0:xxx".utf8).base64EncodedString()
     )
+    static let labels = ["One", "Two", "Three", "Four", "Five"]
+    static let dateFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.dateFormat = "yy-MM-dd-HH-mm-ss"
+        return df
+    }()
 }
