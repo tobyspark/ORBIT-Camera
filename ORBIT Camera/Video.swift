@@ -15,7 +15,8 @@ struct Video: Codable, Equatable {
     var id: Int64?
     
     /// The app database ID of the Thing this is a video of
-    var thingID: Int64
+    /// Deleting the Thing should null this, orphaned videos can then be deleted using the type method which also removes the video file
+    var thingID: Int64?
     
     /// On-device file URL of a video the participant has recorded
     /// As the app's data folder is named dynamically, only store the filename and get/set the URL relative to a type set storage location
@@ -95,5 +96,13 @@ extension Video: FetchableRecord, MutablePersistableRecord {
     // Update auto-incremented id upon successful insertion
     mutating func didInsert(with rowID: Int64, for column: String?) {
         id = rowID
+    }
+    
+    /// Delete the record, removing movie file as well
+    // Note any within-db delete will not invoke this, e.g. foreign key cascade
+    @discardableResult
+    func delete(_ db: Database) throws -> Bool {
+        try FileManager.default.removeItem(at: url)
+        return try performDelete(db)
     }
 }

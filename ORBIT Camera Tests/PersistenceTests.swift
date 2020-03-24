@@ -10,6 +10,8 @@ import XCTest
 import GRDB
 
 class PersistenceTests: XCTestCase {
+    var testDataIdentifier: String?
+    
     override func setUp() {
         dbQueue = DatabaseQueue()
         do {
@@ -20,7 +22,58 @@ class PersistenceTests: XCTestCase {
     }
 
     override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        try! cleanTestFiles()
+    }
+    
+    func loadTestData() throws {
+        guard testDataIdentifier != nil
+        else {
+            XCTFail("Load of test data requires testDataIdentifier to be set")
+            exit(EXIT_FAILURE)
+        }
+        
+        // Mint participant
+        var participant = Settings.participant
+        try dbQueue.write { db in try participant.save(db) }
+        
+        // Mint five things, with five videos each
+        let testVideoURL = Bundle(for: type(of: self)).url(forResource: "orbit-cup-photoreal", withExtension:"mp4")!
+        for thingLabel in Settings.labels {
+            var thing = Thing(withLabel: thingLabel)
+            try dbQueue.write { db in try thing.save(db) }
+            
+            for videoLabel in Settings.labels {
+                let url = videoURL(thing: thingLabel, video: videoLabel)
+                try FileManager.default.copyItem(at: testVideoURL, to: url)
+                
+                var video = Video(of: thing, url: url, kind: .recognition)!
+                try dbQueue.write { db in try video.save(db) }
+            }
+        }
+    }
+    
+    func cleanTestFiles() throws {
+        guard testDataIdentifier != nil
+        else { return }
+        
+        for thingLabel in Settings.labels {
+            for videoLabel in Settings.labels {
+                do {
+                    try FileManager.default.removeItem(at: videoURL(thing: thingLabel, video: videoLabel))
+                } catch {
+                    break
+                }
+            }
+        }
+    }
+    
+    func videoURL(thing: String, video: String) -> URL {
+        guard let identifier = testDataIdentifier
+        else { exit(EXIT_FAILURE) }
+        
+        let documentsDirectory = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        let filename = "_TEST--\(thing)-\(video)--\(identifier).mp4"
+        return documentsDirectory.appendingPathComponent(filename)
     }
     
     /// Persist a participant. Create it, write it to storage, read it from storage, check it's the same.
@@ -90,24 +143,26 @@ class PersistenceTests: XCTestCase {
     
     /// Load test data, checking it's what we expect
     func testLoadTestData() throws {
-        try AppDatabase.loadTestData()
-        var participants = try dbQueue.read { db in try Participant.fetchAll(db) }
-        var things = try dbQueue.read { db in try Thing.fetchAll(db) }
-        XCTAssertEqual(participants.count, 1, "Test (pilot) data should only load one participant")
-        XCTAssertEqual(things.count, 5, "Test (pilot) data should have five things")
-        XCTAssertEqual(things[0].videosCount, 5, "Test (pilot) data should have five videos for a thing")
+        testDataIdentifier = Settings.dateFormatter.string(from: Date())
+        try loadTestData()
         
-        try AppDatabase.loadTestData()
-        participants = try dbQueue.read { db in try Participant.fetchAll(db) }
-        things = try dbQueue.read { db in try Thing.fetchAll(db) }
-        XCTAssertEqual(participants.count, 1, "Test (pilot) data should only ever load one participant")
-        XCTAssertEqual(things.count, 5, "Test (pilot) data should only ever have five things")
-        XCTAssertEqual(things[0].videosCount, 5, "Test (pilot) data should only ever have five videos for a thing")
+        let participants = try dbQueue.read { db in try Participant.fetchAll(db) }
+        let things = try dbQueue.read { db in try Thing.fetchAll(db) }
+        XCTAssertEqual(participants.count, 1, "Test data should only load one participant")
+        XCTAssertEqual(things.count, 5, "Test data should have five things")
+        XCTAssertEqual(things[0].videosCount, 5, "Test data should have five videos for a thing")
+        XCTAssertNoThrow({
+            let videos = try dbQueue.read { db in try Video.fetchAll(db) }
+            for video in videos {
+                try _ = video.url.checkResourceIsReachable()
+            }
+        }, "Test video files should have been placed")
     }
     
     /// Load test data, delete the one Participant, check it's gone.
     func testParticipantDelete() throws {
-        try AppDatabase.loadTestData()
+        testDataIdentifier = Settings.dateFormatter.string(from: Date())
+        try loadTestData()
         
         let deletedCount = try dbQueue.write { db in try Participant.filter(key: 1).deleteAll(db) }
         XCTAssertEqual(deletedCount, 1, "The participant should have been deleted")
@@ -118,7 +173,8 @@ class PersistenceTests: XCTestCase {
     
     /// Load test data, delete the first Thing, check it's gone, and check it's videos have also gone.
     func testThingDelete() throws {
-        try AppDatabase.loadTestData()
+        testDataIdentifier = Settings.dateFormatter.string(from: Date())
+        try loadTestData()
                 
         var thingCount = try dbQueue.read { db in try Thing.filter(key: 1).fetchCount(db) }
         XCTAssertEqual(thingCount, 1, "The thing should be loaded from test data")
@@ -133,44 +189,68 @@ class PersistenceTests: XCTestCase {
         XCTAssertEqual(thingCount, 0, "The thing should have been deleted")
         
         videoCount = try dbQueue.read { db in try Video.filter(Video.Columns.thingID == 1).fetchCount(db) }
-        XCTAssertEqual(videoCount, 0, "The thing's videos should have been deleted")
+        XCTAssertEqual(videoCount, 0, "The thing should have no videos")
+        
+        let orphanVideos = try dbQueue.read { db in try Video.filter(Video.Columns.thingID == nil).fetchAll(db) }
+        XCTAssertEqual(orphanVideos.count, 5, "There should be five orphaned videos")
+        
+        for label in Settings.labels {
+            XCTAssertNoThrow(try videoURL(thing: Settings.labels[0], video: label).checkResourceIsReachable(), "The video file should also have been deleted")
+        }
+        for video in orphanVideos {
+            _ = try dbQueue.write { db in try video.delete(db) }
+        }
+        videoCount = try dbQueue.read { db in try Video.filter(Video.Columns.thingID == nil).fetchCount(db) }
+        XCTAssertEqual(videoCount, 0, "The five orphan videos should have been deleted")
+        
+        for label in Settings.labels {
+            XCTAssertThrowsError(try videoURL(thing: Settings.labels[0], video: label).checkResourceIsReachable(), "The video file should also have been deleted")
+        }
         
         thingCount = try dbQueue.read { db in try Thing.fetchCount(db) }
         XCTAssertEqual(thingCount, 4, "No other things should have been deleted")
-        
+
         videoCount = try dbQueue.read { db in try Video.fetchCount(db) }
         XCTAssertEqual(videoCount, 20, "No other videos should have been deleted")
+        
+        for label in Settings.labels {
+            XCTAssertNoThrow(try videoURL(thing: Settings.labels[1], video: label).checkResourceIsReachable(), "No other video files should have been deleted")
+            XCTAssertNoThrow(try videoURL(thing: Settings.labels[2], video: label).checkResourceIsReachable(), "No other video files should have been deleted")
+            XCTAssertNoThrow(try videoURL(thing: Settings.labels[3], video: label).checkResourceIsReachable(), "No other video files should have been deleted")
+            XCTAssertNoThrow(try videoURL(thing: Settings.labels[4], video: label).checkResourceIsReachable(), "No other video files should have been deleted")
+        }
     }
     
     func testThingIndexing() throws {
-        try AppDatabase.loadTestData()
+        testDataIdentifier = Settings.dateFormatter.string(from: Date())
+        try loadTestData()
         
         try dbQueue.read { db in
-            XCTAssertEqual(try Thing.filter(key: 1).fetchOne(db)?.labelParticipant, "House keys")
-            XCTAssertEqual(try Thing.filter(key: 2).fetchOne(db)?.labelParticipant, "Rucksack")
-            XCTAssertEqual(try Thing.filter(key: 3).fetchOne(db)?.labelParticipant, "White guide cane")
-            XCTAssertEqual(try Thing.filter(key: 4).fetchOne(db)?.labelParticipant, "LG remote control")
-            XCTAssertEqual(try Thing.filter(key: 5).fetchOne(db)?.labelParticipant, "Lifemax talking watch")
+            XCTAssertEqual(try Thing.filter(key: 1).fetchOne(db)?.labelParticipant, "One")
+            XCTAssertEqual(try Thing.filter(key: 2).fetchOne(db)?.labelParticipant, "Two")
+            XCTAssertEqual(try Thing.filter(key: 3).fetchOne(db)?.labelParticipant, "Three")
+            XCTAssertEqual(try Thing.filter(key: 4).fetchOne(db)?.labelParticipant, "Four")
+            XCTAssertEqual(try Thing.filter(key: 5).fetchOne(db)?.labelParticipant, "Five")
         }
         
-        XCTAssertEqual(try Thing.at(index: 4).labelParticipant, "House keys")
-        XCTAssertEqual(try Thing.at(index: 3).labelParticipant, "Rucksack")
-        XCTAssertEqual(try Thing.at(index: 2).labelParticipant, "White guide cane")
-        XCTAssertEqual(try Thing.at(index: 1).labelParticipant, "LG remote control")
-        XCTAssertEqual(try Thing.at(index: 0).labelParticipant, "Lifemax talking watch")
+        XCTAssertEqual(try Thing.at(index: 4).labelParticipant, "One")
+        XCTAssertEqual(try Thing.at(index: 3).labelParticipant, "Two")
+        XCTAssertEqual(try Thing.at(index: 2).labelParticipant, "Three")
+        XCTAssertEqual(try Thing.at(index: 1).labelParticipant, "Four")
+        XCTAssertEqual(try Thing.at(index: 0).labelParticipant, "Five")
         
         _ = try dbQueue.write { db in try Thing.filter(key: 3).deleteAll(db) }
         
-        XCTAssertEqual(try Thing.at(index: 3).labelParticipant, "House keys")
-        XCTAssertEqual(try Thing.at(index: 2).labelParticipant, "Rucksack")
-        XCTAssertEqual(try Thing.at(index: 1).labelParticipant, "LG remote control")
-        XCTAssertEqual(try Thing.at(index: 0).labelParticipant, "Lifemax talking watch")
+        XCTAssertEqual(try Thing.at(index: 3).labelParticipant, "One")
+        XCTAssertEqual(try Thing.at(index: 2).labelParticipant, "Two")
+        XCTAssertEqual(try Thing.at(index: 1).labelParticipant, "Four")
+        XCTAssertEqual(try Thing.at(index: 0).labelParticipant, "Five")
         
         try Thing.deleteAt(index: 1)
         
-        XCTAssertEqual(try Thing.at(index: 2).labelParticipant, "House keys")
-        XCTAssertEqual(try Thing.at(index: 1).labelParticipant, "Rucksack")
-        XCTAssertEqual(try Thing.at(index: 0).labelParticipant, "Lifemax talking watch")
+        XCTAssertEqual(try Thing.at(index: 2).labelParticipant, "One")
+        XCTAssertEqual(try Thing.at(index: 1).labelParticipant, "Two")
+        XCTAssertEqual(try Thing.at(index: 0).labelParticipant, "Five")
         
         XCTAssertEqual(try Thing(withLabel: "Label").index(), nil)
         XCTAssertEqual(try Thing.at(index: 2).index(), 2)
