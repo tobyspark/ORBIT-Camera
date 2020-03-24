@@ -18,7 +18,11 @@ struct Video: Codable, Equatable {
     var thingID: Int64
     
     /// On-device file URL of a video the participant has recorded
-    var url: URL
+    /// As the app's data folder is named dynamically, only store the filename and get/set the URL relative to a type set storage location
+    var url: URL {
+        get { URL(fileURLWithPath: filename, relativeTo: Video.storageURL) }
+        set { filename = newValue.lastPathComponent }
+    }
     
     /// When the video was recorded
     var recorded: Date
@@ -59,11 +63,21 @@ struct Video: Codable, Equatable {
         }
         self.id = nil
         self.thingID = thingID
-        self.url = url
+        self.filename = ""
         self.recorded = Date()
         self.uploadID = nil
         self.orbitID = nil
         self.kind = kind
+        
+        self.url = url
+    }
+    
+    // Private property backing `url`
+    private var filename: String
+    
+    // Private type property backing `url`
+    private static var storageURL: URL {
+        try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true) // FIXME: try!
     }
 }
 
@@ -71,7 +85,7 @@ extension Video: FetchableRecord, MutablePersistableRecord {
     enum Columns {
         static let id = Column(CodingKeys.id)
         static let thingID = Column(CodingKeys.thingID)
-        static let url = Column(CodingKeys.url)
+        static let filename = Column(CodingKeys.filename)
         static let recorded = Column(CodingKeys.recorded)
         static let uploadID = Column(CodingKeys.uploadID)
         static let orbitID = Column(CodingKeys.orbitID)

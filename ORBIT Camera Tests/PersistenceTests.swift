@@ -72,7 +72,7 @@ class PersistenceTests: XCTestCase {
         // "path/to/1 -- file:///" != "file:///path/to/1"
         //XCTAssertEqual(video, videos[0], "Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual(video.thingID, videos[0].thingID, "Retreiving a persisted thing should return an identical thing")
-        XCTAssertEqual(video.url.absoluteString, videos[0].url.absoluteString, "Retreiving a persisted thing should return an identical thing")
+        XCTAssertEqual(video.url, videos[0].url, "Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual(video.recorded.description, videos[0].recorded.description, "Retreiving a persisted thing should return an identical thing") // Floating point internal representation is rounded to three decimal places on coding, so for expediency let's just compare the description.
         XCTAssertEqual(video.uploadID, videos[0].uploadID, "Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual(video.orbitID, videos[0].orbitID, "Retreiving a persisted thing should return an identical thing")
