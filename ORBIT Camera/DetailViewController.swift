@@ -49,67 +49,7 @@ class DetailViewController: UIViewController {
     /// The selected page, i.e. index of the currently visible videoCollection item.
     /// This is as per `thing.videoAt(index:)`, modified by any 'add new' camera cell.
     var pageIndex: Int = 0 {
-        didSet {
-            let isCameraPage = cameraPageIndexes.contains(pageIndex)
-            let video = pageVideo()
-            
-            // Update collection
-            // Don't animate to new position if the position is being set by direct manipulation
-            if !isManuallyScrolling {
-                videoCollectionView.scrollToItem(
-                    at: IndexPath(row: pageIndex, section: 0),
-                    at: .centeredHorizontally,
-                    animated: true
-                )
-            }
-            
-            // Update page control
-            videoPageControl.currentPage = pageIndex
-            let pageDescription: String
-            if isCameraPage {
-                pageDescription = "Add new video to collection"
-            } else if let video = video {
-                let number = pageVideoIndex()! + 1 // index-based to count-based
-                let total = collectionView(videoCollectionView, numberOfItemsInSection: 0) - 1 // take off count of 'add new' items
-                let kind = video.kind.description()
-                pageDescription = "Video \(number) of \(total): \(kind)"
-            } else {
-                os_log("Page is not camera and has no video")
-                assertionFailure()
-                pageDescription = ""
-            }
-            videoLabel.text = pageDescription
-            videoPageControl.accessibilityValue = pageDescription
-            
-            // Update statuses
-            if let video = video {
-                videoRecordedLabel.text = "Recorded on \(Settings.dateFormatter.string(from:video.recorded))"
-                videoUploadedIcon.image = video.uploadID == nil ? UIImage(systemName: "arrow.up.circle") : UIImage(systemName: "arrow.up.circle.fill")
-                videoUploadedLabel.text = video.uploadID == nil ? "Not yet uploaded" : "Uploaded"
-                // TODO: videoVerified
-                // TODO: videoPublished
-            }
-            
-            // Update camera control
-            // Note animation on/off is set by cameraControlVisibility which is set by scrollViewDidScroll
-            if isCameraPage {
-                videoRerecordButton.isAccessibilityElement = false
-                videoRecordedLabel.isAccessibilityElement = false
-                videoUploadedLabel.isAccessibilityElement = false
-                videoVerifiedLabel.isAccessibilityElement = false
-                videoPublishedLabel.isAccessibilityElement = false
-                videoDeleteButton.isAccessibilityElement = false
-                recordButton.isAccessibilityElement = true
-            } else {
-                videoRerecordButton.isAccessibilityElement = true
-                videoRecordedLabel.isAccessibilityElement = true
-                videoUploadedLabel.isAccessibilityElement = true
-                videoVerifiedLabel.isAccessibilityElement = true
-                videoPublishedLabel.isAccessibilityElement = true
-                videoDeleteButton.isAccessibilityElement = true
-                recordButton.isAccessibilityElement = false
-            }
-        }
+        didSet { configurePage() }
     }
     
     /// The page index where the camera to take new videos is placed. Currently the first, but an alternative could be the last
@@ -185,6 +125,69 @@ class DetailViewController: UIViewController {
         camera.delegate = self
     }
     
+    /// Update the user interface for the selected page
+    func configurePage() {
+        let isCameraPage = cameraPageIndexes.contains(pageIndex)
+        let video = pageVideo()
+        
+        // Update collection
+        // Don't animate to new position if the position is being set by direct manipulation
+        if !isManuallyScrolling {
+            videoCollectionView.scrollToItem(
+                at: IndexPath(row: pageIndex, section: 0),
+                at: .centeredHorizontally,
+                animated: true
+            )
+        }
+        
+        // Update page control
+        videoPageControl.currentPage = pageIndex
+        let pageDescription: String
+        if pageIndex == addNewPageIndex {
+            pageDescription = (pageIndex == addNewPageIndex) ? "Add new video to collection" : "Re-record video"
+        } else if let video = video {
+            let number = pageVideoIndex()! + 1 // index-based to count-based
+            let total = collectionView(videoCollectionView, numberOfItemsInSection: 0) - 1 // take off count of 'add new' items
+            let kind = video.kind.description()
+            pageDescription = isCameraPage ? "Re-record video \(number) of \(total)" : "Video \(number) of \(total): \(kind)"
+        } else {
+            os_log("Page is not camera and has no video")
+            assertionFailure()
+            pageDescription = ""
+        }
+        videoLabel.text = pageDescription
+        videoPageControl.accessibilityValue = pageDescription
+        
+        // Update statuses
+        if let video = video {
+            videoRecordedLabel.text = "Recorded on \(Settings.dateFormatter.string(from:video.recorded))"
+            videoUploadedIcon.image = video.uploadID == nil ? UIImage(systemName: "arrow.up.circle") : UIImage(systemName: "arrow.up.circle.fill")
+            videoUploadedLabel.text = video.uploadID == nil ? "Not yet uploaded" : "Uploaded"
+            // TODO: videoVerified
+            // TODO: videoPublished
+        }
+        
+        // Update camera control
+        // Note animation on/off is set by cameraControlVisibility which is set by scrollViewDidScroll
+        if isCameraPage {
+            videoRerecordButton.isAccessibilityElement = false
+            videoRecordedLabel.isAccessibilityElement = false
+            videoUploadedLabel.isAccessibilityElement = false
+            videoVerifiedLabel.isAccessibilityElement = false
+            videoPublishedLabel.isAccessibilityElement = false
+            videoDeleteButton.isAccessibilityElement = false
+            recordButton.isAccessibilityElement = true
+        } else {
+            videoRerecordButton.isAccessibilityElement = true
+            videoRecordedLabel.isAccessibilityElement = true
+            videoUploadedLabel.isAccessibilityElement = true
+            videoVerifiedLabel.isAccessibilityElement = true
+            videoPublishedLabel.isAccessibilityElement = true
+            videoDeleteButton.isAccessibilityElement = true
+            recordButton.isAccessibilityElement = false
+        }
+    }
+    
     /// Action the video corresponding to page
     @IBAction func pageControlAction(sender: UIPageControl) {
         pageIndex = sender.currentPage
@@ -232,6 +235,7 @@ class DetailViewController: UIViewController {
         // Update UI
         cameraControlVisibility = 1.0
         videoCollectionView.reloadItems(at: [IndexPath(row: pageIndex, section: 0)])
+        configurePage()
     }
     
     /// Delete the video
@@ -372,6 +376,8 @@ extension DetailViewController: CameraProtocol {
             let videoPageIndex = videoIndex < addNewPageIndex ? videoIndex : videoIndex + 1
             rerecordPageIndexes.remove(videoPageIndex)
             videoCollectionView.reloadItems(at: [IndexPath(row: videoPageIndex, section: 0)])
+            configurePage()
+            cameraControlVisibility = 0
         } else {
             guard
                 var video = Video(of: thing, url: outputFileURL, kind: .recognition)
