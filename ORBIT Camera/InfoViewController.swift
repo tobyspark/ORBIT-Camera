@@ -17,29 +17,15 @@ class InfoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        guard
-            let participant = try? Participant.appParticipant()
-        else {
-            return
+        if let credential = try! Participant.appParticipant().authCredential { // FIXME: try!
+            unlockCode.text = credential
+            checkCredential(credential)
         }
-        unlockCode.text = participant.authCredential
-        checkCredential(participant)
     }
     
-    
     @IBAction func unlockCodeEditingDidEnd(_ sender: Any) {
-        guard
-            var participant = try? Participant.appParticipant()
-        else {
-            return
-        }
-        
         if let credential = unlockCode.text {
-            participant.authCredential = credential
-            do { try dbQueue.write { db in try participant.save(db) } }
-            catch { os_log("Failed to save participant updated authCredential") }
-            
-            checkCredential(participant)
+            checkCredential(credential)
         }
     }
     
@@ -50,23 +36,23 @@ class InfoViewController: UIViewController {
         case credentialRejected
     }
     
-    func checkCredential(_ participant: Participant) {
+    func checkCredential(_ credential: String) {
         // Test the auth credential by hitting an API endpoint
         let url = URL(string: Settings.endpointThing)!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-            request.setValue(participant.authCredential, forHTTPHeaderField: "Authorization")
+        request.setValue(credential, forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         let task = URLSession.shared.dataTask(with: request) { (_, response, error) in
-            let result: Result<Int, CredentialError>
-            if let error = error {
+            let result: Result<String, CredentialError>
+            if error != nil {
                 result = .failure(.transportError)
             } else {
                 if let httpResponse = response as? HTTPURLResponse {
                     switch httpResponse.statusCode {
                     case 200...299:
-                        result = .success(0) // TODO: return the actual ORBIT participant ID, having hit a participant end-point and decoding the json
+                        result = .success(credential) // TODO: also return the ORBIT participant ID, having hit a participant end-point and decoding the json
                     case 403:
                         result = .failure(.credentialRejected)
                     default:
@@ -88,11 +74,16 @@ class InfoViewController: UIViewController {
         unlockCodeStatus.text = "Verifying credential..."
     }
     
-    func handleCredentialResult(_ result: Result<Int, CredentialError>) {
+    func handleCredentialResult(_ result: Result<String, CredentialError>) {
         switch result {
-        case .success:
+        case .success(let credential):
+            // UI
             unlockCodeStatus.textColor = .systemGreen
             unlockCodeStatus.text = "Code accepted"
+            // Save validated credential
+            var participant = try! Participant.appParticipant() // FIXME: try!
+            participant.authCredential = credential
+            try! dbQueue.write { db in try participant.save(db) } // FIXME: try!
         case .failure(let error):
             unlockCodeStatus.textColor = .systemRed
             switch error {

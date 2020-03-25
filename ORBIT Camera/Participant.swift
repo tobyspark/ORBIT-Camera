@@ -19,8 +19,8 @@ struct Participant: Codable, Equatable {
     /// Note this is not the ORBIT participant ID! We don't actually need that at present, further at present it's encoded into the authCredential.
     var id: Int64?
     
-    /// Authorisation string for HTTP requests made for this participant
-    var authCredential: String
+    /// Authorisation string for HTTP requests made for this participant. Should only be populated with validated credential.
+    var authCredential: String?
 }
 
 extension Participant: FetchableRecord, MutablePersistableRecord {
@@ -30,16 +30,13 @@ extension Participant: FetchableRecord, MutablePersistableRecord {
     }
     
     /// The app is designed for only one participant. This returns the one participant from the database.
-    static func appParticipant() throws -> Participant? {
-        try dbQueue.read { db in
-            guard
-                 try Participant.fetchCount(db) == 1
-            else {
-                os_log("Multiple participants in app database")
-                assertionFailure()
-                return nil
-            }
-            return try Participant.fetchOne(db)
+    static func appParticipant() throws -> Participant {
+        if let participant = try dbQueue.read { db in try Participant.filter(key: 1).fetchOne(db) } {
+            return participant
         }
+        var participant = Participant()
+        try dbQueue.write { db in try participant.save(db) }
+        assert(participant.id == 1, "appParticipant created with ID other than 1")
+        return participant
     }
 }
