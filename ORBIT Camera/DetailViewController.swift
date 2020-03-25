@@ -247,6 +247,10 @@ class DetailViewController: UIViewController {
     @IBAction func deleteAction(sender: UIButton) {
         // Are you sure?
         let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.sourceView = sender
+            popoverController.sourceRect = sender.bounds
+        }
         alert.addAction(UIAlertAction(title: "Delete video", style: .destructive, handler: { [weak self] _ in
             guard
                let self = self,
