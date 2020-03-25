@@ -78,7 +78,7 @@ class PersistenceTests: XCTestCase {
     
     /// Persist a participant. Create it, write it to storage, read it from storage, check it's the same.
     func testPersistParticipant() throws {
-        var participant = Participant(authCredential: "qwertyuiop") 
+        var participant = Participant()
         XCTAssertNil(participant.id, "Unstored thing should have no ID")
         try dbQueue.write { db in try participant.save(db) }
         XCTAssertNotNil(participant.id, "Stored thing should have an ID")
