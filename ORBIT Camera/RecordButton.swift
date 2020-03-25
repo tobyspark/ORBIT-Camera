@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import os
 
 class RecordButton: UIControl {
     enum RecordingState {
@@ -35,10 +36,11 @@ class RecordButton: UIControl {
         switch recordingState {
         case .idle:
             recordingState = .active(Date())
+            os_log("RecordButton.state active")
         case .active(let date):
             recordingState = .idle
             let duration = DateInterval(start: date, end: Date()).duration
-            print("RecordButton active for \(duration)s")
+            os_log("RecordButton.state idle, active for %fs", duration)
         }
         setNeedsDisplay()
     }
