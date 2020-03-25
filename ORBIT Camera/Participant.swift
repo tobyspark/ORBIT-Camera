@@ -31,7 +31,7 @@ extension Participant: FetchableRecord, MutablePersistableRecord {
     
     /// The app is designed for only one participant. This returns the one participant from the database.
     static func appParticipant() throws -> Participant {
-        if let participant = try dbQueue.read { db in try Participant.filter(key: 1).fetchOne(db) } {
+        if let participant = try dbQueue.read({ db in try Participant.filter(key: 1).fetchOne(db) }) {
             return participant
         }
         var participant = Participant()
