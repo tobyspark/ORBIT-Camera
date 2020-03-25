@@ -230,10 +230,15 @@ class DetailViewController: UIViewController {
     
     /// Put a video in a state to re-record
     @IBAction func rerecordButtonAction(sender: UIButton) {
+        os_log("DetailViewController.rerecordButtonAction, pageIndex %d", type: .debug, pageIndex)
         rerecordPageIndexes.insert(pageIndex)
         
         // Update UI
         cameraControlVisibility = 1.0
+        // DEBUG NOTE
+        // reloadItems gets the replacement cell twice.
+        // reloadItems done, the collectionView then reloads the adjacent cells.
+        // this wouldn't be a problem, but the camera cell
         videoCollectionView.reloadItems(at: [IndexPath(row: pageIndex, section: 0)])
         configurePage()
     }
