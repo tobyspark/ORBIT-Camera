@@ -38,7 +38,7 @@ extension Video: Uploadable {
         }
         
         guard
-            let thing = try dbQueue.read { db in try Thing.filter(key: thingID).fetchOne(db) },
+            let thing = try dbQueue.read({ db in try Thing.filter(key: thingID).fetchOne(db) }),
             let thingOrbitID = thing.orbitID
         else {
             os_log("Attempted to upload Video without orbitID of thing")
