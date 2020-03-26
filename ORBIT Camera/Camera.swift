@@ -31,8 +31,9 @@ class Camera {
     // TODO: Consider detach?
     func attachPreview(to layer: CALayer) {
         videoDataDelegate.queue.async {
+            os_log("Camera adding previewLayer", type: .debug)
             layer.contentsGravity = .resizeAspectFill
-            self.previewLayers.insert(layer) // TODO: a weak reference
+            self.previewLayers.insert(WeakRef(object: layer))
         }
         #if !targetEnvironment(simulator)
         queue.async {
@@ -203,7 +204,7 @@ class Camera {
     fileprivate var writer: AVAssetWriter?
     
     /// Preview layers to update
-    fileprivate var previewLayers = Set<CALayer>()
+    fileprivate var previewLayers = Set<WeakRef<CALayer>>()
 }
 
 /// Essential Camera recording functionality, that happens to be in a separate class. Hence private, tightly coupled. Needs to be instantiated new for each capture.
@@ -222,9 +223,14 @@ fileprivate class VideoDataDelegate: NSObject, AVCaptureVideoDataOutputSampleBuf
             let context = CIContext.init(options: nil)
             let cgImage = context.createCGImage(ciimage, from: ciimage.extent)!
             
-            for layer in camera.previewLayers {
-                layer.contents = cgImage
-                (layer.delegate as! UIView).setNeedsDisplay()
+            for layerRef in camera.previewLayers {
+                if let layer = layerRef.object {
+                    layer.contents = cgImage
+                    (layer.delegate as! UIView).setNeedsDisplay()
+                } else {
+                    os_log("Camera removing previewLayer", type: .debug)
+                    camera.previewLayers.remove(layerRef)
+                }
             }
         }
         
@@ -247,4 +253,8 @@ fileprivate class VideoDataDelegate: NSObject, AVCaptureVideoDataOutputSampleBuf
     }
     
     private var writerDidStart = false
+}
+
+struct WeakRef<T: AnyObject>: Hashable where T: Hashable {
+    weak var object: T?
 }
