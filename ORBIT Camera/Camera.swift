@@ -94,18 +94,20 @@ class Camera {
     func recordStop() {
         #if !targetEnvironment(simulator)
         queue.async {
-            // Wrap-up writing
-            self.writer?.finishWriting {
-                if let writer = self.writer, let delegate = self.delegate
-                {
-                    let url = writer.outputURL
-                    DispatchQueue.main.async {
-                        os_log("Camera.recordStop calling delegate.didFinishRecording", type: .debug)
-                        delegate.didFinishRecording(to: url)
+            self.videoDataDelegate.queue.sync {
+                // Wrap-up writing
+                self.writer?.finishWriting {
+                    if let writer = self.writer, let delegate = self.delegate
+                    {
+                        let url = writer.outputURL
+                        DispatchQueue.main.async {
+                            os_log("Camera.recordStop calling delegate.didFinishRecording", type: .debug)
+                            delegate.didFinishRecording(to: url)
+                        }
                     }
+                    self.writer = nil
+                    self.writerInput = nil
                 }
-                self.writer = nil
-                self.writerInput = nil
             }
         }
         #endif
