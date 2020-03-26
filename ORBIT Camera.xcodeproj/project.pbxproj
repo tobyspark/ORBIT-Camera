@@ -41,6 +41,7 @@
 		4B9AA9FC2417E4A8002380B1 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9AA9F92417E4A7002380B1 /* Camera.swift */; };
 		4B9AA9FF2418EA49002380B1 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9AA9FE2418EA49002380B1 /* RecordButton.swift */; };
 		4BA13A5A242D6EC4006D838B /* PreviewMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA13A59242D6EC4006D838B /* PreviewMetalView.swift */; };
+		4BA13A5C242D71E5006D838B /* PassThrough.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4BA13A5B242D71E4006D838B /* PassThrough.metal */; };
 		4BF14BBA2405730700E31D93 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB92405730700E31D93 /* SceneDelegate.swift */; };
 		4BF14BBC2405730700E31D93 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBB2405730700E31D93 /* MasterViewController.swift */; };
 		4BF14BBE2405730700E31D93 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBD2405730700E31D93 /* DetailViewController.swift */; };
@@ -84,6 +85,7 @@
 		4B9AA9F92417E4A7002380B1 /* Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		4B9AA9FE2418EA49002380B1 /* RecordButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
 		4BA13A59242D6EC4006D838B /* PreviewMetalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewMetalView.swift; sourceTree = "<group>"; };
+		4BA13A5B242D71E4006D838B /* PassThrough.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PassThrough.metal; sourceTree = "<group>"; };
 		4BF14BB42405730700E31D93 /* ORBIT Camera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ORBIT Camera.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BF14BB72405730700E31D93 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4BF14BB92405730700E31D93 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 				4B9AA9F52417A63C002380B1 /* InfoViewController.swift */,
 				4B9AA9F92417E4A7002380B1 /* Camera.swift */,
 				4BA13A59242D6EC4006D838B /* PreviewMetalView.swift */,
+				4BA13A5B242D71E4006D838B /* PassThrough.metal */,
 				4B87FD1024098D57007AB630 /* Participant.swift */,
 				4B87FD32240EF49F007AB630 /* Uploadable.swift */,
 				4BF14BCF2405771900E31D93 /* Thing.swift */,
@@ -311,6 +314,7 @@
 				4BA13A5A242D6EC4006D838B /* PreviewMetalView.swift in Sources */,
 				4B87FD33240EF4A0007AB630 /* Uploadable.swift in Sources */,
 				4BF14BD02405771900E31D93 /* Thing.swift in Sources */,
+				4BA13A5C242D71E5006D838B /* PassThrough.metal in Sources */,
 				4B9AA9F62417A63C002380B1 /* InfoViewController.swift in Sources */,
 				4B87FD2C240E763D007AB630 /* Settings.swift in Sources */,
 				4B87FD1E240D4E93007AB630 /* Video.swift in Sources */,
