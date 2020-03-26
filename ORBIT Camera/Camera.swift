@@ -29,11 +29,10 @@ class Camera {
     /// Attach a preview layer to this camera.
     /// This previews the video coming from the device, currently set to 16:9, but has presentation attribute set to fill the layer while maintaining the aspect ratio. If the provided layer is square, this will match recorded output.
     // TODO: Consider detach?
-    func attachPreview(to layer: CALayer) {
+    func attachPreview(to view: PreviewMetalView) {
         videoDataDelegate.queue.async {
-            os_log("Camera adding previewLayer", type: .debug)
-            layer.contentsGravity = .resizeAspectFill
-            self.previewLayers.insert(WeakRef(object: layer))
+            os_log("Camera adding preview", type: .debug)
+            self.previewViews.insert(WeakRef(object: view))
         }
         #if !targetEnvironment(simulator)
         queue.async {
@@ -204,7 +203,7 @@ class Camera {
     fileprivate var writer: AVAssetWriter?
     
     /// Preview layers to update
-    fileprivate var previewLayers = Set<WeakRef<CALayer>>()
+    fileprivate var previewViews = Set<WeakRef<PreviewMetalView>>()
 }
 
 /// Essential Camera recording functionality, that happens to be in a separate class. Hence private, tightly coupled. Needs to be instantiated new for each capture.
@@ -217,19 +216,16 @@ fileprivate class VideoDataDelegate: NSObject, AVCaptureVideoDataOutputSampleBuf
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         // Push to preview layers
-        if !camera.previewLayers.isEmpty {
+        if !camera.previewViews.isEmpty {
             let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)!
-            let ciimage = CIImage(cvPixelBuffer: imageBuffer)
-            let context = CIContext.init(options: nil)
-            let cgImage = context.createCGImage(ciimage, from: ciimage.extent)!
+            let ciImage = CIImage(cvPixelBuffer: imageBuffer)
             
-            for layerRef in camera.previewLayers {
-                if let layer = layerRef.object {
-                    layer.contents = cgImage
-                    (layer.delegate as! UIView).setNeedsDisplay()
+            for viewRef in camera.previewViews {
+                if let view = viewRef.object {
+                    view.image = ciImage
                 } else {
                     os_log("Camera removing previewLayer", type: .debug)
-                    camera.previewLayers.remove(layerRef)
+                    camera.previewViews.remove(viewRef)
                 }
             }
         }
