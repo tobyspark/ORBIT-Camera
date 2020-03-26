@@ -316,7 +316,7 @@ extension DetailViewController: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Camera Cell", for: indexPath) as? CameraCell else {
                 fatalError("Expected a `\(CameraCell.self)` but did not receive one.")
             }
-            camera.attachPreview(to: cell.layer)
+            camera.attachPreview(to: cell.contentView as! PreviewMetalView)
             os_log("DetailViewController.cellForItemAt returning camera cell", type: .debug, indexPath.row)
             return cell
         } else {
