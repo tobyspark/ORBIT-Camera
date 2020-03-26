@@ -59,17 +59,11 @@ class Camera {
             // The capture objects should only exist during recording.
             guard
                 self.writerInput == nil,
-                self.writer == nil,
-                self.videoDataOutput == nil,
-                self.captureDelegate == nil
+                self.writer == nil
             else {
                 os_log("Stale capture object(s) on recordStart")
                 return
             }
-            
-            // Create CaptureDelegate
-            self.captureDelegate = CaptureDelegate()
-            self.captureDelegate.camera = self
 
             // Create AVAssetWriterInput
             // The capture session has to operate using device (e.g. hardware) formats,
@@ -98,33 +92,9 @@ class Camera {
                 os_log("Could not start AVAssetWriter")
                 return
             }
-            
-            // Create AVCaptureVideoDataOutput
-            let videoDataOutput = AVCaptureVideoDataOutput()
-            videoDataOutput.setSampleBufferDelegate(self.captureDelegate, queue: self.captureDelegate.queue)
-            
-            guard self.captureSession.canAddOutput(videoDataOutput)
-            else {
-                os_log("Could not add AVCaptureVideoDataOutput")
-                return
-            }
-            self.captureSession.beginConfiguration()
-            self.captureSession.addOutput(videoDataOutput)
-            if let connection = videoDataOutput.connection(with: .video) {
-                // Set portrait, to match non-rotating portrait UI
-                if connection.isVideoOrientationSupported {
-                    connection.videoOrientation = .portrait
-                }
-                // Stablise if possible
-                if connection.isVideoStabilizationSupported {
-                    connection.preferredVideoStabilizationMode = .auto
-                }
-            }
-            self.captureSession.commitConfiguration()
 
-            // Now everything is set, persist the capture objects
+            // Now everything is set, declare the record objects
             // This will start recording, enacted in the videoDataSource delegate
-            self.videoDataOutput = videoDataOutput
             self.writer = writer
             self.writerInput = writerInput
         }
@@ -135,13 +105,6 @@ class Camera {
     func recordStop() {
         #if !targetEnvironment(simulator)
         queue.async {
-            // Stop video data being output
-            if let videoDataOutput = self.videoDataOutput {
-                self.captureSession.removeOutput(videoDataOutput)
-            }
-            self.videoDataOutput = nil
-            self.captureDelegate = nil
-            
             // Wrap-up writing
             self.writer?.finishWriting {
                 if let writer = self.writer, let delegate = self.delegate
@@ -165,9 +128,17 @@ class Camera {
     init() {
         #if !targetEnvironment(simulator)
         queue.async {
-            // Configure the AVCaptureSession sufficient for preview
+            // Create CaptureDelegate
+            self.videoDataDelegate = VideoDataDelegate()
+            self.videoDataDelegate.camera = self
+            
+            // AVCaptureSession BEGIN
             self.captureSession.beginConfiguration()
+            
+            // Configure the AVCaptureSession
             self.captureSession.sessionPreset = .hd1920x1080
+            
+            // Create AVCaptureDeviceInput
             guard
                 let videoDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
                 let videoDeviceInput = try? AVCaptureDeviceInput(device: videoDevice),
@@ -177,8 +148,30 @@ class Camera {
                 return
             }
             self.captureSession.addInput(videoDeviceInput)
-            self.captureSession.commitConfiguration()
 
+            // Create AVCaptureVideoDataOutput
+            let videoDataOutput = AVCaptureVideoDataOutput()
+            videoDataOutput.setSampleBufferDelegate(self.videoDataDelegate, queue: self.videoDataDelegate.queue)
+            guard self.captureSession.canAddOutput(videoDataOutput)
+            else {
+                os_log("Could not add AVCaptureVideoDataOutput")
+                return
+            }
+            self.captureSession.addOutput(videoDataOutput)
+            if let connection = videoDataOutput.connection(with: .video) {
+                // Set portrait, to match non-rotating portrait UI
+                if connection.isVideoOrientationSupported {
+                    connection.videoOrientation = .portrait
+                }
+                // Stablise if possible
+                if connection.isVideoStabilizationSupported {
+                    connection.preferredVideoStabilizationMode = .auto
+                }
+            }
+            
+            // AVCaptureSession END
+            self.captureSession.commitConfiguration()
+            
 //            // What native recording formats does this device have? Are any square?
 //            for format in videoDevice.formats {
 //                let fdesc = format.formatDescription
@@ -194,38 +187,44 @@ class Camera {
     
     /// A queue to allow camera operations to run in order, in the background
     private let queue = DispatchQueue(label: "cameraSerialQueue")
+    
+    /// The handler for the AVCaptureVideoDataOutput supplied video frames
+    private var videoDataDelegate: VideoDataDelegate!
 
-    /// Capture object instantiated for (and only exist during) recording
-    private var captureDelegate: CaptureDelegate!
-    /// Capture object instantiated for (and only exist during) recording
-    private var videoDataOutput: AVCaptureVideoDataOutput?
-    /// Capture object instantiated for (and only exist during) recording
+    /// Capture object instantiated for (and only exist during) recording, formats for square mp4
     fileprivate var writerInput: AVAssetWriterInput?
-    /// Capture object instantiated for (and only exist during) recording
+    
+    /// Capture object instantiated for (and only exist during) recording, writes that formated data
     fileprivate var writer: AVAssetWriter?
 }
 
 /// Essential Camera recording functionality, that happens to be in a separate class. Hence private, tightly coupled. Needs to be instantiated new for each capture.
-fileprivate class CaptureDelegate: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
+fileprivate class VideoDataDelegate: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     weak var camera: Camera!
-        
-    let queue = DispatchQueue(label: "cameraCaptureQueue")
+    
+    // The serial queue `captureOutput` is called on
+    let queue = DispatchQueue(label: "cameraVideoDataQueue")
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        guard
-            let writer = camera.writer,
-            let writerInput = camera.writerInput
-        else { return }
+        // TODO: Update previews goes here
         
-        // To ensure the output video starts at time zero, start the writer's session with the PTS of the first frame it's going to receive
-        if !didStart {
-            writer.startSession(atSourceTime: sampleBuffer.presentationTimeStamp)
-            didStart = false
+        if let writer = camera.writer,
+           let writerInput = camera.writerInput
+        {
+            // To ensure the output video starts at time zero, start the writer's session with the PTS of the first frame it's going to receive
+            if !writerDidStart {
+                writer.startSession(atSourceTime: sampleBuffer.presentationTimeStamp)
+                writerDidStart = true
+            }
+            
+            writerInput.append(sampleBuffer)
         }
-        
-        writerInput.append(sampleBuffer)
+        else if writerDidStart
+        {
+            writerDidStart = false
+        }
     }
     
-    private var didStart = false
+    private var writerDidStart = false
 }
