@@ -31,8 +31,11 @@ class Camera {
     // TODO: Consider detach?
     func attachPreview(to view: PreviewMetalView) {
         videoDataDelegate.queue.async {
-            os_log("Camera adding preview", type: .debug)
-            self.previewViews.insert(WeakRef(object: view))
+            view.rotation = .rotate180Degrees
+            let result = self.previewViews.insert(WeakRef(object: view))
+            if result.inserted {
+                os_log("Camera adding preview", type: .debug)
+            }
         }
         #if !targetEnvironment(simulator)
         queue.async {
