@@ -29,26 +29,15 @@ class Camera {
     /// Attach a preview layer to this camera.
     /// This previews the video coming from the device, currently set to 16:9, but has presentation attribute set to fill the layer while maintaining the aspect ratio. If the provided layer is square, this will match recorded output.
     // TODO: Consider detach?
-    func attachPreview(to layer: AVCaptureVideoPreviewLayer) {
+    func attachPreview(to layer: CALayer) {
+        videoDataDelegate.queue.async {
+            layer.contentsGravity = .resizeAspectFill
+            self.previewLayers.insert(layer) // TODO: a weak reference
+        }
         #if !targetEnvironment(simulator)
-        guard layer.session != self.captureSession
-        else {
-            os_log("Camera.attachPreview already set, %s.", type: .debug, layer.isPreviewing ? "still previewing" : "preview has stopped")
-            return
-        }
-        
-        // Setting the previewLayer's session while the captureSession is running will block that thread.
         queue.async {
-            os_log("Camera.attachPreview async in", type: .debug)
-            self.captureSession.stopRunning()
-            DispatchQueue.main.sync {
-                layer.videoGravity = .resizeAspectFill
-                layer.session = self.captureSession
-            }
             self.captureSession.startRunning()
-            os_log("Camera.attachPreview async out", type: .debug)
         }
-        
         #endif
     }
     
@@ -126,6 +115,11 @@ class Camera {
     var delegate: CameraProtocol?
     
     init() {
+        // FIXME: Debugging (for now)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleNotification), name: .AVCaptureSessionDidStartRunning, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleNotification), name: .AVCaptureSessionDidStopRunning, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleNotification), name: .AVCaptureSessionRuntimeError, object: nil)
+        
         #if !targetEnvironment(simulator)
         queue.async {
             // Create CaptureDelegate
@@ -163,10 +157,13 @@ class Camera {
                 if connection.isVideoOrientationSupported {
                     connection.videoOrientation = .portrait
                 }
-                // Stablise if possible
-                if connection.isVideoStabilizationSupported {
-                    connection.preferredVideoStabilizationMode = .auto
-                }
+                // FIXME: After moving from AVCaptureVideoPreviewLayer the following stablisation was causing a run-time error starting the capture queue.
+                //   name = AVCaptureSessionRuntimeErrorNotification, object = Optional(<AVCaptureSession: 0x2827f01f0 [AVCaptureSessionPreset1920x1080]>
+                //   <AVCaptureDeviceInput: 0x2825fd400 [Back Camera]>[vide] -> <AVCaptureVideoDataOutput: 0x2825fd600>), userInfo = Optional([AnyHashable("AVCaptureSessionErrorKey"): Error Domain=AVFoundationErrorDomain Code=-11819 "Cannot Complete Action" UserInfo={NSLocalizedDescription=Cannot Complete Action, NSLocalizedRecoverySuggestion=Try again later.}])
+                // // Stablise if possible
+                // if connection.isVideoStabilizationSupported {
+                //     connection.preferredVideoStabilizationMode = .auto
+                // }
             }
             
             // AVCaptureSession END
@@ -180,6 +177,14 @@ class Camera {
 //            }
         }
         #endif
+    }
+    
+    // FIXME: Debugging (for now)
+    @objc func handleNotification(notification: Notification) {
+        os_log("handleNotification %s", notification.name.rawValue)
+        if notification.name == NSNotification.Name.AVCaptureSessionRuntimeError {
+            print(notification)
+        }
     }
     
     /// The `AVCaptureSession` behind this "Camera"
@@ -196,6 +201,9 @@ class Camera {
     
     /// Capture object instantiated for (and only exist during) recording, writes that formated data
     fileprivate var writer: AVAssetWriter?
+    
+    /// Preview layers to update
+    fileprivate var previewLayers = Set<CALayer>()
 }
 
 /// Essential Camera recording functionality, that happens to be in a separate class. Hence private, tightly coupled. Needs to be instantiated new for each capture.
@@ -207,8 +215,20 @@ fileprivate class VideoDataDelegate: NSObject, AVCaptureVideoDataOutputSampleBuf
     let queue = DispatchQueue(label: "cameraVideoDataQueue")
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        // TODO: Update previews goes here
+        // Push to preview layers
+        if !camera.previewLayers.isEmpty {
+            let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)!
+            let ciimage = CIImage(cvPixelBuffer: imageBuffer)
+            let context = CIContext.init(options: nil)
+            let cgImage = context.createCGImage(ciimage, from: ciimage.extent)!
+            
+            for layer in camera.previewLayers {
+                layer.contents = cgImage
+                (layer.delegate as! UIView).setNeedsDisplay()
+            }
+        }
         
+        // Write to file when recording
         if let writer = camera.writer,
            let writerInput = camera.writerInput
         {

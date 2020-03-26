@@ -11,11 +11,11 @@ import AVFoundation
 
 /// A collection view cell that can preview video capture
 class CameraCell: UICollectionViewCell {
-    var previewLayer: AVCaptureVideoPreviewLayer {
-        return layer as! AVCaptureVideoPreviewLayer
-    }
-    
-    override class var layerClass: AnyClass {
-        return AVCaptureVideoPreviewLayer.self
-    }
+//    var previewLayer: AVCaptureVideoPreviewLayer {
+//        return layer as! AVCaptureVideoPreviewLayer
+//    }
+//
+//    override class var layerClass: AnyClass {
+//        return AVCaptureVideoPreviewLayer.self
+//    }
 }
