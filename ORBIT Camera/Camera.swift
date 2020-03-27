@@ -38,8 +38,28 @@ class Camera {
                 os_log("Camera adding preview", type: .debug)
             }
         }
+        start()
+        #endif
+    }
+    
+    func start() {
+        #if !targetEnvironment(simulator)
         queue.async {
-            self.captureSession.startRunning()
+            if !self.captureSession.isRunning {
+                os_log("Camera start", type: .debug)
+                self.captureSession.startRunning()
+            }
+        }
+        #endif
+    }
+    
+    func stop() {
+        #if !targetEnvironment(simulator)
+        queue.async {
+            if self.captureSession.isRunning {
+                os_log("Camera stop", type: .debug)
+                self.captureSession.stopRunning()
+            }
         }
         #endif
     }
