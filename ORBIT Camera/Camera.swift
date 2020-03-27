@@ -30,6 +30,7 @@ class Camera {
     /// This previews the video coming from the device, currently set to 16:9, but has presentation attribute set to fill the layer while maintaining the aspect ratio. If the provided layer is square, this will match recorded output.
     // TODO: Consider detach?
     func attachPreview(to view: PreviewMetalView) {
+        #if !targetEnvironment(simulator)
         videoDataDelegate.queue.async {
             view.rotation = .rotate180Degrees
             let result = self.previewViews.insert(WeakRef(object: view))
@@ -37,7 +38,6 @@ class Camera {
                 os_log("Camera adding preview", type: .debug)
             }
         }
-        #if !targetEnvironment(simulator)
         queue.async {
             self.captureSession.startRunning()
         }
