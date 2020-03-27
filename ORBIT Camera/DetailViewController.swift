@@ -313,10 +313,11 @@ extension DetailViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         os_log("DetailViewController.cellForItemAt entered with page %d", type: .debug, indexPath.row)
         if cameraPageIndexes.contains(indexPath.row) {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Camera Cell", for: indexPath) as? CameraCell else {
-                fatalError("Expected a `\(CameraCell.self)` but did not receive one.")
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Camera Cell", for: indexPath)
+            guard let view = cell.contentView as? PreviewMetalView else {
+                fatalError("Expected a `\(PreviewMetalView.self)` but did not receive one.")
             }
-            camera.attachPreview(to: cell.previewLayer)
+            camera.attachPreview(to: view)
             os_log("DetailViewController.cellForItemAt returning camera cell", type: .debug, indexPath.row)
             return cell
         } else {
@@ -366,6 +367,14 @@ extension DetailViewController: UIScrollViewDelegate {
         let isLeftCamera = cameraPageIndexes.contains(Int(leftIndex))
         let isRightCamera = cameraPageIndexes.contains(Int(rightIndex))
         cameraControlVisibility = (1 - transition) * (isLeftCamera ? 1.0 : 0.0) + transition * (isRightCamera ? 1.0 : 0.0)
+        
+        // Only run capture session when a camera cell is visible
+        let visiblePageIndexes = IndexSet(videoCollectionView.indexPathsForVisibleItems.map { $0.row })
+        if cameraPageIndexes.intersection(visiblePageIndexes).isEmpty {
+            camera.stop()
+        } else {
+            camera.start()
+        }
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) { isManuallyScrolling = true }
