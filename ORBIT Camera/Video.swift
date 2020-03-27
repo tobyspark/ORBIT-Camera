@@ -103,6 +103,8 @@ extension Video: FetchableRecord, MutablePersistableRecord {
     @discardableResult
     func delete(_ db: Database) throws -> Bool {
         try FileManager.default.removeItem(at: url)
-        return try performDelete(db)
+        let deleted = try performDelete(db)
+        if !deleted { os_log("Failed to delete Video") }
+        return deleted
     }
 }
