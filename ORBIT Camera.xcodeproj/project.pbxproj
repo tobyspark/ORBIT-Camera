@@ -37,7 +37,6 @@
 		4B87FD37241130E8007AB630 /* AppDatabase+TestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD3524111E57007AB630 /* AppDatabase+TestData.swift */; };
 		4B87FD3924126110007AB630 /* VideoViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD3824126110007AB630 /* VideoViewCell.swift */; };
 		4B9AA9F62417A63C002380B1 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9AA9F52417A63C002380B1 /* InfoViewController.swift */; };
-		4B9AA9FA2417E4A8002380B1 /* CameraCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9AA9F82417E4A7002380B1 /* CameraCell.swift */; };
 		4B9AA9FC2417E4A8002380B1 /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9AA9F92417E4A7002380B1 /* Camera.swift */; };
 		4B9AA9FF2418EA49002380B1 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9AA9FE2418EA49002380B1 /* RecordButton.swift */; };
 		4BA13A5A242D6EC4006D838B /* PreviewMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA13A59242D6EC4006D838B /* PreviewMetalView.swift */; };
@@ -81,7 +80,6 @@
 		4B87FD3524111E57007AB630 /* AppDatabase+TestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDatabase+TestData.swift"; sourceTree = "<group>"; };
 		4B87FD3824126110007AB630 /* VideoViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoViewCell.swift; sourceTree = "<group>"; };
 		4B9AA9F52417A63C002380B1 /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
-		4B9AA9F82417E4A7002380B1 /* CameraCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraCell.swift; sourceTree = "<group>"; };
 		4B9AA9F92417E4A7002380B1 /* Camera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		4B9AA9FE2418EA49002380B1 /* RecordButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
 		4BA13A59242D6EC4006D838B /* PreviewMetalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewMetalView.swift; sourceTree = "<group>"; };
@@ -159,7 +157,6 @@
 				4B5A6B982424CB9200A5C45B /* NewThingCell.swift */,
 				4BF14BBD2405730700E31D93 /* DetailViewController.swift */,
 				4B87FD3824126110007AB630 /* VideoViewCell.swift */,
-				4B9AA9F82417E4A7002380B1 /* CameraCell.swift */,
 				4B9AA9F52417A63C002380B1 /* InfoViewController.swift */,
 				4B9AA9F92417E4A7002380B1 /* Camera.swift */,
 				4BA13A59242D6EC4006D838B /* PreviewMetalView.swift */,
@@ -318,7 +315,6 @@
 				4B9AA9F62417A63C002380B1 /* InfoViewController.swift in Sources */,
 				4B87FD2C240E763D007AB630 /* Settings.swift in Sources */,
 				4B87FD1E240D4E93007AB630 /* Video.swift in Sources */,
-				4B9AA9FA2417E4A8002380B1 /* CameraCell.swift in Sources */,
 				4B9AA9FC2417E4A8002380B1 /* Camera.swift in Sources */,
 				4B87FD3924126110007AB630 /* VideoViewCell.swift in Sources */,
 				4B87FD3624111E57007AB630 /* AppDatabase+TestData.swift in Sources */,

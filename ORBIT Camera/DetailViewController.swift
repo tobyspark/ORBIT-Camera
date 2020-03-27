@@ -313,10 +313,11 @@ extension DetailViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         os_log("DetailViewController.cellForItemAt entered with page %d", type: .debug, indexPath.row)
         if cameraPageIndexes.contains(indexPath.row) {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Camera Cell", for: indexPath) as? CameraCell else {
-                fatalError("Expected a `\(CameraCell.self)` but did not receive one.")
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Camera Cell", for: indexPath)
+            guard let view = cell.contentView as? PreviewMetalView else {
+                fatalError("Expected a `\(PreviewMetalView.self)` but did not receive one.")
             }
-            camera.attachPreview(to: cell.contentView as! PreviewMetalView)
+            camera.attachPreview(to: view)
             os_log("DetailViewController.cellForItemAt returning camera cell", type: .debug, indexPath.row)
             return cell
         } else {
