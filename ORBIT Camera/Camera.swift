@@ -99,18 +99,19 @@ class Camera {
         queue.async {
             self.videoDataDelegate.queue.sync {
                 // Wrap-up writing
-                self.writer?.finishWriting {
-                    if let writer = self.writer, let delegate = self.delegate
-                    {
+                if let writer = self.writer,
+                   let delegate = self.delegate
+                {
+                    writer.finishWriting {
                         let url = writer.outputURL
                         DispatchQueue.main.async {
                             os_log("Camera.recordStop calling delegate.didFinishRecording", type: .debug)
                             delegate.didFinishRecording(to: url)
                         }
                     }
-                    self.writer = nil
-                    self.writerInput = nil
                 }
+                self.writer = nil
+                self.writerInput = nil
             }
         }
         #endif
