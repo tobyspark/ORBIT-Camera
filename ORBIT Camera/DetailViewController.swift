@@ -367,6 +367,14 @@ extension DetailViewController: UIScrollViewDelegate {
         let isLeftCamera = cameraPageIndexes.contains(Int(leftIndex))
         let isRightCamera = cameraPageIndexes.contains(Int(rightIndex))
         cameraControlVisibility = (1 - transition) * (isLeftCamera ? 1.0 : 0.0) + transition * (isRightCamera ? 1.0 : 0.0)
+        
+        // Only run capture session when a camera cell is visible
+        let visiblePageIndexes = IndexSet(videoCollectionView.indexPathsForVisibleItems.map { $0.row })
+        if cameraPageIndexes.intersection(visiblePageIndexes).isEmpty {
+            camera.stop()
+        } else {
+            camera.start()
+        }
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) { isManuallyScrolling = true }
