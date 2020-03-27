@@ -116,6 +116,9 @@ class DetailViewController: UIViewController {
     func configureView() {
         inexplicableToolingFailureWorkaround()
         
+        // Disable view if no thing.
+        // Setting accessibility elements complicates this, so most of the work is actually done in configurePage
+        self.view.alpha = (detailItem != nil) ? 1.0 : 0.5
         
         // Set title for screen
         self.title = detailItem?.labelParticipant ?? ""
@@ -169,25 +172,32 @@ class DetailViewController: UIViewController {
             // TODO: videoPublished
         }
         
-        // Update camera control
-        // Note animation on/off is set by cameraControlVisibility which is set by scrollViewDidScroll
-        if isCameraPage {
-            videoRerecordButton.isAccessibilityElement = false
-            videoRecordedLabel.isAccessibilityElement = false
-            videoUploadedLabel.isAccessibilityElement = false
-            videoVerifiedLabel.isAccessibilityElement = false
-            videoPublishedLabel.isAccessibilityElement = false
-            videoDeleteButton.isAccessibilityElement = false
-            recordButton.isAccessibilityElement = true
-        } else {
-            videoRerecordButton.isAccessibilityElement = true
-            videoRecordedLabel.isAccessibilityElement = true
-            videoUploadedLabel.isAccessibilityElement = true
-            videoVerifiedLabel.isAccessibilityElement = true
-            videoPublishedLabel.isAccessibilityElement = true
-            videoDeleteButton.isAccessibilityElement = true
-            recordButton.isAccessibilityElement = false
-        }
+        // Set availability of labels and controls
+        // The cameraControlView animation on/off is not reflected by VoiceOver, so doing here (the animation on/off is set elsewhere by cameraControlVisibility which is set by scrollViewDidScroll).
+        // The controls should be unresponsive when no thing set
+        let pageEnable = (detailItem != nil)
+        let statusEnable = (pageEnable && !isCameraPage)
+        let recordEnable = (pageEnable && isCameraPage)
+        let pageElements = [
+            videoPageControl
+        ]
+        let statusElements = [
+            videoRerecordButton,
+            videoRecordedLabel,
+            videoUploadedLabel,
+            videoVerifiedLabel,
+            videoPublishedLabel,
+            videoDeleteButton,
+        ]
+        let recordElements = [
+            recordButton
+        ]
+        pageElements.forEach { $0?.isAccessibilityElement = pageEnable }
+        statusElements.forEach { $0?.isAccessibilityElement = statusEnable }
+        recordElements.forEach { $0?.isAccessibilityElement = recordEnable }
+        pageElements.forEach { ($0 as? UIControl)?.isEnabled = pageEnable }
+        statusElements.forEach { ($0 as? UIControl)?.isEnabled = statusEnable }
+        recordElements.forEach { ($0 as? UIControl)?.isEnabled = recordEnable }
     }
     
     /// Action the video corresponding to page
