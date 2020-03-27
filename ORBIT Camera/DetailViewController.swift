@@ -102,31 +102,21 @@ class DetailViewController: UIViewController {
     
     /// Update the user interface for the detail item.
     func configureView() {
-        guard
-            let thing = detailItem
-        else {
-                os_log("DetailView with no detailItem")
-                assertionFailure()
-                return
-        }
+        inexplicableToolingFailureWorkaround()
+        
         
         // Set title for screen
-        self.title = thing.labelParticipant
-        
-        // FIXME: INEXPLICABLE TOOLING FAILURE: videoCollectionView and videoPageView are nil, despite being hooked up in the storyboard.
-        videoCollectionView = view.subviews[0] as! UICollectionView
-        //videoPageControl = view.subviews[1] as! UIPageControl
+        self.title = detailItem?.labelParticipant ?? ""
         
         // Set number of videos in paging control
         pageIndex = 0
         videoPageControl.numberOfPages = collectionView(videoCollectionView, numberOfItemsInSection: 0)
-        
-        // Set delegate for camera, to pass in new recordings
-        camera.delegate = self
     }
     
     /// Update the user interface for the selected page
     func configurePage() {
+        inexplicableToolingFailureWorkaround()
+        
         let isCameraPage = cameraPageIndexes.contains(pageIndex)
         let video = pageVideo()
         
@@ -277,10 +267,18 @@ class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // On load without MasterViewController instantiated (e.g. iPad), display an item
+        
+        // Set delegate for camera, to pass in new recordings
+        camera.delegate = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        // Attempt to display an item if none set (e.g. launch on iPad)
         if detailItem == nil {
+            os_log("viewWillAppear without detailItem. Attempting load from database.", type: .debug)
             detailItem = try? dbQueue.read { db in try Thing.fetchOne(db) }
         }
+        
         configureView()
     }
     
@@ -288,6 +286,13 @@ class DetailViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         // Set height of camera control view
         cameraControlHConstraint.constant = view.bounds.height - view.convert(videoRecordedIcon.bounds, from: videoRecordedIcon).minY
+    }
+    
+    func inexplicableToolingFailureWorkaround() {
+        if videoCollectionView == nil {
+            os_log("INEXPLICABLE TOOLING FAILURE: videoCollectionView was nil, despite being hooked up in the storyboard.", type: .debug)
+            videoCollectionView = view.subviews[0] as! UICollectionView
+        }
     }
 }
 
@@ -299,14 +304,11 @@ extension DetailViewController: UICollectionViewDataSource {
     
     /// The videoCollectionView camera section should contain the camera, and the video section contain all the videos
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard
-            let thing = detailItem
-        else {
-                os_log("DetailView with no detailItem")
-                assertionFailure()
-                return 0
+        var itemCount = 1 // Camera item
+        if let thing = detailItem {
+            itemCount += thing.videosCount
         }
-        return thing.videosCount + 1 // Add the 'add new' camera item
+        return itemCount
     }
     
     /// The videoCollectionView cells should display the camera and videos
