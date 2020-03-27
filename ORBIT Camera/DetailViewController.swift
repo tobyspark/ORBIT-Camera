@@ -41,6 +41,18 @@ class DetailViewController: UIViewController {
     /// The thing this detail view is to show the detail of
     var detailItem: Thing? {
         didSet {
+            if detailItem == nil {
+                os_log("Setting detailItem to no item", type: .debug)
+                
+                // Show the master view if required
+                splitViewController?.preferredDisplayMode = .primaryOverlay
+            } else {
+                os_log("Setting detailItem to an item", type: .debug)
+                
+                // Ensure the split view behaviour reverts
+                splitViewController?.preferredDisplayMode = .automatic
+            }
+            
             // Update the view.
             configureView()
         }
