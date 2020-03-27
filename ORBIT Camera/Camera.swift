@@ -18,21 +18,23 @@ protocol CameraProtocol {
 
 /// Functionality to capture videos and run a preview (i.e. a camera viewfinder)
 ///
-/// The core part is `captureSession`, which takes the device input and has to run at a device format.
-/// This is set to run at `hd1920x1080`. An `AVCaptureVideoPreviewLayer` can preview that, but note it's 16:9 content set to fill the layer while maintaining aspect ratio. The layer should be square to match the recorded output.
-/// To record square video, i.e. to encode a square crop of that captureSession stream to a file, `AVCaptureMovieFileOutput` is inadequate.
-/// Instead `AVAssetWriterInput` can be configured to scale and crop to a square.
-/// To then do what `AVCaptureMovieFileOutput` did otherwise, you need an `AVAssetWriter` configured with that input to actually write-out the file, and an `AVCaptureVideoDataOutput` to get frames from the capture session to that writer.
+/// The core part is an AVCaptureSession, which takes the device input and has to run at a device format. This is currently set to `hd1920x1080`.
+/// To get frames out of  AVCaptureSession, an AVCaptureVideoDataOutput is created. This delivers frames to `captureOutput`.
+/// These frames are then set to any preview views registered with the camera. These are `PreviewMetalView` which resizes to fill while maintaining aspect ratio.
+/// Note an `AVCaptureVideoPreviewLayer` is insufficient as a) fails on multiple instances and b) we cannot manipulate the frames to e.g. increase contrast as an aid to the visually impaired.
+/// To record square video, i.e. to encode a square crop of that captureSession stream to a file, an `AVAssetWriterInput` can be configured to scale and crop to a square. Again, `captureOutput` supplies the frames.
+/// Note `AVCaptureMovieFileOutput` is inadequate as you cannot set the video format sufficiently.
 ///
 /// As Xcode's iOS simulator doesn't support video capture, this class becomes inert when compiled for that.
 class Camera {
-    /// Attach a preview layer to this camera.
-    /// This previews the video coming from the device, currently set to 16:9, but has presentation attribute set to fill the layer while maintaining the aspect ratio. If the provided layer is square, this will match recorded output.
-    // TODO: Consider detach?
+    /// Attach a preview view to this camera. Holds a weak reference.
+    /// This previews the video coming from the device. A `PreviewMetalView` will fill the view's frame while maintaining the aspect ratio.
+    /// As currently set, the frames sent to the preview are 1920x1080. The view renders this onto whatever the size frame is, for a square frame this will visually match the 1080x1080 recorded output.
     func attachPreview(to view: PreviewMetalView) {
         #if !targetEnvironment(simulator)
         videoDataDelegate.queue.async {
             view.rotation = .rotate180Degrees
+            // Holding a weak ref should allow 'detach' of the views.
             let result = self.previewViews.insert(WeakRef(object: view))
             if result.inserted {
                 os_log("Camera adding preview", type: .debug)
@@ -42,6 +44,7 @@ class Camera {
         #endif
     }
     
+    /// Start the capture session, i.e. turn the device's camera on
     func start() {
         #if !targetEnvironment(simulator)
         queue.async {
@@ -53,6 +56,7 @@ class Camera {
         #endif
     }
     
+    /// Stop the capture session, i.e. turn the device's camera off
     func stop() {
         #if !targetEnvironment(simulator)
         queue.async {
