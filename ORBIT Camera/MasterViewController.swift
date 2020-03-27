@@ -212,7 +212,16 @@ class MasterViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            try! Thing.deleteAt(index: indexPath.row) // FIXME: try!
+            let thing = try! Thing.at(index: indexPath.row) // FIXME: try!
+            // Stop the detail view displaying it, if so
+            if let detailThing = detailViewController?.detailItem,
+               detailThing == thing
+            {
+                detailViewController?.detailItem = nil
+            }
+            // Remove from database
+            _ = try! dbQueue.write { db in try thing.delete(db) } // FIXME: try!
+            // Remove from Things UI
             tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
