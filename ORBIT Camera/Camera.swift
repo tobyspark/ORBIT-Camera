@@ -84,8 +84,8 @@ class Camera {
                 // Encode to H264
                 AVVideoCodecKey: AVVideoCodecType.h264,
                 // Scale and crop to square
-                AVVideoWidthKey: 1080,
-                AVVideoHeightKey: 1080,
+                AVVideoWidthKey: Settings.recordingResolution.width,
+                AVVideoHeightKey:  Settings.recordingResolution.height,
                 AVVideoScalingModeKey: AVVideoScalingModeResizeAspectFill,
             ])
             writerInput.expectsMediaDataInRealTime = true
@@ -156,7 +156,7 @@ class Camera {
             self.captureSession.beginConfiguration()
             
             // Configure the AVCaptureSession
-            self.captureSession.sessionPreset = .hd1920x1080
+            self.captureSession.sessionPreset = Settings.captureSessionPreset
             
             // Create AVCaptureDeviceInput
             guard
