@@ -83,6 +83,15 @@ class MasterViewController: UITableViewController {
         clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
         super.viewWillAppear(animated)
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        // If there is no thing, prompt the user to create one.
+        if tableView.numberOfRows(inSection: ThingSection.things.rawValue) == 0 {
+            guard let cell = tableView.cellForRow(at: addNewPath) as? NewThingCell
+            else { return }
+            cell.labelField.becomeFirstResponder()
+        }
+    }
 
     // MARK: - Segues
     
