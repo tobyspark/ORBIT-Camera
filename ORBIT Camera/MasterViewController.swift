@@ -37,6 +37,9 @@ class MasterViewController: UITableViewController {
     // Triggered by 'go' on keyboard only
     // cell in storyboard is wired to trigger segue there
     @IBAction func addNewAction() {
+        // Select the cell (`shouldPerform` expects this)
+        tableView.selectRow(at: addNewPath, animated: false, scrollPosition: .none)
+        
         // Perform segue (or not)
         if shouldPerformSegue(withIdentifier: "showDetail", sender: self) {
             performSegue(withIdentifier: "showDetail", sender: self)
@@ -131,18 +134,19 @@ class MasterViewController: UITableViewController {
             var thing: Thing
             switch ThingSection(rawValue: indexPath.section)! {
                 case .addNew:
+                    thing = Thing(withLabel: candidateLabel) // candidateLabel verified in `shouldPerformSegue`
+                    try! dbQueue.write { db in try thing.save(db) } // FIXME: try!
+                    
+                    // Insert new thing
+                    let indexPath = IndexPath(row: 0, section: ThingSection.things.rawValue)
+                    tableView.insertRows(at: [indexPath], with: .automatic)
+                    tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+                
                     // Clear 'new' cell
                     if let cell = tableView.cellForRow(at: addNewPath) as? NewThingCell {
                         cell.labelField.text = ""
                         candidateLabel = ""
                     }
-                    
-                    // Insert new thing
-                    thing = Thing(withLabel: candidateLabel) // candidateLabel verified in `shouldPerformSegue`
-                    try! dbQueue.write { db in try thing.save(db) } // FIXME: try!
-                    let indexPath = IndexPath(row: 0, section: ThingSection.things.rawValue)
-                    tableView.insertRows(at: [indexPath], with: .automatic)
-                    tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
                 case .things:
                     thing = try! Thing.at(index: indexPath.row) // FIXME: try!
             }
