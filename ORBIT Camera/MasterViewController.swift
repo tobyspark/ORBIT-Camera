@@ -136,7 +136,9 @@ class MasterViewController: UITableViewController {
                     // Insert new thing
                     thing = Thing(withLabel: candidateLabel) // candidateLabel verified in `shouldPerformSegue`
                     try! dbQueue.write { db in try thing.save(db) } // FIXME: try!
-                    tableView.insertRows(at: [IndexPath(row: 0, section: ThingSection.things.rawValue)], with: .automatic)
+                    let indexPath = IndexPath(row: 0, section: ThingSection.things.rawValue)
+                    tableView.insertRows(at: [indexPath], with: .automatic)
+                    tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
                 case .things:
                     thing = try! Thing.at(index: indexPath.row) // FIXME: try!
             }
