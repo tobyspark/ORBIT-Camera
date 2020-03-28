@@ -51,22 +51,23 @@ class MasterViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Do any additional setup after loading the view.
+        // Set edit button, to delete things or edit their label
         navigationItem.leftBarButtonItem = editButtonItem
-
-        if let split = splitViewController {
-            let controllers = split.viewControllers
-            detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
-            
-            // If nothing is selected, and we're coming from a detailViewController, make the corresponding selection. This happens on e.g. iPad first-run.
-            if let detailViewController = detailViewController,
-                let thing = detailViewController.detailItem,
-                let thingIndex = try? thing.index(),
-                tableView.indexPathForSelectedRow == nil
-            {
-                let path = IndexPath(row: thingIndex, section: ThingSection.things.rawValue)
-                tableView.selectRow(at: path, animated: false, scrollPosition: .middle)
-            }
+        
+        // Set detailViewController if already present
+        if let splitViewController = splitViewController,
+           let detailNavigationController = splitViewController.viewControllers.last as? UINavigationController
+        {
+            detailViewController = detailNavigationController.topViewController as? DetailViewController
+        }
+        
+        // Select the thing set in the detailViewController, if present
+        if let detailViewController = detailViewController,
+           let thing = detailViewController.detailItem,
+           let thingIndex = try? thing.index()
+        {
+            let path = IndexPath(row: thingIndex, section: ThingSection.things.rawValue)
+            tableView.selectRow(at: path, animated: false, scrollPosition: .middle)
         }
     }
 
@@ -80,7 +81,9 @@ class MasterViewController: UITableViewController {
             label.text = thing.shortDescription()
         }
         
+        // Clear selection if single-pane, keep selection if side-by-side
         clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
+        
         super.viewWillAppear(animated)
     }
     
