@@ -134,6 +134,7 @@ class MasterViewController: UITableViewController {
                     // Clear 'new' cell
                     if let cell = tableView.cellForRow(at: addNewPath) as? NewThingCell {
                         cell.labelField.text = ""
+                        candidateLabel = ""
                     }
                     
                     // Insert new thing
