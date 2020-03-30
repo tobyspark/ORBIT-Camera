@@ -41,17 +41,7 @@ class DetailViewController: UIViewController {
     /// The thing this detail view is to show the detail of
     var detailItem: Thing? {
         didSet {
-            if detailItem == nil {
-                os_log("Setting detailItem to no item", type: .debug)
-                
-                // Show the master view if required
-                splitViewController?.preferredDisplayMode = .primaryOverlay
-            } else {
-                os_log("Setting detailItem to an item", type: .debug)
-                
-                // Ensure the split view behaviour reverts
-                splitViewController?.preferredDisplayMode = .automatic
-            }
+            os_log("Setting detailItem to %s item", type: .debug, detailItem == nil ? "no" : "an")
             
             // Update the view.
             configureView()
@@ -126,6 +116,17 @@ class DetailViewController: UIViewController {
         // Set number of videos in paging control
         pageIndex = 0
         videoPageControl.numberOfPages = collectionView(videoCollectionView, numberOfItemsInSection: 0)
+        
+        // Split view special-cases
+        if let splitViewController = splitViewController {
+            // If there is no thing set, ensure the list of things is displayed, so a thing can be added.
+            if detailItem == nil && splitViewController.displayMode == .primaryHidden {
+                splitViewController.preferredDisplayMode = .primaryOverlay
+            // Otherwise ensure the split view behaviour is as per normal
+            } else {
+                splitViewController.preferredDisplayMode = .automatic
+            }
+        }
     }
     
     /// Update the user interface for the selected page
