@@ -63,6 +63,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4B3D77222432156B0077DFD0 /* README.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.markdown; sourceTree = "<group>"; };
 		4B5A6B982424CB9200A5C45B /* NewThingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewThingCell.swift; sourceTree = "<group>"; };
 		4B5A6B9A242527A400A5C45B /* Thing+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Thing+UI.swift"; sourceTree = "<group>"; };
 		4B87FD0B2406A074007AB630 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
@@ -129,6 +130,7 @@
 		4BF14BAB2405730700E31D93 = {
 			isa = PBXGroup;
 			children = (
+				4B3D77222432156B0077DFD0 /* README.markdown */,
 				4BF14BB62405730700E31D93 /* ORBIT Camera */,
 				4BF14C0A240580B900E31D93 /* ORBIT Camera Tests */,
 				4BF14BB52405730700E31D93 /* Products */,
