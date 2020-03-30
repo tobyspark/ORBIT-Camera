@@ -37,6 +37,9 @@ class MasterViewController: UITableViewController {
     // Triggered by 'go' on keyboard only
     // cell in storyboard is wired to trigger segue there
     @IBAction func addNewAction() {
+        // Select the cell (`shouldPerform` expects this)
+        tableView.selectRow(at: addNewPath, animated: false, scrollPosition: .none)
+        
         // Perform segue (or not)
         if shouldPerformSegue(withIdentifier: "showDetail", sender: self) {
             performSegue(withIdentifier: "showDetail", sender: self)
@@ -51,22 +54,23 @@ class MasterViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Do any additional setup after loading the view.
+        // Set edit button, to delete things or edit their label
         navigationItem.leftBarButtonItem = editButtonItem
-
-        if let split = splitViewController {
-            let controllers = split.viewControllers
-            detailViewController = (controllers[controllers.count-1] as! UINavigationController).topViewController as? DetailViewController
-            
-            // If nothing is selected, and we're coming from a detailViewController, make the corresponding selection. This happens on e.g. iPad first-run.
-            if let detailViewController = detailViewController,
-                let thing = detailViewController.detailItem,
-                let thingIndex = try? thing.index(),
-                tableView.indexPathForSelectedRow == nil
-            {
-                let path = IndexPath(row: thingIndex, section: ThingSection.things.rawValue)
-                tableView.selectRow(at: path, animated: false, scrollPosition: .middle)
-            }
+        
+        // Set detailViewController if already present
+        if let splitViewController = splitViewController,
+           let detailNavigationController = splitViewController.viewControllers.last as? UINavigationController
+        {
+            detailViewController = detailNavigationController.topViewController as? DetailViewController
+        }
+        
+        // Select the thing set in the detailViewController, if present
+        if let detailViewController = detailViewController,
+           let thing = detailViewController.detailItem,
+           let thingIndex = try? thing.index()
+        {
+            let path = IndexPath(row: thingIndex, section: ThingSection.things.rawValue)
+            tableView.selectRow(at: path, animated: false, scrollPosition: .middle)
         }
     }
 
@@ -80,8 +84,19 @@ class MasterViewController: UITableViewController {
             label.text = thing.shortDescription()
         }
         
+        // Clear selection if single-pane, keep selection if side-by-side
         clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
+        
         super.viewWillAppear(animated)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        // If there is no thing, prompt the user to create one.
+        if tableView.numberOfRows(inSection: ThingSection.things.rawValue) == 0 {
+            guard let cell = tableView.cellForRow(at: addNewPath) as? NewThingCell
+            else { return }
+            cell.labelField.becomeFirstResponder()
+        }
     }
 
     // MARK: - Segues
@@ -119,15 +134,19 @@ class MasterViewController: UITableViewController {
             var thing: Thing
             switch ThingSection(rawValue: indexPath.section)! {
                 case .addNew:
+                    thing = Thing(withLabel: candidateLabel) // candidateLabel verified in `shouldPerformSegue`
+                    try! dbQueue.write { db in try thing.save(db) } // FIXME: try!
+                    
+                    // Insert new thing
+                    let indexPath = IndexPath(row: 0, section: ThingSection.things.rawValue)
+                    tableView.insertRows(at: [indexPath], with: .automatic)
+                    tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+                
                     // Clear 'new' cell
                     if let cell = tableView.cellForRow(at: addNewPath) as? NewThingCell {
                         cell.labelField.text = ""
+                        candidateLabel = ""
                     }
-                    
-                    // Insert new thing
-                    thing = Thing(withLabel: candidateLabel) // candidateLabel verified in `shouldPerformSegue`
-                    try! dbQueue.write { db in try thing.save(db) } // FIXME: try!
-                    tableView.insertRows(at: [IndexPath(row: 0, section: ThingSection.things.rawValue)], with: .automatic)
                 case .things:
                     thing = try! Thing.at(index: indexPath.row) // FIXME: try!
             }
@@ -203,7 +222,16 @@ class MasterViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            try! Thing.deleteAt(index: indexPath.row) // FIXME: try!
+            let thing = try! Thing.at(index: indexPath.row) // FIXME: try!
+            // Stop the detail view displaying it, if so
+            if let detailThing = detailViewController?.detailItem,
+               detailThing == thing
+            {
+                detailViewController?.detailItem = nil
+            }
+            // Remove from database
+            _ = try! dbQueue.write { db in try thing.delete(db) } // FIXME: try!
+            // Remove from Things UI
             tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
