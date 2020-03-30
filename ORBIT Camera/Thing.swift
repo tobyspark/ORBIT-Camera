@@ -10,6 +10,7 @@
 
 import Foundation
 import GRDB
+import os
 
 /// A 'thing' that is important to a visually impaired person, and for a which a phone might be useful as a tool to pick it out of a scene.
 /// For the ORBIT Dataset, to train and test computer vision / machine learning algorithms, this becomes a label – "what is it" – and set of videos – "this is what it looks like".
@@ -56,6 +57,22 @@ extension Thing: FetchableRecord, MutablePersistableRecord {
         id = rowID
     }
     
+    /// Delete the record, removing the video files as well
+    // Note any within-db delete will not invoke this
+    @discardableResult
+    func delete(_ db: Database) throws -> Bool {
+        let deleted = try performDelete(db)
+        if !deleted { os_log("Failed to delete Thing") }
+        
+        // Delete videos individually to ensure the file clean-up in the struct's delete method is invoked
+        let orphanVideos = try Video.filter(Video.Columns.thingID == nil).fetchAll(db)
+        for video in orphanVideos {
+            try video.delete(db)
+        }
+        
+        return deleted
+    }
+    
     /// Return an index, newest first, for the thing in Things
     func index() throws -> Int? {
         try dbQueue.read { db in
@@ -76,23 +93,6 @@ extension Thing: FetchableRecord, MutablePersistableRecord {
             if thing == nil { assertionFailure("Could not find Thing") } // FIXME: throw an error
         }
         return thing!
-    }
-    
-    /// Delete a thing based on a contiguous index, newest first
-    static func deleteAt(index: Int) throws {
-        try dbQueue.write { db in
-            let ids = try Int64.fetchAll(db, Thing.select(Thing.Columns.id))
-            assert(ids == ids.sorted(), "Expediency, uncovered")
-            let id = ids[ids.count - 1 - index]
-            let deleteCount = try Thing.filter(key: id).deleteAll(db)
-            if deleteCount != 1 { assertionFailure("Could not delete Thing") } // FIXME: throw an error
-            
-            // Delete videos individually to ensure the file clean-up in the struct's delete method is invoked
-            let orphanVideos = try Video.filter(Video.Columns.thingID == nil).fetchAll(db)
-            for video in orphanVideos {
-                try video.delete(db)
-            }
-        }
     }
     
     // MARK: Videos (reverse relationship)

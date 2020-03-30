@@ -41,6 +41,8 @@ class DetailViewController: UIViewController {
     /// The thing this detail view is to show the detail of
     var detailItem: Thing? {
         didSet {
+            os_log("Setting detailItem to %s item", type: .debug, detailItem == nil ? "no" : "an")
+            
             // Update the view.
             configureView()
         }
@@ -102,31 +104,35 @@ class DetailViewController: UIViewController {
     
     /// Update the user interface for the detail item.
     func configureView() {
-        guard
-            let thing = detailItem
-        else {
-                os_log("DetailView with no detailItem")
-                assertionFailure()
-                return
-        }
+        inexplicableToolingFailureWorkaround()
+        
+        // Disable view if no thing.
+        // Setting accessibility elements complicates this, so most of the work is actually done in configurePage
+        self.view.alpha = (detailItem != nil) ? 1.0 : 0.5
         
         // Set title for screen
-        self.title = thing.labelParticipant
-        
-        // FIXME: INEXPLICABLE TOOLING FAILURE: videoCollectionView and videoPageView are nil, despite being hooked up in the storyboard.
-        videoCollectionView = view.subviews[0] as! UICollectionView
-        //videoPageControl = view.subviews[1] as! UIPageControl
+        self.title = detailItem?.labelParticipant ?? ""
         
         // Set number of videos in paging control
         pageIndex = 0
         videoPageControl.numberOfPages = collectionView(videoCollectionView, numberOfItemsInSection: 0)
         
-        // Set delegate for camera, to pass in new recordings
-        camera.delegate = self
+        // Split view special-cases
+        if let splitViewController = splitViewController {
+            // If there is no thing set, ensure the list of things is displayed, so a thing can be added.
+            if detailItem == nil && splitViewController.displayMode == .primaryHidden {
+                splitViewController.preferredDisplayMode = .primaryOverlay
+            // Otherwise ensure the split view behaviour is as per normal
+            } else {
+                splitViewController.preferredDisplayMode = .automatic
+            }
+        }
     }
     
     /// Update the user interface for the selected page
     func configurePage() {
+        inexplicableToolingFailureWorkaround()
+        
         let isCameraPage = cameraPageIndexes.contains(pageIndex)
         let video = pageVideo()
         
@@ -167,25 +173,32 @@ class DetailViewController: UIViewController {
             // TODO: videoPublished
         }
         
-        // Update camera control
-        // Note animation on/off is set by cameraControlVisibility which is set by scrollViewDidScroll
-        if isCameraPage {
-            videoRerecordButton.isAccessibilityElement = false
-            videoRecordedLabel.isAccessibilityElement = false
-            videoUploadedLabel.isAccessibilityElement = false
-            videoVerifiedLabel.isAccessibilityElement = false
-            videoPublishedLabel.isAccessibilityElement = false
-            videoDeleteButton.isAccessibilityElement = false
-            recordButton.isAccessibilityElement = true
-        } else {
-            videoRerecordButton.isAccessibilityElement = true
-            videoRecordedLabel.isAccessibilityElement = true
-            videoUploadedLabel.isAccessibilityElement = true
-            videoVerifiedLabel.isAccessibilityElement = true
-            videoPublishedLabel.isAccessibilityElement = true
-            videoDeleteButton.isAccessibilityElement = true
-            recordButton.isAccessibilityElement = false
-        }
+        // Set availability of labels and controls
+        // The cameraControlView animation on/off is not reflected by VoiceOver, so doing here (the animation on/off is set elsewhere by cameraControlVisibility which is set by scrollViewDidScroll).
+        // The controls should be unresponsive when no thing set
+        let pageEnable = (detailItem != nil)
+        let statusEnable = (pageEnable && !isCameraPage)
+        let recordEnable = (pageEnable && isCameraPage)
+        let pageElements = [
+            videoPageControl
+        ]
+        let statusElements = [
+            videoRerecordButton,
+            videoRecordedLabel,
+            videoUploadedLabel,
+            videoVerifiedLabel,
+            videoPublishedLabel,
+            videoDeleteButton,
+        ]
+        let recordElements = [
+            recordButton
+        ]
+        pageElements.forEach { $0?.isAccessibilityElement = pageEnable }
+        statusElements.forEach { $0?.isAccessibilityElement = statusEnable }
+        recordElements.forEach { $0?.isAccessibilityElement = recordEnable }
+        pageElements.forEach { ($0 as? UIControl)?.isEnabled = pageEnable }
+        statusElements.forEach { ($0 as? UIControl)?.isEnabled = statusEnable }
+        recordElements.forEach { ($0 as? UIControl)?.isEnabled = recordEnable }
     }
     
     /// Action the video corresponding to page
@@ -277,10 +290,18 @@ class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // On load without MasterViewController instantiated (e.g. iPad), display an item
+        
+        // Set delegate for camera, to pass in new recordings
+        camera.delegate = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        // Attempt to display an item if none set (e.g. launch on iPad)
         if detailItem == nil {
+            os_log("viewWillAppear without detailItem. Attempting load from database.", type: .debug)
             detailItem = try? dbQueue.read { db in try Thing.fetchOne(db) }
         }
+        
         configureView()
     }
     
@@ -288,6 +309,13 @@ class DetailViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         // Set height of camera control view
         cameraControlHConstraint.constant = view.bounds.height - view.convert(videoRecordedIcon.bounds, from: videoRecordedIcon).minY
+    }
+    
+    func inexplicableToolingFailureWorkaround() {
+        if videoCollectionView == nil {
+            os_log("INEXPLICABLE TOOLING FAILURE: videoCollectionView was nil, despite being hooked up in the storyboard.", type: .debug)
+            videoCollectionView = view.subviews[0] as! UICollectionView
+        }
     }
 }
 
@@ -299,14 +327,11 @@ extension DetailViewController: UICollectionViewDataSource {
     
     /// The videoCollectionView camera section should contain the camera, and the video section contain all the videos
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard
-            let thing = detailItem
-        else {
-                os_log("DetailView with no detailItem")
-                assertionFailure()
-                return 0
+        var itemCount = 1 // Camera item
+        if let thing = detailItem {
+            itemCount += thing.videosCount
         }
-        return thing.videosCount + 1 // Add the 'add new' camera item
+        return itemCount
     }
     
     /// The videoCollectionView cells should display the camera and videos
