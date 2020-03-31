@@ -427,7 +427,7 @@ extension DetailViewController: CameraProtocol {
             os_log("DetailViewController.didFinishRecording has updated video on page %d", type: .debug, videoPageIndex)
         } else {
             guard
-                var video = Video(of: thing, url: outputFileURL, kind: .recognition)
+                var video = Video(of: thing, url: outputFileURL, kind: .train)
             else {
                 os_log("Could not create video")
                 return

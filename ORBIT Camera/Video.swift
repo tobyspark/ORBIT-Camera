@@ -37,18 +37,18 @@ struct Video: Codable, Equatable {
     var orbitID: Int?
     
     /// The kind of video this is.
-    /// Current terminology: videos are taken with one of two goals: "registration" or "recognition", with two "techniques" used for registration videos: "zoom" and "rotate".
+    /// Current terminology: videos are taken with one of two goals: "train" or "test", with two "techniques" used for test videos: "zoom" and "pan".
     // Note String rather than Character is currently required for automatic codable compliance
     enum Kind: String, Codable {
-        case registerRotate = "R"
-        case registerZoom = "Z"
-        case recognition = "N" // On the server, as per pilot, this is "No technique", hence the 'N'
+        case train = "T"
+        case testZoom = "Z"
+        case testPan = "P"
         
         func description() -> String {
             switch self {
-            case .registerRotate: return "rotate technique"
-            case .registerZoom: return "zoom technique"
-            case .recognition: return "recognition example"
+            case .train: return "train"
+            case .testZoom: return "test – zoom"
+            case .testPan: return "test – pan"
             }
         }
     }
