@@ -11,19 +11,14 @@ import UIKit
 /// A UIPickerView to select the video kind.
 class VideoKindPickerView: UIPickerView, UIPickerViewDelegate, UIPickerViewDataSource {
     
-    /// The kind currently selected. If no choice has been made, kind is nil.
-    var kind: Video.Kind? {
+    /// The kind currently selected.
+    var kind: Video.Kind {
         get {
             let row = selectedRow(inComponent: 0)
-            return (row == 0) ? nil : Video.Kind.allCases[row - 1]
+            return Video.Kind.allCases[row]
         }
         set {
-            let row: Int
-            if newValue == nil {
-                row = 0
-            } else {
-                row = 1 + Array(Video.Kind.allCases).firstIndex(of: newValue)!
-            }
+            let row = Array(Video.Kind.allCases).firstIndex(of: newValue)!
             selectRow(row, inComponent: 0, animated: true)
         }
     }
@@ -34,11 +29,9 @@ class VideoKindPickerView: UIPickerView, UIPickerViewDelegate, UIPickerViewDataS
         delegate = self
     }
     
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        row == 0 ? "Choose..." : Video.Kind.allCases[row - 1].description()
-    }
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? { Video.Kind.allCases[row].description() }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int { 1 }
     
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int { 1 + Video.Kind.allCases.count }
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int { Video.Kind.allCases.count }
 }
