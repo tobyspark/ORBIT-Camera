@@ -462,6 +462,13 @@ extension DetailViewController: CameraProtocol {
         if let videoIndex = thing.videoIndex(with: outputFileURL) {
             let videoPageIndex = videoIndex < addNewPageIndex ? videoIndex : videoIndex + 1
             rerecordPageIndexes.remove(videoPageIndex)
+            
+            // Update kind from camera controls
+            var video = pageVideo()!
+            video.kind = recordTypePicker.kind
+            try! dbQueue.write { db in try video.save(db) } // FIXME: try!
+            
+            // Update UI
             videoCollectionView.reloadItems(at: [IndexPath(row: videoPageIndex, section: 0)])
             configurePage()
             cameraControlVisibility = 0
