@@ -291,10 +291,10 @@
                                 </constraints>
                             </stackView>
                             <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W2K-Cg-gTu" userLabel="Video Paging View">
-                                <rect key="frame" x="166" y="541.5" width="82" height="65.5"/>
+                                <rect key="frame" x="168.5" y="541.5" width="77" height="65.5"/>
                                 <subviews>
                                     <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="NGm-Yk-zeV">
-                                        <rect key="frame" x="0.0" y="0.0" width="82" height="37"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="77" height="45"/>
                                         <color key="pageIndicatorTintColor" systemColor="placeholderTextColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
                                         <color key="currentPageIndicatorTintColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <userDefinedRuntimeAttributes>
@@ -304,27 +304,49 @@
                                             <action selector="pageControlActionWithSender:" destination="JEX-9P-axG" eventType="primaryActionTriggered" id="Q52-hK-yWm"/>
                                         </connections>
                                     </pageControl>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="971-XG-rDU">
-                                        <rect key="frame" x="20" y="37" width="42" height="20.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="boolean" keyPath="isAccessibilityElement" value="NO"/>
-                                        </userDefinedRuntimeAttributes>
-                                    </label>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ycc-BX-0Ml" userLabel="Label View">
+                                        <rect key="frame" x="0.0" y="45" width="77" height="20.5"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6MK-eG-FRn">
+                                                <rect key="frame" x="42" y="-6" width="35" height="33"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <state key="normal" title="Kind"/>
+                                                <connections>
+                                                    <action selector="videoLabelKindButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="con-ap-w9C"/>
+                                                </connections>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="971-XG-rDU">
+                                                <rect key="frame" x="0.0" y="0.0" width="42" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isAccessibilityElement" value="NO"/>
+                                                </userDefinedRuntimeAttributes>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <constraints>
+                                            <constraint firstItem="6MK-eG-FRn" firstAttribute="firstBaseline" secondItem="971-XG-rDU" secondAttribute="firstBaseline" id="6WD-i5-7qM"/>
+                                            <constraint firstAttribute="trailing" secondItem="6MK-eG-FRn" secondAttribute="trailing" id="6gi-D7-PXP"/>
+                                            <constraint firstAttribute="bottom" secondItem="971-XG-rDU" secondAttribute="bottom" id="DPv-M8-m93"/>
+                                            <constraint firstItem="971-XG-rDU" firstAttribute="leading" secondItem="ycc-BX-0Ml" secondAttribute="leading" id="Ghk-Sk-EuQ"/>
+                                            <constraint firstItem="6MK-eG-FRn" firstAttribute="leading" secondItem="971-XG-rDU" secondAttribute="trailing" id="IOb-Hr-HcL"/>
+                                            <constraint firstItem="971-XG-rDU" firstAttribute="top" secondItem="ycc-BX-0Ml" secondAttribute="top" id="nQJ-kF-Ae9"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
-                                    <constraint firstItem="971-XG-rDU" firstAttribute="top" secondItem="NGm-Yk-zeV" secondAttribute="bottom" id="1q4-zS-TVC"/>
-                                    <constraint firstItem="971-XG-rDU" firstAttribute="centerX" secondItem="W2K-Cg-gTu" secondAttribute="centerX" id="3ms-G7-KZf"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ycc-BX-0Ml" secondAttribute="trailing" id="8vf-yb-9e5"/>
                                     <constraint firstAttribute="height" constant="65.5" id="94g-99-iU4"/>
                                     <constraint firstItem="NGm-Yk-zeV" firstAttribute="top" secondItem="W2K-Cg-gTu" secondAttribute="top" id="A0D-yd-pbL"/>
+                                    <constraint firstItem="ycc-BX-0Ml" firstAttribute="centerX" secondItem="W2K-Cg-gTu" secondAttribute="centerX" id="AP5-gb-EW8"/>
                                     <constraint firstItem="NGm-Yk-zeV" firstAttribute="centerX" secondItem="W2K-Cg-gTu" secondAttribute="centerX" id="Cvn-G5-tHT"/>
-                                    <constraint firstItem="971-XG-rDU" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="W2K-Cg-gTu" secondAttribute="leading" constant="20" symbolic="YES" id="VWj-AM-WnP"/>
-                                    <constraint firstAttribute="bottom" secondItem="971-XG-rDU" secondAttribute="bottom" constant="8" id="h6P-zz-xir"/>
+                                    <constraint firstItem="ycc-BX-0Ml" firstAttribute="top" secondItem="NGm-Yk-zeV" secondAttribute="bottom" id="F9G-Ko-KgN"/>
+                                    <constraint firstAttribute="bottom" secondItem="ycc-BX-0Ml" secondAttribute="bottom" id="KVb-Y4-Cch"/>
                                     <constraint firstItem="NGm-Yk-zeV" firstAttribute="width" secondItem="W2K-Cg-gTu" secondAttribute="width" id="wy1-d7-yjZ"/>
-                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="971-XG-rDU" secondAttribute="trailing" constant="20" symbolic="YES" id="x1Z-7W-bB4"/>
+                                    <constraint firstItem="ycc-BX-0Ml" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="W2K-Cg-gTu" secondAttribute="leading" id="xb2-nU-70F"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -332,8 +354,8 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c1p-EG-7ue">
-                                <rect key="frame" x="0.0" y="576" width="414" height="320"/>
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c1p-EG-7ue">
+                                <rect key="frame" x="0.0" y="843" width="414" height="320"/>
                                 <subviews>
                                     <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0NL-dH-rxH">
                                         <rect key="frame" x="20" y="0.0" width="374" height="1"/>
@@ -403,6 +425,7 @@
                         <outlet property="videoCollectionView" destination="5oc-lW-9vf" id="uQ7-7e-jO7"/>
                         <outlet property="videoDeleteButton" destination="m1S-o9-9xV" id="0Ic-hl-C2g"/>
                         <outlet property="videoLabel" destination="971-XG-rDU" id="lgl-aR-nyM"/>
+                        <outlet property="videoLabelKindButton" destination="6MK-eG-FRn" id="jwI-RQ-zT4"/>
                         <outlet property="videoPageControl" destination="NGm-Yk-zeV" id="bhQ-Kb-r2h"/>
                         <outlet property="videoPagingView" destination="W2K-Cg-gTu" id="wvO-1Q-k7k"/>
                         <outlet property="videoPublishedIcon" destination="jJn-6j-63Y" id="blB-9r-jxW"/>
@@ -419,6 +442,32 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="707.24637681159425" y="127.90178571428571"/>
+        </scene>
+        <!--Video Kind Picker View Controller-->
+        <scene sceneID="Jr5-8m-FaI">
+            <objects>
+                <viewController storyboardIdentifier="VideoKindViewController" id="XIg-TT-nUO" customClass="VideoKindPickerViewController" customModule="ORBIT_Camera" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="f2s-oD-YwT">
+                        <rect key="frame" x="0.0" y="0.0" width="200" height="100"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <pickerView contentMode="scaleToFill" id="61q-Tn-Cda" customClass="VideoKindPickerView" customModule="ORBIT_Camera" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="200" height="100"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            </pickerView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="y2a-Zg-C0x"/>
+                    </view>
+                    <value key="contentSizeForViewInPopover" type="size" width="200" height="100"/>
+                    <size key="freeformSize" width="200" height="100"/>
+                    <connections>
+                        <outlet property="videoKindPicker" destination="61q-Tn-Cda" id="Pve-zP-a1N"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NLX-TI-n20" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1382.608695652174" y="125.89285714285714"/>
         </scene>
         <!--Split View Controller-->
         <scene sceneID="Nki-YV-4Qg">
