@@ -152,9 +152,7 @@ class DetailViewController: UIViewController {
         let pageDescription: String
         if pageIndex == addNewPageIndex {
             pageDescription = (pageIndex == addNewPageIndex) ? "Add new video to collection" : "Re-record video"
-            recordTypePicker.kind = nil
-            recordTypePicker.isUserInteractionEnabled = true
-            recordTypePicker.isAccessibilityElement = true
+            recordTypePicker.kind = .train // default
         } else if let video = video {
             let number = pageVideoIndex()! + 1 // index-based to count-based
             let total = collectionView(videoCollectionView, numberOfItemsInSection: 0) - 1 // take off count of 'add new' items
@@ -162,8 +160,6 @@ class DetailViewController: UIViewController {
             pageDescription = isCameraPage ? "Re-record video \(number) of \(total)" : "Video \(number) of \(total): \(kind)"
             if isCameraPage {
                 recordTypePicker.kind = video.kind
-                recordTypePicker.isUserInteractionEnabled = false
-                recordTypePicker.isAccessibilityElement = false // FIXME: This is ineffective!?
             }
         } else {
             os_log("Page is not camera and has no video")
@@ -235,16 +231,6 @@ class DetailViewController: UIViewController {
                 camera.recordStart(to: video.url)
             } else {
                 guard
-                    recordTypePicker.kind != nil
-                else {
-                    // Emphasise recordTypePicker
-                    recordTypePicker.becomeFirstResponder()
-                    recordTypePicker.kind = .train // or, keep nil but wiggle control
-                    // Don't record
-                    sender.recordingState = .idle
-                    return
-                }
-                guard
                     let url = try? FileManager.default
                         .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
                         .appendingPathComponent(NSUUID().uuidString)
@@ -266,12 +252,6 @@ class DetailViewController: UIViewController {
         rerecordPageIndexes.insert(pageIndex)
         
         // Update UI
-        guard
-            let video = pageVideo()
-        else {
-            os_log("Could not get video for re-record recordStart")
-            return
-        }
         cameraControlVisibility = 1.0
         videoCollectionView.reloadItems(at: [IndexPath(row: pageIndex, section: 0)])
         configurePage()
@@ -448,13 +428,7 @@ extension DetailViewController: CameraProtocol {
             os_log("DetailViewController.didFinishRecording has updated video on page %d", type: .debug, videoPageIndex)
         } else {
             guard
-                let kind = recordTypePicker.kind
-            else {
-                os_log("Could not get video kind to create video")
-                return
-            }
-            guard
-                var video = Video(of: thing, url: outputFileURL, kind: kind)
+                var video = Video(of: thing, url: outputFileURL, kind: recordTypePicker.kind)
             else {
                 os_log("Could not create video")
                 return
