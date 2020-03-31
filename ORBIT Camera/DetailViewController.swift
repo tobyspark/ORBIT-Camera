@@ -37,6 +37,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var cameraControlYConstraint: NSLayoutConstraint!
     @IBOutlet weak var cameraControlHConstraint: NSLayoutConstraint!
     @IBOutlet weak var recordButton: RecordButton!
+    @IBOutlet weak var recordTypePicker: VideoKindPickerView!
     
     /// The thing this detail view is to show the detail of
     var detailItem: Thing? {
@@ -151,11 +152,19 @@ class DetailViewController: UIViewController {
         let pageDescription: String
         if pageIndex == addNewPageIndex {
             pageDescription = (pageIndex == addNewPageIndex) ? "Add new video to collection" : "Re-record video"
+            recordTypePicker.kind = nil
+            recordTypePicker.isUserInteractionEnabled = true
+            recordTypePicker.isAccessibilityElement = true
         } else if let video = video {
             let number = pageVideoIndex()! + 1 // index-based to count-based
             let total = collectionView(videoCollectionView, numberOfItemsInSection: 0) - 1 // take off count of 'add new' items
             let kind = video.kind.description()
             pageDescription = isCameraPage ? "Re-record video \(number) of \(total)" : "Video \(number) of \(total): \(kind)"
+            if isCameraPage {
+                recordTypePicker.kind = video.kind
+                recordTypePicker.isUserInteractionEnabled = false
+                recordTypePicker.isAccessibilityElement = false // FIXME: This is ineffective!?
+            }
         } else {
             os_log("Page is not camera and has no video")
             assertionFailure()
@@ -226,6 +235,16 @@ class DetailViewController: UIViewController {
                 camera.recordStart(to: video.url)
             } else {
                 guard
+                    recordTypePicker.kind != nil
+                else {
+                    // Emphasise recordTypePicker
+                    recordTypePicker.becomeFirstResponder()
+                    recordTypePicker.kind = .train // or, keep nil but wiggle control
+                    // Don't record
+                    sender.recordingState = .idle
+                    return
+                }
+                guard
                     let url = try? FileManager.default
                         .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
                         .appendingPathComponent(NSUUID().uuidString)
@@ -247,11 +266,13 @@ class DetailViewController: UIViewController {
         rerecordPageIndexes.insert(pageIndex)
         
         // Update UI
+        guard
+            let video = pageVideo()
+        else {
+            os_log("Could not get video for re-record recordStart")
+            return
+        }
         cameraControlVisibility = 1.0
-        // DEBUG NOTE
-        // reloadItems gets the replacement cell twice.
-        // reloadItems done, the collectionView then reloads the adjacent cells.
-        // this wouldn't be a problem, but the camera cell
         videoCollectionView.reloadItems(at: [IndexPath(row: pageIndex, section: 0)])
         configurePage()
     }
@@ -427,7 +448,13 @@ extension DetailViewController: CameraProtocol {
             os_log("DetailViewController.didFinishRecording has updated video on page %d", type: .debug, videoPageIndex)
         } else {
             guard
-                var video = Video(of: thing, url: outputFileURL, kind: .train)
+                let kind = recordTypePicker.kind
+            else {
+                os_log("Could not get video kind to create video")
+                return
+            }
+            guard
+                var video = Video(of: thing, url: outputFileURL, kind: kind)
             else {
                 os_log("Could not create video")
                 return
