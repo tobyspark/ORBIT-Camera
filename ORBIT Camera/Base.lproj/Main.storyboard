@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="H1p-Uh-vWS">
-    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -13,7 +13,7 @@
             <objects>
                 <navigationController title="Things" id="RMx-3f-FxP" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="Pmd-2v-anx">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -29,11 +29,11 @@
             <objects>
                 <viewController title="Thing" id="JEX-9P-axG" customClass="DetailViewController" customModule="ORBIT_Camera" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="svH-Pt-448">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="5oc-lW-9vf">
-                                <rect key="frame" x="0.0" y="44" width="375" height="376"/>
+                                <rect key="frame" x="0.0" y="88" width="414" height="415"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="5oc-lW-9vf" secondAttribute="height" multiplier="414:415" id="GdA-GP-YX0"/>
@@ -54,7 +54,7 @@
                                         </collectionViewCellContentView>
                                     </collectionViewCell>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="Camera Cell" id="jEx-gy-aVb">
-                                        <rect key="frame" x="0.0" y="138" width="100" height="100"/>
+                                        <rect key="frame" x="0.0" y="157.5" width="100" height="100"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
                                         <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="Yce-Gk-ilR" customClass="PreviewMetalView" customModule="ORBIT_Camera" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
@@ -68,7 +68,7 @@
                                 </connections>
                             </collectionView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="9tw-t3-tsW">
-                                <rect key="frame" x="20" y="429" width="335" height="230"/>
+                                <rect key="frame" x="20" y="624" width="374" height="230"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jZN-Zs-Y29" userLabel="Recorded View">
                                         <rect key="frame" x="0.0" y="0.0" width="268" height="30"/>
@@ -110,7 +110,7 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IIc-rb-24h" userLabel="Dividing Line Upper">
-                                        <rect key="frame" x="0.0" y="30" width="335" height="45"/>
+                                        <rect key="frame" x="0.0" y="30" width="374" height="45"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zYV-1E-bjd" userLabel="Dividing line top, left">
                                                 <rect key="frame" x="0.0" y="22" width="42" height="1"/>
@@ -120,7 +120,7 @@
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Hmw-03-rOL" userLabel="Dividing line top, right">
-                                                <rect key="frame" x="141.5" y="22" width="193.5" height="1"/>
+                                                <rect key="frame" x="141.5" y="22" width="232.5" height="1"/>
                                                 <color key="backgroundColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="1" id="bzf-Be-QoW"/>
@@ -234,10 +234,10 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lSz-qZ-ly7" userLabel="Dividing Line Lower">
-                                        <rect key="frame" x="0.0" y="165" width="335" height="45"/>
+                                        <rect key="frame" x="0.0" y="165" width="374" height="45"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nn8-ar-dSc" userLabel="Dividing line bottom">
-                                                <rect key="frame" x="0.0" y="22" width="335" height="1"/>
+                                                <rect key="frame" x="0.0" y="22" width="374" height="1"/>
                                                 <color key="backgroundColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="1" id="PAi-DM-cu3"/>
@@ -290,40 +290,8 @@
                                     <constraint firstAttribute="height" relation="lessThanOrEqual" constant="230" id="oIJ-F1-JN3"/>
                                 </constraints>
                             </stackView>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c1p-EG-7ue">
-                                <rect key="frame" x="0.0" y="838" width="414" height="320"/>
-                                <subviews>
-                                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0NL-dH-rxH">
-                                        <rect key="frame" x="20" y="0.0" width="335" height="1"/>
-                                        <color key="backgroundColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="1" id="4PI-FG-6C1"/>
-                                        </constraints>
-                                    </view>
-                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1ke-NA-qCX" customClass="RecordButton" customModule="ORBIT_Camera" customModuleProvider="target">
-                                        <rect key="frame" x="137.5" y="110" width="100" height="100"/>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="100" id="PCf-9f-upf"/>
-                                            <constraint firstAttribute="height" constant="100" id="thZ-nO-zdg"/>
-                                        </constraints>
-                                        <connections>
-                                            <action selector="recordButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="6fg-tj-52s"/>
-                                        </connections>
-                                    </view>
-                                </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                <constraints>
-                                    <constraint firstItem="1ke-NA-qCX" firstAttribute="centerX" secondItem="c1p-EG-7ue" secondAttribute="centerX" id="0Yj-33-CcE"/>
-                                    <constraint firstAttribute="trailing" secondItem="0NL-dH-rxH" secondAttribute="trailing" constant="20" symbolic="YES" id="5Iy-PQ-ZTP"/>
-                                    <constraint firstItem="0NL-dH-rxH" firstAttribute="leading" secondItem="c1p-EG-7ue" secondAttribute="leading" constant="20" symbolic="YES" id="FkI-W5-qqQ"/>
-                                    <constraint firstItem="1ke-NA-qCX" firstAttribute="centerY" secondItem="c1p-EG-7ue" secondAttribute="centerY" id="VSD-N9-Woq"/>
-                                    <constraint firstAttribute="height" constant="320" id="XyU-oE-jbW"/>
-                                    <constraint firstItem="0NL-dH-rxH" firstAttribute="top" secondItem="c1p-EG-7ue" secondAttribute="top" id="ecl-Lw-BdN"/>
-                                </constraints>
-                            </view>
                             <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W2K-Cg-gTu" userLabel="Video Paging View">
-                                <rect key="frame" x="146.5" y="346.5" width="82" height="65.5"/>
+                                <rect key="frame" x="166" y="541.5" width="82" height="65.5"/>
                                 <subviews>
                                     <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="NGm-Yk-zeV">
                                         <rect key="frame" x="0.0" y="0.0" width="82" height="37"/>
@@ -363,6 +331,44 @@
                                         <integer key="value" value="10"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c1p-EG-7ue">
+                                <rect key="frame" x="0.0" y="576" width="414" height="320"/>
+                                <subviews>
+                                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0NL-dH-rxH">
+                                        <rect key="frame" x="20" y="0.0" width="374" height="1"/>
+                                        <color key="backgroundColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="1" id="4PI-FG-6C1"/>
+                                        </constraints>
+                                    </view>
+                                    <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1ke-NA-qCX" customClass="RecordButton" customModule="ORBIT_Camera" customModuleProvider="target">
+                                        <rect key="frame" x="157" y="110" width="100" height="100"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="100" id="PCf-9f-upf"/>
+                                            <constraint firstAttribute="height" constant="100" id="thZ-nO-zdg"/>
+                                        </constraints>
+                                        <connections>
+                                            <action selector="recordButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="6fg-tj-52s"/>
+                                        </connections>
+                                    </view>
+                                    <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="clh-Z5-Sla" customClass="VideoKindPickerView" customModule="ORBIT_Camera" customModuleProvider="target">
+                                        <rect key="frame" x="265" y="52" width="129" height="216"/>
+                                    </pickerView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstItem="1ke-NA-qCX" firstAttribute="centerX" secondItem="c1p-EG-7ue" secondAttribute="centerX" id="0Yj-33-CcE"/>
+                                    <constraint firstAttribute="trailing" secondItem="0NL-dH-rxH" secondAttribute="trailing" constant="20" symbolic="YES" id="5Iy-PQ-ZTP"/>
+                                    <constraint firstAttribute="trailing" secondItem="clh-Z5-Sla" secondAttribute="trailing" constant="20" symbolic="YES" id="9K3-iF-iRj"/>
+                                    <constraint firstItem="clh-Z5-Sla" firstAttribute="leading" secondItem="1ke-NA-qCX" secondAttribute="trailing" constant="8" symbolic="YES" id="Deh-Tf-NsU"/>
+                                    <constraint firstItem="0NL-dH-rxH" firstAttribute="leading" secondItem="c1p-EG-7ue" secondAttribute="leading" constant="20" symbolic="YES" id="FkI-W5-qqQ"/>
+                                    <constraint firstItem="1ke-NA-qCX" firstAttribute="centerY" secondItem="c1p-EG-7ue" secondAttribute="centerY" id="VSD-N9-Woq"/>
+                                    <constraint firstAttribute="height" constant="320" id="XyU-oE-jbW"/>
+                                    <constraint firstItem="clh-Z5-Sla" firstAttribute="centerY" secondItem="1ke-NA-qCX" secondAttribute="centerY" id="Y3q-ht-cJL"/>
+                                    <constraint firstItem="0NL-dH-rxH" firstAttribute="top" secondItem="c1p-EG-7ue" secondAttribute="top" id="ecl-Lw-BdN"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -411,7 +417,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FJe-Yq-33r" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="708" y="128.18590704647679"/>
+            <point key="canvasLocation" x="707.24637681159425" y="127.90178571428571"/>
         </scene>
         <!--Split View Controller-->
         <scene sceneID="Nki-YV-4Qg">
@@ -432,19 +438,19 @@
             <objects>
                 <tableViewController title="Things" clearsSelectionOnViewWillAppear="NO" id="7bK-jq-Zjz" customClass="MasterViewController" customModule="ORBIT_Camera" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="r7i-6Z-zg0">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Add new cell" rowHeight="52" id="WCw-Qf-5nD" customClass="NewThingCell" customModule="ORBIT_Camera" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="28" width="375" height="52"/>
+                                <rect key="frame" x="0.0" y="28" width="414" height="52"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="WCw-Qf-5nD" id="37f-cq-3Eg">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="52"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="52"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="What is it?" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="60f-YF-g6L">
-                                            <rect key="frame" x="16" y="12.5" width="307" height="27"/>
+                                            <rect key="frame" x="20" y="12.5" width="342" height="27"/>
                                             <accessibility key="accessibilityConfiguration" hint="Enter what you call the thing" label="Thing name"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
                                             <textInputTraits key="textInputTraits" returnKeyType="go"/>
@@ -454,7 +460,7 @@
                                             </connections>
                                         </textField>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8eN-2e-Foy">
-                                            <rect key="frame" x="323" y="0.0" width="52" height="52"/>
+                                            <rect key="frame" x="362" y="0.0" width="52" height="52"/>
                                             <accessibility key="accessibilityConfiguration" hint="Takes what you entered and creates a new thing with it" label="Add thing"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="8eN-2e-Foy" secondAttribute="height" multiplier="1:1" id="Pbu-bJ-ngs"/>
@@ -483,20 +489,20 @@
                                 </connections>
                             </tableViewCell>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" textLabel="LCS-jR-9Ng" detailTextLabel="JuM-nw-nM6" style="IBUITableViewCellStyleValue1" id="G7o-Gm-suS">
-                                <rect key="frame" x="0.0" y="80" width="375" height="52.5"/>
+                                <rect key="frame" x="0.0" y="80" width="414" height="52.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="G7o-Gm-suS" id="82b-Ek-3sd">
-                                    <rect key="frame" x="0.0" y="0.0" width="348" height="52.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="383" height="52.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="LCS-jR-9Ng">
-                                            <rect key="frame" x="16" y="13" width="46" height="26.5"/>
+                                            <rect key="frame" x="20" y="13" width="46" height="26.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
                                             <color key="highlightedColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </label>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Detail" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="JuM-nw-nM6">
-                                            <rect key="frame" x="296" y="18" width="44" height="20.5"/>
+                                            <rect key="frame" x="331" y="18" width="44" height="20.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" systemColor="placeholderTextColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
@@ -535,24 +541,24 @@
             <objects>
                 <viewController title="Info" id="hQ4-tG-xkv" customClass="InfoViewController" customModule="ORBIT_Camera" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ftw-Fm-72o">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ORBIT logo" translatesAutoresizingMaskIntoConstraints="NO" id="2aO-i4-d58">
-                                <rect key="frame" x="87.5" y="60" width="200" height="200"/>
+                                <rect key="frame" x="107" y="60" width="200" height="200"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="200" id="H8N-ZL-43w"/>
                                     <constraint firstAttribute="width" constant="200" id="XAt-iE-Qga"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Unlock code" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iWv-G2-byB">
-                                <rect key="frame" x="139.5" y="346.5" width="96" height="21"/>
+                                <rect key="frame" x="159" y="346.5" width="96" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter code sent to you" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="419-dk-hXK">
-                                <rect key="frame" x="20" y="377.5" width="335" height="34"/>
+                                <rect key="frame" x="20" y="377.5" width="374" height="34"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" returnKeyType="go"/>
                                 <connections>
@@ -561,7 +567,7 @@
                                 </connections>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ORBIT Camera" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7I2-IG-5Lu">
-                                <rect key="frame" x="112" y="280" width="151" height="26.5"/>
+                                <rect key="frame" x="131.5" y="280" width="151" height="26.5"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -570,7 +576,7 @@
                                 </userDefinedRuntimeAttributes>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZDt-uB-H9e">
-                                <rect key="frame" x="321" y="10" width="44" height="44"/>
+                                <rect key="frame" x="360" y="10" width="44" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="44" id="Db5-Im-rAy"/>
                                     <constraint firstAttribute="height" constant="44" id="paE-DT-7KY"/>
@@ -587,7 +593,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Unverified" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JcU-sZ-Nrr">
-                                <rect key="frame" x="20" y="421.5" width="335" height="14.5"/>
+                                <rect key="frame" x="20" y="421.5" width="374" height="14.5"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -627,7 +633,7 @@
             <objects>
                 <navigationController id="vC3-pB-5Vb" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="DjV-YW-jjY">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
