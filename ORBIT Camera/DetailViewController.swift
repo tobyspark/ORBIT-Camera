@@ -17,6 +17,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var videoPagingView: UIView!
     @IBOutlet weak var videoPageControl: UIPageControl!
     @IBOutlet weak var videoLabel: UILabel!
+    @IBOutlet weak var videoLabelKindButton: UIButton!
     
     @IBOutlet weak var videoRecordedIcon: UIImageView!
     @IBOutlet weak var videoRecordedLabel: UILabel!
@@ -150,16 +151,19 @@ class DetailViewController: UIViewController {
         // Update page control
         videoPageControl.currentPage = pageIndex
         let pageDescription: String
+        var kindDescription: String?
         if pageIndex == addNewPageIndex {
-            pageDescription = (pageIndex == addNewPageIndex) ? "Add new video to collection" : "Re-record video"
+            pageDescription = "Add new video to collection"
             recordTypePicker.kind = .train // default
         } else if let video = video {
             let number = pageVideoIndex()! + 1 // index-based to count-based
             let total = collectionView(videoCollectionView, numberOfItemsInSection: 0) - 1 // take off count of 'add new' items
-            let kind = video.kind.description()
-            pageDescription = isCameraPage ? "Re-record video \(number) of \(total)" : "Video \(number) of \(total): \(kind)"
             if isCameraPage {
                 recordTypePicker.kind = video.kind
+                pageDescription = "Re-record video \(number) of \(total)"
+            } else {
+                pageDescription = "Video \(number) of \(total): "
+                kindDescription = video.kind.description()
             }
         } else {
             os_log("Page is not camera and has no video")
@@ -168,6 +172,13 @@ class DetailViewController: UIViewController {
         }
         videoLabel.text = pageDescription
         videoPageControl.accessibilityValue = pageDescription
+        if let kindDescription = kindDescription {
+            videoLabelKindButton.setTitle(kindDescription, for: .normal)
+            videoLabelKindButton.isHidden = false
+        } else {
+            videoLabelKindButton.setTitle(nil, for: .normal)
+            videoLabelKindButton.isHidden = true
+        }
         
         // Update statuses
         if let video = video {
@@ -211,6 +222,35 @@ class DetailViewController: UIViewController {
         pageIndex = sender.currentPage
     }
     
+    @IBAction func videoLabelKindButtonAction(sender: UIButton) {
+        guard var video = pageVideo()
+        else {
+            os_log("videoLabelKindButtonAction with no page video")
+            return
+        }
+
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let videoKindViewController = storyboard.instantiateViewController(identifier: "VideoKindViewController") as VideoKindPickerViewController
+
+        // Style as popover and set anchor
+        videoKindViewController.modalPresentationStyle = .popover
+        videoKindViewController.popoverPresentationController?.sourceRect = sender.bounds
+        videoKindViewController.popoverPresentationController?.sourceView = sender
+        
+        // VideoKindController overrides adaptive presentation, so here ensures always popover (i.e. and not a form sheet on compact size classes)
+        videoKindViewController.popoverPresentationController?.delegate = videoKindViewController
+        
+        // Handle choice on dismiss
+        videoKindViewController.dismissHandler = { kind in
+            video.kind = kind
+            try! dbQueue.write { db in try video.save(db) } // FIXME: try!
+            self.configurePage()
+        }
+        
+        // Present!
+        self.present(videoKindViewController, animated: true, completion: nil)
+    }
+
     /// Action a video recording. This might be a new video, or the re-recording of an existing one.
     @IBAction func recordButtonAction(sender: RecordButton) {
         switch sender.recordingState {

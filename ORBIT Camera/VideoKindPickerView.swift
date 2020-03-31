@@ -35,3 +35,18 @@ class VideoKindPickerView: UIPickerView, UIPickerViewDelegate, UIPickerViewDataS
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int { Video.Kind.allCases.count }
 }
+
+class VideoKindPickerViewController: UIViewController, UIPopoverPresentationControllerDelegate {
+    
+    @IBOutlet weak var videoKindPicker: VideoKindPickerView!
+    
+    var dismissHandler: ( (Video.Kind)->Void )? = nil
+    
+    func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
+        if let dismissHandler = dismissHandler {
+            dismissHandler(videoKindPicker.kind)
+        }
+    }
+
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle { .none }
+}
