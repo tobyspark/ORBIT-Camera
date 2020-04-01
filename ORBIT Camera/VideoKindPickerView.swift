@@ -9,7 +9,7 @@
 import UIKit
 
 /// A UIPickerView to select the video kind.
-class VideoKindPickerView: UIPickerView, UIPickerViewDelegate, UIPickerViewDataSource {
+class VideoKindPickerView: UIPickerView, UIPickerViewDelegate, UIPickerViewDataSource, UIPickerViewAccessibilityDelegate {
     
     /// The kind currently selected.
     var kind: Video.Kind {
@@ -34,8 +34,14 @@ class VideoKindPickerView: UIPickerView, UIPickerViewDelegate, UIPickerViewDataS
     func numberOfComponents(in pickerView: UIPickerView) -> Int { 1 }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int { Video.Kind.allCases.count }
+    
+    func pickerView(_ pickerView: UIPickerView, accessibilityLabelForComponent component: Int) -> String? { "Kind of video" }
+    
+    func pickerView(_ pickerView: UIPickerView, accessibilityHintForComponent component: Int) -> String? { "Sets whether this is a training or test video" }
 }
 
+/// A view controller that hosts a VideoKindPickerView
+/// To be used as a popover element regardless of size class
 class VideoKindPickerViewController: UIViewController, UIPopoverPresentationControllerDelegate {
     
     @IBOutlet weak var videoKindPicker: VideoKindPickerView!
