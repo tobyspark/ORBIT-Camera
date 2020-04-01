@@ -318,6 +318,7 @@
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6MK-eG-FRn">
                                                 <rect key="frame" x="42" y="0.0" width="35" height="33"/>
+                                                <accessibility key="accessibilityConfiguration" hint="Sets whether this is a training or test video" label="Video kind"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <state key="normal" title="Kind"/>
                                                 <connections>
@@ -371,7 +372,7 @@
                                         </connections>
                                     </view>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="clh-Z5-Sla" customClass="VideoKindPickerView" customModule="ORBIT_Camera" customModuleProvider="target">
-                                        <rect key="frame" x="265" y="52" width="129" height="216"/>
+                                        <rect key="frame" x="265" y="110" width="129" height="100"/>
                                     </pickerView>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -385,6 +386,7 @@
                                     <constraint firstAttribute="height" constant="320" id="XyU-oE-jbW"/>
                                     <constraint firstItem="clh-Z5-Sla" firstAttribute="centerY" secondItem="1ke-NA-qCX" secondAttribute="centerY" id="Y3q-ht-cJL"/>
                                     <constraint firstItem="0NL-dH-rxH" firstAttribute="top" secondItem="c1p-EG-7ue" secondAttribute="top" id="ecl-Lw-BdN"/>
+                                    <constraint firstItem="clh-Z5-Sla" firstAttribute="height" secondItem="1ke-NA-qCX" secondAttribute="height" id="u5E-aN-Jh6"/>
                                 </constraints>
                             </view>
                         </subviews>
