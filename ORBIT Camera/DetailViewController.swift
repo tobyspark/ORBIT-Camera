@@ -133,7 +133,12 @@ class DetailViewController: UIViewController {
         
         // Set number of videos in paging control
         videoPageControl.numberOfPages = collectionView(videoCollectionView, numberOfItemsInSection: 0)
-        pageIndex = 0 // will trigger configurePage
+        
+        // Set current page, will trigger configurePage
+        pageIndex = 0
+        
+        // Set camera controls visibility
+        cameraControlVisibility = cameraPageIndexes.contains(pageIndex) ? 1 : 0
     }
     
     /// Update the user interface for the selected page
@@ -512,6 +517,7 @@ extension DetailViewController: CameraProtocol {
             videoPageControl.numberOfPages = collectionView(videoCollectionView, numberOfItemsInSection: 0)
             videoCollectionView.insertItems(at: [IndexPath(row: insertionPageIndex, section: 0)])
             pageIndex = insertionPageIndex
+            cameraControlVisibility = 0
             os_log("DetailViewController.didFinishRecording has inserted video", type: .debug)
         }
     }
