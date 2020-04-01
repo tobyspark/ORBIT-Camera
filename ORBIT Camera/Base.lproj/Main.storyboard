@@ -67,6 +67,26 @@
                                     <outlet property="delegate" destination="JEX-9P-axG" id="LGa-oN-Oui"/>
                                 </connections>
                             </collectionView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bqO-YL-mhJ">
+                                <rect key="frame" x="348" y="437" width="50" height="50"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <accessibility key="accessibilityConfiguration" hint="Takes you to the camera page" label="Add new video"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="0cL-65-Bmt"/>
+                                    <constraint firstAttribute="width" constant="50" id="qj9-Nr-Bmm"/>
+                                </constraints>
+                                <state key="normal" image="plus" catalog="system">
+                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large" weight="bold"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="25"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="addNewPageShortcutButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="7Ns-HG-ihN"/>
+                                </connections>
+                            </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="9tw-t3-tsW">
                                 <rect key="frame" x="20" y="624" width="374" height="230"/>
                                 <subviews>
@@ -397,8 +417,10 @@
                             <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="c1p-EG-7ue" secondAttribute="trailing" id="NHa-xp-jew"/>
                             <constraint firstItem="VUw-jc-0yf" firstAttribute="trailing" secondItem="9tw-t3-tsW" secondAttribute="trailing" constant="20" id="NcH-Aj-YVc"/>
                             <constraint firstItem="W2K-Cg-gTu" firstAttribute="bottom" secondItem="5oc-lW-9vf" secondAttribute="bottom" priority="750" constant="-8" id="OYh-bj-FHp"/>
+                            <constraint firstItem="bqO-YL-mhJ" firstAttribute="trailing" secondItem="5oc-lW-9vf" secondAttribute="trailing" constant="-16" id="PV3-t9-Xr3"/>
                             <constraint firstItem="9tw-t3-tsW" firstAttribute="top" relation="greaterThanOrEqual" secondItem="5oc-lW-9vf" secondAttribute="bottom" constant="8" id="Q2j-fc-fxM"/>
                             <constraint firstItem="9tw-t3-tsW" firstAttribute="top" relation="greaterThanOrEqual" secondItem="W2K-Cg-gTu" secondAttribute="bottom" priority="250" constant="8" id="QkK-ik-L8Q"/>
+                            <constraint firstItem="bqO-YL-mhJ" firstAttribute="bottom" secondItem="5oc-lW-9vf" secondAttribute="bottom" constant="-16" id="T2d-Lv-uv1"/>
                             <constraint firstItem="5oc-lW-9vf" firstAttribute="centerX" secondItem="svH-Pt-448" secondAttribute="centerX" id="cg7-Tz-YVK"/>
                             <constraint firstItem="c1p-EG-7ue" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" id="hia-0X-qyk"/>
                             <constraint firstItem="5oc-lW-9vf" firstAttribute="top" secondItem="VUw-jc-0yf" secondAttribute="top" id="isE-jO-OHL"/>
@@ -413,6 +435,7 @@
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="mOI-FS-AaM"/>
                     <connections>
+                        <outlet property="addNewPageShortcutButton" destination="bqO-YL-mhJ" id="d0c-NY-srC"/>
                         <outlet property="cameraControlHConstraint" destination="XyU-oE-jbW" id="XOt-Cl-HJz"/>
                         <outlet property="cameraControlView" destination="c1p-EG-7ue" id="ICN-PS-Way"/>
                         <outlet property="cameraControlYConstraint" destination="27Y-Dc-F5G" id="pwH-ph-j7G"/>
