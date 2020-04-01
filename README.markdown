@@ -12,8 +12,11 @@
 
 ## Version history
 
+v0.4.2
+- Fixes to camera at end, videos newest last.
+
 v0.4.1
-- Thing scene adds new at end
+- Thing scene adds new videos at end
 - PR [Tweak: Thing scene adds new at end](https://github.com/tobyspark/ORBIT-Camera/pull/10)
 
 v0.4.0
