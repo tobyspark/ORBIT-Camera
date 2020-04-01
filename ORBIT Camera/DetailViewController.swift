@@ -14,6 +14,7 @@ class DetailViewController: UIViewController {
 
     @IBOutlet weak var thingNavigationItem: UINavigationItem!
     @IBOutlet weak var videoCollectionView: UICollectionView!
+    @IBOutlet weak var addNewPageShortcutButton: UIButton!
     @IBOutlet weak var videoPagingView: UIView!
     @IBOutlet weak var videoPageControl: UIPageControl!
     @IBOutlet weak var videoLabel: UILabel!
@@ -148,6 +149,12 @@ class DetailViewController: UIViewController {
             )
         }
         
+        // Update add new shortcut button
+        UIView.animate(withDuration: 0.5) {
+            let hidden = self.pageIndex == self.addNewPageIndex
+            self.addNewPageShortcutButton.alpha = hidden ? 0 : 1
+        }
+        
         // Update page control
         videoPageControl.currentPage = pageIndex
         let pageDescription: String
@@ -218,6 +225,11 @@ class DetailViewController: UIViewController {
         pageElements.forEach { ($0 as? UIControl)?.isEnabled = pageEnable }
         statusElements.forEach { ($0 as? UIControl)?.isEnabled = statusEnable }
         recordElements.forEach { ($0 as? UIControl)?.isEnabled = recordEnable }
+    }
+    
+    /// Action the addNewPageShortcutButton
+    @IBAction func addNewPageShortcutButtonAction(sender: UIButton) {
+        pageIndex = addNewPageIndex
     }
     
     /// Action the video corresponding to page
