@@ -115,12 +115,12 @@ extension Thing: FetchableRecord, MutablePersistableRecord {
         }
     }
     
-    /// Attempt to return the nth video of the thing. Zero-based.
+    /// Attempt to return the nth video of the thing. Zero-based, newest last.
     func video(with index: Int) throws -> Video? {
         try dbQueue.read { db in // FIXME: try!
             let request = Video
                 .filter(Video.Columns.thingID == self.id)
-                .order(Video.Columns.recorded.desc)
+                .order(Video.Columns.recorded.asc)
                 .select(Video.Columns.id)
             let ids = try Int64.fetchAll(db, request)
             if (0 ..< ids.count).contains(index) {
@@ -136,7 +136,7 @@ extension Thing: FetchableRecord, MutablePersistableRecord {
         try! dbQueue.read { db in // FIXME: try!
             let videos = try Video
                 .filter(Video.Columns.thingID == self.id)
-                .order(Video.Columns.recorded.desc)
+                .order(Video.Columns.recorded.asc)
                 .fetchAll(db)
             return videos.firstIndex { $0.url.absoluteURL == url.absoluteURL }
         }
