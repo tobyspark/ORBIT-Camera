@@ -138,10 +138,9 @@ class Camera {
     
     init() {
         // FIXME: Debugging (for now)
-        os_log("Adding camera observers", type: .debug)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleNotification), name: .AVCaptureSessionDidStartRunning, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleNotification), name: .AVCaptureSessionDidStopRunning, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleNotification), name: .AVCaptureSessionRuntimeError, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleNotification), name: .AVCaptureSessionDidStartRunning, object: self.captureSession)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleNotification), name: .AVCaptureSessionDidStopRunning, object: self.captureSession)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleNotification), name: .AVCaptureSessionRuntimeError, object: self.captureSession)
         
         #if !targetEnvironment(simulator)
         queue.async {
@@ -204,10 +203,7 @@ class Camera {
     
     // FIXME: Debugging (for now)
     @objc func handleNotification(notification: Notification) {
-        os_log("handleNotification %s", notification.name.rawValue)
-        if notification.name == NSNotification.Name.AVCaptureSessionRuntimeError {
-            print(notification)
-        }
+        os_log("%{public}s", type: .debug, notification.name.rawValue)
     }
     
     /// The `AVCaptureSession` behind this "Camera"
