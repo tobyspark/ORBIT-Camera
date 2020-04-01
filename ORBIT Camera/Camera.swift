@@ -10,12 +10,6 @@ import UIKit
 import AVFoundation
 import os
 
-/// Protocol for handling camera output
-protocol CameraProtocol {
-    /// Called when a recording has finished writing to its file
-    func didFinishRecording(to outputFileURL: URL)
-}
-
 /// Functionality to capture videos and run a preview (i.e. a camera viewfinder)
 ///
 /// The core part is an AVCaptureSession, which takes the device input and has to run at a device format. This is currently set to `hd1920x1080`.
@@ -69,7 +63,7 @@ class Camera {
     }
     
     /// Start recording to a file
-    func recordStart(to url: URL) {
+    func recordStart(to url: URL, completionHandler: @escaping ()->Void ) {
         #if !targetEnvironment(simulator)
         queue.async {
             // The capture objects should only exist during recording.
@@ -113,6 +107,7 @@ class Camera {
             // This will start recording, enacted in the videoDataSource delegate
             self.writer = writer
             self.writerInput = writerInput
+            self.completionHandler = completionHandler
         }
         #endif
     }
@@ -124,28 +119,26 @@ class Camera {
             self.videoDataDelegate.queue.sync {
                 // Wrap-up writing
                 if let writer = self.writer,
-                   let delegate = self.delegate
+                   let completionHandler = self.completionHandler
                 {
                     writer.finishWriting {
-                        let url = writer.outputURL
                         DispatchQueue.main.async {
-                            os_log("Camera.recordStop calling delegate.didFinishRecording", type: .debug)
-                            delegate.didFinishRecording(to: url)
+                            os_log("Camera.recordStop calling completionHandler", type: .debug)
+                            completionHandler()
                         }
                     }
                 }
                 self.writer = nil
                 self.writerInput = nil
+                self.completionHandler = nil
             }
         }
         #endif
     }
     
-    // A delegate that can be notified when a recording has been created.
-    var delegate: CameraProtocol?
-    
     init() {
         // FIXME: Debugging (for now)
+        os_log("Adding camera observers", type: .debug)
         NotificationCenter.default.addObserver(self, selector: #selector(handleNotification), name: .AVCaptureSessionDidStartRunning, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleNotification), name: .AVCaptureSessionDidStopRunning, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleNotification), name: .AVCaptureSessionRuntimeError, object: nil)
@@ -231,6 +224,9 @@ class Camera {
     
     /// Capture object instantiated for (and only exist during) recording, writes that formated data
     fileprivate var writer: AVAssetWriter?
+    
+    /// Capture completion handler, should only exist during recording
+    private var completionHandler: ( ()->Void )?
     
     /// Preview layers to update
     fileprivate var previewViews = Set<WeakRef<PreviewMetalView>>()
