@@ -70,6 +70,7 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bqO-YL-mhJ">
                                 <rect key="frame" x="348" y="437" width="50" height="50"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <accessibility key="accessibilityConfiguration" hint="Takes you to the camera page" label="Add new video"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="0cL-65-Bmt"/>
                                     <constraint firstAttribute="width" constant="50" id="qj9-Nr-Bmm"/>
