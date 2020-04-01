@@ -58,10 +58,14 @@ class DetailViewController: UIViewController {
     }
     
     /// The page index where the camera to take new videos is placed. Currently the first, but an alternative could be the last
-    let addNewPageIndex = 0
+    var addNewPageIndex: Int {
+        get { videoPageControl.numberOfPages - 1 }
+    }
     
     /// The page index where just recorded videos are inserted.
-    let insertionPageIndex = 1
+    var insertionPageIndex: Int {
+        get { videoPageControl.numberOfPages - 2 }
+    }
     
     /// A dynamic set of page indexes where the videos are flagged for re-recording
     var rerecordPageIndexes = IndexSet()
@@ -116,10 +120,6 @@ class DetailViewController: UIViewController {
         // Set title for screen
         self.title = detailItem?.labelParticipant ?? ""
         
-        // Set number of videos in paging control
-        pageIndex = 0
-        videoPageControl.numberOfPages = collectionView(videoCollectionView, numberOfItemsInSection: 0)
-        
         // Split view special-cases
         if let splitViewController = splitViewController {
             // If there is no thing set, ensure the list of things is displayed, so a thing can be added.
@@ -130,6 +130,10 @@ class DetailViewController: UIViewController {
                 splitViewController.preferredDisplayMode = .automatic
             }
         }
+        
+        // Set number of videos in paging control
+        videoPageControl.numberOfPages = collectionView(videoCollectionView, numberOfItemsInSection: 0)
+        pageIndex = 0 // will trigger configurePage
     }
     
     /// Update the user interface for the selected page
