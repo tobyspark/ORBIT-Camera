@@ -17,6 +17,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var videoPagingView: UIView!
     @IBOutlet weak var videoPageControl: UIPageControl!
     @IBOutlet weak var videoLabel: UILabel!
+    @IBOutlet weak var videoLabelKindButton: UIButton!
     
     @IBOutlet weak var videoRecordedIcon: UIImageView!
     @IBOutlet weak var videoRecordedLabel: UILabel!
@@ -37,6 +38,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var cameraControlYConstraint: NSLayoutConstraint!
     @IBOutlet weak var cameraControlHConstraint: NSLayoutConstraint!
     @IBOutlet weak var recordButton: RecordButton!
+    @IBOutlet weak var recordTypePicker: VideoKindPickerView!
     
     /// The thing this detail view is to show the detail of
     var detailItem: Thing? {
@@ -149,13 +151,20 @@ class DetailViewController: UIViewController {
         // Update page control
         videoPageControl.currentPage = pageIndex
         let pageDescription: String
+        var kindDescription: String?
         if pageIndex == addNewPageIndex {
-            pageDescription = (pageIndex == addNewPageIndex) ? "Add new video to collection" : "Re-record video"
+            pageDescription = "Add new video to collection"
+            recordTypePicker.kind = .train // default
         } else if let video = video {
             let number = pageVideoIndex()! + 1 // index-based to count-based
             let total = collectionView(videoCollectionView, numberOfItemsInSection: 0) - 1 // take off count of 'add new' items
-            let kind = video.kind.description()
-            pageDescription = isCameraPage ? "Re-record video \(number) of \(total)" : "Video \(number) of \(total): \(kind)"
+            if isCameraPage {
+                recordTypePicker.kind = video.kind
+                pageDescription = "Re-record video \(number) of \(total)"
+            } else {
+                pageDescription = "Video \(number) of \(total): "
+                kindDescription = video.kind.description()
+            }
         } else {
             os_log("Page is not camera and has no video")
             assertionFailure()
@@ -163,6 +172,16 @@ class DetailViewController: UIViewController {
         }
         videoLabel.text = pageDescription
         videoPageControl.accessibilityValue = pageDescription
+        UIView.performWithoutAnimation { // setTitle animates by default, which is out of keeping with link-in-label aesthetic
+            if let kindDescription = kindDescription {
+                videoLabelKindButton.setTitle(kindDescription, for: .normal)
+                videoLabelKindButton.isHidden = false
+            } else {
+                videoLabelKindButton.isHidden = true
+            }
+            videoLabelKindButton.layoutIfNeeded() // will perform with animation without this
+        }
+        
         
         // Update statuses
         if let video = video {
@@ -206,6 +225,35 @@ class DetailViewController: UIViewController {
         pageIndex = sender.currentPage
     }
     
+    @IBAction func videoLabelKindButtonAction(sender: UIButton) {
+        guard var video = pageVideo()
+        else {
+            os_log("videoLabelKindButtonAction with no page video")
+            return
+        }
+
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let videoKindViewController = storyboard.instantiateViewController(identifier: "VideoKindViewController") as VideoKindPickerViewController
+
+        // Style as popover and set anchor
+        videoKindViewController.modalPresentationStyle = .popover
+        videoKindViewController.popoverPresentationController?.sourceRect = sender.bounds
+        videoKindViewController.popoverPresentationController?.sourceView = sender
+        
+        // VideoKindController overrides adaptive presentation, so here ensures always popover (i.e. and not a form sheet on compact size classes)
+        videoKindViewController.popoverPresentationController?.delegate = videoKindViewController
+        
+        // Handle choice on dismiss
+        videoKindViewController.dismissHandler = { kind in
+            video.kind = kind
+            try! dbQueue.write { db in try video.save(db) } // FIXME: try!
+            self.configurePage()
+        }
+        
+        // Present!
+        self.present(videoKindViewController, animated: true, completion: nil)
+    }
+
     /// Action a video recording. This might be a new video, or the re-recording of an existing one.
     @IBAction func recordButtonAction(sender: RecordButton) {
         switch sender.recordingState {
@@ -248,10 +296,6 @@ class DetailViewController: UIViewController {
         
         // Update UI
         cameraControlVisibility = 1.0
-        // DEBUG NOTE
-        // reloadItems gets the replacement cell twice.
-        // reloadItems done, the collectionView then reloads the adjacent cells.
-        // this wouldn't be a problem, but the camera cell
         videoCollectionView.reloadItems(at: [IndexPath(row: pageIndex, section: 0)])
         configurePage()
     }
@@ -303,6 +347,11 @@ class DetailViewController: UIViewController {
         }
         
         configureView()
+    }
+    
+    override func viewWillLayoutSubviews() {
+        // Maintain adaptive UIColor systemBackground colour, while making it semi-transparent
+        videoPagingView.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.8)
     }
     
     // Note: I'd have thought `updateViewConstraints` was the override to use, but it doesn't have the required effect here
@@ -421,13 +470,20 @@ extension DetailViewController: CameraProtocol {
         if let videoIndex = thing.videoIndex(with: outputFileURL) {
             let videoPageIndex = videoIndex < addNewPageIndex ? videoIndex : videoIndex + 1
             rerecordPageIndexes.remove(videoPageIndex)
+            
+            // Update kind from camera controls
+            var video = pageVideo()!
+            video.kind = recordTypePicker.kind
+            try! dbQueue.write { db in try video.save(db) } // FIXME: try!
+            
+            // Update UI
             videoCollectionView.reloadItems(at: [IndexPath(row: videoPageIndex, section: 0)])
             configurePage()
             cameraControlVisibility = 0
             os_log("DetailViewController.didFinishRecording has updated video on page %d", type: .debug, videoPageIndex)
         } else {
             guard
-                var video = Video(of: thing, url: outputFileURL, kind: .recognition)
+                var video = Video(of: thing, url: outputFileURL, kind: recordTypePicker.kind)
             else {
                 os_log("Could not create video")
                 return

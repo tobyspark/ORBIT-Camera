@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B3D772624332C740077DFD0 /* VideoKindPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3D772524332C740077DFD0 /* VideoKindPickerView.swift */; };
 		4B5A6B992424CB9200A5C45B /* NewThingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5A6B982424CB9200A5C45B /* NewThingCell.swift */; };
 		4B5A6B9B242527A400A5C45B /* Thing+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5A6B9A242527A400A5C45B /* Thing+UI.swift */; };
 		4B87FD052405C3F0007AB630 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 4B87FD042405C3F0007AB630 /* GRDB */; };
@@ -64,6 +65,7 @@
 
 /* Begin PBXFileReference section */
 		4B3D77222432156B0077DFD0 /* README.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.markdown; sourceTree = "<group>"; };
+		4B3D772524332C740077DFD0 /* VideoKindPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoKindPickerView.swift; sourceTree = "<group>"; };
 		4B5A6B982424CB9200A5C45B /* NewThingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewThingCell.swift; sourceTree = "<group>"; };
 		4B5A6B9A242527A400A5C45B /* Thing+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Thing+UI.swift"; sourceTree = "<group>"; };
 		4B87FD0B2406A074007AB630 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 				4B87FD20240D53FC007AB630 /* Video+upload.swift */,
 				4B87FD2F240EC756007AB630 /* MultipartFormData.swift */,
 				4B9AA9FE2418EA49002380B1 /* RecordButton.swift */,
+				4B3D772524332C740077DFD0 /* VideoKindPickerView.swift */,
 				4B87FD132409B678007AB630 /* Settings.swift */,
 				4BF14BBF2405730700E31D93 /* Main.storyboard */,
 				4BF14BC22405730900E31D93 /* Assets.xcassets */,
@@ -306,6 +309,7 @@
 				4BF14C192405B81900E31D93 /* AppDatabase.swift in Sources */,
 				4B87FD1A240D402D007AB630 /* AppNetwork.swift in Sources */,
 				4B87FD1124098D57007AB630 /* Participant.swift in Sources */,
+				4B3D772624332C740077DFD0 /* VideoKindPickerView.swift in Sources */,
 				4B87FD30240EC757007AB630 /* MultipartFormData.swift in Sources */,
 				4B9AA9FF2418EA49002380B1 /* RecordButton.swift in Sources */,
 				4BF14BBA2405730700E31D93 /* SceneDelegate.swift in Sources */,
