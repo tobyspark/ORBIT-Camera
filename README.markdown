@@ -12,6 +12,10 @@
 
 ## Version history
 
+v0.4.1
+- Thing scene adds new at end
+- PR [Tweak: Thing scene adds new at end](https://github.com/tobyspark/ORBIT-Camera/pull/10)
+
 v0.4.0
 - _Important: incompatible database changes, delete any previous installation on your device._
 - Videos are classified as training or testing

@@ -154,7 +154,7 @@ class DetailViewController: UIViewController {
         }
         
         // Update add new shortcut button
-        UIView.animate(withDuration: 0.5) {
+        UIView.animate(withDuration: 0.3) {
             let hidden = self.pageIndex == self.addNewPageIndex
             self.addNewPageShortcutButton.alpha = hidden ? 0 : 1
         }
