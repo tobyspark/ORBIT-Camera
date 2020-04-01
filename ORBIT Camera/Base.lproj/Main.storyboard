@@ -82,6 +82,9 @@
                                         <integer key="value" value="25"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="addNewPageShortcutButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="7Ns-HG-ihN"/>
+                                </connections>
                             </button>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="9tw-t3-tsW">
                                 <rect key="frame" x="20" y="624" width="374" height="230"/>
@@ -431,6 +434,7 @@
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="mOI-FS-AaM"/>
                     <connections>
+                        <outlet property="addNewPageShortcutButton" destination="bqO-YL-mhJ" id="d0c-NY-srC"/>
                         <outlet property="cameraControlHConstraint" destination="XyU-oE-jbW" id="XOt-Cl-HJz"/>
                         <outlet property="cameraControlView" destination="c1p-EG-7ue" id="ICN-PS-Way"/>
                         <outlet property="cameraControlYConstraint" destination="27Y-Dc-F5G" id="pwH-ph-j7G"/>
