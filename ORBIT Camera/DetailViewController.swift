@@ -349,6 +349,11 @@ class DetailViewController: UIViewController {
         configureView()
     }
     
+    override func viewWillLayoutSubviews() {
+        // Maintain adaptive UIColor systemBackground colour, while making it semi-transparent
+        videoPagingView.backgroundColor = UIColor.systemBackground.withAlphaComponent(0.8)
+    }
+    
     // Note: I'd have thought `updateViewConstraints` was the override to use, but it doesn't have the required effect here
     override func viewDidLayoutSubviews() {
         // Set height of camera control view

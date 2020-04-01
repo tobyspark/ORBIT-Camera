@@ -290,11 +290,11 @@
                                     <constraint firstAttribute="height" relation="lessThanOrEqual" constant="230" id="oIJ-F1-JN3"/>
                                 </constraints>
                             </stackView>
-                            <view alpha="0.80000000000000004" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W2K-Cg-gTu" userLabel="Video Paging View">
-                                <rect key="frame" x="168.5" y="541.5" width="77" height="65.5"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W2K-Cg-gTu" userLabel="Video Paging View">
+                                <rect key="frame" x="160.5" y="541" width="93" height="66"/>
                                 <subviews>
                                     <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="NGm-Yk-zeV">
-                                        <rect key="frame" x="0.0" y="0.0" width="77" height="45"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="93" height="37"/>
                                         <color key="pageIndicatorTintColor" systemColor="placeholderTextColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
                                         <color key="currentPageIndicatorTintColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <userDefinedRuntimeAttributes>
@@ -304,19 +304,11 @@
                                             <action selector="pageControlActionWithSender:" destination="JEX-9P-axG" eventType="primaryActionTriggered" id="Q52-hK-yWm"/>
                                         </connections>
                                     </pageControl>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ycc-BX-0Ml" userLabel="Label View">
-                                        <rect key="frame" x="0.0" y="45" width="77" height="20.5"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kkB-or-vdo">
+                                        <rect key="frame" x="8" y="29" width="77" height="33"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6MK-eG-FRn">
-                                                <rect key="frame" x="42" y="-6" width="35" height="33"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <state key="normal" title="Kind"/>
-                                                <connections>
-                                                    <action selector="videoLabelKindButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="con-ap-w9C"/>
-                                                </connections>
-                                            </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="971-XG-rDU">
-                                                <rect key="frame" x="0.0" y="0.0" width="42" height="20.5"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="42" height="33"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -324,35 +316,38 @@
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="isAccessibilityElement" value="NO"/>
                                                 </userDefinedRuntimeAttributes>
                                             </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6MK-eG-FRn">
+                                                <rect key="frame" x="42" y="0.0" width="35" height="33"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <state key="normal" title="Kind"/>
+                                                <connections>
+                                                    <action selector="videoLabelKindButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="con-ap-w9C"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                        <constraints>
-                                            <constraint firstItem="6MK-eG-FRn" firstAttribute="firstBaseline" secondItem="971-XG-rDU" secondAttribute="firstBaseline" id="6WD-i5-7qM"/>
-                                            <constraint firstAttribute="trailing" secondItem="6MK-eG-FRn" secondAttribute="trailing" id="6gi-D7-PXP"/>
-                                            <constraint firstAttribute="bottom" secondItem="971-XG-rDU" secondAttribute="bottom" id="DPv-M8-m93"/>
-                                            <constraint firstItem="971-XG-rDU" firstAttribute="leading" secondItem="ycc-BX-0Ml" secondAttribute="leading" id="Ghk-Sk-EuQ"/>
-                                            <constraint firstItem="6MK-eG-FRn" firstAttribute="leading" secondItem="971-XG-rDU" secondAttribute="trailing" id="IOb-Hr-HcL"/>
-                                            <constraint firstItem="971-XG-rDU" firstAttribute="top" secondItem="ycc-BX-0Ml" secondAttribute="top" id="nQJ-kF-Ae9"/>
-                                        </constraints>
-                                    </view>
+                                    </stackView>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="ycc-BX-0Ml" secondAttribute="trailing" id="8vf-yb-9e5"/>
+                                    <constraint firstAttribute="bottom" secondItem="kkB-or-vdo" secondAttribute="bottom" constant="4" id="7Mh-lq-77W"/>
                                     <constraint firstAttribute="height" constant="65.5" id="94g-99-iU4"/>
                                     <constraint firstItem="NGm-Yk-zeV" firstAttribute="top" secondItem="W2K-Cg-gTu" secondAttribute="top" id="A0D-yd-pbL"/>
-                                    <constraint firstItem="ycc-BX-0Ml" firstAttribute="centerX" secondItem="W2K-Cg-gTu" secondAttribute="centerX" id="AP5-gb-EW8"/>
                                     <constraint firstItem="NGm-Yk-zeV" firstAttribute="centerX" secondItem="W2K-Cg-gTu" secondAttribute="centerX" id="Cvn-G5-tHT"/>
-                                    <constraint firstItem="ycc-BX-0Ml" firstAttribute="top" secondItem="NGm-Yk-zeV" secondAttribute="bottom" id="F9G-Ko-KgN"/>
-                                    <constraint firstAttribute="bottom" secondItem="ycc-BX-0Ml" secondAttribute="bottom" id="KVb-Y4-Cch"/>
+                                    <constraint firstItem="kkB-or-vdo" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="W2K-Cg-gTu" secondAttribute="leading" constant="8" id="LZd-Gg-tpi"/>
+                                    <constraint firstItem="kkB-or-vdo" firstAttribute="top" secondItem="NGm-Yk-zeV" secondAttribute="bottom" constant="-8" id="SqN-HE-qOC"/>
+                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="kkB-or-vdo" secondAttribute="trailing" constant="8" id="byn-tk-Byw"/>
                                     <constraint firstItem="NGm-Yk-zeV" firstAttribute="width" secondItem="W2K-Cg-gTu" secondAttribute="width" id="wy1-d7-yjZ"/>
-                                    <constraint firstItem="ycc-BX-0Ml" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="W2K-Cg-gTu" secondAttribute="leading" id="xb2-nU-70F"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                         <integer key="value" value="10"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="94g-99-iU4"/>
+                                    </mask>
+                                </variation>
                             </view>
                             <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c1p-EG-7ue">
                                 <rect key="frame" x="0.0" y="843" width="414" height="320"/>
