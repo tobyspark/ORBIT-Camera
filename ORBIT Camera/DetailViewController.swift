@@ -172,13 +172,16 @@ class DetailViewController: UIViewController {
         }
         videoLabel.text = pageDescription
         videoPageControl.accessibilityValue = pageDescription
-        if let kindDescription = kindDescription {
-            videoLabelKindButton.setTitle(kindDescription, for: .normal)
-            videoLabelKindButton.isHidden = false
-        } else {
-            videoLabelKindButton.setTitle(nil, for: .normal)
-            videoLabelKindButton.isHidden = true
+        UIView.performWithoutAnimation { // setTitle animates by default, which is out of keeping with link-in-label aesthetic
+            if let kindDescription = kindDescription {
+                videoLabelKindButton.setTitle(kindDescription, for: .normal)
+                videoLabelKindButton.isHidden = false
+            } else {
+                videoLabelKindButton.isHidden = true
+            }
+            videoLabelKindButton.layoutIfNeeded() // will perform with animation without this
         }
+        
         
         // Update statuses
         if let video = video {
