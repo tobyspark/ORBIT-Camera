@@ -46,7 +46,7 @@ class PersistenceTests: XCTestCase {
                 let url = videoURL(thing: thingLabel, video: videoLabel)
                 try FileManager.default.copyItem(at: testVideoURL, to: url)
                 
-                var video = Video(of: thing, url: url, kind: .recognition)!
+                var video = Video(of: thing, url: url, kind: .train)!
                 try dbQueue.write { db in try video.save(db) }
             }
         }
@@ -115,7 +115,7 @@ class PersistenceTests: XCTestCase {
     func testPersistVideo() throws {
         var thing = Thing(withLabel: "labelParticipant")
         try dbQueue.write { db in try thing.save(db) }
-        var video = Video(of: thing, url: URL(fileURLWithPath: "path/to/1"), kind:.recognition)!
+        var video = Video(of: thing, url: URL(fileURLWithPath: "path/to/1"), kind:.train)!
         try dbQueue.write { db in try video.save(db) }
         try dbQueue.write { db in try video.save(db) } // Extra save, should not insert new
         
@@ -246,7 +246,8 @@ class PersistenceTests: XCTestCase {
         XCTAssertEqual(try Thing.at(index: 1).labelParticipant, "Four")
         XCTAssertEqual(try Thing.at(index: 0).labelParticipant, "Five")
         
-        try Thing.deleteAt(index: 1)
+        let thingIndex1 = try Thing.at(index: 1)
+        _ = try dbQueue.write { db in try thingIndex1.delete(db) }
         
         XCTAssertEqual(try Thing.at(index: 2).labelParticipant, "One")
         XCTAssertEqual(try Thing.at(index: 1).labelParticipant, "Two")
@@ -265,9 +266,9 @@ class PersistenceTests: XCTestCase {
         let thingFive = try Thing.at(index: 0)
         
         XCTAssertNil(try thingFive.video(with: 5))
-        XCTAssertEqual(try thingFive.video(with: 0)!.url.absoluteURL, videoURL(thing: "Five", video: "Five").absoluteURL)
+        XCTAssertEqual(try thingFive.video(with: 0)!.url.absoluteURL, videoURL(thing: "Five", video: "One").absoluteURL)
         
         XCTAssertNil(thingFive.videoIndex(with: URL(fileURLWithPath: "/no/video/here")))
-        XCTAssertEqual(thingFive.videoIndex(with: videoURL(thing: "Five", video: "Five"))!, 0)
+        XCTAssertEqual(thingFive.videoIndex(with: videoURL(thing: "Five", video: "One"))!, 0)
     }
 }

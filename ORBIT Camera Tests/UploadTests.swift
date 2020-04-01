@@ -54,7 +54,7 @@ class UploadTests: XCTestCase {
         thing.orbitID = testID
         try dbQueue.write { db in try thing.save(db) }
         
-        var video = Video(of: thing, url: testURL, kind:.registerRotate)!
+        var video = Video(of: thing, url: testURL, kind:.testPan)!
         try dbQueue.write { db in try video.save(db) }
 
         try video.upload(by: Settings.participant, using: session)
