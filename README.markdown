@@ -12,6 +12,13 @@
 
 ## Version history
 
+v0.4.0
+- _Important: incompatible database changes, delete any previous installation on your device._
+- Videos are classified as training or testing
+- Add new video shortcut button when viewing videos
+- PR [Feature: Video kind](https://github.com/tobyspark/ORBIT-Camera/pull/6)
+- PR [Feature: Shortcut button to add new page](https://github.com/tobyspark/ORBIT-Camera/pull/9)
+
 v0.3.2
 - Minor UX and UI fixes
 - PR [UI issues around Master-Detail interaction](https://github.com/tobyspark/ORBIT-Camera/pull/4)
