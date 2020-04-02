@@ -42,6 +42,11 @@ class Camera {
     func start() {
         #if !targetEnvironment(simulator)
         queue.async {
+            if self.stopCancellableWorkItem != nil {
+                os_log("Camera cancelling pending stop", type: .debug)
+                self.stopCancellableWorkItem?.cancel()
+                self.stopCancellableWorkItem = nil
+            }
             if !self.captureSession.isRunning {
                 os_log("Camera start", type: .debug)
                 self.captureSession.startRunning()
@@ -58,6 +63,26 @@ class Camera {
                 os_log("Camera stop", type: .debug)
                 self.captureSession.stopRunning()
             }
+        }
+        #endif
+    }
+    
+    /// Stop the capture session after a period of grace, where any call to start the session will cancel the stop
+    func stopCancellable() {
+        #if !targetEnvironment(simulator)
+        queue.async {
+            // Update (i.e. cancel old and create new) the stop code to enqueue
+            self.stopCancellableWorkItem?.cancel()
+            self.stopCancellableWorkItem = DispatchWorkItem() { [weak self] in
+                guard let self = self
+                else { return }
+                if self.captureSession.isRunning {
+                    os_log("Camera stop, was cancellable", type: .debug)
+                    self.captureSession.stopRunning()
+                }
+            }
+            // Schedule stop for x seconds in the future
+            self.queue.asyncAfter(deadline: DispatchTime.now() + .seconds(2), execute: self.stopCancellableWorkItem!)
         }
         #endif
     }
@@ -226,6 +251,9 @@ class Camera {
     
     /// Preview layers to update
     fileprivate var previewViews = Set<WeakRef<PreviewMetalView>>()
+    
+    /// The current, if any, stopCancellable work item. Used to stop the capture session after a period of grace, where any call to start the session will cancel the stop
+    private var stopCancellableWorkItem: DispatchWorkItem?
 }
 
 /// Essential Camera recording functionality, that happens to be in a separate class. Hence private, tightly coupled. Needs to be instantiated new for each capture.

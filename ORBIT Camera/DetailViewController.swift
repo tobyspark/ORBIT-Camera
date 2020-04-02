@@ -238,6 +238,8 @@ class DetailViewController: UIViewController {
     
     /// Action the addNewPageShortcutButton
     @IBAction func addNewPageShortcutButtonAction(sender: UIButton) {
+        os_log("Add new shortcut action", type: .debug)
+        camera.start() // Start it now so it has the best chance of running by the time the scroll completes
         pageIndex = addNewPageIndex
     }
     
@@ -515,7 +517,7 @@ extension DetailViewController: UIScrollViewDelegate {
         // Only run capture session when a camera cell is visible
         let visiblePageIndexes = IndexSet(videoCollectionView.indexPathsForVisibleItems.map { $0.row })
         if cameraPageIndexes.intersection(visiblePageIndexes).isEmpty {
-            camera.stop()
+            camera.stopCancellable() // Perform the stop after a period of grace, to avoid stop/starting while scrolling through
         } else {
             camera.start()
         }
