@@ -238,6 +238,8 @@ class DetailViewController: UIViewController {
     
     /// Action the addNewPageShortcutButton
     @IBAction func addNewPageShortcutButtonAction(sender: UIButton) {
+        os_log("Add new shortcut action", type: .debug)
+        camera.start() // Start it now so it has the best chance of running by the time the scroll completes
         pageIndex = addNewPageIndex
     }
     
@@ -279,9 +281,10 @@ class DetailViewController: UIViewController {
     @IBAction func recordButtonAction(sender: RecordButton) {
         switch sender.recordingState {
         case .active:
+            // IF RE-RECORD START
             if rerecordPageIndexes.contains(pageIndex) {
                 guard
-                    let video = pageVideo()
+                    var video = pageVideo()
                 else {
                     os_log("Could not get video for re-record recordStart")
                     return
@@ -292,8 +295,33 @@ class DetailViewController: UIViewController {
                     os_log("Could not delete previous recording to re-record")
                     return
                 }
-                camera.recordStart(to: video.url)
+                
+                // Update kind from camera controls
+                video.kind = recordTypePicker.kind
+                try! dbQueue.write { db in try video.save(db) } // FIXME: try!
+                
+                // Go, configuring completion handler that updates the UI
+                let videoPageIndex = pageIndex
+                camera.recordStart(to: video.url) { [weak self] in
+                    guard let self = self
+                    else { return }
+                    
+                    // Update controller state
+                    self.rerecordPageIndexes.remove(videoPageIndex)
+                    
+                    // Update UI
+                    self.videoCollectionView.reloadItems(at: [IndexPath(row: videoPageIndex, section: 0)])
+                    self.configurePage()
+                    self.cameraControlVisibility = 0
+                    os_log("Record completion handler has updated video on page %d", type: .debug, videoPageIndex)
+                }
+            // IF NEW VIDEO START
             } else {
+                guard let thing = detailItem
+                else {
+                    os_log("No thing on recordStart")
+                    return
+                }
                 guard
                     let url = try? FileManager.default
                         .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
@@ -303,7 +331,33 @@ class DetailViewController: UIViewController {
                     os_log("Could not create URL for recordStart")
                     return
                 }
-                camera.recordStart(to: url)
+                
+                // Go, setting completion handler that creates a Video record and updates the UI
+                let kind = recordTypePicker.kind
+                camera.recordStart(to: url) { [weak self] in
+                    guard let self = self
+                    else { return }
+                    
+                    // Create a Video record
+                    guard
+                        var video = Video(of: thing, url: url, kind: kind)
+                    else {
+                        os_log("Could not create video")
+                        return
+                    }
+                    do {
+                        try dbQueue.write { db in try video.save(db) }
+                    } catch {
+                        os_log("Could not save video to database")
+                    }
+                    
+                    // Update UI
+                    self.videoPageControl.numberOfPages = self.collectionView(self.videoCollectionView, numberOfItemsInSection: 0)
+                    self.videoCollectionView.insertItems(at: [IndexPath(row: self.insertionPageIndex, section: 0)])
+                    self.pageIndex = self.insertionPageIndex
+                    self.cameraControlVisibility = 0
+                    os_log("Record completion handler has inserted video", type: .debug)
+                }
             }
         case .idle:
             camera.recordStop()
@@ -355,9 +409,6 @@ class DetailViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Set delegate for camera, to pass in new recordings
-        camera.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -466,7 +517,7 @@ extension DetailViewController: UIScrollViewDelegate {
         // Only run capture session when a camera cell is visible
         let visiblePageIndexes = IndexSet(videoCollectionView.indexPathsForVisibleItems.map { $0.row })
         if cameraPageIndexes.intersection(visiblePageIndexes).isEmpty {
-            camera.stop()
+            camera.stopCancellable() // Perform the stop after a period of grace, to avoid stop/starting while scrolling through
         } else {
             camera.start()
         }
@@ -476,49 +527,3 @@ extension DetailViewController: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) { isManuallyScrolling = false }
 }
 
-extension DetailViewController: CameraProtocol {
-    /// Act on the video file the camera has just produced.
-    /// If new, create a Video record, and update the UI.
-    /// If a replacement, update the re-record state and UI
-    func didFinishRecording(to outputFileURL: URL) {
-        guard
-            let thing = detailItem
-        else {
-            os_log("DetailView with no detailItem")
-            return
-        }
-        
-        if let videoIndex = thing.videoIndex(with: outputFileURL) {
-            let videoPageIndex = videoIndex < addNewPageIndex ? videoIndex : videoIndex + 1
-            rerecordPageIndexes.remove(videoPageIndex)
-            
-            // Update kind from camera controls
-            var video = pageVideo()!
-            video.kind = recordTypePicker.kind
-            try! dbQueue.write { db in try video.save(db) } // FIXME: try!
-            
-            // Update UI
-            videoCollectionView.reloadItems(at: [IndexPath(row: videoPageIndex, section: 0)])
-            configurePage()
-            cameraControlVisibility = 0
-            os_log("DetailViewController.didFinishRecording has updated video on page %d", type: .debug, videoPageIndex)
-        } else {
-            guard
-                var video = Video(of: thing, url: outputFileURL, kind: recordTypePicker.kind)
-            else {
-                os_log("Could not create video")
-                return
-            }
-            do {
-                try dbQueue.write { db in try video.save(db) }
-            } catch {
-                os_log("Could not save video to database")
-            }
-            videoPageControl.numberOfPages = collectionView(videoCollectionView, numberOfItemsInSection: 0)
-            videoCollectionView.insertItems(at: [IndexPath(row: insertionPageIndex, section: 0)])
-            pageIndex = insertionPageIndex
-            cameraControlVisibility = 0
-            os_log("DetailViewController.didFinishRecording has inserted video", type: .debug)
-        }
-    }
-}
