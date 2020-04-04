@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		4B3D772624332C740077DFD0 /* VideoKindPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3D772524332C740077DFD0 /* VideoKindPickerView.swift */; };
 		4B5A6B992424CB9200A5C45B /* NewThingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5A6B982424CB9200A5C45B /* NewThingCell.swift */; };
-		4B5A6B9B242527A400A5C45B /* Thing+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5A6B9A242527A400A5C45B /* Thing+UI.swift */; };
 		4B87FD052405C3F0007AB630 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 4B87FD042405C3F0007AB630 /* GRDB */; };
 		4B87FD062405C599007AB630 /* Thing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BCF2405771900E31D93 /* Thing.swift */; };
 		4B87FD072405CE94007AB630 /* AppDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14C182405B81900E31D93 /* AppDatabase.swift */; };
@@ -43,6 +42,7 @@
 		4BA13A5A242D6EC4006D838B /* PreviewMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA13A59242D6EC4006D838B /* PreviewMetalView.swift */; };
 		4BA13A5C242D71E5006D838B /* PassThrough.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4BA13A5B242D71E4006D838B /* PassThrough.metal */; };
 		4BE50EF52437F07C00BE79C7 /* Collection+SafeSubscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE50EF42437F07C00BE79C7 /* Collection+SafeSubscript.swift */; };
+		4BE50EF72438879E00BE79C7 /* ThingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE50EF62438879E00BE79C7 /* ThingCell.swift */; };
 		4BF14BBA2405730700E31D93 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB92405730700E31D93 /* SceneDelegate.swift */; };
 		4BF14BBC2405730700E31D93 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBB2405730700E31D93 /* MasterViewController.swift */; };
 		4BF14BBE2405730700E31D93 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBD2405730700E31D93 /* DetailViewController.swift */; };
@@ -68,7 +68,6 @@
 		4B3D77222432156B0077DFD0 /* README.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.markdown; sourceTree = "<group>"; };
 		4B3D772524332C740077DFD0 /* VideoKindPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoKindPickerView.swift; sourceTree = "<group>"; };
 		4B5A6B982424CB9200A5C45B /* NewThingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewThingCell.swift; sourceTree = "<group>"; };
-		4B5A6B9A242527A400A5C45B /* Thing+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Thing+UI.swift"; sourceTree = "<group>"; };
 		4B87FD0B2406A074007AB630 /* PersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceTests.swift; sourceTree = "<group>"; };
 		4B87FD0D2406A5DF007AB630 /* Thing+upload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Thing+upload.swift"; sourceTree = "<group>"; };
 		4B87FD1024098D57007AB630 /* Participant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Participant.swift; sourceTree = "<group>"; };
@@ -89,6 +88,7 @@
 		4BA13A59242D6EC4006D838B /* PreviewMetalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewMetalView.swift; sourceTree = "<group>"; };
 		4BA13A5B242D71E4006D838B /* PassThrough.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PassThrough.metal; sourceTree = "<group>"; };
 		4BE50EF42437F07C00BE79C7 /* Collection+SafeSubscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+SafeSubscript.swift"; sourceTree = "<group>"; };
+		4BE50EF62438879E00BE79C7 /* ThingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThingCell.swift; sourceTree = "<group>"; };
 		4BF14BB42405730700E31D93 /* ORBIT Camera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ORBIT Camera.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BF14BB72405730700E31D93 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4BF14BB92405730700E31D93 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -161,6 +161,7 @@
 				4BF14BB92405730700E31D93 /* SceneDelegate.swift */,
 				4BF14BBB2405730700E31D93 /* MasterViewController.swift */,
 				4B5A6B982424CB9200A5C45B /* NewThingCell.swift */,
+				4BE50EF62438879E00BE79C7 /* ThingCell.swift */,
 				4BF14BBD2405730700E31D93 /* DetailViewController.swift */,
 				4B87FD3824126110007AB630 /* VideoViewCell.swift */,
 				4B9AA9F52417A63C002380B1 /* InfoViewController.swift */,
@@ -171,7 +172,6 @@
 				4B87FD32240EF49F007AB630 /* Uploadable.swift */,
 				4BF14BCF2405771900E31D93 /* Thing.swift */,
 				4B87FD0D2406A5DF007AB630 /* Thing+upload.swift */,
-				4B5A6B9A242527A400A5C45B /* Thing+UI.swift */,
 				4B87FD1D240D4E93007AB630 /* Video.swift */,
 				4B87FD20240D53FC007AB630 /* Video+upload.swift */,
 				4B87FD2F240EC756007AB630 /* MultipartFormData.swift */,
@@ -327,10 +327,10 @@
 				4B87FD1E240D4E93007AB630 /* Video.swift in Sources */,
 				4B9AA9FC2417E4A8002380B1 /* Camera.swift in Sources */,
 				4B87FD3924126110007AB630 /* VideoViewCell.swift in Sources */,
+				4BE50EF72438879E00BE79C7 /* ThingCell.swift in Sources */,
 				4B87FD3624111E57007AB630 /* AppDatabase+TestData.swift in Sources */,
 				4B5A6B992424CB9200A5C45B /* NewThingCell.swift in Sources */,
 				4B87FD21240D53FC007AB630 /* Video+upload.swift in Sources */,
-				4B5A6B9B242527A400A5C45B /* Thing+UI.swift in Sources */,
 				4BF14BBE2405730700E31D93 /* DetailViewController.swift in Sources */,
 				4B87FD1B240D403A007AB630 /* AppDelegate.swift in Sources */,
 				4B87FD0E2406A5DF007AB630 /* Thing+upload.swift in Sources */,

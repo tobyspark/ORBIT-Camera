@@ -75,15 +75,6 @@ class MasterViewController: UITableViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        // If any `thing` cell is selected, the underlying data might have changed.
-        if let path = tableView.indexPathForSelectedRow,
-            ThingSection(rawValue: path.section) == .things,
-            let thing = try? Thing.at(index: path.row),
-            let label = tableView.cellForRow(at: path)?.detailTextLabel
-        {
-            label.text = thing.shortDescription()
-        }
-        
         // Clear selection if single-pane, keep selection if side-by-side
         clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
         
@@ -194,10 +185,9 @@ class MasterViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Add new cell", for: indexPath)
             return cell
         case .things:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-            let thing = try! Thing.at(index: indexPath.row) // FIXME: try!
-            cell.textLabel!.text = thing.labelParticipant
-            cell.detailTextLabel!.text = thing.shortDescription()
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? ThingCell
+            else { fatalError("Expected a `\(VideoViewCell.self)` but did not receive one.") }
+            cell.thing = try! Thing.at(index: indexPath.row) // FIXME: try!
             return cell
         }
     }
