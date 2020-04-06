@@ -73,28 +73,6 @@ extension Thing: FetchableRecord, MutablePersistableRecord {
         return deleted
     }
     
-    /// Return an index, newest first, for the thing in Things
-    func index() throws -> Int? {
-        try dbQueue.read { db in
-            let ids = try Int64.fetchAll(db, Thing.select(Thing.Columns.id))
-            assert(ids == ids.sorted(), "Expediency, uncovered")
-            return ids.reversed().firstIndex(of: id ?? -1)
-        }
-    }
-    
-    /// Return a thing based on a contiguous index, newest first
-    static func at(index: Int) throws -> Thing {
-        var thing: Thing?
-        try dbQueue.read { db in
-            let ids = try Int64.fetchAll(db, Thing.select(Thing.Columns.id))
-            assert(ids == ids.sorted(), "Expediency, uncovered")
-            let id = ids[ids.count - 1 - index]
-            thing = try Thing.filter(key: id).fetchOne(db)
-            if thing == nil { assertionFailure("Could not find Thing") } // FIXME: throw an error
-        }
-        return thing!
-    }
-    
     // MARK: Videos (reverse relationship)
     
     /// The count of all videos of this thing
@@ -112,33 +90,6 @@ extension Thing: FetchableRecord, MutablePersistableRecord {
             try Video
                 .filter(Video.Columns.thingID == self.id)
                 .fetchAll(db)
-        }
-    }
-    
-    /// Attempt to return the nth video of the thing. Zero-based, newest last.
-    func video(with index: Int) throws -> Video? {
-        try dbQueue.read { db in // FIXME: try!
-            let request = Video
-                .filter(Video.Columns.thingID == self.id)
-                .order(Video.Columns.recorded.asc)
-                .select(Video.Columns.id)
-            let ids = try Int64.fetchAll(db, request)
-            if (0 ..< ids.count).contains(index) {
-                let id = ids[index]
-                return try Video.filter(key: id).fetchOne(db)
-            }
-            return nil
-        }
-    }
-    
-    /// Attempt to return the nth video index of the video with URL.
-    func videoIndex(with url: URL) -> Int? {
-        try! dbQueue.read { db in // FIXME: try!
-            let videos = try Video
-                .filter(Video.Columns.thingID == self.id)
-                .order(Video.Columns.recorded.asc)
-                .fetchAll(db)
-            return videos.firstIndex { $0.url.absoluteURL == url.absoluteURL }
         }
     }
 }
