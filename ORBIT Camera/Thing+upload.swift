@@ -13,6 +13,8 @@ import GRDB
 import os
 
 extension Thing: Uploadable {
+    var description: String { "Thing \(id ?? 0)" }
+        
     /// Thing endpoint request body JSON structure
     /// ```json
     /// {
@@ -42,7 +44,7 @@ extension Thing: Uploadable {
     /// Upload the thing. This should action the creation of a server record for the thing, and (handled in `uploadDidReceive`) return that record's ID.
     func upload(by participant: Participant, using session: inout AppURLSession) {
         guard orbitID == nil else {
-            os_log("Attempted to upload Video that has already been uploaded")
+            os_log("Aborting upload of %{public}s: it has already been uploaded", description)
             return
         }
         
@@ -56,7 +58,8 @@ extension Thing: Uploadable {
         // Create data to upload
         let uploadStruct = APIRequest(label_participant: labelParticipant)
         guard let uploadData = try? JSONEncoder().encode(uploadStruct) else {
-            assertionFailure("Could not create uploadData from \(uploadStruct)")
+            os_log("Aborting upload of %{public}s: could not create upload data", description)
+            assertionFailure("uploadStruct: \(uploadStruct)")
             return
         }
         
@@ -64,11 +67,9 @@ extension Thing: Uploadable {
         let task = session.session.uploadTask(with: request, from: uploadData)
     
         // Associate upload with Video
-        guard !session.tasks.keys.contains(task.taskIdentifier)
-        else {
-            os_log("Stale task identifier present in session")
-            assertionFailure()
-            return
+        if session.tasks.keys.contains(task.taskIdentifier) {
+            os_log("Continuing upload of %{public}s; stale task identifier present in session", description)
+            assertionFailure("task \(task.taskIdentifier) in \(session.tasks)")
         }
         session.tasks[task.taskIdentifier] = self
         
@@ -79,7 +80,7 @@ extension Thing: Uploadable {
     /// Assign orbitID from returned data
     mutating func uploadDidReceive(_ data: Data) throws {
         let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
-        os_log("Parsed Thing upload response")
+        os_log("Parsed upload response for %{public}s", description)
         orbitID = apiResponse.id
         try dbQueue.write { db in try update(db) }
     }

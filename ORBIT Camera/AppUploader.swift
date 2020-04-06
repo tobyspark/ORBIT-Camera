@@ -46,6 +46,8 @@ struct AppUploader {
         
         // TODO: Set up observer for participant credential change
         
+        // TODO: Set up observer for connectivity change, try foreground again
+        
         // TODO: Schedule retries, e.g. daily?
     }
     
@@ -56,7 +58,7 @@ struct AppUploader {
             return
         }
         for thing in things {
-            os_log("Attempting upload of Thing %d in foreground session", type: .debug, thing.id!)
+            os_log("Attempting upload of %{public}s in foreground session", type: .debug, thing.description)
             thing.upload(by: participant, using: &appNetwork.thingsSession)
         }
     }
@@ -68,7 +70,7 @@ struct AppUploader {
             return
         }
         for video in videos {
-            os_log("Attempting upload of Video %d in background session", type: .debug, video.id!)
+            os_log("Attempting upload of %{public}s in background session", type: .debug, video.description)
             video.upload(by: participant, using: &appNetwork.videosSession)
         }
     }

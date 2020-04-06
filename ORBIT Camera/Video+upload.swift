@@ -11,6 +11,8 @@ import GRDB
 import os
 
 extension Video: Uploadable {
+    var description: String { "Video \(id ?? 0)" }
+    
     /// Thing endpoint response body JSON structure
     /// ```json
     /// {
@@ -29,7 +31,7 @@ extension Video: Uploadable {
     /// Upload the video. This should action the creation of a server record for the video, and (handled in `uploadDidReceive`) return that record's ID.
     func upload(by participant: Participant, using session: inout AppURLSession) {
         guard orbitID == nil else {
-            os_log("Attempted to upload Video that has already been uploaded")
+            os_log("Aborting upload of Video %d: it has already been uploaded", description)
             return
         }
         
@@ -37,7 +39,7 @@ extension Video: Uploadable {
             let thing = try? dbQueue.read({ db in try Thing.filter(key: thingID).fetchOne(db) }),
             let thingOrbitID = thing.orbitID
         else {
-            os_log("Attempted to upload Video without orbitID of thing")
+            os_log("Aborting upload of %{public}s: could not get the associated Thing's id", description)
             return
         }
         
@@ -52,7 +54,7 @@ extension Video: Uploadable {
                         ]
                     )
         else {
-            os_log("Failed attempt to upload Video, could not create form data")
+            os_log("Aborting upload of %{public}s: could not create upload data", description)
             return
         }
         
@@ -67,11 +69,9 @@ extension Video: Uploadable {
         let task = session.session.uploadTask(with: request, fromFile: formFile.body)
         
         // Associate upload with Video
-        guard !session.tasks.keys.contains(task.taskIdentifier)
-        else {
-            os_log("Stale task identifier present in session")
+        if session.tasks.keys.contains(task.taskIdentifier) {
+            os_log("Continuing upload of %{public}s; stale task identifier present in session", description)
             assertionFailure()
-            return
         }
         session.tasks[task.taskIdentifier] = self
         
@@ -82,7 +82,7 @@ extension Video: Uploadable {
     /// Assign orbitID from returned data
     mutating func uploadDidReceive(_ data: Data) throws {
         let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
-        os_log("Parsed Video upload response")
+        os_log("Parsed upload response for %{public}s", description)
         orbitID = apiResponse.id
         try dbQueue.write { db in try update(db) }
     }
