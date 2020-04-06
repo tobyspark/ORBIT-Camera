@@ -9,7 +9,7 @@
 import Foundation
 import GRDB
 
-protocol Uploadable {
+protocol Uploadable: CustomStringConvertible {
     /// A unique ID for the thing in the ORBIT dataset (or rather, the database the dataset will be produced from)
     var orbitID: Int? { get set }
     

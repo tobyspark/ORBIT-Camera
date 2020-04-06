@@ -6,7 +6,9 @@
 //  Copyright © 2020 Toby Harris. All rights reserved.
 //
 
-/// Abstract: Support network transfers in the background. Provides the background URLSession and background-requiring delegates.
+/// Abstract: Support network transfers, including in the background.
+/// - Tracks tasks to the uploadable item.
+/// - Provides URLSession infrastructure able to handle background tasks
 
 // Note: this is patterned on AppDatabase. A global, a struct static func to initialise it, delegates not on the struct etc. might look a bit wierd, but this works out neatly and swifty, avoiding obj-c classes, singletons and suchlike.
 
@@ -70,21 +72,7 @@ extension AppDelegate: URLSessionTaskDelegate {
 
 extension AppDelegate: URLSessionDataDelegate {
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-        guard let httpResponse = dataTask.response as? HTTPURLResponse
-        else {
-            os_log("URLSessionDataDelegate dataTaskDidReceive – could not parse response")
-            return
-        }
-        guard (200..<300).contains(httpResponse.statusCode)
-        else {
-            os_log(
-                "URLSessionDataDelegate dataTaskDidReceive – failed with status %d: %s",
-                httpResponse.statusCode,
-                HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
-            )
-            return
-        }
-        
+        // Find uploadable for this task
         let tasks: [Int: Uploadable]
         switch session {
         case appNetwork.thingsSession.session:
@@ -94,17 +82,34 @@ extension AppDelegate: URLSessionDataDelegate {
         default:
             fatalError("Unknown session")
         }
-        
         guard var uploadable = tasks[dataTask.taskIdentifier]
         else {
             os_log("URLSession didReceive cannot find Uploadable with task")
-            assertionFailure()
             return
         }
+        
+        // Check response
+        guard let httpResponse = dataTask.response as? HTTPURLResponse
+        else {
+            os_log("URLSessionDataDelegate dataTaskDidReceive – %{public}s – could not parse response", uploadable.description)
+            return
+        }
+        guard (200..<300).contains(httpResponse.statusCode)
+        else {
+            os_log(
+                "URLSessionDataDelegate dataTaskDidReceive – %{public}s – failed with status %d: %{public}s",
+                uploadable.description,
+                httpResponse.statusCode,
+                HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
+            )
+            return
+        }
+        
+        // Hand data to uploadable.
         do {
             try uploadable.uploadDidReceive(data)
         } catch {
-            os_log("Upload failed")
+            os_log("Upload failed for %{public}s", uploadable.description)
         }
     }
 }
