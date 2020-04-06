@@ -57,7 +57,7 @@ struct AppUploader {
         }
         for thing in things {
             os_log("Attempting upload of Thing %d in foreground session", type: .debug, thing.id!)
-            thing.upload(by: participant, using: &appNetwork.foreground)
+            thing.upload(by: participant, using: &appNetwork.thingsSession)
         }
     }
     
@@ -69,7 +69,7 @@ struct AppUploader {
         }
         for video in videos {
             os_log("Attempting upload of Video %d in background session", type: .debug, video.id!)
-            video.upload(by: participant, using: &appNetwork.background)
+            video.upload(by: participant, using: &appNetwork.videosSession)
         }
     }
     
