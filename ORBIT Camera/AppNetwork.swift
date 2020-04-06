@@ -18,24 +18,24 @@ var appNetwork: AppNetwork!
 /// A struct, instantiated as an app global, to support network transfers in the backround.
 struct AppNetwork {
     
-    /// The shared foreground – i.e. instantaneous response – network session
-    var foreground: AppURLSession
+    /// The network session used for things
+    var thingsSession: AppURLSession
     
-    /// The shared background network session
-    var background: AppURLSession!
+    /// The network session used for videos
+    var videosSession: AppURLSession!
     
     /// The completion handler to call once all background tasks have completed
     var completionHandler: (() -> Void)?
     
     /// Configure and assign the app's network struct
     static func setup(delegate: URLSessionDelegate) throws {
-        let foregroundConfig = URLSessionConfiguration.ephemeral
-        let backgroundConfig = URLSessionConfiguration.background(withIdentifier: "uk.ac.city.orbit-camera")
-        backgroundConfig.isDiscretionary = true
-        backgroundConfig.sessionSendsLaunchEvents = true
+        let thingsConfig = URLSessionConfiguration.ephemeral
+        let videosConfig = URLSessionConfiguration.background(withIdentifier: "uk.ac.city.orbit-camera")
+        videosConfig.isDiscretionary = true
+        videosConfig.sessionSendsLaunchEvents = true
         appNetwork = AppNetwork(
-            foreground: AppURLSession(session: URLSession(configuration: foregroundConfig, delegate: delegate, delegateQueue: nil)),
-            background: AppURLSession(session: URLSession(configuration: backgroundConfig, delegate: delegate, delegateQueue: nil)),
+            thingsSession: AppURLSession(session: URLSession(configuration: thingsConfig, delegate: delegate, delegateQueue: nil)),
+            videosSession: AppURLSession(session: URLSession(configuration: videosConfig, delegate: delegate, delegateQueue: nil)),
             completionHandler: nil
         )
     }
@@ -58,10 +58,10 @@ extension AppDelegate: URLSessionDelegate {
 extension AppDelegate: URLSessionTaskDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         switch session {
-        case appNetwork.foreground.session:
-            appNetwork.foreground.tasks[task.taskIdentifier] = nil
-        case appNetwork.background.session:
-            appNetwork.background.tasks[task.taskIdentifier] = nil
+        case appNetwork.thingsSession.session:
+            appNetwork.thingsSession.tasks[task.taskIdentifier] = nil
+        case appNetwork.videosSession.session:
+            appNetwork.videosSession.tasks[task.taskIdentifier] = nil
         default:
             fatalError("Unknown session")
         }
@@ -87,10 +87,10 @@ extension AppDelegate: URLSessionDataDelegate {
         
         let tasks: [Int: Uploadable]
         switch session {
-        case appNetwork.foreground.session:
-            tasks = appNetwork.foreground.tasks
-        case appNetwork.background.session:
-            tasks = appNetwork.background.tasks
+        case appNetwork.thingsSession.session:
+            tasks = appNetwork.thingsSession.tasks
+        case appNetwork.videosSession.session:
+            tasks = appNetwork.videosSession.tasks
         default:
             fatalError("Unknown session")
         }
