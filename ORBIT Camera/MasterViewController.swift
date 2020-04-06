@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import GRDB
 import os
 
 class MasterViewController: UITableViewController {
@@ -32,6 +33,12 @@ class MasterViewController: UITableViewController {
             set { label = newValue.trimmingCharacters(in: .whitespacesAndNewlines) }
         }
     }
+    
+    /// Current state of thing's videos
+    private var things: [Thing] = []
+    
+    /// Database observer for things changes
+    private var thingsObserver: TransactionObserver?
     
     /// Segue to detail, creating the new `Thing`
     // Triggered by 'go' on keyboard only
@@ -64,10 +71,45 @@ class MasterViewController: UITableViewController {
             detailViewController = detailNavigationController.topViewController as? DetailViewController
         }
         
+        // Register for changes
+        let request = Thing
+            .all()
+            .order(Thing.Columns.id.desc)
+        let observation = request.observationForAll()
+        thingsObserver = observation.start(
+            in: dbQueue,
+            onError: { error in
+                os_log("MasterViewController observer error")
+                print(error)
+            },
+            onChange: { [weak self] things in
+                guard let self = self
+                else { return }
+                
+                if self.tableView.window == nil {
+                    self.things = things
+                } else {
+                    let difference = things.difference(from: self.things)
+                    self.tableView.performBatchUpdates({
+                        self.things = things
+                        for change in difference {
+                            switch change {
+                            case let .remove(offset, _, _):
+                                self.tableView.deleteRows(at: [IndexPath(row: offset, section: ThingSection.things.rawValue)], with: .automatic)
+                            case let .insert(offset, _, _):
+                                self.tableView.insertRows(at: [IndexPath(row: offset, section: ThingSection.things.rawValue)], with: .automatic)
+                                self.tableView.selectRow(at: IndexPath(row: offset, section: ThingSection.things.rawValue), animated: true, scrollPosition: .none)
+                            }
+                        }
+                    }, completion: nil)
+                }
+            }
+        )
+        
         // Select the thing set in the detailViewController, if present
         if let detailViewController = detailViewController,
            let thing = detailViewController.detailItem,
-           let thingIndex = try? thing.index()
+           let thingIndex = things.firstIndex(of: thing)
         {
             let path = IndexPath(row: thingIndex, section: ThingSection.things.rawValue)
             tableView.selectRow(at: path, animated: false, scrollPosition: .middle)
@@ -75,15 +117,6 @@ class MasterViewController: UITableViewController {
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        // If any `thing` cell is selected, the underlying data might have changed.
-        if let path = tableView.indexPathForSelectedRow,
-            ThingSection(rawValue: path.section) == .things,
-            let thing = try? Thing.at(index: path.row),
-            let label = tableView.cellForRow(at: path)?.detailTextLabel
-        {
-            label.text = thing.shortDescription()
-        }
-        
         // Clear selection if single-pane, keep selection if side-by-side
         clearsSelectionOnViewWillAppear = splitViewController!.isCollapsed
         
@@ -137,18 +170,13 @@ class MasterViewController: UITableViewController {
                     thing = Thing(withLabel: candidateLabel) // candidateLabel verified in `shouldPerformSegue`
                     try! dbQueue.write { db in try thing.save(db) } // FIXME: try!
                     
-                    // Insert new thing
-                    let indexPath = IndexPath(row: 0, section: ThingSection.things.rawValue)
-                    tableView.insertRows(at: [indexPath], with: .automatic)
-                    tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
-                
                     // Clear 'new' cell
                     if let cell = tableView.cellForRow(at: addNewPath) as? NewThingCell {
                         cell.labelField.text = ""
                         candidateLabel = ""
                     }
                 case .things:
-                    thing = try! Thing.at(index: indexPath.row) // FIXME: try!
+                    thing = things[indexPath.row]
             }
             
             // Segue to detail
@@ -184,7 +212,7 @@ class MasterViewController: UITableViewController {
         case .addNew:
             return 1
         case .things:
-            return try! dbQueue.read { db in try Thing.fetchCount(db) } // FIXME: try!
+            return things.count
         }
     }
 
@@ -194,10 +222,9 @@ class MasterViewController: UITableViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Add new cell", for: indexPath)
             return cell
         case .things:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-            let thing = try! Thing.at(index: indexPath.row) // FIXME: try!
-            cell.textLabel!.text = thing.labelParticipant
-            cell.detailTextLabel!.text = thing.shortDescription()
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? ThingCell
+            else { fatalError("Expected a `\(VideoViewCell.self)` but did not receive one.") }
+            cell.thing = things[indexPath.row]
             return cell
         }
     }
@@ -222,7 +249,7 @@ class MasterViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            let thing = try! Thing.at(index: indexPath.row) // FIXME: try!
+            let thing = things[indexPath.row]
             // Stop the detail view displaying it, if so
             if let detailThing = detailViewController?.detailItem,
                detailThing == thing
@@ -231,8 +258,6 @@ class MasterViewController: UITableViewController {
             }
             // Remove from database
             _ = try! dbQueue.write { db in try thing.delete(db) } // FIXME: try!
-            // Remove from Things UI
-            tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
         }

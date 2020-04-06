@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import GRDB
 import AVFoundation
 import os
 
@@ -44,58 +45,85 @@ class DetailViewController: UIViewController {
     /// The thing this detail view is to show the detail of
     var detailItem: Thing? {
         didSet {
-            os_log("Setting detailItem to %s item", type: .debug, detailItem == nil ? "no" : "an")
+            os_log("Setting detailItem to %{public}s item", type: .debug, detailItem == nil ? "no" : "an")
             
             // Update the view.
             configureView()
+            
+            // Register for changes
+            if let thing = detailItem,
+               let thingID = thing.id
+            {
+                let request = Video
+                    .filter(Video.Columns.thingID == thingID)
+                    .order(Video.Columns.recorded.asc)
+                let observation = request.observationForAll()
+                detailItemObserver = observation.start(
+                    in: dbQueue,
+                    onError: { error in
+                        os_log("DetailViewController observer error")
+                        print(error)
+                    },
+                    onChange: { [weak self] videos in
+                        guard let self = self
+                        else { return }
+                        
+                        // Video collection view
+                        let difference = videos.difference(from: self.videos)
+                        self.videoCollectionView.performBatchUpdates({
+                            self.videos = videos
+                            for change in difference {
+                                switch change {
+                                case let .remove(offset, _, _):
+                                    self.videoCollectionView.deleteItems(at: [IndexPath(row: offset, section: 0)])
+                                case let .insert(offset, _, _):
+                                    self.videoCollectionView.insertItems(at: [IndexPath(row: offset, section: 0)])
+                                }
+                            }
+                        }, completion: nil)
+                        
+                        // Page state via video count
+                        self.videoPageControl.numberOfPages = self.pagesCount
+                        
+                        // Page state via page index
+                        self.configurePage()
+                        
+                        // Page state via collection view position
+                        self.scrollViewDidScroll(self.videoCollectionView)
+                    }
+                )
+            }
         }
     }
     
+    /// Current state of thing's videos
+    private var videos: [Video] = []
+    
+    /// Handle updates to videos
+    private var pagesCount: Int {
+        get { videos.count + 1 }
+    }
+    
     /// The selected page, i.e. index of the currently visible videoCollection item.
-    /// This is as per `thing.videoAt(index:)`, modified by any 'add new' camera cell.
-    var pageIndex: Int = 0 {
+    private var pageIndex: Int = 0 {
         didSet { configurePage() }
     }
     
     /// The page index where the camera to take new videos is placed. Currently the first, but an alternative could be the last
-    var addNewPageIndex: Int {
-        get { videoPageControl.numberOfPages - 1 }
-    }
-    
-    /// The page index where just recorded videos are inserted.
-    var insertionPageIndex: Int {
-        get { videoPageControl.numberOfPages - 2 }
+    private var addNewPageIndex: Int {
+        get { pagesCount - 1 }
     }
     
     /// A dynamic set of page indexes where the videos are flagged for re-recording
-    var rerecordPageIndexes = IndexSet()
+    private var rerecordPageIndexes = IndexSet()
     
     /// All pages that need the camera displayed, i.e. `rerecordPageIndexes` and `addNewPageIndex`
-    var cameraPageIndexes: IndexSet {
+    private var cameraPageIndexes: IndexSet {
         rerecordPageIndexes.union(IndexSet(integer: addNewPageIndex))
     }
     
-    /// The video index desired at that page index
-    func pageVideoIndex(_ pageIndex:Int? = nil) -> Int? {
-        let index = pageIndex ?? self.pageIndex
-        if index == addNewPageIndex { return nil }
-        if index > addNewPageIndex { return index - 1 }
-        return index
-    }
-    
-    /// The actual video at that page index
-    func pageVideo(_ index: Int? = nil) -> Video? {
-        guard
-            let thing = detailItem,
-            let videoIndex = pageVideoIndex(index)
-        else {
-            return nil
-        }
-        return try? thing.video(with: videoIndex)
-    }
-    
     /// The 'visibility' of the cameraControlView, where 0 is offscreen and 1 is onscreen
-    var cameraControlVisibility: CGFloat = 1 {
+    private var cameraControlVisibility: CGFloat = 1 {
         didSet {
             // This animates the control view on, from the bottom of the screen, in sync with the collection view
             cameraControlYConstraint.constant = -(1 - cameraControlVisibility)*cameraControlView.frame.size.height
@@ -103,14 +131,17 @@ class DetailViewController: UIViewController {
         }
     }
     
+    /// Database observer for detailItem changes
+    private var detailItemObserver: TransactionObserver?
+    
     /// The camera object that encapsulates capture new video functionality
-    let camera = Camera()
+    private let camera = Camera()
     
     /// Implementation detail: need to be able to differentiate whether scrolling is happening due to direct manipulation or actioned animation
-    var isManuallyScrolling = false
+    private var isManuallyScrolling = false
     
     /// Update the user interface for the detail item.
-    func configureView() {
+    private func configureView() {
         inexplicableToolingFailureWorkaround()
         
         // Disable view if no thing.
@@ -131,9 +162,6 @@ class DetailViewController: UIViewController {
             }
         }
         
-        // Set number of videos in paging control
-        videoPageControl.numberOfPages = collectionView(videoCollectionView, numberOfItemsInSection: 0)
-        
         // Set current page, will trigger configurePage
         pageIndex = 0
         
@@ -142,11 +170,10 @@ class DetailViewController: UIViewController {
     }
     
     /// Update the user interface for the selected page
-    func configurePage() {
+    private func configurePage() {
         inexplicableToolingFailureWorkaround()
         
         let isCameraPage = cameraPageIndexes.contains(pageIndex)
-        let video = pageVideo()
         
         // Update collection
         // Don't animate to new position if the position is being set by direct manipulation
@@ -160,7 +187,7 @@ class DetailViewController: UIViewController {
         
         // Update add new shortcut button
         UIView.animate(withDuration: 0.3) {
-            let hidden = self.pageIndex == self.addNewPageIndex
+            let hidden = (self.pageIndex == self.addNewPageIndex)
             self.addNewPageShortcutButton.alpha = hidden ? 0 : 1
         }
         
@@ -171,9 +198,9 @@ class DetailViewController: UIViewController {
         if pageIndex == addNewPageIndex {
             pageDescription = "Add new video to collection"
             recordTypePicker.kind = .train // default
-        } else if let video = video {
-            let number = pageVideoIndex()! + 1 // index-based to count-based
-            let total = collectionView(videoCollectionView, numberOfItemsInSection: 0) - 1 // take off count of 'add new' items
+        } else if let video = videos[safe: pageIndex] {
+            let number = pageIndex + 1 // index-based to count-based
+            let total = videos.count
             if isCameraPage {
                 recordTypePicker.kind = video.kind
                 pageDescription = "Re-record video \(number) of \(total)"
@@ -200,7 +227,7 @@ class DetailViewController: UIViewController {
         
         
         // Update statuses
-        if let video = video {
+        if let video = videos[safe: pageIndex] {
             videoRecordedLabel.text = "Recorded on \(Settings.dateFormatter.string(from:video.recorded))"
             videoUploadedIcon.image = video.uploadID == nil ? UIImage(systemName: "arrow.up.circle") : UIImage(systemName: "arrow.up.circle.fill")
             videoUploadedLabel.text = video.uploadID == nil ? "Not yet uploaded" : "Uploaded"
@@ -249,12 +276,12 @@ class DetailViewController: UIViewController {
     }
     
     @IBAction func videoLabelKindButtonAction(sender: UIButton) {
-        guard var video = pageVideo()
+        guard var video = videos[safe: pageIndex]
         else {
-            os_log("videoLabelKindButtonAction with no page video")
+            os_log("videoLabelKindButtonAction with no video for page")
             return
         }
-
+        
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let videoKindViewController = storyboard.instantiateViewController(identifier: "VideoKindViewController") as VideoKindPickerViewController
 
@@ -283,8 +310,7 @@ class DetailViewController: UIViewController {
         case .active:
             // IF RE-RECORD START
             if rerecordPageIndexes.contains(pageIndex) {
-                guard
-                    var video = pageVideo()
+                guard var video = videos[safe: pageIndex]
                 else {
                     os_log("Could not get video for re-record recordStart")
                     return
@@ -309,10 +335,10 @@ class DetailViewController: UIViewController {
                     // Update controller state
                     self.rerecordPageIndexes.remove(videoPageIndex)
                     
-                    // Update UI
-                    self.videoCollectionView.reloadItems(at: [IndexPath(row: videoPageIndex, section: 0)])
-                    self.configurePage()
-                    self.cameraControlVisibility = 0
+                    // Update record
+                    video.recorded = Date() // TODO: This needs to trigger a re-upload
+                    try! dbQueue.write { db in try video.save(db) }
+                    
                     os_log("Record completion handler has updated video on page %d", type: .debug, videoPageIndex)
                 }
             // IF NEW VIDEO START
@@ -322,8 +348,7 @@ class DetailViewController: UIViewController {
                     os_log("No thing on recordStart")
                     return
                 }
-                guard
-                    let url = try? FileManager.default
+                guard let url = try? FileManager.default
                         .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
                         .appendingPathComponent(NSUUID().uuidString)
                         .appendingPathExtension("mov")
@@ -334,13 +359,9 @@ class DetailViewController: UIViewController {
                 
                 // Go, setting completion handler that creates a Video record and updates the UI
                 let kind = recordTypePicker.kind
-                camera.recordStart(to: url) { [weak self] in
-                    guard let self = self
-                    else { return }
-                    
+                camera.recordStart(to: url) {
                     // Create a Video record
-                    guard
-                        var video = Video(of: thing, url: url, kind: kind)
+                    guard var video = Video(of: thing, url: url, kind: kind)
                     else {
                         os_log("Could not create video")
                         return
@@ -351,11 +372,6 @@ class DetailViewController: UIViewController {
                         os_log("Could not save video to database")
                     }
                     
-                    // Update UI
-                    self.videoPageControl.numberOfPages = self.collectionView(self.videoCollectionView, numberOfItemsInSection: 0)
-                    self.videoCollectionView.insertItems(at: [IndexPath(row: self.insertionPageIndex, section: 0)])
-                    self.pageIndex = self.insertionPageIndex
-                    self.cameraControlVisibility = 0
                     os_log("Record completion handler has inserted video", type: .debug)
                 }
             }
@@ -385,23 +401,16 @@ class DetailViewController: UIViewController {
         }
         alert.addAction(UIAlertAction(title: "Delete video", style: .destructive, handler: { [weak self] _ in
             guard
-               let self = self,
-               let thing = self.detailItem,
-               let videoIndex = self.pageVideoIndex(),
-               let video = try? thing.video(with: videoIndex)
+                let self = self,
+                let video = self.videos[safe: self.pageIndex]
             else {
-               os_log("Could not get video to delete")
-               return
+                os_log("Could not get video to delete")
+                return
             }
             // Delete
             try! dbQueue.write { db in // FIXME: try!
                _ = try video.delete(db)
             }
-            // Update UI
-            self.videoCollectionView.deleteItems(at: [IndexPath(row: self.pageIndex, section: 0)])
-            let pageCount = self.collectionView(self.videoCollectionView, numberOfItemsInSection: 0)
-            self.videoPageControl.numberOfPages = pageCount
-            self.pageIndex = self.pageIndex < pageCount ? self.pageIndex : pageCount - 1
         }))
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         self.present(alert, animated: true, completion: nil)
@@ -448,11 +457,7 @@ extension DetailViewController: UICollectionViewDataSource {
     
     /// The videoCollectionView camera section should contain the camera, and the video section contain all the videos
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        var itemCount = 1 // Camera item
-        if let thing = detailItem {
-            itemCount += thing.videosCount
-        }
-        return itemCount
+        return pagesCount
     }
     
     /// The videoCollectionView cells should display the camera and videos
@@ -467,13 +472,12 @@ extension DetailViewController: UICollectionViewDataSource {
             os_log("DetailViewController.cellForItemAt returning camera cell", type: .debug, indexPath.row)
             return cell
         } else {
-            guard
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Video Cell", for: indexPath) as? VideoViewCell
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Video Cell", for: indexPath) as? VideoViewCell
             else {
                 fatalError("Expected a `\(VideoViewCell.self)` but did not receive one.")
             }
             guard
-                let video = pageVideo(indexPath.row)
+                let video = videos[safe: indexPath.row]
             else {
                 os_log("No video found")
                 assertionFailure()
