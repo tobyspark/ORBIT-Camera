@@ -101,7 +101,6 @@ class PersistenceTests: XCTestCase {
         XCTAssertEqual(things.count, 1, "Persisting a thing should result in one thing persisted")
         XCTAssertEqual(thing, things[0], "Retreiving a persisted thing should return an identical thing")
 
-        thing.uploadID = 123
         thing.orbitID = 456
         thing.labelParticipant = "labelParticipant"
         thing.labelDataset = "labelDataset"
@@ -127,16 +126,13 @@ class PersistenceTests: XCTestCase {
         XCTAssertEqual(video.thingID, videos[0].thingID, "Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual(video.url, videos[0].url, "Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual(video.recorded.description, videos[0].recorded.description, "Retreiving a persisted thing should return an identical thing") // Floating point internal representation is rounded to three decimal places on coding, so for expediency let's just compare the description.
-        XCTAssertEqual(video.uploadID, videos[0].uploadID, "Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual(video.orbitID, videos[0].orbitID, "Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual(video.kind, videos[0].kind, "Retreiving a persisted thing should return an identical thing")
         
-        video.uploadID = 123
         video.orbitID = 456
         try dbQueue.write { db in try video.save(db) }
         
         videos = try dbQueue.read { db in try Video.fetchAll(db) }
-        XCTAssertEqual(video.uploadID, videos[0].uploadID,"Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual(video.orbitID, videos[0].orbitID, "Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual([video].map { $0.url.absoluteString }, thing.videos.map { $0.url.absoluteString }, "The thing's video property should return the video")
     }

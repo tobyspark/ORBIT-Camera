@@ -12,7 +12,7 @@ import XCTest
 import GRDB
 
 class UploadTests: XCTestCase {
-    var session: URLSession!
+    var appSession: AppURLSession!
     var didCompleteExpectation: XCTestExpectation!
     
     override func setUp() {
@@ -23,7 +23,9 @@ class UploadTests: XCTestCase {
             XCTFail("Could not migrate DB")
         }
         
-        session = URLSession(configuration: URLSessionConfiguration.ephemeral, delegate: self, delegateQueue: nil)
+        appSession = AppURLSession(
+            session: URLSession(configuration: URLSessionConfiguration.ephemeral, delegate: self, delegateQueue: nil)
+        )
         
         didCompleteExpectation = expectation(description: "uploadDidComplete")
     }
@@ -37,11 +39,11 @@ class UploadTests: XCTestCase {
         var thing = Thing(withLabel: "labelParticipant")
         try dbQueue.write { db in try thing.save(db) }
 
-        try thing.upload(by: Settings.participant, using: session)
+        thing.upload(by: Settings.participant, using: &appSession)
+        XCTAssertEqual(appSession.tasks.count, 1, "The tasks list should have an entry")
         wait(for: [didCompleteExpectation], timeout: 5)
         
         let things = try dbQueue.read { db in try Thing.fetchAll(db) }
-        XCTAssertNil(things[0].uploadID, "The uploadID should be unset after upload")
         XCTAssertNotNil(things[0].orbitID, "The orbitID should be set after upload")
     }
     
@@ -57,11 +59,12 @@ class UploadTests: XCTestCase {
         var video = Video(of: thing, url: testURL, kind:.testPan)!
         try dbQueue.write { db in try video.save(db) }
 
-        try video.upload(by: Settings.participant, using: session)
+        video.upload(by: Settings.participant, using: &appSession)
+        XCTAssertEqual(appSession.tasks.count, 1, "The tasks list should have an entry")
         wait(for: [didCompleteExpectation], timeout: 10)
 
         let videos = try dbQueue.read { db in try Video.fetchAll(db) }
-        XCTAssertNil(videos[0].uploadID, "The uploadID should be unset after upload")
+        XCTAssertTrue(appSession.tasks.isEmpty, "The tasks list should be empty")
         XCTAssertNotNil(videos[0].orbitID, "The orbitID should be set after upload")
     }
 }
@@ -78,8 +81,7 @@ extension UploadTests: URLSessionTaskDelegate {
     // As upload tasks in background sessions do not receive the headers back, we need to clean-up an unsuccessful POST here.
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         print("urlSession(_:, task:, didCompleteWithError:) –– called")
-        
-        try! Thing.uploadableDidComplete(with: task.taskIdentifier)
+        appSession.tasks[task.taskIdentifier] = nil
         didCompleteExpectation.fulfill()
     }
     
@@ -93,7 +95,6 @@ extension UploadTests: URLSessionTaskDelegate {
 extension UploadTests: URLSessionDataDelegate {
     // Oh look, what's in the source but not documentation? This line
     //  * This method will not be called for background upload tasks (which cannot be converted to download tasks).
-    // ...so there's no way to get the headers for background upload tasks!
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive response: URLResponse, completionHandler: @escaping (URLSession.ResponseDisposition) -> Void) {
         print("urlSession(_:, dataTask:, didReceive:, completionHandler:) –– called")
         if let response = response as? HTTPURLResponse {
@@ -105,7 +106,32 @@ extension UploadTests: URLSessionDataDelegate {
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         print("urlSession(_:, dataTask:, didReceive:) –– called") // Yes, gets called
         
-        var uploadable = try! Thing.uploadable(with: dataTask.taskIdentifier)
-        try! uploadable.uploadDidReceive(data)
+        guard let httpResponse = dataTask.response as? HTTPURLResponse
+        else {
+            print("URLSessionDataDelegate dataTaskDidReceive – could not parse response")
+            return
+        }
+        guard (200..<300).contains(httpResponse.statusCode)
+        else {
+            print(
+                "URLSessionDataDelegate dataTaskDidReceive – failed with status: ",
+                httpResponse.statusCode, " ",
+                HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
+            )
+            return
+        }
+
+        guard var uploadable = appSession.tasks[dataTask.taskIdentifier]
+        else {
+            print("URLSession didReceive cannot find Uploadable with task")
+            assertionFailure()
+            return
+        }
+        do {
+            try uploadable.uploadDidReceive(data)
+        } catch {
+            print("Upload failed")
+            // TODO: Schedule to try again
+        }
     }
 }

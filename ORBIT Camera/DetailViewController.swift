@@ -229,8 +229,8 @@ class DetailViewController: UIViewController {
         // Update statuses
         if let video = videos[safe: pageIndex] {
             videoRecordedLabel.text = "Recorded on \(Settings.dateFormatter.string(from:video.recorded))"
-            videoUploadedIcon.image = video.uploadID == nil ? UIImage(systemName: "arrow.up.circle") : UIImage(systemName: "arrow.up.circle.fill")
-            videoUploadedLabel.text = video.uploadID == nil ? "Not yet uploaded" : "Uploaded"
+            videoUploadedIcon.image = video.orbitID == nil ? UIImage(systemName: "arrow.up.circle") : UIImage(systemName: "arrow.up.circle.fill")
+            videoUploadedLabel.text = video.orbitID == nil ? "Not yet uploaded" : "Uploaded"
             // TODO: videoVerified
             // TODO: videoPublished
         }

@@ -11,28 +11,39 @@
 // Note: this is patterned on AppDatabase. A global, a struct static func to initialise it, delegates not on the struct etc. might look a bit wierd, but this works out neatly and swifty, avoiding obj-c classes, singletons and suchlike.
 
 import UIKit
+import os
 
 var appNetwork: AppNetwork!
 
 /// A struct, instantiated as an app global, to support network transfers in the backround.
 struct AppNetwork {
     
+    /// The shared foreground – i.e. instantaneous response – network session
+    var foreground: AppURLSession
+    
     /// The shared background network session
-    var session: URLSession!
+    var background: AppURLSession!
     
     /// The completion handler to call once all background tasks have completed
     var completionHandler: (() -> Void)?
     
     /// Configure and assign the app's network struct
     static func setup(delegate: URLSessionDelegate) throws {
-        let config = URLSessionConfiguration.background(withIdentifier: "uk.ac.city.orbit-camera")
-        config.isDiscretionary = true
-        config.sessionSendsLaunchEvents = true
+        let foregroundConfig = URLSessionConfiguration.ephemeral
+        let backgroundConfig = URLSessionConfiguration.background(withIdentifier: "uk.ac.city.orbit-camera")
+        backgroundConfig.isDiscretionary = true
+        backgroundConfig.sessionSendsLaunchEvents = true
         appNetwork = AppNetwork(
-            session: URLSession(configuration: config, delegate: delegate, delegateQueue: nil),
+            foreground: AppURLSession(session: URLSession(configuration: foregroundConfig, delegate: delegate, delegateQueue: nil)),
+            background: AppURLSession(session: URLSession(configuration: backgroundConfig, delegate: delegate, delegateQueue: nil)),
             completionHandler: nil
         )
     }
+}
+
+struct AppURLSession {
+    let session: URLSession
+    var tasks: [Int: Uploadable] = [:]
 }
 
 extension AppDelegate: URLSessionDelegate {
@@ -45,17 +56,55 @@ extension AppDelegate: URLSessionDelegate {
 }
 
 extension AppDelegate: URLSessionTaskDelegate {
-    // `urlSession(_:, dataTask:, didReceive:, completionHandler:` is not called for upload tasks in background sessions.
-    // Therefore we don't get to find out about server-side errors via HTTPURLResponse.statusCode.
-    // So, clean-up an unsuccessful POST here?
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        try! Thing.uploadableDidComplete(with: task.taskIdentifier) // Uploadable static func, works for Videos also.
+        switch session {
+        case appNetwork.foreground.session:
+            appNetwork.foreground.tasks[task.taskIdentifier] = nil
+        case appNetwork.background.session:
+            appNetwork.background.tasks[task.taskIdentifier] = nil
+        default:
+            fatalError("Unknown session")
+        }
     }
 }
 
 extension AppDelegate: URLSessionDataDelegate {
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
-        var uploadable = try! Thing.uploadable(with: dataTask.taskIdentifier) // Uploadable static func, works for Videos also.
-        try! uploadable.uploadDidReceive(data)
+        guard let httpResponse = dataTask.response as? HTTPURLResponse
+        else {
+            os_log("URLSessionDataDelegate dataTaskDidReceive – could not parse response")
+            return
+        }
+        guard (200..<300).contains(httpResponse.statusCode)
+        else {
+            os_log(
+                "URLSessionDataDelegate dataTaskDidReceive – failed with status %d: %s",
+                httpResponse.statusCode,
+                HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
+            )
+            return
+        }
+        
+        let tasks: [Int: Uploadable]
+        switch session {
+        case appNetwork.foreground.session:
+            tasks = appNetwork.foreground.tasks
+        case appNetwork.background.session:
+            tasks = appNetwork.background.tasks
+        default:
+            fatalError("Unknown session")
+        }
+        
+        guard var uploadable = tasks[dataTask.taskIdentifier]
+        else {
+            os_log("URLSession didReceive cannot find Uploadable with task")
+            assertionFailure()
+            return
+        }
+        do {
+            try uploadable.uploadDidReceive(data)
+        } catch {
+            os_log("Upload failed")
+        }
     }
 }
