@@ -68,8 +68,8 @@ struct AppUploader {
             return
         }
         for video in videos {
-            os_log("Attempting upload of Video %d in foreground session", type: .debug, video.id!) // TODO: Change to background
-            video.upload(by: participant, using: &appNetwork.foreground)
+            os_log("Attempting upload of Video %d in background session", type: .debug, video.id!)
+            video.upload(by: participant, using: &appNetwork.background)
         }
     }
     
