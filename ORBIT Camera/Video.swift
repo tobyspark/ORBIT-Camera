@@ -28,10 +28,6 @@ struct Video: Codable, Equatable {
     /// When the video was recorded
     var recorded: Date
     
-    /// An ID to track an in-progress upload, corresponds to URLSessionTask.taskIdentifier
-    // Note this was handled more elegantly by orbitID being an UploadStatus enum, but the supporting code was getting ridiculous.
-    var uploadID: Int?
-    
     /// A unique ID for the thing in the ORBIT dataset (or rather, the database the dataset will be produced from)
     // Note this was handled more elegantly by orbitID being an UploadStatus enum, but the supporting code was getting ridiculous.
     var orbitID: Int?
@@ -66,7 +62,6 @@ struct Video: Codable, Equatable {
         self.thingID = thingID
         self.filename = ""
         self.recorded = Date()
-        self.uploadID = nil
         self.orbitID = nil
         self.kind = kind
         
@@ -88,7 +83,6 @@ extension Video: FetchableRecord, MutablePersistableRecord {
         static let thingID = Column(CodingKeys.thingID)
         static let filename = Column(CodingKeys.filename)
         static let recorded = Column(CodingKeys.recorded)
-        static let uploadID = Column(CodingKeys.uploadID)
         static let orbitID = Column(CodingKeys.orbitID)
         static let kind = Column(CodingKeys.kind)
     }

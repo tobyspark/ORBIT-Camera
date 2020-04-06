@@ -26,23 +26,18 @@ extension Video: Uploadable {
         let id: Int
     }
     
-    /// Upload the video. This should create a server record for the thing, and return that record's ID.
-    mutating func upload(by participant: Participant, using session: URLSession) throws {
-        guard uploadID == nil else {
-            os_log("Attempted to upload Video that is already being uploaded")
-            return
-        }
+    /// Upload the video. This should action the creation of a server record for the video, and (handled in `uploadDidReceive`) return that record's ID.
+    func upload(by participant: Participant, using session: inout AppURLSession) {
         guard orbitID == nil else {
             os_log("Attempted to upload Video that has already been uploaded")
             return
         }
         
         guard
-            let thing = try dbQueue.read({ db in try Thing.filter(key: thingID).fetchOne(db) }),
+            let thing = try? dbQueue.read({ db in try Thing.filter(key: thingID).fetchOne(db) }),
             let thingOrbitID = thing.orbitID
         else {
             os_log("Attempted to upload Video without orbitID of thing")
-            assertionFailure()
             return
         }
         
@@ -50,7 +45,7 @@ extension Video: Uploadable {
             let formFile = try? MultipartFormFile(
                     fields: [
                         (name: "thing", value: "\(thingOrbitID)"),
-                        (name: "technique", value: "N"), // FIXME: placeholder value
+                        (name: "technique", value: kind.rawValue),
                         ],
                     files: [
                         (name: "file", value: url)
@@ -58,7 +53,6 @@ extension Video: Uploadable {
                     )
         else {
             os_log("Failed attempt to upload Video, could not create form data")
-            assertionFailure()
             return
         }
         
@@ -70,11 +64,16 @@ extension Video: Uploadable {
         request.setValue(formFile.contentType, forHTTPHeaderField: "Content-Type")
         
         // Create task
-        let task = session.uploadTask(with: request, fromFile: formFile.body)
+        let task = session.session.uploadTask(with: request, fromFile: formFile.body)
         
         // Associate upload with Video
-        uploadID = task.taskIdentifier
-        try dbQueue.write { db in try save(db) }
+        guard !session.tasks.keys.contains(task.taskIdentifier)
+        else {
+            os_log("Stale task identifier present in session")
+            assertionFailure()
+            return
+        }
+        session.tasks[task.taskIdentifier] = self
         
         // Action task
         task.resume()
@@ -83,10 +82,8 @@ extension Video: Uploadable {
     /// Assign orbitID from returned data
     mutating func uploadDidReceive(_ data: Data) throws {
         let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
-        uploadID = nil
+        os_log("Parsed Video upload response")
         orbitID = apiResponse.id
         try dbQueue.write { db in try update(db) }
-        
-        // TODO: Now action upload of next video
     }
 }

@@ -39,12 +39,8 @@ extension Thing: Uploadable {
         let label_validated: String
     }
     
-    /// Upload the thing. This should create a server record for the thing, and return that record's ID.
-    mutating func upload(by participant: Participant, using session: URLSession) throws {
-        guard uploadID == nil else {
-            os_log("Attempted to upload Thing that is already being uploaded")
-            return
-        }
+    /// Upload the thing. This should action the creation of a server record for the thing, and (handled in `uploadDidReceive`) return that record's ID.
+    func upload(by participant: Participant, using session: inout AppURLSession) {
         guard orbitID == nil else {
             os_log("Attempted to upload Video that has already been uploaded")
             return
@@ -65,11 +61,16 @@ extension Thing: Uploadable {
         }
         
         // Create task
-        let task = session.uploadTask(with: request, from: uploadData)
+        let task = session.session.uploadTask(with: request, from: uploadData)
     
         // Associate upload with Video
-        uploadID = task.taskIdentifier
-        try dbQueue.write { db in try save(db) }
+        guard !session.tasks.keys.contains(task.taskIdentifier)
+        else {
+            os_log("Stale task identifier present in session")
+            assertionFailure()
+            return
+        }
+        session.tasks[task.taskIdentifier] = self
         
         // Action task
         task.resume()
@@ -78,10 +79,8 @@ extension Thing: Uploadable {
     /// Assign orbitID from returned data
     mutating func uploadDidReceive(_ data: Data) throws {
         let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
-        uploadID = nil
+        os_log("Parsed Thing upload response")
         orbitID = apiResponse.id
         try dbQueue.write { db in try update(db) }
-        
-        // TODO: Now action upload of next video
     }
 }
