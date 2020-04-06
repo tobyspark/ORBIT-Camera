@@ -558,7 +558,7 @@
                                     <segue destination="vC3-pB-5Vb" kind="showDetail" identifier="showDetail" id="M3h-NW-8hv"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" textLabel="LCS-jR-9Ng" detailTextLabel="JuM-nw-nM6" style="IBUITableViewCellStyleValue1" id="G7o-Gm-suS">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" textLabel="LCS-jR-9Ng" detailTextLabel="JuM-nw-nM6" style="IBUITableViewCellStyleValue1" id="G7o-Gm-suS" customClass="ThingCell" customModule="ORBIT_Camera" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="80" width="414" height="52.5"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="G7o-Gm-suS" id="82b-Ek-3sd">
