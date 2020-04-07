@@ -18,10 +18,6 @@ struct Thing: Codable, Equatable {
     /// A unique ID for this struct (within this app), populated on write to database
     var id: Int64?
     
-    /// An ID to track an in-progress upload, corresponds to URLSessionTask.taskIdentifier
-    // Note this was handled more elegantly by orbitID being an UploadStatus enum, but the supporting code was getting ridiculous.
-    var uploadID: Int?
-    
     /// A unique ID for the thing in the ORBIT dataset (or rather, the database the dataset will be produced from)
     // Note this was handled more elegantly by orbitID being an UploadStatus enum, but the supporting code was getting ridiculous.
     var orbitID: Int?
@@ -36,7 +32,6 @@ struct Thing: Codable, Equatable {
     /// Parameter label: The label the participant wants to give the thing.
     init(withLabel label: String) {
         self.id = nil
-        self.uploadID = nil
         self.orbitID = nil
         self.labelParticipant = label
         self.labelDataset = nil
@@ -46,7 +41,6 @@ struct Thing: Codable, Equatable {
 extension Thing: FetchableRecord, MutablePersistableRecord {
     enum Columns {
         static let id = Column(CodingKeys.id)
-        static let uploadID = Column(CodingKeys.uploadID)
         static let orbitID = Column(CodingKeys.orbitID)
         static let labelParticipant = Column(CodingKeys.labelParticipant)
         static let labelDataset = Column(CodingKeys.labelDataset)
