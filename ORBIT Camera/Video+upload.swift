@@ -11,6 +11,8 @@ import GRDB
 import os
 
 extension Video: Uploadable {
+    var description: String { "Video \(id ?? 0)" }
+    
     /// Thing endpoint response body JSON structure
     /// ```json
     /// {
@@ -26,40 +28,34 @@ extension Video: Uploadable {
         let id: Int
     }
     
-    /// Upload the video. This should create a server record for the thing, and return that record's ID.
-    mutating func upload(by participant: Participant, using session: URLSession) throws {
-        guard uploadID == nil else {
-            os_log("Attempted to upload Video that is already being uploaded")
-            return
-        }
+    /// Upload the video. This should action the creation of a server record for the video, and (handled in `uploadDidReceive`) return that record's ID.
+    func upload(by participant: Participant, using session: URLSession) -> Int? {
         guard orbitID == nil else {
-            os_log("Attempted to upload Video that has already been uploaded")
-            return
+            os_log("Aborting upload of Video %d: it has already been uploaded", description)
+            return nil
         }
         
         guard
-            let thing = try dbQueue.read({ db in try Thing.filter(key: thingID).fetchOne(db) }),
+            let thing = try? dbQueue.read({ db in try Thing.filter(key: thingID).fetchOne(db) }),
             let thingOrbitID = thing.orbitID
         else {
-            os_log("Attempted to upload Video without orbitID of thing")
-            assertionFailure()
-            return
+            os_log("Aborting upload of %{public}s: could not get the associated Thing's id", description)
+            return nil
         }
         
         guard
             let formFile = try? MultipartFormFile(
                     fields: [
                         (name: "thing", value: "\(thingOrbitID)"),
-                        (name: "technique", value: "N"), // FIXME: placeholder value
+                        (name: "technique", value: kind.rawValue),
                         ],
                     files: [
                         (name: "file", value: url)
                         ]
                     )
         else {
-            os_log("Failed attempt to upload Video, could not create form data")
-            assertionFailure()
-            return
+            os_log("Aborting upload of %{public}s: could not create upload data", description)
+            return nil
         }
         
         // Create upload request
@@ -69,24 +65,19 @@ extension Video: Uploadable {
         request.setValue(participant.authCredential, forHTTPHeaderField: "Authorization")
         request.setValue(formFile.contentType, forHTTPHeaderField: "Content-Type")
         
-        // Create task
+        // Create and action task
         let task = session.uploadTask(with: request, fromFile: formFile.body)
-        
-        // Associate upload with Video
-        uploadID = task.taskIdentifier
-        try dbQueue.write { db in try save(db) }
-        
-        // Action task
         task.resume()
+        
+        // Return the task ID
+        return task.taskIdentifier
     }
 
     /// Assign orbitID from returned data
     mutating func uploadDidReceive(_ data: Data) throws {
         let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
-        uploadID = nil
+        os_log("Parsed upload response for %{public}s", description)
         orbitID = apiResponse.id
         try dbQueue.write { db in try update(db) }
-        
-        // TODO: Now action upload of next video
     }
 }

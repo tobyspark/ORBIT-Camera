@@ -13,6 +13,8 @@ import GRDB
 import os
 
 extension Thing: Uploadable {
+    var description: String { "Thing \(id ?? 0)" }
+        
     /// Thing endpoint request body JSON structure
     /// ```json
     /// {
@@ -39,15 +41,11 @@ extension Thing: Uploadable {
         let label_validated: String
     }
     
-    /// Upload the thing. This should create a server record for the thing, and return that record's ID.
-    mutating func upload(by participant: Participant, using session: URLSession) throws {
-        guard uploadID == nil else {
-            os_log("Attempted to upload Thing that is already being uploaded")
-            return
-        }
+    /// Upload the thing. This should action the creation of a server record for the thing, and (handled in `uploadDidReceive`) return that record's ID.
+    func upload(by participant: Participant, using session: URLSession) -> Int? {
         guard orbitID == nil else {
-            os_log("Attempted to upload Video that has already been uploaded")
-            return
+            os_log("Aborting upload of %{public}s: it has already been uploaded", description)
+            return nil
         }
         
         // Create upload request
@@ -60,28 +58,24 @@ extension Thing: Uploadable {
         // Create data to upload
         let uploadStruct = APIRequest(label_participant: labelParticipant)
         guard let uploadData = try? JSONEncoder().encode(uploadStruct) else {
-            assertionFailure("Could not create uploadData from \(uploadStruct)")
-            return
+            os_log("Aborting upload of %{public}s: could not create upload data", description)
+            assertionFailure("uploadStruct: \(uploadStruct)")
+            return nil
         }
         
-        // Create task
+        // Create and action task
         let task = session.uploadTask(with: request, from: uploadData)
-    
-        // Associate upload with Video
-        uploadID = task.taskIdentifier
-        try dbQueue.write { db in try save(db) }
-        
-        // Action task
         task.resume()
+        
+        // Return the task ID
+        return task.taskIdentifier
     }
 
     /// Assign orbitID from returned data
     mutating func uploadDidReceive(_ data: Data) throws {
         let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
-        uploadID = nil
+        os_log("Parsed upload response for %{public}s", description)
         orbitID = apiResponse.id
         try dbQueue.write { db in try update(db) }
-        
-        // TODO: Now action upload of next video
     }
 }

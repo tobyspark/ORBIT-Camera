@@ -15,6 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         try! AppDatabase.setup(application)
         try! AppNetwork.setup(delegate: self)
+        AppUploader.setup()
         
         // The simulator does not have a camera device, so must load test data
         #if targetEnvironment(simulator)

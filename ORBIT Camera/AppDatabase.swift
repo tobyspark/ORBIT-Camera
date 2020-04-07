@@ -59,7 +59,6 @@ struct AppDatabase {
             try db.create(table: "thing") { t in
                 // Column names as per CodingKeys
                 t.autoIncrementedPrimaryKey("id")
-                t.column("uploadID", .integer)
                 t.column("orbitID", .integer)
                 t.column("labelParticipant", .text).notNull()
                 t.column("labelDataset", .text)
@@ -73,7 +72,6 @@ struct AppDatabase {
                 t.column("thingID", .integer).references("thing", onDelete: .setNull)
                 t.column("filename", .text).notNull()
                 t.column("recorded", .blob).notNull()
-                t.column("uploadID", .integer)
                 t.column("orbitID", .integer)
                 t.column("kind", .text)
             }

@@ -8,75 +8,77 @@
 
 import Foundation
 import GRDB
+import os
 
-enum UploadableError: Error {
-    case nonUniqueUploadID
-}
-
-protocol Uploadable {
-    /// An ID to track an in-progress upload, corresponds to URLSessionTask.taskIdentifier
-    var uploadID: Int? { get set }
+protocol Uploadable: CustomStringConvertible {
+    /// A unique ID for the uploadable. This comes from the database, and is here in this protocol as a poor man's equatable, to avoid Equality on the protocol and corresponding PAT issues.
+    var id: Int64? { get }
     
     /// A unique ID for the thing in the ORBIT dataset (or rather, the database the dataset will be produced from)
     var orbitID: Int? { get set }
     
     /// Upload the uploadable
-    mutating func upload(by participant: Participant, using session: URLSession) throws
+    func upload(by participant: Participant, using session: URLSession) -> Int?
     
     /// Assign orbitID from returned data
     mutating func uploadDidReceive(_ data: Data) throws
-    
-    /// GRDB write method
-    func update(_ db: Database) throws
 }
 
-extension Uploadable {
-    /// Return the uploadable with the uploadID
-    static func uploadable(with uploadID: Int) throws -> Uploadable {
-        var uploadables: [Uploadable] = []
-        try dbQueue.read { db in
-            uploadables += try Thing
-                .filter(Thing.Columns.uploadID == uploadID)
-                .fetchAll(db)
-            uploadables += try Video
-                .filter(Video.Columns.uploadID == uploadID)
-                .fetchAll(db)
-        }
-        guard
-            uploadables.count == 1
+/// A wrapper for URLSession that tracks uploads
+/// To start upload –
+///     if let taskIdentifier = thing.upload(by: Settings.participant, using: uploadableSession.session) {
+///         uploadableSession.associate(taskIdentifier, with: thing)
+///     }
+///
+/// To process response in `urlSession(_:, dataTask:, didReceive:)`–
+///     if var uploadable = uploadableSession.uploadable(with: task.taskIdentifier) {
+///         uploadable.uploadDidReceive(data)
+///     }
+///
+/// To handle completion in `urlSession(_:, task:, didCompleteWithError:)`
+///     uploadableSession.clear(task.taskIdentifier)`
+///
+struct UploadableSession {
+    let session: URLSession
+    
+    mutating func upload(_ uploadable: Uploadable) {
+        // Get participant
+        guard let participant = try? Participant.appParticipant()
+        else { return }
+        
+        // Check we're not mid-upload already
+        guard !tasks.values.map({ $0.id }).contains(uploadable.id)
         else {
-            throw UploadableError.nonUniqueUploadID
+            os_log("Aborting upload %{public}s, is already being uploaded.", uploadable.description)
+            return
         }
-        return uploadables[0]
+        
+        // Upload and associate taskIdentifier
+        if let taskIdentifier = uploadable.upload(by: participant, using: session) {
+            associate(taskIdentifier, with: uploadable)
+        }
     }
     
-    /// On upload task completion, check uploadable for uploadID, orbitID consistency. Reset both to nil on failed upload.
-    // FIXME: check assumptions behind this.
-    // This is a workaround for not receiving HTTPURLRequest on background uploads, so can't know about failed uploads through HTTP status code.
-    // If uploadDidReceive fails to set orbitID, this should catch it. But actually, the uploadDidReceive should throw on malformed data?
-    // And what about stale failed uploads that didn't event get to task completion?
-    static func uploadableDidComplete(with uploadID: Int) throws {
-        // On task completion, a successful upload will by now have their orbitID set, and uploadID unset.
-        // If that is not the case, unset both to allow a new upload attempt.
-        var uploadables: [Uploadable] = []
-        try dbQueue.read { db in
-            uploadables += try Thing
-                .filter(Thing.Columns.uploadID == uploadID)
-                .fetchAll(db)
-            uploadables += try Video
-                .filter(Video.Columns.uploadID == uploadID)
-                .fetchAll(db)
+    mutating func associate(_ taskIdentifier: Int, with uploadable: Uploadable) {
+        if tasks.keys.contains(taskIdentifier) {
+            os_log("Continuing with %{public}s; stale task identifier present in session", uploadable.description)
+            assertionFailure("task \(taskIdentifier) in \(tasks)")
         }
-        switch uploadables.count {
-        case 0: // No stale uploadIDs, good.
-            return
-        case 1: // Failed uploadTask.
-            print("Failed upload task: \(uploadables[0])")
-            uploadables[0].uploadID = nil
-            uploadables[0].orbitID = nil
-            try dbQueue.write { db in try uploadables[0].update(db) }
-        default: // Uh-oh.
-            throw UploadableError.nonUniqueUploadID
-        }
+        tasks[taskIdentifier] = uploadable
     }
+    
+    mutating func clear(_ taskIdentifier: Int) {
+        tasks[taskIdentifier] = nil
+    }
+    
+    func uploadable(with taskIdentifier: Int) -> Uploadable? {
+        return tasks[taskIdentifier]
+    }
+    
+    init(_ session: URLSession) {
+        self.session = session
+        self.tasks = [:]
+    }
+    
+    private var tasks: [Int: Uploadable]
 }
