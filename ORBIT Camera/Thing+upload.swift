@@ -42,10 +42,10 @@ extension Thing: Uploadable {
     }
     
     /// Upload the thing. This should action the creation of a server record for the thing, and (handled in `uploadDidReceive`) return that record's ID.
-    func upload(by participant: Participant, using session: inout UploadableSession) {
+    func upload(by participant: Participant, using session: URLSession) -> Int? {
         guard orbitID == nil else {
             os_log("Aborting upload of %{public}s: it has already been uploaded", description)
-            return
+            return nil
         }
         
         // Create upload request
@@ -60,17 +60,15 @@ extension Thing: Uploadable {
         guard let uploadData = try? JSONEncoder().encode(uploadStruct) else {
             os_log("Aborting upload of %{public}s: could not create upload data", description)
             assertionFailure("uploadStruct: \(uploadStruct)")
-            return
+            return nil
         }
         
-        // Create task
-        let task = session.session.uploadTask(with: request, from: uploadData)
-    
-        // Associate upload with Thing
-        session.associate(task.taskIdentifier, with: self)
-        
-        // Action task
+        // Create and action task
+        let task = session.uploadTask(with: request, from: uploadData)
         task.resume()
+        
+        // Return the task ID
+        return task.taskIdentifier
     }
 
     /// Assign orbitID from returned data
