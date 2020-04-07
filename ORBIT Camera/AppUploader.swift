@@ -46,14 +46,9 @@ struct AppUploader {
                 print(error)
             },
             onChange: { things in
-                guard let participant = try? Participant.appParticipant()
-                else {
-                    os_log("Cannot enqueue things for upload, no participant")
-                    return
-                }
                 for thing in things {
                     os_log("Attempting upload of %{public}s in foreground session (things change)", type: .debug, thing.description)
-                    thing.upload(by: participant, using: &appNetwork.thingsSession)
+                    appNetwork.thingsSession.upload(thing)
                 }
             }
         )
@@ -66,14 +61,9 @@ struct AppUploader {
                 print(error)
             },
             onChange: { videos in
-                guard let participant = try? Participant.appParticipant()
-                else {
-                    os_log("Cannot enqueue videos for upload, no participant")
-                    return
-                }
                 for video in videos {
                     os_log("Attempting upload of %{public}s in background session (videos change)", type: .debug, video.description)
-                    video.upload(by: participant, using: &appNetwork.videosSession)
+                    appNetwork.videosSession.upload(video)
                 }
             }
         )
@@ -86,36 +76,30 @@ struct AppUploader {
                 print(error)
             },
             onChange: { participant in
-                guard let participant = participant
-                else { return }
-                
                 let things = try! dbQueue.read { db in try thingsRequest.fetchAll(db) }
                 for thing in things {
                     os_log("Attempting upload of %{public}s in foreground session (participant credential change)", type: .debug, thing.description)
-                    thing.upload(by: participant, using: &appNetwork.thingsSession)
+                    appNetwork.thingsSession.upload(thing)
                 }
                 let videos = try! dbQueue.read { db in try videosRequest.fetchAll(db) }
                 for video in videos {
                     os_log("Attempting upload of %{public}s in background session (participant credential change)", type: .debug, video.description)
-                    video.upload(by: participant, using: &appNetwork.videosSession)
+                    appNetwork.videosSession.upload(video)
                 }
             }
         )
         
         networkMonitor.pathUpdateHandler = { path in
             if path.status == .satisfied {
-                guard let participant = try? Participant.appParticipant()
-                else { return }
-                
                 let things = try! dbQueue.read { db in try thingsRequest.fetchAll(db) }
                 for thing in things {
                     os_log("Attempting upload of %{public}s in foreground session (network change)", type: .debug, thing.description)
-                    thing.upload(by: participant, using: &appNetwork.thingsSession)
+                    appNetwork.thingsSession.upload(thing)
                 }
                 let videos = try! dbQueue.read { db in try videosRequest.fetchAll(db) }
                 for video in videos {
                     os_log("Attempting upload of %{public}s in background session (network change)", type: .debug, video.description)
-                    video.upload(by: participant, using: &appNetwork.videosSession)
+                    appNetwork.videosSession.upload(video)
                 }
             }
         }

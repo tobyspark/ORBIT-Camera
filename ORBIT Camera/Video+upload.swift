@@ -29,10 +29,10 @@ extension Video: Uploadable {
     }
     
     /// Upload the video. This should action the creation of a server record for the video, and (handled in `uploadDidReceive`) return that record's ID.
-    func upload(by participant: Participant, using session: inout UploadableSession) {
+    func upload(by participant: Participant, using session: URLSession) -> Int? {
         guard orbitID == nil else {
             os_log("Aborting upload of Video %d: it has already been uploaded", description)
-            return
+            return nil
         }
         
         guard
@@ -40,7 +40,7 @@ extension Video: Uploadable {
             let thingOrbitID = thing.orbitID
         else {
             os_log("Aborting upload of %{public}s: could not get the associated Thing's id", description)
-            return
+            return nil
         }
         
         guard
@@ -55,7 +55,7 @@ extension Video: Uploadable {
                     )
         else {
             os_log("Aborting upload of %{public}s: could not create upload data", description)
-            return
+            return nil
         }
         
         // Create upload request
@@ -65,14 +65,12 @@ extension Video: Uploadable {
         request.setValue(participant.authCredential, forHTTPHeaderField: "Authorization")
         request.setValue(formFile.contentType, forHTTPHeaderField: "Content-Type")
         
-        // Create task
-        let task = session.session.uploadTask(with: request, fromFile: formFile.body)
-        
-        // Associate upload with Video
-        session.associate(task.taskIdentifier, with: self)
-        
-        // Action task
+        // Create and action task
+        let task = session.uploadTask(with: request, fromFile: formFile.body)
         task.resume()
+        
+        // Return the task ID
+        return task.taskIdentifier
     }
 
     /// Assign orbitID from returned data

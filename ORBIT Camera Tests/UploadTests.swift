@@ -12,7 +12,7 @@ import XCTest
 import GRDB
 
 class UploadTests: XCTestCase {
-    var appSession: UploadableSession!
+    var uploadableSession: UploadableSession!
     var didCompleteExpectation: XCTestExpectation!
     
     override func setUp() {
@@ -23,7 +23,7 @@ class UploadTests: XCTestCase {
             XCTFail("Could not migrate DB")
         }
         
-        appSession = UploadableSession(
+        uploadableSession = UploadableSession(
             URLSession(configuration: URLSessionConfiguration.ephemeral, delegate: self, delegateQueue: nil)
         )
         
@@ -39,12 +39,18 @@ class UploadTests: XCTestCase {
         var thing = Thing(withLabel: "labelParticipant")
         try dbQueue.write { db in try thing.save(db) }
 
-        thing.upload(by: Settings.participant, using: &appSession)
-        //XCTAssertEqual(appSession.tasks.count, 1, "The tasks list should have an entry")
+        guard let taskIdentifier = thing.upload(by: Settings.participant, using: uploadableSession.session)
+        else {
+            XCTFail("No taskIdentifier returned")
+            return
+        }
+        
+        uploadableSession.associate(taskIdentifier, with: thing)
+        XCTAssertEqual(uploadableSession.uploadable(with: taskIdentifier)?.id, thing.id, "The correct thing should be returned")
         wait(for: [didCompleteExpectation], timeout: 5)
         
         let things = try dbQueue.read { db in try Thing.fetchAll(db) }
-        //XCTAssertTrue(appSession.tasks.isEmpty, "The tasks list should be empty")
+        XCTAssertNil(uploadableSession.uploadable(with: taskIdentifier), "No thing should be returned")
         XCTAssertNotNil(things[0].orbitID, "The orbitID should be set after upload")
     }
     
@@ -60,12 +66,18 @@ class UploadTests: XCTestCase {
         var video = Video(of: thing, url: testURL, kind:.testPan)!
         try dbQueue.write { db in try video.save(db) }
 
-        video.upload(by: Settings.participant, using: &appSession)
-        //XCTAssertEqual(appSession.tasks.count, 1, "The tasks list should have an entry")
+        guard let taskIdentifier = video.upload(by: Settings.participant, using: uploadableSession.session)
+        else {
+            XCTFail("No taskIdentifier returned")
+            return
+        }
+        
+        uploadableSession.associate(taskIdentifier, with: video)
+        XCTAssertEqual(uploadableSession.uploadable(with: taskIdentifier)?.id, video.id, "The correct video should be returned")
         wait(for: [didCompleteExpectation], timeout: 10)
 
         let videos = try dbQueue.read { db in try Video.fetchAll(db) }
-        //XCTAssertTrue(appSession.tasks.isEmpty, "The tasks list should be empty")
+        XCTAssertNil(uploadableSession.uploadable(with: taskIdentifier), "No video should be returned")
         XCTAssertNotNil(videos[0].orbitID, "The orbitID should be set after upload")
     }
 }
@@ -82,7 +94,7 @@ extension UploadTests: URLSessionTaskDelegate {
     // As upload tasks in background sessions do not receive the headers back, we need to clean-up an unsuccessful POST here.
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         print("urlSession(_:, task:, didCompleteWithError:) –– called")
-        appSession.clear(task.taskIdentifier)
+        uploadableSession.clear(task.taskIdentifier)
         didCompleteExpectation.fulfill()
     }
     
@@ -122,7 +134,7 @@ extension UploadTests: URLSessionDataDelegate {
             return
         }
 
-        guard var uploadable = appSession.uploadable(with: dataTask.taskIdentifier)
+        guard var uploadable = uploadableSession.uploadable(with: dataTask.taskIdentifier)
         else {
             print("URLSession didReceive cannot find Uploadable with task")
             assertionFailure()
