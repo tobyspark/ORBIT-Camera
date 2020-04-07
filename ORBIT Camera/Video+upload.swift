@@ -69,11 +69,7 @@ extension Video: Uploadable {
         let task = session.session.uploadTask(with: request, fromFile: formFile.body)
         
         // Associate upload with Video
-        if session.tasks.keys.contains(task.taskIdentifier) {
-            os_log("Continuing upload of %{public}s; stale task identifier present in session", description)
-            assertionFailure()
-        }
-        session.tasks[task.taskIdentifier] = self
+        session.associate(task.taskIdentifier, with: self)
         
         // Action task
         task.resume()
