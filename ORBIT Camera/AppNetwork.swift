@@ -21,10 +21,10 @@ var appNetwork: AppNetwork!
 struct AppNetwork {
     
     /// The network session used for things
-    var thingsSession: AppURLSession
+    var thingsSession: UploadableSession
     
     /// The network session used for videos
-    var videosSession: AppURLSession!
+    var videosSession: UploadableSession!
     
     /// The completion handler to call once all background tasks have completed
     var completionHandler: (() -> Void)?
@@ -69,38 +69,11 @@ struct AppNetwork {
         videosConfig.isDiscretionary = true
         videosConfig.sessionSendsLaunchEvents = true
         appNetwork = AppNetwork(
-            thingsSession: AppURLSession(URLSession(configuration: thingsConfig, delegate: delegate, delegateQueue: nil)),
-            videosSession: AppURLSession(URLSession(configuration: videosConfig, delegate: delegate, delegateQueue: nil)),
+            thingsSession: UploadableSession(URLSession(configuration: thingsConfig, delegate: delegate, delegateQueue: nil)),
+            videosSession: UploadableSession(URLSession(configuration: videosConfig, delegate: delegate, delegateQueue: nil)),
             completionHandler: nil
         )
     }
-}
-
-struct AppURLSession {
-    let session: URLSession
-    
-    mutating func associate(_ taskIdentifier: Int, with uploadable: Uploadable) {
-        if tasks.keys.contains(taskIdentifier) {
-            os_log("Continuing with %{public}s; stale task identifier present in session", uploadable.description)
-            assertionFailure("task \(taskIdentifier) in \(tasks)")
-        }
-        tasks[taskIdentifier] = uploadable
-    }
-    
-    mutating func clear(_ taskIdentifier: Int) {
-        tasks[taskIdentifier] = nil
-    }
-    
-    func uploadable(with taskIdentifier: Int) -> Uploadable? {
-        return tasks[taskIdentifier]
-    }
-    
-    init(_ session: URLSession) {
-        self.session = session
-        self.tasks = [:]
-    }
-    
-    private var tasks: [Int: Uploadable]
 }
 
 extension AppDelegate: URLSessionDelegate {
