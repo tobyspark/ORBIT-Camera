@@ -42,7 +42,7 @@ extension Thing: Uploadable {
     }
     
     /// Upload the thing. This should action the creation of a server record for the thing, and (handled in `uploadDidReceive`) return that record's ID.
-    func upload(by participant: Participant, using session: inout AppURLSession) {
+    func upload(by participant: Participant, using session: inout UploadableSession) {
         guard orbitID == nil else {
             os_log("Aborting upload of %{public}s: it has already been uploaded", description)
             return

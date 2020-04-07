@@ -12,7 +12,7 @@ import XCTest
 import GRDB
 
 class UploadTests: XCTestCase {
-    var appSession: AppURLSession!
+    var appSession: UploadableSession!
     var didCompleteExpectation: XCTestExpectation!
     
     override func setUp() {
@@ -23,7 +23,7 @@ class UploadTests: XCTestCase {
             XCTFail("Could not migrate DB")
         }
         
-        appSession = AppURLSession(
+        appSession = UploadableSession(
             URLSession(configuration: URLSessionConfiguration.ephemeral, delegate: self, delegateQueue: nil)
         )
         
