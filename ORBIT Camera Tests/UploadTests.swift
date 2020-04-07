@@ -24,7 +24,7 @@ class UploadTests: XCTestCase {
         }
         
         appSession = AppURLSession(
-            session: URLSession(configuration: URLSessionConfiguration.ephemeral, delegate: self, delegateQueue: nil)
+            URLSession(configuration: URLSessionConfiguration.ephemeral, delegate: self, delegateQueue: nil)
         )
         
         didCompleteExpectation = expectation(description: "uploadDidComplete")
@@ -40,10 +40,11 @@ class UploadTests: XCTestCase {
         try dbQueue.write { db in try thing.save(db) }
 
         thing.upload(by: Settings.participant, using: &appSession)
-        XCTAssertEqual(appSession.tasks.count, 1, "The tasks list should have an entry")
+        //XCTAssertEqual(appSession.tasks.count, 1, "The tasks list should have an entry")
         wait(for: [didCompleteExpectation], timeout: 5)
         
         let things = try dbQueue.read { db in try Thing.fetchAll(db) }
+        //XCTAssertTrue(appSession.tasks.isEmpty, "The tasks list should be empty")
         XCTAssertNotNil(things[0].orbitID, "The orbitID should be set after upload")
     }
     
@@ -60,11 +61,11 @@ class UploadTests: XCTestCase {
         try dbQueue.write { db in try video.save(db) }
 
         video.upload(by: Settings.participant, using: &appSession)
-        XCTAssertEqual(appSession.tasks.count, 1, "The tasks list should have an entry")
+        //XCTAssertEqual(appSession.tasks.count, 1, "The tasks list should have an entry")
         wait(for: [didCompleteExpectation], timeout: 10)
 
         let videos = try dbQueue.read { db in try Video.fetchAll(db) }
-        XCTAssertTrue(appSession.tasks.isEmpty, "The tasks list should be empty")
+        //XCTAssertTrue(appSession.tasks.isEmpty, "The tasks list should be empty")
         XCTAssertNotNil(videos[0].orbitID, "The orbitID should be set after upload")
     }
 }
@@ -81,7 +82,7 @@ extension UploadTests: URLSessionTaskDelegate {
     // As upload tasks in background sessions do not receive the headers back, we need to clean-up an unsuccessful POST here.
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         print("urlSession(_:, task:, didCompleteWithError:) –– called")
-        appSession.tasks[task.taskIdentifier] = nil
+        appSession.clear(task.taskIdentifier)
         didCompleteExpectation.fulfill()
     }
     
@@ -121,7 +122,7 @@ extension UploadTests: URLSessionDataDelegate {
             return
         }
 
-        guard var uploadable = appSession.tasks[dataTask.taskIdentifier]
+        guard var uploadable = appSession.uploadable(with: dataTask.taskIdentifier)
         else {
             print("URLSession didReceive cannot find Uploadable with task")
             assertionFailure()

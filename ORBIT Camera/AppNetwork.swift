@@ -29,6 +29,39 @@ struct AppNetwork {
     /// The completion handler to call once all background tasks have completed
     var completionHandler: (() -> Void)?
     
+    mutating func associate(task taskIdentifier: Int, in session: URLSession, with uploadable: Uploadable) {
+        switch session {
+        case thingsSession.session:
+            thingsSession.associate(taskIdentifier, with: uploadable)
+        case videosSession.session:
+            videosSession.associate(taskIdentifier, with: uploadable)
+        default:
+            fatalError("Unknown session")
+        }
+    }
+    
+    mutating func clear(task taskIdentifier: Int, in session: URLSession) {
+        switch session {
+        case thingsSession.session:
+            thingsSession.clear(taskIdentifier)
+        case videosSession.session:
+            videosSession.clear(taskIdentifier)
+        default:
+            fatalError("Unknown session")
+        }
+    }
+    
+    func uploadable(in session: URLSession, with taskIdentifier: Int) -> Uploadable? {
+        switch session {
+        case thingsSession.session:
+            return thingsSession.uploadable(with: taskIdentifier)
+        case videosSession.session:
+            return videosSession.uploadable(with: taskIdentifier)
+        default:
+            fatalError("Unknown session")
+        }
+    }
+    
     /// Configure and assign the app's network struct
     static func setup(delegate: URLSessionDelegate) throws {
         let thingsConfig = URLSessionConfiguration.ephemeral
@@ -36,8 +69,8 @@ struct AppNetwork {
         videosConfig.isDiscretionary = true
         videosConfig.sessionSendsLaunchEvents = true
         appNetwork = AppNetwork(
-            thingsSession: AppURLSession(session: URLSession(configuration: thingsConfig, delegate: delegate, delegateQueue: nil)),
-            videosSession: AppURLSession(session: URLSession(configuration: videosConfig, delegate: delegate, delegateQueue: nil)),
+            thingsSession: AppURLSession(URLSession(configuration: thingsConfig, delegate: delegate, delegateQueue: nil)),
+            videosSession: AppURLSession(URLSession(configuration: videosConfig, delegate: delegate, delegateQueue: nil)),
             completionHandler: nil
         )
     }
@@ -45,7 +78,29 @@ struct AppNetwork {
 
 struct AppURLSession {
     let session: URLSession
-    var tasks: [Int: Uploadable] = [:]
+    
+    mutating func associate(_ taskIdentifier: Int, with uploadable: Uploadable) {
+        if tasks.keys.contains(taskIdentifier) {
+            os_log("Continuing with %{public}s; stale task identifier present in session", uploadable.description)
+            assertionFailure("task \(taskIdentifier) in \(tasks)")
+        }
+        tasks[taskIdentifier] = uploadable
+    }
+    
+    mutating func clear(_ taskIdentifier: Int) {
+        tasks[taskIdentifier] = nil
+    }
+    
+    func uploadable(with taskIdentifier: Int) -> Uploadable? {
+        return tasks[taskIdentifier]
+    }
+    
+    init(_ session: URLSession) {
+        self.session = session
+        self.tasks = [:]
+    }
+    
+    private var tasks: [Int: Uploadable]
 }
 
 extension AppDelegate: URLSessionDelegate {
@@ -61,9 +116,9 @@ extension AppDelegate: URLSessionTaskDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         switch session {
         case appNetwork.thingsSession.session:
-            appNetwork.thingsSession.tasks[task.taskIdentifier] = nil
+            appNetwork.thingsSession.clear(task.taskIdentifier)
         case appNetwork.videosSession.session:
-            appNetwork.videosSession.tasks[task.taskIdentifier] = nil
+            appNetwork.videosSession.clear(task.taskIdentifier)
         default:
             fatalError("Unknown session")
         }
@@ -73,16 +128,7 @@ extension AppDelegate: URLSessionTaskDelegate {
 extension AppDelegate: URLSessionDataDelegate {
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         // Find uploadable for this task
-        let tasks: [Int: Uploadable]
-        switch session {
-        case appNetwork.thingsSession.session:
-            tasks = appNetwork.thingsSession.tasks
-        case appNetwork.videosSession.session:
-            tasks = appNetwork.videosSession.tasks
-        default:
-            fatalError("Unknown session")
-        }
-        guard var uploadable = tasks[dataTask.taskIdentifier]
+        guard var uploadable = appNetwork.uploadable(in: session, with: dataTask.taskIdentifier)
         else {
             os_log("URLSession didReceive cannot find Uploadable with task")
             return
