@@ -594,6 +594,10 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Things" id="Zdf-7t-Un8">
                         <barButtonItem key="rightBarButtonItem" title="Info" image="info.circle" catalog="system" id="tLb-og-RZ7">
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityLabel" value="App Info"/>
+                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityHint" value="Find out more about the ORBIT project, and register"/>
+                            </userDefinedRuntimeAttributes>
                             <connections>
                                 <segue destination="hQ4-tG-xkv" kind="popoverPresentation" popoverAnchorBarButtonItem="tLb-og-RZ7" id="ZJu-Cn-xgj">
                                     <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
