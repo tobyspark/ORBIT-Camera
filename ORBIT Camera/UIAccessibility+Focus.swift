@@ -7,11 +7,19 @@
 //
 
 import UIKit
+import os
 
 extension UIAccessibility {
-    static func focus(element: Any) {
-        if UIAccessibility.isVoiceOverRunning {
-            UIAccessibility.post(notification: .layoutChanged, argument: element)
+    static func focus(element: Any?) {
+        guard UIAccessibility.isVoiceOverRunning
+        else { return }
+        
+        guard let element = element
+        else {
+            os_log("Accessibility focus attempted on nil object")
+            return
         }
+        
+        UIAccessibility.post(notification: .layoutChanged, argument: element)
     }
 }
