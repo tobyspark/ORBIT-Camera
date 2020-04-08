@@ -63,6 +63,7 @@ class MasterViewController: UITableViewController {
         
         // Set edit button, to delete things or edit their label
         navigationItem.leftBarButtonItem = editButtonItem
+        navigationItem.leftBarButtonItem?.accessibilityHint = "Delete things, or change their name"
         
         // Set detailViewController if already present
         if let splitViewController = splitViewController,
