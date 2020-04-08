@@ -50,6 +50,9 @@ class DetailViewController: UIViewController {
     lazy var publishedElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var deleteElement = UIAccessibilityElement(accessibilityContainer: view!)
     
+    lazy var cameraRecordElement = UIAccessibilityElement(accessibilityContainer: view!)
+    lazy var cameraRecordTypeElement = UIAccessibilityElement(accessibilityContainer: view!)
+    
     /// The thing this detail view is to show the detail of
     var detailItem: Thing? {
         didSet {
@@ -98,17 +101,27 @@ class DetailViewController: UIViewController {
                         
                         // Page state via collection view position
                         self.scrollViewDidScroll(self.videoCollectionView)
-                        
-                        self.view.accessibilityElements = self.accessibilityElements()
                     }
                 )
             }
         }
     }
     
-    func accessibilityElements() -> [UIAccessibilityElement] {
+    func cameraAccessibilityElements() -> [UIAccessibilityElement] {
+        pagerElement.accessibilityLabel = "Video pager - camera"
+        cameraRecordElement.accessibilityLabel = "Record"
+        cameraRecordTypeElement.accessibilityLabel = "Record type"
+        
+        return [
+            pagerElement,
+            cameraRecordElement,
+            cameraRecordTypeElement
+        ]
+    }
+    
+    func videoAccessibilityElements() -> [UIAccessibilityElement] {
         addNewElement.accessibilityLabel = "Add new video"
-        pagerElement.accessibilityLabel = "Video pager"
+        pagerElement.accessibilityLabel = "Video pager - video"
         recordedElement.accessibilityLabel = "Recorded"
         uploadedElement.accessibilityLabel = "Uploaded"
         verifiedElement.accessibilityLabel = "Verified"
@@ -185,6 +198,23 @@ class DetailViewController: UIViewController {
             y: deleteFrame.minY,
             width: viewFrame.width,
             height: deleteFrame.height
+        )
+        
+        let cameraControlFrame = UIAccessibility.convertToScreenCoordinates(cameraControlView.bounds, in: cameraControlView)
+        let recordButtonFrame = UIAccessibility.convertToScreenCoordinates(recordButton.bounds, in: recordButton)
+        let recordTypePickerFrame = UIAccessibility.convertToScreenCoordinates(recordTypePicker.bounds, in: recordTypePicker)
+        
+        cameraRecordElement.accessibilityFrame = CGRect(
+            x: cameraControlFrame.minX,
+            y: cameraControlFrame.minY,
+            width: recordButtonFrame.maxX - cameraControlFrame.minX,
+            height: viewFrame.height
+        )
+        cameraRecordTypeElement.accessibilityFrame = CGRect(
+            x: recordTypePickerFrame.minX,
+            y: cameraControlFrame.minY,
+            width: recordTypePickerFrame.width,
+            height: viewFrame.height
         )
     }
     
@@ -333,26 +363,19 @@ class DetailViewController: UIViewController {
         let pageEnable = (detailItem != nil)
         let statusEnable = (pageEnable && !isCameraPage)
         let recordEnable = (pageEnable && isCameraPage)
-        let pageElements = [
-            videoPageControl
-        ]
-        let statusElements = [
-            videoRerecordButton,
-            videoRecordedLabel,
-            videoUploadedLabel,
-            videoVerifiedLabel,
-            videoPublishedLabel,
-            videoDeleteButton,
-        ]
-        let recordElements = [
-            recordButton
-        ]
-        pageElements.forEach { $0?.isAccessibilityElement = pageEnable }
-        statusElements.forEach { $0?.isAccessibilityElement = statusEnable }
-        recordElements.forEach { $0?.isAccessibilityElement = recordEnable }
-        pageElements.forEach { ($0 as? UIControl)?.isEnabled = pageEnable }
-        statusElements.forEach { ($0 as? UIControl)?.isEnabled = statusEnable }
-        recordElements.forEach { ($0 as? UIControl)?.isEnabled = recordEnable }
+
+        videoPageControl.isEnabled = pageEnable
+
+        videoRerecordButton.isEnabled = statusEnable
+        videoRecordedLabel.isEnabled = statusEnable
+        videoUploadedLabel.isEnabled = statusEnable
+        videoVerifiedLabel.isEnabled = statusEnable
+        videoPublishedLabel.isEnabled = statusEnable
+        videoDeleteButton.isEnabled = statusEnable
+        
+        recordButton.isEnabled = recordEnable
+        
+        view.accessibilityElements = pageEnable ? (isCameraPage ? self.cameraAccessibilityElements() : self.videoAccessibilityElements()) : nil
     }
     
     /// Action the addNewPageShortcutButton
