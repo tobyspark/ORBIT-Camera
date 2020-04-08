@@ -124,6 +124,10 @@ class MasterViewController: UITableViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        // Default the first voiceover item to the 'add new thing' header
+        let addNewHeader = tableView.headerView(forSection: ThingSection.addNew.rawValue)!
+        UIAccessibility.focus(element: addNewHeader)
+        
         // If there is no thing, prompt the user to create one.
         if tableView.numberOfRows(inSection: ThingSection.things.rawValue) == 0 {
             guard let cell = tableView.cellForRow(at: addNewPath) as? NewThingCell
