@@ -90,10 +90,105 @@ class DetailViewController: UIViewController {
                         
                         // Page state via collection view position
                         self.scrollViewDidScroll(self.videoCollectionView)
+                        
+                        self.view.accessibilityElements = self.accessibilityElements()
                     }
                 )
             }
         }
+    }
+    
+    func accessibilityElements() -> [UIAccessibilityElement] {
+        guard let view = view
+        else { return [] }
+        
+        // For voiceover, extend the touch target to maximise screen coverage for controls
+        // Top here is in View coordinate space, i.e. coord 0 is at the visual top, coord top here is the visual bottom
+        let viewFrame = UIAccessibility.convertToScreenCoordinates(view.bounds, in: view)
+        let videoFrame = UIAccessibility.convertToScreenCoordinates(videoCollectionView.bounds, in: videoCollectionView)
+        let pagerFrame = UIAccessibility.convertToScreenCoordinates(videoPagingView.bounds, in: videoPagingView)
+        let recordedFrame = UIAccessibility.convertToScreenCoordinates(videoRecordedIcon.bounds, in: videoRecordedIcon)
+        let uploadedFrame = UIAccessibility.convertToScreenCoordinates(videoUploadedIcon.bounds, in: videoUploadedIcon)
+        let verifiedFrame = UIAccessibility.convertToScreenCoordinates(videoVerifiedIcon.bounds, in: videoVerifiedIcon)
+        let publishedFrame = UIAccessibility.convertToScreenCoordinates(videoPublishedIcon.bounds, in: videoPublishedIcon)
+        let deleteFrame = UIAccessibility.convertToScreenCoordinates(videoDeleteButton.bounds, in: videoDeleteButton)
+        
+        let videoTop = min(videoFrame.maxY, pagerFrame.minY)
+        let pagerTop = max(videoFrame.maxY, pagerFrame.maxY)
+        
+        var elements: [UIAccessibilityElement] = []
+        
+        let addNewElement = UIAccessibilityElement(accessibilityContainer: view)
+        addNewElement.accessibilityLabel = "Add new video"
+        addNewElement.accessibilityFrame = CGRect(
+            x: viewFrame.minX,
+            y: videoFrame.minY,
+            width: viewFrame.width,
+            height: videoTop - videoFrame.minY
+        )
+        elements.append(addNewElement)
+        
+        let pagerElement = UIAccessibilityElement(accessibilityContainer: view)
+        pagerElement.accessibilityLabel = "Video pager"
+        pagerElement.accessibilityFrame = CGRect(
+            x: viewFrame.minX,
+            y: videoTop,
+            width: viewFrame.width,
+            height: pagerTop - videoTop
+        )
+        elements.append(pagerElement)
+        
+        let recordedElement = UIAccessibilityElement(accessibilityContainer: view)
+        recordedElement.accessibilityLabel = "Recorded"
+        recordedElement.accessibilityFrame = CGRect(
+            x: viewFrame.minX,
+            y: recordedFrame.minY,
+            width: viewFrame.width,
+            height: recordedFrame.height
+        )
+        elements.append(recordedElement)
+
+        let uploadedElement = UIAccessibilityElement(accessibilityContainer: view)
+        uploadedElement.accessibilityLabel = "Verified"
+        uploadedElement.accessibilityFrame = CGRect(
+            x: viewFrame.minX,
+            y: uploadedFrame.minY,
+            width: viewFrame.width,
+            height: uploadedFrame.height
+        )
+        elements.append(uploadedElement)
+        
+        let verifiedElement = UIAccessibilityElement(accessibilityContainer: view)
+        verifiedElement.accessibilityLabel = "Verified"
+        verifiedElement.accessibilityFrame = CGRect(
+            x: viewFrame.minX,
+            y: verifiedFrame.minY,
+            width: viewFrame.width,
+            height: verifiedFrame.height
+        )
+        elements.append(verifiedElement)
+        
+        let publishedElement = UIAccessibilityElement(accessibilityContainer: view)
+        publishedElement.accessibilityLabel = "Verified"
+        publishedElement.accessibilityFrame = CGRect(
+            x: viewFrame.minX,
+            y: publishedFrame.minY,
+            width: viewFrame.width,
+            height: publishedFrame.height
+        )
+        elements.append(publishedElement)
+        
+        let deleteElement = UIAccessibilityElement(accessibilityContainer: view)
+        deleteElement.accessibilityLabel = "Verified"
+        deleteElement.accessibilityFrame = CGRect(
+            x: viewFrame.minX,
+            y: deleteFrame.minY,
+            width: viewFrame.width,
+            height: deleteFrame.height
+        )
+        elements.append(deleteElement)
+        
+        return elements
     }
     
     /// Current state of thing's videos
@@ -446,6 +541,8 @@ class DetailViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         // Set height of camera control view
         cameraControlHConstraint.constant = view.bounds.height - view.convert(videoRecordedIcon.bounds, from: videoRecordedIcon).minY
+        
+        self.view.accessibilityElements = self.accessibilityElements()
     }
     
     func inexplicableToolingFailureWorkaround() {
