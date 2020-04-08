@@ -427,6 +427,13 @@ class DetailViewController: UIViewController {
             detailItem = try? dbQueue.read { db in try Thing.fetchOne(db) }
         }
         
+        // Set accessibility focus for the scene
+        if videos.isEmpty {
+            UIAccessibility.focus(element: recordButton)
+        } else {
+            UIAccessibility.focus(element: videoPageControl)
+        }
+        
         configureView()
     }
     
