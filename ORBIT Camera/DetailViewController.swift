@@ -286,15 +286,21 @@ class DetailViewController: UIViewController {
                 publishedElement,
                 deleteElement
             ]
-        } else if recordEnable {
+        } else if recordEnable && !videos.isEmpty {
             view.accessibilityElements = [
                 pagerElement,
+                cameraRecordElement,
+                cameraRecordTypeElement
+            ]
+        } else if recordEnable && videos.isEmpty {
+            view.accessibilityElements = [
                 cameraRecordElement,
                 cameraRecordTypeElement
             ]
         } else {
             view.accessibilityElements = []
         }
+        UIAccessibility.focus(element: pagerElement) // focus goes to control nearest last otherwise
     }
     
     func configureAccessibilityElements() {
@@ -619,13 +625,6 @@ class DetailViewController: UIViewController {
         if detailItem == nil {
             os_log("viewWillAppear without detailItem. Attempting load from database.", type: .debug)
             detailItem = try? dbQueue.read { db in try Thing.fetchOne(db) }
-        }
-        
-        // Set accessibility focus for the scene
-        if videos.isEmpty {
-            UIAccessibility.focus(element: recordButton)
-        } else {
-            UIAccessibility.focus(element: videoPageControl)
         }
         
         configureView()
