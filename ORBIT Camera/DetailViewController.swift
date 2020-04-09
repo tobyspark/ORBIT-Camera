@@ -249,13 +249,13 @@ class DetailViewController: UIViewController {
             
             videoUploadedIcon.image = video.orbitID == nil ? UIImage(systemName: "arrow.up.circle") : UIImage(systemName: "arrow.up.circle.fill")
             videoUploadedLabel.text = video.orbitID == nil ? "Not yet uploaded" : "Uploaded"
-            uploadedElement.accessibilityLabel = "\(videoUploadedLabel.text!) to the ORBIT dataset"
+            uploadedElement.accessibilityLabel = "ORBIT dataset status: \(videoUploadedLabel.text!)"
             
             // TODO: videoVerified
-            verifiedElement.accessibilityLabel = "\(videoVerifiedLabel.text!) for the ORBIT dataset"
+            verifiedElement.accessibilityLabel = "\(videoVerifiedLabel.text!)"
             
             // TODO: videoPublished
-            publishedElement.accessibilityLabel = "\(videoPublishedLabel.text!) in the ORBIT dataset"
+            publishedElement.accessibilityLabel = "\(videoPublishedLabel.text!)"
         }
         
         // Set availability of labels and controls
