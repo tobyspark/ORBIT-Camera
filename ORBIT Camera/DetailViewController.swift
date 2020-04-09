@@ -278,8 +278,8 @@ class DetailViewController: UIViewController {
         
         if statusEnable {
             view.accessibilityElements = [
-                addNewElement,
-                pagerElement,
+                pagerElement, // Switch these from the visual order...
+                addNewElement, // ...as this ensures that the pager is always the first item on each page
                 recordedElement,
                 uploadedElement,
                 verifiedElement,
