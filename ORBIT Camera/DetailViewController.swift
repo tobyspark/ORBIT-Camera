@@ -464,8 +464,17 @@ class DetailViewController: UIViewController {
     /// Action the addNewPageShortcutButton
     @IBAction func addNewPageShortcutButtonAction(sender: UIButton) {
         os_log("Add new shortcut action", type: .debug)
-        camera.start() // Start it now so it has the best chance of running by the time the scroll completes
+        // Start it now so it has the best chance of running by the time the scroll completes
+        camera.start()
+        // Action going to the page, will start the scroll
         pageIndex = addNewPageIndex
+        // Given the explicit intent, focus the record button
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) { [weak self] in
+            // Rather than this arbitrary and pager-label-cutting-off delay, better would be some kind of flag for it to be focussed on being added to the view's accessibilityElements. But this is good enough for now plus is simple and self-contained.
+            guard let self = self
+            else { return }
+            UIAccessibility.focus(element: self.cameraRecordElement)
+        }
     }
     
     /// Action the video corresponding to page
