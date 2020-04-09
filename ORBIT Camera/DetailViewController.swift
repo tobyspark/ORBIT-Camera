@@ -455,9 +455,9 @@ class DetailViewController: UIViewController {
         let videoRerecordButtonFrame = UIAccessibility.convertToScreenCoordinates(videoRerecordButton.bounds, in: videoRerecordButton)
         let videoDeleteButtonFrame = UIAccessibility.convertToScreenCoordinates(videoDeleteButton.bounds, in: videoDeleteButton)
         
-        addNewElement.accessibilityActivationPoint = addNewPageShortcutButtonFrame.origin
-        recordedElement.accessibilityActivationPoint = videoRerecordButtonFrame.origin
-        deleteElement.accessibilityActivationPoint = videoDeleteButtonFrame.origin
+        addNewElement.accessibilityActivationPoint = CGPoint(x: addNewPageShortcutButtonFrame.midX, y: addNewPageShortcutButtonFrame.midY)
+        recordedElement.accessibilityActivationPoint = CGPoint(x: videoRerecordButtonFrame.midX, y: videoRerecordButtonFrame.midY)
+        deleteElement.accessibilityActivationPoint = CGPoint(x: videoDeleteButtonFrame.midX, y: videoDeleteButtonFrame.midY)
         cameraRecordElement.accessibilityActivationPoint = CGPoint(x: recordButtonFrame.midX, y: recordButtonFrame.midY)
     }
     
