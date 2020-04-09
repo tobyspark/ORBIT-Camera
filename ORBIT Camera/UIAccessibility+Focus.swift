@@ -23,3 +23,20 @@ extension UIAccessibility {
         UIAccessibility.post(notification: .layoutChanged, argument: element)
     }
 }
+
+class AccessibilityElementUsingClosures: UIAccessibilityElement {
+    var incrementClosure: ( ()->Void )?
+    var decrementClosure: ( ()->Void )?
+    
+    override func accessibilityIncrement() {
+        if let incrementClosure = incrementClosure {
+            incrementClosure()
+        }
+    }
+    
+    override func accessibilityDecrement() {
+        if let decrementClosure = decrementClosure {
+            decrementClosure()
+        }
+    }
+}

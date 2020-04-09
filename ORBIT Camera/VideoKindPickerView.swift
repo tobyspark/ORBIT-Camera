@@ -29,7 +29,7 @@ class VideoKindPickerView: UIPickerView, UIPickerViewDelegate, UIPickerViewDataS
         delegate = self
     }
     
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? { Video.Kind.allCases[row].description() }
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? { Video.Kind.allCases[row].description }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int { 1 }
     
