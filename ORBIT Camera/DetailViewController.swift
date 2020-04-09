@@ -245,7 +245,7 @@ class DetailViewController: UIViewController {
         // Update statuses
         if let video = videos[safe: pageIndex] {
             videoRecordedLabel.text = "Recorded on \(Settings.dateFormatter.string(from:video.recorded))"
-            recordedElement.accessibilityLabel = "Recorded on \(Settings.verboseDateFormatter.string(from:video.recorded)). Action to re-record video?"
+            recordedElement.accessibilityLabel = "Recorded on \(Settings.verboseDateFormatter.string(from:video.recorded))"
             
             videoUploadedIcon.image = video.orbitID == nil ? UIImage(systemName: "arrow.up.circle") : UIImage(systemName: "arrow.up.circle.fill")
             videoUploadedLabel.text = video.orbitID == nil ? "Not yet uploaded" : "Uploaded"
@@ -323,7 +323,7 @@ class DetailViewController: UIViewController {
         }
         
         recordedElement.accessibilityLabel = "" // Set in configurePage
-        recordedElement.accessibilityHint = "Brings up the camera controls to re-record the video"
+        recordedElement.accessibilityHint = "If you wish to re-record, brings up the camera controls to re-record the video"
         recordedElement.accessibilityTraits = super.accessibilityTraits.union(.button)
                 
         uploadedElement.accessibilityLabel = "" // Set in configurePage
