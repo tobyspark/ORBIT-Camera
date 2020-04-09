@@ -441,7 +441,7 @@ class DetailViewController: UIViewController {
         cameraRecordTypeElement.accessibilityFrame = CGRect(
             x: recordTypePickerFrame.minX,
             y: cameraControlFrame.minY,
-            width: recordTypePickerFrame.width,
+            width: cameraControlFrame.maxX - recordTypePickerFrame.minX,
             height: viewFrame.height
         )
         
