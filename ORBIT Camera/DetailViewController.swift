@@ -107,165 +107,6 @@ class DetailViewController: UIViewController {
         }
     }
     
-    func configureAccessibilityElements() {
-        addNewElement.accessibilityLabel = "Add new video"
-        addNewElement.accessibilityHint = "Takes you to the camera page"
-        addNewElement.accessibilityTraits = super.accessibilityTraits.union(.button)
-        
-        
-        pagerElement.accessibilityLabel = "Video selector"
-        pagerElement.accessibilityHint = "Page through any videos taken so far, ends with the camera page."
-        pagerElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
-        pagerElement.incrementClosure = { [weak self] in
-            guard
-                let self = self,
-                self.pageIndex < self.pagesCount - 1
-            else
-                { return }
-            self.pageIndex += 1
-        }
-        pagerElement.decrementClosure = { [weak self] in
-            guard
-                let self = self,
-                self.pageIndex > 0
-            else
-                { return }
-            self.pageIndex -= 1
-        }
-        
-        recordedElement.accessibilityLabel = "" // Set in configurePage
-        recordedElement.accessibilityHint = "Brings up the camera controls to re-record the video"
-        recordedElement.accessibilityTraits = super.accessibilityTraits.union(.button)
-                
-        uploadedElement.accessibilityLabel = "" // Set in configurePage
-        
-        verifiedElement.accessibilityLabel = "" // Set in configurePage
-        
-        publishedElement.accessibilityLabel = "" // Set in configurePage
-        
-        deleteElement.accessibilityLabel = "Delete video"
-        deleteElement.accessibilityHint = "Removes this video from the thing's collection"
-        deleteElement.accessibilityTraits = super.accessibilityTraits.union(.button)
-        
-        cameraRecordElement.accessibilityLabel = "Record"
-        cameraRecordElement.accessibilityHint = "Starts recording a video. Action again to stop."
-        cameraRecordElement.accessibilityTraits = super.accessibilityTraits.union(.button)
-        
-        cameraRecordTypeElement.accessibilityLabel = "Kind of video to add"
-        cameraRecordTypeElement.accessibilityHint = "Sets whether this is a training or test video"
-        cameraRecordTypeElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
-        cameraRecordTypeElement.incrementClosure = { [weak self] in
-            guard let self = self
-            else { return }
-            // Set row
-            var row = self.recordTypePicker.selectedRow(inComponent: 0)
-            self.recordTypePicker.selectRow(row + 1, inComponent: 0, animated: true)
-            
-            // Read out selected row (which might be clamped within range)
-            row = self.recordTypePicker.selectedRow(inComponent: 0)
-            self.cameraRecordTypeElement.accessibilityValue = self.recordTypePicker.pickerView(self.recordTypePicker, titleForRow: row, forComponent: 0)
-        }
-        cameraRecordTypeElement.decrementClosure = { [weak self] in
-            guard let self = self
-            else { return }
-            // Set row
-            var row = self.recordTypePicker.selectedRow(inComponent: 0)
-            self.recordTypePicker.selectRow(row - 1, inComponent: 0, animated: true)
-            
-            // Read out selected row (which might be clamped within range)
-            row = self.recordTypePicker.selectedRow(inComponent: 0)
-            self.cameraRecordTypeElement.accessibilityValue = self.recordTypePicker.pickerView(self.recordTypePicker, titleForRow: row, forComponent: 0)
-        }
-    }
-    
-    func layoutAccessibilityElements() {
-        guard let view = view
-        else { return }
-        
-        // For voiceover, extend the touch target to maximise screen coverage for controls
-        // Top here is in View coordinate space, i.e. coord 0 is at the visual top, coord top here is the visual bottom
-        let viewFrame = UIAccessibility.convertToScreenCoordinates(view.bounds, in: view)
-        let videoFrame = UIAccessibility.convertToScreenCoordinates(videoCollectionView.bounds, in: videoCollectionView)
-        let pagerFrame = UIAccessibility.convertToScreenCoordinates(videoPagingView.bounds, in: videoPagingView)
-        let recordedFrame = UIAccessibility.convertToScreenCoordinates(videoRecordedIcon.bounds, in: videoRecordedIcon)
-        let uploadedFrame = UIAccessibility.convertToScreenCoordinates(videoUploadedIcon.bounds, in: videoUploadedIcon)
-        let verifiedFrame = UIAccessibility.convertToScreenCoordinates(videoVerifiedIcon.bounds, in: videoVerifiedIcon)
-        let publishedFrame = UIAccessibility.convertToScreenCoordinates(videoPublishedIcon.bounds, in: videoPublishedIcon)
-        let deleteFrame = UIAccessibility.convertToScreenCoordinates(videoDeleteButton.bounds, in: videoDeleteButton)
-        
-        let videoTop = min(videoFrame.maxY, pagerFrame.minY)
-        let pagerTop = max(videoFrame.maxY, pagerFrame.maxY)
-        
-        addNewElement.accessibilityFrame = CGRect(
-            x: viewFrame.minX,
-            y: videoFrame.minY,
-            width: viewFrame.width,
-            height: videoTop - videoFrame.minY
-        )
-        pagerElement.accessibilityFrame = CGRect(
-            x: viewFrame.minX,
-            y: videoTop,
-            width: viewFrame.width,
-            height: pagerTop - videoTop
-        )
-        recordedElement.accessibilityFrame = CGRect(
-            x: viewFrame.minX,
-            y: recordedFrame.minY,
-            width: viewFrame.width,
-            height: recordedFrame.height
-        )
-        uploadedElement.accessibilityFrame = CGRect(
-            x: viewFrame.minX,
-            y: uploadedFrame.minY,
-            width: viewFrame.width,
-            height: uploadedFrame.height
-        )
-        verifiedElement.accessibilityFrame = CGRect(
-            x: viewFrame.minX,
-            y: verifiedFrame.minY,
-            width: viewFrame.width,
-            height: verifiedFrame.height
-        )
-        publishedElement.accessibilityFrame = CGRect(
-            x: viewFrame.minX,
-            y: publishedFrame.minY,
-            width: viewFrame.width,
-            height: publishedFrame.height
-        )
-        deleteElement.accessibilityFrame = CGRect(
-            x: viewFrame.minX,
-            y: deleteFrame.minY,
-            width: viewFrame.width,
-            height: deleteFrame.height
-        )
-        
-        let cameraControlFrame = UIAccessibility.convertToScreenCoordinates(cameraControlView.bounds, in: cameraControlView)
-        let recordButtonFrame = UIAccessibility.convertToScreenCoordinates(recordButton.bounds, in: recordButton)
-        let recordTypePickerFrame = UIAccessibility.convertToScreenCoordinates(recordTypePicker.bounds, in: recordTypePicker)
-        
-        cameraRecordElement.accessibilityFrame = CGRect(
-            x: cameraControlFrame.minX,
-            y: cameraControlFrame.minY,
-            width: recordButtonFrame.maxX - cameraControlFrame.minX,
-            height: viewFrame.height
-        )
-        cameraRecordTypeElement.accessibilityFrame = CGRect(
-            x: recordTypePickerFrame.minX,
-            y: cameraControlFrame.minY,
-            width: recordTypePickerFrame.width,
-            height: viewFrame.height
-        )
-        
-        let addNewPageShortcutButtonFrame = UIAccessibility.convertToScreenCoordinates(addNewPageShortcutButton.bounds, in: addNewPageShortcutButton)
-        let videoRerecordButtonFrame = UIAccessibility.convertToScreenCoordinates(videoRerecordButton.bounds, in: videoRerecordButton)
-        let videoDeleteButtonFrame = UIAccessibility.convertToScreenCoordinates(videoDeleteButton.bounds, in: videoDeleteButton)
-        
-        addNewElement.accessibilityActivationPoint = addNewPageShortcutButtonFrame.origin
-        recordedElement.accessibilityActivationPoint = videoRerecordButtonFrame.origin
-        deleteElement.accessibilityActivationPoint = videoDeleteButtonFrame.origin
-        cameraRecordElement.accessibilityActivationPoint = CGPoint(x: recordButtonFrame.midX, y: recordButtonFrame.midY)
-    }
-    
     /// Current state of thing's videos
     private var videos: [Video] = []
     
@@ -454,6 +295,164 @@ class DetailViewController: UIViewController {
         } else {
             view.accessibilityElements = []
         }
+    }
+    
+    func configureAccessibilityElements() {
+        addNewElement.accessibilityLabel = "Add new video"
+        addNewElement.accessibilityHint = "Takes you to the camera page"
+        addNewElement.accessibilityTraits = super.accessibilityTraits.union(.button)
+                
+        pagerElement.accessibilityLabel = "Video selector"
+        pagerElement.accessibilityHint = "Page through any videos taken so far, ends with the camera page."
+        pagerElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
+        pagerElement.incrementClosure = { [weak self] in
+            guard
+                let self = self,
+                self.pageIndex < self.pagesCount - 1
+            else
+                { return }
+            self.pageIndex += 1
+        }
+        pagerElement.decrementClosure = { [weak self] in
+            guard
+                let self = self,
+                self.pageIndex > 0
+            else
+                { return }
+            self.pageIndex -= 1
+        }
+        
+        recordedElement.accessibilityLabel = "" // Set in configurePage
+        recordedElement.accessibilityHint = "Brings up the camera controls to re-record the video"
+        recordedElement.accessibilityTraits = super.accessibilityTraits.union(.button)
+                
+        uploadedElement.accessibilityLabel = "" // Set in configurePage
+        
+        verifiedElement.accessibilityLabel = "" // Set in configurePage
+        
+        publishedElement.accessibilityLabel = "" // Set in configurePage
+        
+        deleteElement.accessibilityLabel = "Delete video"
+        deleteElement.accessibilityHint = "Removes this video from the thing's collection"
+        deleteElement.accessibilityTraits = super.accessibilityTraits.union(.button)
+        
+        cameraRecordElement.accessibilityLabel = "Record"
+        cameraRecordElement.accessibilityHint = "Starts recording a video. Action again to stop."
+        cameraRecordElement.accessibilityTraits = super.accessibilityTraits.union(.button)
+        
+        cameraRecordTypeElement.accessibilityLabel = "Kind of video to add"
+        cameraRecordTypeElement.accessibilityHint = "Sets whether this is a training or test video"
+        cameraRecordTypeElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
+        cameraRecordTypeElement.incrementClosure = { [weak self] in
+            guard let self = self
+            else { return }
+            // Set row
+            var row = self.recordTypePicker.selectedRow(inComponent: 0)
+            self.recordTypePicker.selectRow(row + 1, inComponent: 0, animated: true)
+            
+            // Read out selected row (which might be clamped within range)
+            row = self.recordTypePicker.selectedRow(inComponent: 0)
+            self.cameraRecordTypeElement.accessibilityValue = self.recordTypePicker.pickerView(self.recordTypePicker, titleForRow: row, forComponent: 0)
+        }
+        cameraRecordTypeElement.decrementClosure = { [weak self] in
+            guard let self = self
+            else { return }
+            // Set row
+            var row = self.recordTypePicker.selectedRow(inComponent: 0)
+            self.recordTypePicker.selectRow(row - 1, inComponent: 0, animated: true)
+            
+            // Read out selected row (which might be clamped within range)
+            row = self.recordTypePicker.selectedRow(inComponent: 0)
+            self.cameraRecordTypeElement.accessibilityValue = self.recordTypePicker.pickerView(self.recordTypePicker, titleForRow: row, forComponent: 0)
+        }
+    }
+    
+    func layoutAccessibilityElements() {
+        guard let view = view
+        else { return }
+        
+        // For voiceover, extend the touch target to maximise screen coverage for controls
+        // Top here is in View coordinate space, i.e. coord 0 is at the visual top, coord top here is the visual bottom
+        let viewFrame = UIAccessibility.convertToScreenCoordinates(view.bounds, in: view)
+        let videoFrame = UIAccessibility.convertToScreenCoordinates(videoCollectionView.bounds, in: videoCollectionView)
+        let pagerFrame = UIAccessibility.convertToScreenCoordinates(videoPagingView.bounds, in: videoPagingView)
+        let recordedFrame = UIAccessibility.convertToScreenCoordinates(videoRecordedIcon.bounds, in: videoRecordedIcon)
+        let uploadedFrame = UIAccessibility.convertToScreenCoordinates(videoUploadedIcon.bounds, in: videoUploadedIcon)
+        let verifiedFrame = UIAccessibility.convertToScreenCoordinates(videoVerifiedIcon.bounds, in: videoVerifiedIcon)
+        let publishedFrame = UIAccessibility.convertToScreenCoordinates(videoPublishedIcon.bounds, in: videoPublishedIcon)
+        let deleteFrame = UIAccessibility.convertToScreenCoordinates(videoDeleteButton.bounds, in: videoDeleteButton)
+        
+        let videoTop = min(videoFrame.maxY, pagerFrame.minY)
+        let pagerTop = max(videoFrame.maxY, pagerFrame.maxY)
+        
+        addNewElement.accessibilityFrame = CGRect(
+            x: viewFrame.minX,
+            y: videoFrame.minY,
+            width: viewFrame.width,
+            height: videoTop - videoFrame.minY
+        )
+        pagerElement.accessibilityFrame = CGRect(
+            x: viewFrame.minX,
+            y: videoTop,
+            width: viewFrame.width,
+            height: pagerTop - videoTop
+        )
+        recordedElement.accessibilityFrame = CGRect(
+            x: viewFrame.minX,
+            y: recordedFrame.minY,
+            width: viewFrame.width,
+            height: recordedFrame.height
+        )
+        uploadedElement.accessibilityFrame = CGRect(
+            x: viewFrame.minX,
+            y: uploadedFrame.minY,
+            width: viewFrame.width,
+            height: uploadedFrame.height
+        )
+        verifiedElement.accessibilityFrame = CGRect(
+            x: viewFrame.minX,
+            y: verifiedFrame.minY,
+            width: viewFrame.width,
+            height: verifiedFrame.height
+        )
+        publishedElement.accessibilityFrame = CGRect(
+            x: viewFrame.minX,
+            y: publishedFrame.minY,
+            width: viewFrame.width,
+            height: publishedFrame.height
+        )
+        deleteElement.accessibilityFrame = CGRect(
+            x: viewFrame.minX,
+            y: deleteFrame.minY,
+            width: viewFrame.width,
+            height: deleteFrame.height
+        )
+        
+        let cameraControlFrame = UIAccessibility.convertToScreenCoordinates(cameraControlView.bounds, in: cameraControlView)
+        let recordButtonFrame = UIAccessibility.convertToScreenCoordinates(recordButton.bounds, in: recordButton)
+        let recordTypePickerFrame = UIAccessibility.convertToScreenCoordinates(recordTypePicker.bounds, in: recordTypePicker)
+        
+        cameraRecordElement.accessibilityFrame = CGRect(
+            x: cameraControlFrame.minX,
+            y: cameraControlFrame.minY,
+            width: recordButtonFrame.maxX - cameraControlFrame.minX,
+            height: viewFrame.height
+        )
+        cameraRecordTypeElement.accessibilityFrame = CGRect(
+            x: recordTypePickerFrame.minX,
+            y: cameraControlFrame.minY,
+            width: recordTypePickerFrame.width,
+            height: viewFrame.height
+        )
+        
+        let addNewPageShortcutButtonFrame = UIAccessibility.convertToScreenCoordinates(addNewPageShortcutButton.bounds, in: addNewPageShortcutButton)
+        let videoRerecordButtonFrame = UIAccessibility.convertToScreenCoordinates(videoRerecordButton.bounds, in: videoRerecordButton)
+        let videoDeleteButtonFrame = UIAccessibility.convertToScreenCoordinates(videoDeleteButton.bounds, in: videoDeleteButton)
+        
+        addNewElement.accessibilityActivationPoint = addNewPageShortcutButtonFrame.origin
+        recordedElement.accessibilityActivationPoint = videoRerecordButtonFrame.origin
+        deleteElement.accessibilityActivationPoint = videoDeleteButtonFrame.origin
+        cameraRecordElement.accessibilityActivationPoint = CGPoint(x: recordButtonFrame.midX, y: recordButtonFrame.midY)
     }
     
     /// Action the addNewPageShortcutButton
