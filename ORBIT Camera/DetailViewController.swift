@@ -209,7 +209,7 @@ class DetailViewController: UIViewController {
         let accessibilityDescription: String
         if pageIndex == addNewPageIndex {
             pageDescription = "Add new video to collection"
-            accessibilityDescription = pageDescription
+            accessibilityDescription = "Camera page, adds a new video to the collection"
             recordTypePicker.kind = .train // default
         } else if let video = videos[safe: pageIndex] {
             let number = pageIndex + 1 // index-based to count-based
