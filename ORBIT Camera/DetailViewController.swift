@@ -50,7 +50,7 @@ class DetailViewController: UIViewController {
     lazy var publishedElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var deleteElement = UIAccessibilityElement(accessibilityContainer: view!)
     
-    lazy var cameraRecordElement = UIAccessibilityElement(accessibilityContainer: view!)
+    lazy var cameraRecordElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
     lazy var cameraRecordTypeElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
     
     /// The thing this detail view is to show the detail of
@@ -373,7 +373,33 @@ class DetailViewController: UIViewController {
         
         cameraRecordElement.accessibilityLabel = "Record"
         cameraRecordElement.accessibilityHint = "Starts recording a video. Action again to stop."
-        cameraRecordElement.accessibilityTraits = super.accessibilityTraits.union(.button)
+        cameraRecordElement.accessibilityTraits = super.accessibilityTraits.union([.button, .startsMediaSession])
+        cameraRecordElement.activateClosure = { [weak self] in
+            guard let self = self
+            else { return false }
+            
+            self.recordButton.toggleRecord()
+            self.recordButtonAction(sender: self.recordButton)
+            
+            switch self.recordButton.recordingState {
+            case .idle:
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) { // Voodoo
+                    // Ideally, this would just be...
+                    // UIAccessibility.post(notification: .announcement, argument: "Stopped")
+                    // ...but .startsMediaSession has somehow now silenced the announcement of the pager label
+                    //
+                    // At the point of this firing, the focusedElement is still this cameraRecordElement, so we can't test for that.
+                    // But the pager value is updated, so here's a hack...
+                    UIAccessibility.post(notification: .announcement, argument: "Stopped. " + self.pagerElement.accessibilityValue!)
+                }
+            case .active:
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) { // Voodoo
+                    UIAccessibility.post(notification: .announcement, argument: "Started")
+                }
+            }
+            
+            return true
+        }
         
         cameraRecordTypeElement.accessibilityLabel = "Kind of video to add"
         cameraRecordTypeElement.accessibilityHint = "Sets whether this is a training or test video"
@@ -487,7 +513,6 @@ class DetailViewController: UIViewController {
         addNewElement.accessibilityActivationPoint = CGPoint(x: addNewPageShortcutButtonFrame.midX, y: addNewPageShortcutButtonFrame.midY)
         recordedElement.accessibilityActivationPoint = CGPoint(x: videoRerecordButtonFrame.midX, y: videoRerecordButtonFrame.midY)
         deleteElement.accessibilityActivationPoint = CGPoint(x: videoDeleteButtonFrame.midX, y: videoDeleteButtonFrame.midY)
-        cameraRecordElement.accessibilityActivationPoint = CGPoint(x: recordButtonFrame.midX, y: recordButtonFrame.midY)
     }
     
     /// Action the addNewPageShortcutButton
