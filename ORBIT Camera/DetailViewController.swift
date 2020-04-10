@@ -619,6 +619,9 @@ class DetailViewController: UIViewController {
         cameraControlVisibility = 1.0
         videoCollectionView.reloadItems(at: [IndexPath(row: pageIndex, section: 0)])
         configurePage()
+        
+        // Don't default to pager, go to record button
+        UIAccessibility.focus(element: cameraRecordElement)
     }
     
     /// Delete the video
