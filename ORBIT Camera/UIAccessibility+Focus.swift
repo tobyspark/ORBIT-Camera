@@ -27,6 +27,7 @@ extension UIAccessibility {
 class AccessibilityElementUsingClosures: UIAccessibilityElement {
     var incrementClosure: ( ()->Void )?
     var decrementClosure: ( ()->Void )?
+    var activateClosure: ( ()->Bool )?
     
     override func accessibilityIncrement() {
         if let incrementClosure = incrementClosure {
@@ -38,5 +39,12 @@ class AccessibilityElementUsingClosures: UIAccessibilityElement {
         if let decrementClosure = decrementClosure {
             decrementClosure()
         }
+    }
+    
+    override func accessibilityActivate() -> Bool {
+        if let activateClosure = activateClosure {
+            return activateClosure()
+        }
+        return false
     }
 }
