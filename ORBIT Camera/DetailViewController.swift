@@ -606,8 +606,22 @@ class DetailViewController: UIViewController {
                     os_log("Record completion handler has inserted video", type: .debug)
                 }
             }
+            
+            // Disable any navigation etc. while recording!
+            videoPageControl.isEnabled = false
+            recordTypePicker.isUserInteractionEnabled = false
+            navigationItem.hidesBackButton = true
+            accessibilityElements = [cameraRecordElement]
+            cameraRecordElement.accessibilityFrame = UIAccessibility.convertToScreenCoordinates(view.bounds, in: view)
         case .idle:
             camera.recordStop()
+            
+            // Allow navigation again
+            videoPageControl.isEnabled = true
+            recordTypePicker.isUserInteractionEnabled = true
+            navigationItem.hidesBackButton = false
+            accessibilityElements = [pagerElement] // page refresh on database write will deal with this properly
+            layoutAccessibilityElements()
         }
     }
     
