@@ -221,7 +221,8 @@ class DetailViewController: UIViewController {
             } else {
                 pageDescription = "Video \(number) of \(total): "
                 kindDescription = video.kind.description
-                accessibilityDescription = "\(pageDescription), a \(video.kind.verboseDescription) video"
+                let isNew = video.recorded > Date(timeIntervalSinceNow: -5) ? "New! " : ""
+                accessibilityDescription = "\(pageDescription). \(isNew)A \(video.kind.verboseDescription) video"
             }
         } else {
             os_log("Page is not camera and has no video")
