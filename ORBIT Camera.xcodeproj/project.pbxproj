@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B318B0524404CA4001F9874 /* Collection+Cycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B318B0424404CA4001F9874 /* Collection+Cycle.swift */; };
 		4B3D772624332C740077DFD0 /* VideoKindPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3D772524332C740077DFD0 /* VideoKindPickerView.swift */; };
 		4B5A6B992424CB9200A5C45B /* NewThingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5A6B982424CB9200A5C45B /* NewThingCell.swift */; };
 		4B87FD052405C3F0007AB630 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 4B87FD042405C3F0007AB630 /* GRDB */; };
@@ -65,6 +66,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4B318B0424404CA4001F9874 /* Collection+Cycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Cycle.swift"; sourceTree = "<group>"; };
 		4B3707B52436161100254ABF /* AppUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUploader.swift; sourceTree = "<group>"; };
 		4B3D77222432156B0077DFD0 /* README.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.markdown; sourceTree = "<group>"; };
 		4B3D772524332C740077DFD0 /* VideoKindPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoKindPickerView.swift; sourceTree = "<group>"; };
@@ -181,6 +183,7 @@
 				4B9AA9FE2418EA49002380B1 /* RecordButton.swift */,
 				4B3D772524332C740077DFD0 /* VideoKindPickerView.swift */,
 				4BE50EF42437F07C00BE79C7 /* Collection+SafeSubscript.swift */,
+				4B318B0424404CA4001F9874 /* Collection+Cycle.swift */,
 				4BA680F1243DE7CD0092DAEF /* UIAccessibility+Focus.swift */,
 				4B87FD132409B678007AB630 /* Settings.swift */,
 				4BF14BBF2405730700E31D93 /* Main.storyboard */,
@@ -321,6 +324,7 @@
 				4BF14BBA2405730700E31D93 /* SceneDelegate.swift in Sources */,
 				4BF14BBC2405730700E31D93 /* MasterViewController.swift in Sources */,
 				4BA13A5A242D6EC4006D838B /* PreviewMetalView.swift in Sources */,
+				4B318B0524404CA4001F9874 /* Collection+Cycle.swift in Sources */,
 				4B87FD33240EF4A0007AB630 /* Uploadable.swift in Sources */,
 				4BF14BD02405771900E31D93 /* Thing.swift in Sources */,
 				4BA13A5C242D71E5006D838B /* PassThrough.metal in Sources */,

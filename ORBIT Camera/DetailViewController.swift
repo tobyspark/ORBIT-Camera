@@ -309,8 +309,8 @@ class DetailViewController: UIViewController {
         addNewElement.accessibilityTraits = super.accessibilityTraits.union(.button)
                 
         pagerElement.accessibilityLabel = "Video selector"
-        pagerElement.accessibilityHint = "Page through any videos taken so far, ends with the camera page."
-        pagerElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
+        pagerElement.accessibilityHint = "Page through videos taken so far, ending with the camera page. Activate to change whether video is for training or testing."
+        pagerElement.accessibilityTraits = super.accessibilityTraits.union([.adjustable, .button, .startsMediaSession])
         pagerElement.incrementClosure = { [weak self] in
             guard
                 let self = self,
@@ -326,6 +326,34 @@ class DetailViewController: UIViewController {
             else
                 { return }
             self.pageIndex -= 1
+        }
+        // The system provided behaviour here is problematic. We want activate to work as per adjustable, i.e. just read out the new value.
+        // However, activate without .startsMediaSession re-reads the label and value
+        // However, posting an announcement without a delay mostly (but not always) fails (is immediately read-over with nothing?)
+        pagerElement.activateClosure = { [weak self] in
+            guard let self = self
+            else { return false }
+            
+            if self.cameraPageIndexes.contains(self.pageIndex) {
+                UIAccessibility.focus(element: self.cameraRecordElement)
+                // Announce the change
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) { // Voodoo
+                    UIAccessibility.post(notification: .announcement, argument: "Record button now focussed")
+                }
+            } else {
+                // Cycle through video kinds
+                var video = self.videos[self.pageIndex]
+                video.kind = Video.Kind.allCases.cycle(after: video.kind)!
+                
+                // Action the change
+                try! dbQueue.write { db in try video.save(db) }
+                
+                // Announce the change
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) { // Voodoo
+                    UIAccessibility.post(notification: .announcement, argument: "Video now set to \(video.kind.description)")
+                }
+            }
+            return true
         }
         
         recordedElement.accessibilityLabel = "" // Set in configurePage

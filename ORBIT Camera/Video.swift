@@ -35,7 +35,7 @@ struct Video: Codable, Equatable {
     /// The kind of video this is.
     /// Current terminology: videos are taken with one of two goals: "train" or "test", with two "techniques" used for test videos: "zoom" and "pan".
     // Note String rather than Character is currently required for automatic codable compliance
-    enum Kind: String, Codable, CaseIterable, CustomStringConvertible {
+    enum Kind: String, Codable, CaseIterable, Equatable, CustomStringConvertible {
         case train = "T"
         case testZoom = "Z"
         case testPan = "P"
