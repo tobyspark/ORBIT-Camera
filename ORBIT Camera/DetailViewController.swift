@@ -436,6 +436,7 @@ class DetailViewController: UIViewController {
         // Top here is in View coordinate space, i.e. coord 0 is at the visual top, coord top here is the visual bottom
         let viewFrame = UIAccessibility.convertToScreenCoordinates(view.bounds, in: view)
         let videoFrame = UIAccessibility.convertToScreenCoordinates(videoCollectionView.bounds, in: videoCollectionView)
+        let addNewFrame = UIAccessibility.convertToScreenCoordinates(addNewPageShortcutButton.bounds, in: addNewPageShortcutButton)
         let pagerFrame = UIAccessibility.convertToScreenCoordinates(videoPagingView.bounds, in: videoPagingView)
         let recordedFrame = UIAccessibility.convertToScreenCoordinates(videoRecordedIcon.bounds, in: videoRecordedIcon)
         let uploadedFrame = UIAccessibility.convertToScreenCoordinates(videoUploadedIcon.bounds, in: videoUploadedIcon)
@@ -443,20 +444,17 @@ class DetailViewController: UIViewController {
         let publishedFrame = UIAccessibility.convertToScreenCoordinates(videoPublishedIcon.bounds, in: videoPublishedIcon)
         let deleteFrame = UIAccessibility.convertToScreenCoordinates(videoDeleteButton.bounds, in: videoDeleteButton)
         
-        let videoTop = min(videoFrame.maxY, pagerFrame.minY)
-        let pagerTop = max(videoFrame.maxY, pagerFrame.maxY)
-        
         addNewElement.accessibilityFrame = CGRect(
             x: viewFrame.minX,
-            y: videoFrame.minY,
+            y: addNewFrame.minY,
             width: viewFrame.width,
-            height: videoTop - videoFrame.minY
+            height: videoFrame.maxY - addNewFrame.minY
         )
         pagerElement.accessibilityFrame = CGRect(
             x: viewFrame.minX,
-            y: videoTop,
+            y: viewFrame.minY,
             width: viewFrame.width,
-            height: pagerTop - videoTop
+            height: videoFrame.union(pagerFrame).maxY - viewFrame.minY
         )
         recordedElement.accessibilityFrame = CGRect(
             x: viewFrame.minX,
@@ -506,11 +504,10 @@ class DetailViewController: UIViewController {
             height: viewFrame.height
         )
         
-        let addNewPageShortcutButtonFrame = UIAccessibility.convertToScreenCoordinates(addNewPageShortcutButton.bounds, in: addNewPageShortcutButton)
         let videoRerecordButtonFrame = UIAccessibility.convertToScreenCoordinates(videoRerecordButton.bounds, in: videoRerecordButton)
         let videoDeleteButtonFrame = UIAccessibility.convertToScreenCoordinates(videoDeleteButton.bounds, in: videoDeleteButton)
         
-        addNewElement.accessibilityActivationPoint = CGPoint(x: addNewPageShortcutButtonFrame.midX, y: addNewPageShortcutButtonFrame.midY)
+        addNewElement.accessibilityActivationPoint = CGPoint(x: addNewFrame.midX, y: addNewFrame.midY)
         recordedElement.accessibilityActivationPoint = CGPoint(x: videoRerecordButtonFrame.midX, y: videoRerecordButtonFrame.midY)
         deleteElement.accessibilityActivationPoint = CGPoint(x: videoDeleteButtonFrame.midX, y: videoDeleteButtonFrame.midY)
     }
