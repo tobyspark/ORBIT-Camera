@@ -12,6 +12,11 @@
 
 ## Version history
 
+v0.5.1
+- Tweaks to Things scene accessibility experience
+- Complete overhaul of Thing scene accessibility experience
+- PR [Tweak: Voiceover UX](https://github.com/tobyspark/ORBIT-Camera/pull/17)
+
 v0.5.0
 - Uploads in the background
 - PR [Feature: Background uploader](https://github.com/tobyspark/ORBIT-Camera/pull/16)
