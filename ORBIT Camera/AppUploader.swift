@@ -107,6 +107,8 @@ struct AppUploader {
     }
     
     static func setup() {
-        appUploader = AppUploader()
+        DispatchQueue.global(qos: .background).async {
+            appUploader = AppUploader()
+        }
     }
 }
