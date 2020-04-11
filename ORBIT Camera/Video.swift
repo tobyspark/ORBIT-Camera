@@ -43,8 +43,8 @@ struct Video: Codable, Equatable {
         var description: String {
             switch self {
             case .train: return "train"
-            case .testZoom: return "test: zoom"
-            case .testPan: return "test: pan"
+            case .testZoom: return "test zoom"
+            case .testPan: return "test pan"
             }
         }
         
