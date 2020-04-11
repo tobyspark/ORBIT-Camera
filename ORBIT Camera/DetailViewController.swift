@@ -689,6 +689,9 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Don't monopolise audio with our (silent!) videos, e.g. let music continue to play
+        try? AVAudioSession.sharedInstance().setCategory(.ambient)
+
         configureAccessibilityElements()
     }
     
