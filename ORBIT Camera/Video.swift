@@ -35,16 +35,24 @@ struct Video: Codable, Equatable {
     /// The kind of video this is.
     /// Current terminology: videos are taken with one of two goals: "train" or "test", with two "techniques" used for test videos: "zoom" and "pan".
     // Note String rather than Character is currently required for automatic codable compliance
-    enum Kind: String, Codable, CaseIterable {
+    enum Kind: String, Codable, CaseIterable, Equatable, CustomStringConvertible {
         case train = "T"
         case testZoom = "Z"
         case testPan = "P"
         
-        func description() -> String {
+        var description: String {
             switch self {
             case .train: return "train"
             case .testZoom: return "test: zoom"
             case .testPan: return "test: pan"
+            }
+        }
+        
+        var verboseDescription: String {
+            switch self {
+            case .train: return "training"
+            case .testZoom: return "testing with zoom"
+            case .testPan: return "testing with pan"
             }
         }
     }
