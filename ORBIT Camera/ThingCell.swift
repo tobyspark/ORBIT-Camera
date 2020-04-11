@@ -46,17 +46,32 @@ class ThingCell: UITableViewCell {
                         let detailTextLabel =  self.detailTextLabel
                     else { return }
                     
-                    let countStrings: [String] = Video.Kind.allCases.map { kind in
+                    let message = NSMutableAttributedString(
+                        string: "Videos – ",
+                        attributes: [NSAttributedString.Key.foregroundColor: UIColor.placeholderText.cgColor]
+                    )
+                    for (index, kind) in Video.Kind.allCases.enumerated() {
                         let kindVideos = videos.filter( { video in video.kind == kind } )
-                        return "\(kind.description): \(kindVideos.count)"
+                        let separator = index > 0 ? ", " : ""
+                        message.append(NSMutableAttributedString(
+                            string: "\(separator)\(kind.description):",
+                            attributes: [NSAttributedString.Key.foregroundColor: UIColor.placeholderText.cgColor]
+                            )
+                        )
+                        message.append(NSAttributedString(
+                            string: " \(kindVideos.count)",
+                            attributes: [NSAttributedString.Key.foregroundColor: UIColor.label.cgColor]
+                            )
+                        )
                     }
+                    detailTextLabel.attributedText = message
+                    
                     let accessibilityCountStrings: [String] = Video.Kind.allCases.map { kind in
                         let kindVideos = videos.filter( { video in video.kind == kind } )
                         let count = (kindVideos.count == 0) ? "No" : "\(kindVideos.count)"
                         let videoPluralised = (kindVideos.count > 1) ? "videos" : "video"
                         return "\(count) \(kind.verboseDescription) \(videoPluralised) "
                     }
-                    detailTextLabel.text = "Videos – \( countStrings.joined(separator: ", ") )"
                     detailTextLabel.accessibilityLabel = accessibilityCountStrings.joined(separator: ", ")
             })
         }
