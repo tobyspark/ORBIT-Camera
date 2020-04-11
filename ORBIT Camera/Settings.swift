@@ -23,4 +23,11 @@ struct Settings {
         df.dateFormat = "dd/MM" // TODO: Localise
         return df
     }()
+    
+    static let verboseDateFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.dateStyle = .long
+        df.timeStyle = .short
+        return df
+    }()
 }
