@@ -14,26 +14,25 @@ import os
 class DetailViewController: UIViewController {
 
     @IBOutlet weak var thingNavigationItem: UINavigationItem!
+    
     @IBOutlet weak var videoCollectionView: UICollectionView!
     @IBOutlet weak var addNewPageShortcutButton: UIButton!
     @IBOutlet weak var videoPagingView: UIView!
     @IBOutlet weak var videoPageControl: UIPageControl!
     @IBOutlet weak var videoLabel: UILabel!
     @IBOutlet weak var videoLabelKindButton: UIButton!
+    @IBOutlet weak var videoPagingViewYConstraint: NSLayoutConstraint!
     
+    @IBOutlet weak var videoStatusView: UIStackView!
     @IBOutlet weak var videoRecordedIcon: UIImageView!
     @IBOutlet weak var videoRecordedLabel: UILabel!
     @IBOutlet weak var videoRerecordButton: UIButton!
-    
     @IBOutlet weak var videoUploadedIcon: UIImageView!
     @IBOutlet weak var videoUploadedLabel: UILabel!
-    
     @IBOutlet weak var videoVerifiedIcon: UIImageView!
     @IBOutlet weak var videoVerifiedLabel: UILabel!
-    
     @IBOutlet weak var videoPublishedIcon: UIImageView!
     @IBOutlet weak var videoPublishedLabel: UILabel!
-    
     @IBOutlet weak var videoDeleteButton: UIButton!
     
     @IBOutlet weak var cameraControlView: UIView!
@@ -67,7 +66,7 @@ class DetailViewController: UIViewController {
             {
                 let request = Video
                     .filter(Video.Columns.thingID == thingID)
-                    .order(Video.Columns.recorded.asc)
+                    .order(Video.Columns.id.asc)
                 let observation = request.observationForAll()
                 detailItemObserver = observation.start(
                     in: dbQueue,
@@ -339,7 +338,7 @@ class DetailViewController: UIViewController {
                 UIAccessibility.focus(element: self.cameraRecordElement)
                 // Announce the change
                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) { // Voodoo
-                    UIAccessibility.post(notification: .announcement, argument: "Record button now focussed")
+                    UIAccessibility.post(notification: .announcement, argument: "Record, button")
                 }
             } else {
                 // Cycle through video kinds
@@ -351,14 +350,14 @@ class DetailViewController: UIViewController {
                 
                 // Announce the change
                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) { // Voodoo
-                    UIAccessibility.post(notification: .announcement, argument: "Video now set to \(video.kind.description)")
+                    UIAccessibility.post(notification: .announcement, argument: "\(video.kind.description). Now classified as a \(video.kind.verboseDescription) video.")
                 }
             }
             return true
         }
         
         recordedElement.accessibilityLabel = "" // Set in configurePage
-        recordedElement.accessibilityHint = "If you wish to re-record, brings up the camera controls to re-record the video"
+        recordedElement.accessibilityHint = "If you wish to re-record, activate to bring up the camera controls"
         recordedElement.accessibilityTraits = super.accessibilityTraits.union(.button)
                 
         uploadedElement.accessibilityLabel = "" // Set in configurePage
@@ -401,8 +400,8 @@ class DetailViewController: UIViewController {
             return true
         }
         
-        cameraRecordTypeElement.accessibilityLabel = "Kind of video to add"
-        cameraRecordTypeElement.accessibilityHint = "Sets whether this is a training or test video"
+        cameraRecordTypeElement.accessibilityLabel = "Video kind selector"
+        cameraRecordTypeElement.accessibilityHint = "Sets whether the capture is classified as a training or test video"
         cameraRecordTypeElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
         cameraRecordTypeElement.incrementClosure = { [weak self] in
             guard let self = self
@@ -689,6 +688,9 @@ class DetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Don't monopolise audio with our (silent!) videos, e.g. let music continue to play
+        try? AVAudioSession.sharedInstance().setCategory(.ambient)
+
         configureAccessibilityElements()
     }
     
@@ -709,8 +711,19 @@ class DetailViewController: UIViewController {
     
     // Note: I'd have thought `updateViewConstraints` was the override to use, but it doesn't have the required effect here
     override func viewDidLayoutSubviews() {
-        // Set height of camera control view
-        cameraControlHConstraint.constant = view.bounds.height - view.convert(videoRecordedIcon.bounds, from: videoRecordedIcon).minY
+        // Layout pager between video and statuses if room. Storyboard defaults it to within video.
+        // Undoubtedly autolayout can do exactly what I want without this manual intervention, but... this works.
+        let height = videoPagingView.frame.height + 8
+        if videoStatusView.frame.minY - videoCollectionView.frame.maxY > height {
+            videoPagingViewYConstraint.constant = height // constant is vertical spacing between video bottom and pager bottom
+        }
+        
+        // Set height of camera control view to cover from bottom of screen up to status view
+        cameraControlHConstraint.constant = view.bounds.height - view.convert(videoStatusView.bounds, from: videoStatusView).minY
+        
+        // Set initial position of camera control view now height is known
+        let visibility = cameraControlVisibility // trigger didSet
+        cameraControlVisibility = visibility
         
         // Layout accessibility elements
         layoutAccessibilityElements()
