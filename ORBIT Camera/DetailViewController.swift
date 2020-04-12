@@ -14,26 +14,25 @@ import os
 class DetailViewController: UIViewController {
 
     @IBOutlet weak var thingNavigationItem: UINavigationItem!
+    
     @IBOutlet weak var videoCollectionView: UICollectionView!
     @IBOutlet weak var addNewPageShortcutButton: UIButton!
     @IBOutlet weak var videoPagingView: UIView!
     @IBOutlet weak var videoPageControl: UIPageControl!
     @IBOutlet weak var videoLabel: UILabel!
     @IBOutlet weak var videoLabelKindButton: UIButton!
+    @IBOutlet weak var videoPagingViewYConstraint: NSLayoutConstraint!
     
+    @IBOutlet weak var videoStatusView: UIStackView!
     @IBOutlet weak var videoRecordedIcon: UIImageView!
     @IBOutlet weak var videoRecordedLabel: UILabel!
     @IBOutlet weak var videoRerecordButton: UIButton!
-    
     @IBOutlet weak var videoUploadedIcon: UIImageView!
     @IBOutlet weak var videoUploadedLabel: UILabel!
-    
     @IBOutlet weak var videoVerifiedIcon: UIImageView!
     @IBOutlet weak var videoVerifiedLabel: UILabel!
-    
     @IBOutlet weak var videoPublishedIcon: UIImageView!
     @IBOutlet weak var videoPublishedLabel: UILabel!
-    
     @IBOutlet weak var videoDeleteButton: UIButton!
     
     @IBOutlet weak var cameraControlView: UIView!
@@ -712,8 +711,19 @@ class DetailViewController: UIViewController {
     
     // Note: I'd have thought `updateViewConstraints` was the override to use, but it doesn't have the required effect here
     override func viewDidLayoutSubviews() {
-        // Set height of camera control view
-        cameraControlHConstraint.constant = view.bounds.height - view.convert(videoRecordedIcon.bounds, from: videoRecordedIcon).minY
+        // Layout pager between video and statuses if room. Storyboard defaults it to within video.
+        // Undoubtedly autolayout can do exactly what I want without this manual intervention, but... this works.
+        let height = videoPagingView.frame.height + 8
+        if videoStatusView.frame.minY - videoCollectionView.frame.maxY > height {
+            videoPagingViewYConstraint.constant = height // constant is vertical spacing between video bottom and pager bottom
+        }
+        
+        // Set height of camera control view to cover from bottom of screen up to status view
+        cameraControlHConstraint.constant = view.bounds.height - view.convert(videoStatusView.bounds, from: videoStatusView).minY
+        
+        // Set initial position of camera control view now height is known
+        let visibility = cameraControlVisibility // trigger didSet
+        cameraControlVisibility = visibility
         
         // Layout accessibility elements
         layoutAccessibilityElements()
