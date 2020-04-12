@@ -67,7 +67,7 @@ class DetailViewController: UIViewController {
             {
                 let request = Video
                     .filter(Video.Columns.thingID == thingID)
-                    .order(Video.Columns.recorded.asc)
+                    .order(Video.Columns.id.asc)
                 let observation = request.observationForAll()
                 detailItemObserver = observation.start(
                     in: dbQueue,
@@ -358,7 +358,7 @@ class DetailViewController: UIViewController {
         }
         
         recordedElement.accessibilityLabel = "" // Set in configurePage
-        recordedElement.accessibilityHint = "If you wish to re-record, brings up the camera controls to re-record the video"
+        recordedElement.accessibilityHint = "If you wish to re-record, activate to bring up the camera controls"
         recordedElement.accessibilityTraits = super.accessibilityTraits.union(.button)
                 
         uploadedElement.accessibilityLabel = "" // Set in configurePage
@@ -401,8 +401,8 @@ class DetailViewController: UIViewController {
             return true
         }
         
-        cameraRecordTypeElement.accessibilityLabel = "Kind of video to add"
-        cameraRecordTypeElement.accessibilityHint = "Sets whether this is a training or test video"
+        cameraRecordTypeElement.accessibilityLabel = "Video kind selector"
+        cameraRecordTypeElement.accessibilityHint = "Sets whether the capture is classified as a training or test video"
         cameraRecordTypeElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
         cameraRecordTypeElement.incrementClosure = { [weak self] in
             guard let self = self
