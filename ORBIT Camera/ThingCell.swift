@@ -13,7 +13,8 @@ import GRDB
 class ThingCell: UITableViewCell {
     var thing: Thing? {
         didSet {
-            videoCountObserver = nil
+            thingObserver = nil
+            videosObserver = nil
             
             guard
                 let thing = thing,
@@ -35,26 +36,47 @@ class ThingCell: UITableViewCell {
                     self.textLabel!.text = thing.labelParticipant
             })
             
-            let videoCountRequest = Video.filter(Video.Columns.thingID == thingID)
-            let videoCountObservation = videoCountRequest.observationForCount()
-            videoCountObserver = try! videoCountObservation.start(
+            let videosRequest = Video.filter(Video.Columns.thingID == thingID)
+            let videosObservation = videosRequest.observationForAll()
+            videosObserver = try! videosObservation.start(
                 in: dbQueue,
-                onChange: { [weak self] count in
-                    guard let self = self
+                onChange: { [weak self] videos in
+                    guard
+                        let self = self,
+                        let detailTextLabel =  self.detailTextLabel
                     else { return }
                     
-                    switch count {
-                    case 0:
-                        self.detailTextLabel!.text = "No videos"
-                    case 1:
-                        self.detailTextLabel!.text = "1 video"
-                    default:
-                        self.detailTextLabel!.text = "\(count) videos"
+                    let message = NSMutableAttributedString(
+                        string: "Videos – ",
+                        attributes: [NSAttributedString.Key.foregroundColor: UIColor.placeholderText.cgColor]
+                    )
+                    for (index, kind) in Video.Kind.allCases.enumerated() {
+                        let kindVideos = videos.filter( { video in video.kind == kind } )
+                        let separator = index > 0 ? ", " : ""
+                        message.append(NSMutableAttributedString(
+                            string: "\(separator)\(kind.description):",
+                            attributes: [NSAttributedString.Key.foregroundColor: UIColor.placeholderText.cgColor]
+                            )
+                        )
+                        message.append(NSAttributedString(
+                            string: " \(kindVideos.count)",
+                            attributes: [NSAttributedString.Key.foregroundColor: UIColor.label.cgColor]
+                            )
+                        )
                     }
+                    detailTextLabel.attributedText = message
+                    
+                    let accessibilityCountStrings: [String] = Video.Kind.allCases.map { kind in
+                        let kindVideos = videos.filter( { video in video.kind == kind } )
+                        let count = (kindVideos.count == 0) ? "No" : "\(kindVideos.count)"
+                        let videoPluralised = (kindVideos.count > 1) ? "videos" : "video"
+                        return "\(count) \(kind.verboseDescription) \(videoPluralised) "
+                    }
+                    detailTextLabel.accessibilityLabel = accessibilityCountStrings.joined(separator: ", ")
             })
         }
     }
     
     private var thingObserver: TransactionObserver?
-    private var videoCountObserver: TransactionObserver?
+    private var videosObserver: TransactionObserver?
 }
