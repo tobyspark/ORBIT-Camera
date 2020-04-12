@@ -38,6 +38,9 @@ struct AppUploader {
         
         // Note there is a lot of copy and paste following, to set up enqueing the items. However more elegant options were failing to compile with `capture mutable self` errors, despite not (in this surface level code at least) mutating self.
         
+        // Background serial queue. Upload work should be atomised onto this, to not block foreground (or other background) activity
+        let uploadQueue = DispatchQueue(label: "Upload Queue", qos: .background, attributes: [], autoreleaseFrequency: .inherit, target: nil)
+        
         let thingsRequest = Thing.filter(Thing.Columns.orbitID == nil)
         let thingsObservation = thingsRequest.observationForAll()
         thingsObserver = thingsObservation.start(
@@ -47,8 +50,10 @@ struct AppUploader {
             },
             onChange: { things in
                 for thing in things {
-                    os_log("Attempting upload of %{public}s in foreground session (things change)", type: .debug, thing.description)
-                    appNetwork.thingsSession.upload(thing)
+                    uploadQueue.async {
+                        os_log("Attempting upload of %{public}s in foreground session (things change)", type: .debug, thing.description)
+                        appNetwork.thingsSession.upload(thing)
+                    }
                 }
             }
         )
@@ -62,8 +67,10 @@ struct AppUploader {
             },
             onChange: { videos in
                 for video in videos {
-                    os_log("Attempting upload of %{public}s in background session (videos change)", type: .debug, video.description)
-                    appNetwork.videosSession.upload(video)
+                    uploadQueue.async {
+                        os_log("Attempting upload of %{public}s in background session (videos change)", type: .debug, video.description)
+                        appNetwork.videosSession.upload(video)
+                    }
                 }
             }
         )
@@ -78,28 +85,36 @@ struct AppUploader {
             onChange: { participant in
                 let things = try! dbQueue.read { db in try thingsRequest.fetchAll(db) }
                 for thing in things {
-                    os_log("Attempting upload of %{public}s in foreground session (participant credential change)", type: .debug, thing.description)
-                    appNetwork.thingsSession.upload(thing)
+                    uploadQueue.async {
+                        os_log("Attempting upload of %{public}s in foreground session (participant credential change)", type: .debug, thing.description)
+                        appNetwork.thingsSession.upload(thing)
+                    }
                 }
                 let videos = try! dbQueue.read { db in try videosRequest.fetchAll(db) }
                 for video in videos {
-                    os_log("Attempting upload of %{public}s in background session (participant credential change)", type: .debug, video.description)
-                    appNetwork.videosSession.upload(video)
+                    uploadQueue.async {
+                        os_log("Attempting upload of %{public}s in background session (participant credential change)", type: .debug, video.description)
+                        appNetwork.videosSession.upload(video)
+                    }
                 }
             }
         )
         
         networkMonitor.pathUpdateHandler = { path in
-            if path.status == .satisfied {
+            if path.status == .satisfied { 
                 let things = try! dbQueue.read { db in try thingsRequest.fetchAll(db) }
                 for thing in things {
-                    os_log("Attempting upload of %{public}s in foreground session (network change)", type: .debug, thing.description)
-                    appNetwork.thingsSession.upload(thing)
+                    uploadQueue.async {
+                        os_log("Attempting upload of %{public}s in foreground session (network change)", type: .debug, thing.description)
+                        appNetwork.thingsSession.upload(thing)
+                    }
                 }
                 let videos = try! dbQueue.read { db in try videosRequest.fetchAll(db) }
                 for video in videos {
-                    os_log("Attempting upload of %{public}s in background session (network change)", type: .debug, video.description)
-                    appNetwork.videosSession.upload(video)
+                    uploadQueue.async {
+                        os_log("Attempting upload of %{public}s in background session (network change)", type: .debug, video.description)
+                        appNetwork.videosSession.upload(video)
+                    }
                 }
             }
         }
