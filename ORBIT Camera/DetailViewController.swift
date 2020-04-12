@@ -339,7 +339,7 @@ class DetailViewController: UIViewController {
                 UIAccessibility.focus(element: self.cameraRecordElement)
                 // Announce the change
                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) { // Voodoo
-                    UIAccessibility.post(notification: .announcement, argument: "Record button now focussed")
+                    UIAccessibility.post(notification: .announcement, argument: "Record, button")
                 }
             } else {
                 // Cycle through video kinds
@@ -351,7 +351,7 @@ class DetailViewController: UIViewController {
                 
                 // Announce the change
                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) { // Voodoo
-                    UIAccessibility.post(notification: .announcement, argument: "Video now set to \(video.kind.description)")
+                    UIAccessibility.post(notification: .announcement, argument: "\(video.kind.description). Now classified as a \(video.kind.verboseDescription) video.")
                 }
             }
             return true
