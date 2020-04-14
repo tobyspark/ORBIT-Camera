@@ -289,13 +289,13 @@ class DetailViewController: UIViewController {
         } else if recordEnable && !videos.isEmpty {
             view.accessibilityElements = [
                 pagerElement,
-                cameraRecordElement,
-                cameraRecordTypeElement
+                cameraRecordTypeElement,
+                cameraRecordElement
             ]
         } else if recordEnable && videos.isEmpty {
             view.accessibilityElements = [
-                cameraRecordElement,
-                cameraRecordTypeElement
+                cameraRecordTypeElement,
+                cameraRecordElement
             ]
         } else {
             view.accessibilityElements = []
