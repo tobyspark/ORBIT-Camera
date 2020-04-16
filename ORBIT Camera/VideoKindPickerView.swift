@@ -23,6 +23,23 @@ class VideoKindPickerView: UIPickerView, UIPickerViewDelegate, UIPickerViewDataS
         }
     }
     
+    func incrementSelection() {
+        let row = selectedRow(inComponent: 0)
+        let count = pickerView(self, numberOfRowsInComponent: 0)
+        let candidateValue = row + 1
+        if candidateValue < count {
+            selectRow(candidateValue, inComponent: 0, animated: true)
+        }
+    }
+    
+    func decrementSelection() {
+        let row = selectedRow(inComponent: 0)
+        let candidateValue = row - 1
+        if candidateValue >= 0 {
+            selectRow(candidateValue, inComponent: 0, animated: true)
+        }
+    }
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         dataSource = self
