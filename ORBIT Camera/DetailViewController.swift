@@ -146,6 +146,15 @@ class DetailViewController: UIViewController {
         }
     }
     
+    /// A kind of page being displayed
+    private enum PageKind {
+        case status
+        case camera
+        case disable
+    }
+    /// The kind of page being displayed, used to track state change
+    private var pageKind: PageKind?
+    
     /// Database observer for detailItem changes
     private var detailItemObserver: TransactionObserver?
     
@@ -266,52 +275,63 @@ class DetailViewController: UIViewController {
         // Set availability of labels and controls
         // The cameraControlView animation on/off is not reflected by VoiceOver, so doing here (the animation on/off is set elsewhere by cameraControlVisibility which is set by scrollViewDidScroll).
         // The controls should be unresponsive when no thing set
-        let pageEnable = (detailItem != nil)
-        let statusEnable = (pageEnable && !isCameraPage)
-        let recordEnable = (pageEnable && isCameraPage)
-
-        videoPageControl.isEnabled = pageEnable
-
-        videoRerecordButton.isEnabled = statusEnable
-        videoRecordedLabel.isEnabled = statusEnable
-        videoUploadedLabel.isEnabled = statusEnable
-        videoVerifiedLabel.isEnabled = statusEnable
-        videoPublishedLabel.isEnabled = statusEnable
-        videoDeleteButton.isEnabled = statusEnable
-        
-        recordButton.isEnabled = recordEnable
-        
-        if statusEnable {
-            view.accessibilityElements = [
-                pagerElement,
-                addNewElement,
-                detailHeaderElement,
-                typeElement,
-                recordedElement,
-                rerecordElement,
-                uploadedElement,
-                verifiedElement,
-                publishedElement,
-                deleteElement
-            ]
-            //UIAccessibility.focus(element: pagerElement) // focus goes to control nearest last otherwise
-        } else if recordEnable && !videos.isEmpty {
-            view.accessibilityElements = [
-                pagerElement,
-                cameraHeaderElement,
-                cameraRecordTypeElement,
-                cameraRecordElement
-            ]
-            //UIAccessibility.focus(element: pagerElement) // focus goes to control nearest last otherwise
-        } else if recordEnable && videos.isEmpty {
-            view.accessibilityElements = [
-                cameraHeaderElement,
-                cameraRecordTypeElement,
-                cameraRecordElement
-            ]
-            //UIAccessibility.focus(element: cameraRecordTypeElement) // focus goes to control nearest last otherwise
+        let previousKind = pageKind
+        if detailItem == nil {
+            pageKind = .disable
+        } else if isCameraPage {
+            pageKind = .camera
         } else {
-            view.accessibilityElements = []
+            pageKind = .status
+        }
+        
+        if previousKind != pageKind {
+            videoPageControl.isEnabled = (pageKind != .disable)
+
+            videoRerecordButton.isEnabled = (pageKind == .status)
+            videoRecordedLabel.isEnabled = (pageKind == .status)
+            videoUploadedLabel.isEnabled = (pageKind == .status)
+            videoVerifiedLabel.isEnabled = (pageKind == .status)
+            videoPublishedLabel.isEnabled = (pageKind == .status)
+            videoDeleteButton.isEnabled = (pageKind == .status)
+            
+            recordButton.isEnabled = (pageKind == .camera)
+            
+            switch pageKind {
+            case .none, .disable:
+                view.accessibilityElements = []
+                UIAccessibility.focus(element: nil)
+            case .status:
+                view.accessibilityElements = [
+                    pagerElement,
+                    addNewElement,
+                    detailHeaderElement,
+                    typeElement,
+                    recordedElement,
+                    rerecordElement,
+                    uploadedElement,
+                    verifiedElement,
+                    publishedElement,
+                    deleteElement
+                ]
+                UIAccessibility.focus(element: pagerElement)
+            case .camera:
+                if !videos.isEmpty {
+                    view.accessibilityElements = [
+                        pagerElement,
+                        cameraHeaderElement,
+                        cameraRecordTypeElement,
+                        cameraRecordElement
+                    ]
+                    UIAccessibility.focus(element: cameraHeaderElement)
+                } else {
+                    view.accessibilityElements = [
+                        cameraHeaderElement,
+                        cameraRecordTypeElement,
+                        cameraRecordElement
+                    ]
+                    UIAccessibility.focus(element: cameraHeaderElement)
+                }
+            }
         }
     }
     
@@ -563,8 +583,6 @@ class DetailViewController: UIViewController {
         camera.start()
         // Action going to the page, will start the scroll
         pageIndex = addNewPageIndex
-        // Given the explicit intent, focus the record button
-        UIAccessibility.focus(element: self.cameraHeaderElement)
     }
     
     /// Action the video corresponding to page
@@ -700,9 +718,6 @@ class DetailViewController: UIViewController {
         cameraControlVisibility = 1.0
         videoCollectionView.reloadItems(at: [IndexPath(row: pageIndex, section: 0)])
         configurePage()
-        
-        // Don't default to pager, go to record button
-        UIAccessibility.focus(element: cameraHeaderElement)
     }
     
     /// Delete the video
