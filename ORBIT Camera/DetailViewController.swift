@@ -404,6 +404,7 @@ class DetailViewController: UIViewController {
         
         cameraRecordTypeElement.accessibilityLabel = "Video kind selector"
         cameraRecordTypeElement.accessibilityHint = "Sets whether the capture is classified as a training or test video"
+        self.cameraRecordTypeElement.accessibilityValue = self.recordTypePicker.kind.description
         cameraRecordTypeElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
         cameraRecordTypeElement.incrementClosure = { [weak self] in
             guard let self = self
