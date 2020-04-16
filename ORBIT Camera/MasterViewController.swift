@@ -18,9 +18,15 @@ class MasterViewController: UITableViewController {
     @CleanString var candidateLabel: String
     
     /// A test of the adequacy of the 'add new' label.
+    enum labelError: Error {
+        case blank
+        case tooShort
+    }
     /// Currently, minimum character count of 2
-    func candidateLabelTest() -> Bool {
-            candidateLabel.count > 2 // Does it have enough characters?
+    func candidateLabelTest() -> Result<String, labelError> {
+        if candidateLabel.isEmpty { return .failure(.blank) }
+        if candidateLabel.count < 3 { return .failure(.tooShort) }
+        return .success(candidateLabel)
     }
     
     /// A string that 'cleans' its value when set
@@ -146,17 +152,27 @@ class MasterViewController: UITableViewController {
             case .addNew:
                 let shouldSegue = candidateLabelTest()
                 if let cell = tableView.cellForRow(at: addNewPath) as? NewThingCell {
-                    if shouldSegue {
+                    switch shouldSegue {
+                    case .success(_):
                         // If we're going ahead, we don't want it still focussed when we unwind back
                         cell.labelField.resignFirstResponder()
-                    } else {
+                    case .failure(let error):
                         // If the label isn't adequate, set the field to edit
                         cell.labelField.becomeFirstResponder()
+                        switch error {
+                        case .blank:
+                            UIAccessibility.post(notification: .announcement, argument: "The thing's name is blank. Please enter it now")
+                        case .tooShort:
+                            UIAccessibility.post(notification: .announcement, argument: "The thing's name is too short. Please enter a more descriptive name")
+                        }
                     }
                     // Any addNew selection should not be kept whether if editing or when we unwind back
                     tableView.selectRow(at: nil, animated: false, scrollPosition: .none)
                 }
-                return shouldSegue
+                switch shouldSegue {
+                case .success: return true // ...really no readable way just to get a bool?
+                case .failure: return false
+                }
             case .things:
                 return true
             }
