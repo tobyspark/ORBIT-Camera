@@ -43,6 +43,7 @@ class DetailViewController: UIViewController {
     
     lazy var addNewElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var pagerElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
+    lazy var typeElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
     lazy var recordedElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var uploadedElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var verifiedElement = UIAccessibilityElement(accessibilityContainer: view!)
@@ -278,8 +279,9 @@ class DetailViewController: UIViewController {
         
         if statusEnable {
             view.accessibilityElements = [
-                pagerElement, // Switch these from the visual order...
-                addNewElement, // ...as this ensures that the pager is always the first item on each page
+                addNewElement,
+                pagerElement,
+                typeElement,
                 recordedElement,
                 uploadedElement,
                 verifiedElement,
@@ -309,14 +311,17 @@ class DetailViewController: UIViewController {
         addNewElement.accessibilityLabel = "Add new video"
         addNewElement.accessibilityHint = "Takes you to the camera page"
         addNewElement.accessibilityTraits = super.accessibilityTraits.union(.button)
-                
+        
+        // Don't overload the pagerElement. As opposed to visual UI –
+        // - don't include camera as last page, have add new button as the one true way
+        // - move changing video kind function into separate element
         pagerElement.accessibilityLabel = "Video selector"
-        pagerElement.accessibilityHint = "Page through videos taken so far, ending with the camera page. Activate to change whether video is for training or testing."
-        pagerElement.accessibilityTraits = super.accessibilityTraits.union([.adjustable, .button, .startsMediaSession])
+        pagerElement.accessibilityHint = "Page through videos taken so far"
+        pagerElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
         pagerElement.incrementClosure = { [weak self] in
             guard
                 let self = self,
-                self.pageIndex < self.pagesCount - 1
+                self.pageIndex < self.videos.count - 1
             else
                 { return }
             self.pageIndex += 1
@@ -329,33 +334,37 @@ class DetailViewController: UIViewController {
                 { return }
             self.pageIndex -= 1
         }
-        // The system provided behaviour here is problematic. We want activate to work as per adjustable, i.e. just read out the new value.
-        // However, activate without .startsMediaSession re-reads the label and value
-        // However, posting an announcement without a delay mostly (but not always) fails (is immediately read-over with nothing?)
-        pagerElement.activateClosure = { [weak self] in
-            guard let self = self
-            else { return false }
-            
-            if self.cameraPageIndexes.contains(self.pageIndex) {
-                UIAccessibility.focus(element: self.cameraRecordElement)
-                // Announce the change
-                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) { // Voodoo
-                    UIAccessibility.post(notification: .announcement, argument: "Record, button")
-                }
-            } else {
-                // Cycle through video kinds
-                var video = self.videos[self.pageIndex]
-                video.kind = Video.Kind.allCases.cycle(after: video.kind)!
-                
-                // Action the change
+        
+        typeElement.accessibilityLabel = "Video kind selector"
+        typeElement.accessibilityHint = "Change whether this video will be classified as a training or test video in the ORBIT dataset"
+        typeElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
+        typeElement.incrementClosure = { [weak self] in
+            guard
+                let self = self,
+                self.pageIndex < self.videos.count
+            else
+                { return }
+            var video = self.videos[self.pageIndex]
+            let kindIndex = Video.Kind.allCases.firstIndex(of: video.kind)!
+            if let kind = Video.Kind.allCases[safe: kindIndex + 1] {
+                video.kind = kind
                 try! dbQueue.write { db in try video.save(db) }
-                
-                // Announce the change
-                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) { // Voodoo
-                    UIAccessibility.post(notification: .announcement, argument: "\(video.kind.description). Now classified as a \(video.kind.verboseDescription) video.")
-                }
+                self.typeElement.accessibilityValue = kind.description
             }
-            return true
+        }
+        typeElement.decrementClosure = { [weak self] in
+            guard
+                let self = self,
+                self.pageIndex < self.videos.count
+            else
+                { return }
+            var video = self.videos[self.pageIndex]
+            let kindIndex = Video.Kind.allCases.firstIndex(of: video.kind)!
+            if let kind = Video.Kind.allCases[safe: kindIndex - 1] {
+                video.kind = kind
+                try! dbQueue.write { db in try video.save(db) }
+                self.typeElement.accessibilityValue = kind.description
+            }
         }
         
         recordedElement.accessibilityLabel = "" // Set in configurePage
@@ -435,7 +444,8 @@ class DetailViewController: UIViewController {
         let viewFrame = UIAccessibility.convertToScreenCoordinates(view.bounds, in: view)
         let videoFrame = UIAccessibility.convertToScreenCoordinates(videoCollectionView.bounds, in: videoCollectionView)
         let addNewFrame = UIAccessibility.convertToScreenCoordinates(addNewPageShortcutButton.bounds, in: addNewPageShortcutButton)
-        let pagerFrame = UIAccessibility.convertToScreenCoordinates(videoPagingView.bounds, in: videoPagingView)
+        let pagerDotsFrame = UIAccessibility.convertToScreenCoordinates(videoPageControl.bounds, in: videoPageControl)
+        let pagerLabelFrame = UIAccessibility.convertToScreenCoordinates(videoLabel.bounds, in: videoLabel)
         let recordedFrame = UIAccessibility.convertToScreenCoordinates(videoRecordedIcon.bounds, in: videoRecordedIcon)
         let uploadedFrame = UIAccessibility.convertToScreenCoordinates(videoUploadedIcon.bounds, in: videoUploadedIcon)
         let verifiedFrame = UIAccessibility.convertToScreenCoordinates(videoVerifiedIcon.bounds, in: videoVerifiedIcon)
@@ -456,7 +466,13 @@ class DetailViewController: UIViewController {
             x: viewFrame.minX,
             y: videoFrame.minY,
             width: viewWidthLessAddNew,
-            height: videoFrame.union(pagerFrame).maxY - videoFrame.minY
+            height: pagerDotsFrame.maxY - videoFrame.minY
+        )
+        typeElement.accessibilityFrame = CGRect(
+            x: viewFrame.minX,
+            y: pagerLabelFrame.minY,
+            width: viewWidthLessAddNew,
+            height: pagerLabelFrame.height
         )
         recordedElement.accessibilityFrame = CGRect(
             x: viewFrame.minX,
