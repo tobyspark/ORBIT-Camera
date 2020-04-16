@@ -490,20 +490,18 @@ class DetailViewController: UIViewController {
         )
         
         let cameraControlFrame = UIAccessibility.convertToScreenCoordinates(cameraControlView.bounds, in: cameraControlView)
-        let recordButtonFrame = UIAccessibility.convertToScreenCoordinates(recordButton.bounds, in: recordButton)
-        let recordTypePickerFrame = UIAccessibility.convertToScreenCoordinates(recordTypePicker.bounds, in: recordTypePicker)
         
-        cameraRecordElement.accessibilityFrame = CGRect(
+        cameraRecordTypeElement.accessibilityFrame = CGRect(
             x: cameraControlFrame.minX,
             y: cameraControlFrame.minY,
-            width: recordButtonFrame.maxX - cameraControlFrame.minX,
-            height: viewFrame.height
+            width: cameraControlFrame.width,
+            height: 44
         )
-        cameraRecordTypeElement.accessibilityFrame = CGRect(
-            x: recordTypePickerFrame.minX,
-            y: cameraControlFrame.minY,
-            width: cameraControlFrame.maxX - recordTypePickerFrame.minX,
-            height: viewFrame.height
+        cameraRecordElement.accessibilityFrame = CGRect(
+            x: cameraControlFrame.minX,
+            y: cameraRecordTypeElement.accessibilityFrame.maxY ,
+            width: cameraControlFrame.width,
+            height: cameraControlFrame.maxY - cameraRecordTypeElement.accessibilityFrame.maxY
         )
         
         let videoRerecordButtonFrame = UIAccessibility.convertToScreenCoordinates(videoRerecordButton.bounds, in: videoRerecordButton)
