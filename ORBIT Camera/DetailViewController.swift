@@ -409,24 +409,20 @@ class DetailViewController: UIViewController {
         cameraRecordTypeElement.incrementClosure = { [weak self] in
             guard let self = self
             else { return }
-            // Set row
-            var row = self.recordTypePicker.selectedRow(inComponent: 0)
-            self.recordTypePicker.selectRow(row + 1, inComponent: 0, animated: true)
+            // Set in main UI
+            self.recordTypePicker.incrementSelection()
             
-            // Read out selected row (which might be clamped within range)
-            row = self.recordTypePicker.selectedRow(inComponent: 0)
-            self.cameraRecordTypeElement.accessibilityValue = self.recordTypePicker.pickerView(self.recordTypePicker, titleForRow: row, forComponent: 0)
+            // Update accessibility value
+            self.cameraRecordTypeElement.accessibilityValue = self.recordTypePicker.kind.description
         }
         cameraRecordTypeElement.decrementClosure = { [weak self] in
             guard let self = self
             else { return }
-            // Set row
-            var row = self.recordTypePicker.selectedRow(inComponent: 0)
-            self.recordTypePicker.selectRow(row - 1, inComponent: 0, animated: true)
+            // Set in main UI
+            self.recordTypePicker.decrementSelection()
             
-            // Read out selected row (which might be clamped within range)
-            row = self.recordTypePicker.selectedRow(inComponent: 0)
-            self.cameraRecordTypeElement.accessibilityValue = self.recordTypePicker.pickerView(self.recordTypePicker, titleForRow: row, forComponent: 0)
+            // Update accessibility value
+            self.cameraRecordTypeElement.accessibilityValue = self.recordTypePicker.kind.description
         }
     }
     
