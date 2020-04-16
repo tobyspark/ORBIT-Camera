@@ -15,6 +15,10 @@
 
 ## Version history
 
+v0.5.3
+- Improved Thing screen accessibility structure and messaging
+- PR: [Tweak: Accessibility](https://github.com/tobyspark/ORBIT-Camera/pull/27)
+
 v0.5.2
 - Things list breaks out counts of video types
 - Various fixes
