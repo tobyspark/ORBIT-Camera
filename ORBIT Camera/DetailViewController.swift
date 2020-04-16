@@ -177,7 +177,7 @@ class DetailViewController: UIViewController {
         if let navItem = navigationController?.navigationBar.topItem,
            let label = detailItem?.labelParticipant
         {
-            navItem.accessibilityLabel = "\(label). This screen is for the thing you've named \(label). On this screen you can add, remove and re-record videos of the thing."
+            navItem.accessibilityLabel = "\(label). This screen is about the thing you've named \(label). You can add, remove and re-record videos of the thing."
         }
         
         // Split view special-cases
@@ -227,7 +227,7 @@ class DetailViewController: UIViewController {
         let accessibilityDescription: String
         if pageIndex == addNewPageIndex {
             pageDescription = "Add new video to collection"
-            accessibilityDescription = "Camera page, adds a new video to the collection"
+            accessibilityDescription = "Camera selected, adds a new video to the collection. Swipe down to return to videos."
             recordTypePicker.kind = .train // default
         } else if let video = videos[safe: pageIndex] {
             let number = pageIndex + 1 // index-based to count-based
@@ -240,7 +240,7 @@ class DetailViewController: UIViewController {
                 pageDescription = "Video \(number) of \(total): "
                 kindDescription = video.kind.description
                 let isNew = video.recorded > Date(timeIntervalSinceNow: -5) ? "New! " : ""
-                accessibilityDescription = "\(pageDescription). \(isNew)A \(video.kind.verboseDescription) video"
+                accessibilityDescription = "Video \(number) of \(total) selected. \(isNew)A \(video.kind.verboseDescription) video"
             }
         } else {
             os_log("Page is not camera and has no video")
@@ -349,7 +349,7 @@ class DetailViewController: UIViewController {
         // - don't include camera as last page, have add new button as the one true way
         // - move changing video kind function into separate element
         pagerElement.accessibilityLabel = "Video selector"
-        pagerElement.accessibilityHint = "Page through videos taken so far"
+        pagerElement.accessibilityHint = "Adjust to change the video detailed below"
         pagerElement.accessibilityTraits = super.accessibilityTraits.union([.adjustable, .header])
         pagerElement.incrementClosure = { [weak self] in
             guard
@@ -372,8 +372,8 @@ class DetailViewController: UIViewController {
         detailHeaderElement.accessibilityHint = "The following relates to the selected video"
         detailHeaderElement.accessibilityTraits = super.accessibilityTraits.union(.header)
         
-        typeElement.accessibilityLabel = "Video kind selector"
-        typeElement.accessibilityHint = "Change whether this video will be classified as a training or test video in the ORBIT dataset"
+        typeElement.accessibilityLabel = "Video classification selector"
+        typeElement.accessibilityHint = "Adjust to set whether the video is a training or test video"
         typeElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
         typeElement.incrementClosure = { [weak self] in
             guard
@@ -386,7 +386,7 @@ class DetailViewController: UIViewController {
             if let kind = Video.Kind.allCases[safe: kindIndex + 1] {
                 video.kind = kind
                 try! dbQueue.write { db in try video.save(db) }
-                self.typeElement.accessibilityValue = kind.description
+                self.typeElement.accessibilityValue = "\(kind.description) selected"
             }
         }
         typeElement.decrementClosure = { [weak self] in
@@ -400,7 +400,7 @@ class DetailViewController: UIViewController {
             if let kind = Video.Kind.allCases[safe: kindIndex - 1] {
                 video.kind = kind
                 try! dbQueue.write { db in try video.save(db) }
-                self.typeElement.accessibilityValue = kind.description
+                self.typeElement.accessibilityValue = "\(kind.description) selected"
             }
         }
         
@@ -425,7 +425,7 @@ class DetailViewController: UIViewController {
         cameraHeaderElement.accessibilityTraits = super.accessibilityTraits.union(.header)
         
         cameraRecordElement.accessibilityLabel = "Record"
-        cameraRecordElement.accessibilityHint = "Starts recording a video. Action again to stop."
+        cameraRecordElement.accessibilityHint = "Starts recording a video. Action again to stop"
         cameraRecordElement.accessibilityTraits = super.accessibilityTraits.union([.button, .startsMediaSession])
         cameraRecordElement.activateClosure = { [weak self] in
             guard let self = self
@@ -443,7 +443,7 @@ class DetailViewController: UIViewController {
                     //
                     // At the point of this firing, the focusedElement is still this cameraRecordElement, so we can't test for that.
                     // But the pager value is updated, so here's a hack...
-                    UIAccessibility.post(notification: .announcement, argument: "Stopped. " + self.pagerElement.accessibilityValue!)
+                    UIAccessibility.post(notification: .announcement, argument: "Stopped. " + self.pagerElement.accessibilityLabel! + ". " + self.pagerElement.accessibilityValue!)
                 }
             case .active:
                 DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) { // Voodoo
@@ -454,9 +454,9 @@ class DetailViewController: UIViewController {
             return true
         }
         
-        cameraRecordTypeElement.accessibilityLabel = "Video kind selector"
-        cameraRecordTypeElement.accessibilityHint = "Sets whether the capture is classified as a training or test video"
-        self.cameraRecordTypeElement.accessibilityValue = self.recordTypePicker.kind.description
+        cameraRecordTypeElement.accessibilityLabel = "Video classification selector"
+        cameraRecordTypeElement.accessibilityHint = "Adjust to set whether the video to be taken is a training or test video"
+        self.cameraRecordTypeElement.accessibilityValue = "\(self.recordTypePicker.kind.description) selected)"
         cameraRecordTypeElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
         cameraRecordTypeElement.incrementClosure = { [weak self] in
             guard let self = self
@@ -465,7 +465,7 @@ class DetailViewController: UIViewController {
             self.recordTypePicker.incrementSelection()
             
             // Update accessibility value
-            self.cameraRecordTypeElement.accessibilityValue = self.recordTypePicker.kind.description
+            self.cameraRecordTypeElement.accessibilityValue = "\(self.recordTypePicker.kind.description) selected)"
         }
         cameraRecordTypeElement.decrementClosure = { [weak self] in
             guard let self = self
@@ -474,7 +474,7 @@ class DetailViewController: UIViewController {
             self.recordTypePicker.decrementSelection()
             
             // Update accessibility value
-            self.cameraRecordTypeElement.accessibilityValue = self.recordTypePicker.kind.description
+            self.cameraRecordTypeElement.accessibilityValue = "\(self.recordTypePicker.kind.description) selected)"
         }
     }
     
