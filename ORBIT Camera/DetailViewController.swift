@@ -174,6 +174,11 @@ class DetailViewController: UIViewController {
         
         // Set title for screen
         self.title = detailItem?.labelParticipant ?? ""
+        if let navItem = navigationController?.navigationBar.topItem,
+           let label = detailItem?.labelParticipant
+        {
+            navItem.accessibilityLabel = "\(label). This screen is for the thing you've named \(label). On this screen you can add, remove and re-record videos of the thing."
+        }
         
         // Split view special-cases
         if let splitViewController = splitViewController {
