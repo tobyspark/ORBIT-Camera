@@ -286,21 +286,23 @@ class DetailViewController: UIViewController {
                 publishedElement,
                 deleteElement
             ]
+            UIAccessibility.focus(element: pagerElement) // focus goes to control nearest last otherwise
         } else if recordEnable && !videos.isEmpty {
             view.accessibilityElements = [
                 pagerElement,
                 cameraRecordTypeElement,
                 cameraRecordElement
             ]
+            UIAccessibility.focus(element: pagerElement) // focus goes to control nearest last otherwise
         } else if recordEnable && videos.isEmpty {
             view.accessibilityElements = [
                 cameraRecordTypeElement,
                 cameraRecordElement
             ]
+            UIAccessibility.focus(element: cameraRecordTypeElement) // focus goes to control nearest last otherwise
         } else {
             view.accessibilityElements = []
         }
-        UIAccessibility.focus(element: pagerElement) // focus goes to control nearest last otherwise
     }
     
     func configureAccessibilityElements() {
