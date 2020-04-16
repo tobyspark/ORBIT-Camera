@@ -45,6 +45,7 @@ class DetailViewController: UIViewController {
     lazy var pagerElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
     lazy var typeElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
     lazy var recordedElement = UIAccessibilityElement(accessibilityContainer: view!)
+    lazy var rerecordElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var uploadedElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var verifiedElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var publishedElement = UIAccessibilityElement(accessibilityContainer: view!)
@@ -283,6 +284,7 @@ class DetailViewController: UIViewController {
                 pagerElement,
                 typeElement,
                 recordedElement,
+                rerecordElement,
                 uploadedElement,
                 verifiedElement,
                 publishedElement,
@@ -368,8 +370,10 @@ class DetailViewController: UIViewController {
         }
         
         recordedElement.accessibilityLabel = "" // Set in configurePage
-        recordedElement.accessibilityHint = "If you wish to re-record, activate to bring up the camera controls"
-        recordedElement.accessibilityTraits = super.accessibilityTraits.union(.button)
+        
+        rerecordElement.accessibilityLabel = "Re-record video" // Set in configurePage
+        rerecordElement.accessibilityHint = "If you wish to re-record, activate to bring up the camera controls"
+        rerecordElement.accessibilityTraits = super.accessibilityTraits.union(.button)
                 
         uploadedElement.accessibilityLabel = "" // Set in configurePage
         
@@ -447,6 +451,7 @@ class DetailViewController: UIViewController {
         let pagerDotsFrame = UIAccessibility.convertToScreenCoordinates(videoPageControl.bounds, in: videoPageControl)
         let pagerLabelFrame = UIAccessibility.convertToScreenCoordinates(videoLabel.bounds, in: videoLabel)
         let recordedFrame = UIAccessibility.convertToScreenCoordinates(videoRecordedIcon.bounds, in: videoRecordedIcon)
+                            .union(UIAccessibility.convertToScreenCoordinates(videoRecordedLabel.bounds, in: videoRecordedLabel))
         let uploadedFrame = UIAccessibility.convertToScreenCoordinates(videoUploadedIcon.bounds, in: videoUploadedIcon)
         let verifiedFrame = UIAccessibility.convertToScreenCoordinates(videoVerifiedIcon.bounds, in: videoVerifiedIcon)
         let publishedFrame = UIAccessibility.convertToScreenCoordinates(videoPublishedIcon.bounds, in: videoPublishedIcon)
@@ -477,7 +482,13 @@ class DetailViewController: UIViewController {
         recordedElement.accessibilityFrame = CGRect(
             x: viewFrame.minX,
             y: recordedFrame.minY,
-            width: viewWidthLessAddNew,
+            width: recordedFrame.maxX - viewFrame.minX,
+            height: recordedFrame.height
+        )
+        rerecordElement.accessibilityFrame = CGRect(
+            x: recordedFrame.maxX,
+            y: recordedFrame.minY,
+            width: addNewFrame.minX - recordedFrame.maxX,
             height: recordedFrame.height
         )
         uploadedElement.accessibilityFrame = CGRect(
