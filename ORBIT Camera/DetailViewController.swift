@@ -442,46 +442,50 @@ class DetailViewController: UIViewController {
         let publishedFrame = UIAccessibility.convertToScreenCoordinates(videoPublishedIcon.bounds, in: videoPublishedIcon)
         let deleteFrame = UIAccessibility.convertToScreenCoordinates(videoDeleteButton.bounds, in: videoDeleteButton)
         
+        let viewWidthLessAddNew = addNewFrame.minX - viewFrame.minX
+        
+        // A strip running down the RHS of the screen, for physical findability
         addNewElement.accessibilityFrame = CGRect(
-            x: viewFrame.minX,
-            y: addNewFrame.minY,
-            width: viewFrame.width,
-            height: videoFrame.maxY - addNewFrame.minY
+            x: addNewFrame.minX,
+            y: videoFrame.minY,
+            width: viewFrame.maxX - addNewFrame.minX,
+            height: viewFrame.maxY - videoFrame.minY
         )
+        // Other controls are arranged in a stack from left hand side to the addNew strip
         pagerElement.accessibilityFrame = CGRect(
             x: viewFrame.minX,
-            y: viewFrame.minY,
-            width: viewFrame.width,
-            height: videoFrame.union(pagerFrame).maxY - viewFrame.minY
+            y: videoFrame.minY,
+            width: viewWidthLessAddNew,
+            height: videoFrame.union(pagerFrame).maxY - videoFrame.minY
         )
         recordedElement.accessibilityFrame = CGRect(
             x: viewFrame.minX,
             y: recordedFrame.minY,
-            width: viewFrame.width,
+            width: viewWidthLessAddNew,
             height: recordedFrame.height
         )
         uploadedElement.accessibilityFrame = CGRect(
             x: viewFrame.minX,
             y: uploadedFrame.minY,
-            width: viewFrame.width,
+            width: viewWidthLessAddNew,
             height: uploadedFrame.height
         )
         verifiedElement.accessibilityFrame = CGRect(
             x: viewFrame.minX,
             y: verifiedFrame.minY,
-            width: viewFrame.width,
+            width: viewWidthLessAddNew,
             height: verifiedFrame.height
         )
         publishedElement.accessibilityFrame = CGRect(
             x: viewFrame.minX,
             y: publishedFrame.minY,
-            width: viewFrame.width,
+            width: viewWidthLessAddNew,
             height: publishedFrame.height
         )
         deleteElement.accessibilityFrame = CGRect(
             x: viewFrame.minX,
             y: deleteFrame.minY,
-            width: viewFrame.width,
+            width: viewWidthLessAddNew,
             height: deleteFrame.height
         )
         
