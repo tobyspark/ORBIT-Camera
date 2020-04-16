@@ -43,6 +43,8 @@ class DetailViewController: UIViewController {
     
     lazy var addNewElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var pagerElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
+
+    lazy var detailHeaderElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var typeElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
     lazy var recordedElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var rerecordElement = UIAccessibilityElement(accessibilityContainer: view!)
@@ -50,7 +52,8 @@ class DetailViewController: UIViewController {
     lazy var verifiedElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var publishedElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var deleteElement = UIAccessibilityElement(accessibilityContainer: view!)
-    
+
+    lazy var cameraHeaderElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var cameraRecordElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
     lazy var cameraRecordTypeElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
     
@@ -282,6 +285,7 @@ class DetailViewController: UIViewController {
             view.accessibilityElements = [
                 addNewElement,
                 pagerElement,
+                detailHeaderElement,
                 typeElement,
                 recordedElement,
                 rerecordElement,
@@ -294,12 +298,14 @@ class DetailViewController: UIViewController {
         } else if recordEnable && !videos.isEmpty {
             view.accessibilityElements = [
                 pagerElement,
+                cameraHeaderElement,
                 cameraRecordTypeElement,
                 cameraRecordElement
             ]
             UIAccessibility.focus(element: pagerElement) // focus goes to control nearest last otherwise
         } else if recordEnable && videos.isEmpty {
             view.accessibilityElements = [
+                cameraHeaderElement,
                 cameraRecordTypeElement,
                 cameraRecordElement
             ]
@@ -336,6 +342,10 @@ class DetailViewController: UIViewController {
                 { return }
             self.pageIndex -= 1
         }
+        
+        detailHeaderElement.accessibilityLabel = "Video Detail"
+        detailHeaderElement.accessibilityHint = "The following relates to the selected video"
+        detailHeaderElement.accessibilityTraits = super.accessibilityTraits.union(.header)
         
         typeElement.accessibilityLabel = "Video kind selector"
         typeElement.accessibilityHint = "Change whether this video will be classified as a training or test video in the ORBIT dataset"
@@ -384,6 +394,10 @@ class DetailViewController: UIViewController {
         deleteElement.accessibilityLabel = "Delete video"
         deleteElement.accessibilityHint = "Removes this video from the thing's collection"
         deleteElement.accessibilityTraits = super.accessibilityTraits.union(.button)
+        
+        cameraHeaderElement.accessibilityLabel = "Camera controls"
+        cameraHeaderElement.accessibilityHint = "The camera controls are now active"
+        cameraHeaderElement.accessibilityTraits = super.accessibilityTraits.union(.header)
         
         cameraRecordElement.accessibilityLabel = "Record"
         cameraRecordElement.accessibilityHint = "Starts recording a video. Action again to stop."
@@ -515,9 +529,12 @@ class DetailViewController: UIViewController {
             width: viewWidthLessAddNew,
             height: deleteFrame.height
         )
+        detailHeaderElement.accessibilityFrame = typeElement.accessibilityFrame.union(deleteElement.accessibilityFrame)
+        
         
         let cameraControlFrame = UIAccessibility.convertToScreenCoordinates(cameraControlView.bounds, in: cameraControlView)
         
+        cameraHeaderElement.accessibilityFrame = cameraControlFrame
         cameraRecordTypeElement.accessibilityFrame = CGRect(
             x: cameraControlFrame.minX,
             y: cameraControlFrame.minY,
