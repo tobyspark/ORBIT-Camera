@@ -283,8 +283,8 @@ class DetailViewController: UIViewController {
         
         if statusEnable {
             view.accessibilityElements = [
-                addNewElement,
                 pagerElement,
+                addNewElement,
                 detailHeaderElement,
                 typeElement,
                 recordedElement,
@@ -294,7 +294,7 @@ class DetailViewController: UIViewController {
                 publishedElement,
                 deleteElement
             ]
-            UIAccessibility.focus(element: pagerElement) // focus goes to control nearest last otherwise
+            //UIAccessibility.focus(element: pagerElement) // focus goes to control nearest last otherwise
         } else if recordEnable && !videos.isEmpty {
             view.accessibilityElements = [
                 pagerElement,
@@ -302,14 +302,14 @@ class DetailViewController: UIViewController {
                 cameraRecordTypeElement,
                 cameraRecordElement
             ]
-            UIAccessibility.focus(element: pagerElement) // focus goes to control nearest last otherwise
+            //UIAccessibility.focus(element: pagerElement) // focus goes to control nearest last otherwise
         } else if recordEnable && videos.isEmpty {
             view.accessibilityElements = [
                 cameraHeaderElement,
                 cameraRecordTypeElement,
                 cameraRecordElement
             ]
-            UIAccessibility.focus(element: cameraRecordTypeElement) // focus goes to control nearest last otherwise
+            //UIAccessibility.focus(element: cameraRecordTypeElement) // focus goes to control nearest last otherwise
         } else {
             view.accessibilityElements = []
         }
@@ -317,7 +317,7 @@ class DetailViewController: UIViewController {
     
     func configureAccessibilityElements() {
         addNewElement.accessibilityLabel = "Add new video"
-        addNewElement.accessibilityHint = "Takes you to the camera page"
+        addNewElement.accessibilityHint = "Brings up the camera controls"
         addNewElement.accessibilityTraits = super.accessibilityTraits.union(.button)
         
         // Don't overload the pagerElement. As opposed to visual UI –
@@ -325,7 +325,7 @@ class DetailViewController: UIViewController {
         // - move changing video kind function into separate element
         pagerElement.accessibilityLabel = "Video selector"
         pagerElement.accessibilityHint = "Page through videos taken so far"
-        pagerElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
+        pagerElement.accessibilityTraits = super.accessibilityTraits.union([.adjustable, .header])
         pagerElement.incrementClosure = { [weak self] in
             guard
                 let self = self,
@@ -564,7 +564,7 @@ class DetailViewController: UIViewController {
         // Action going to the page, will start the scroll
         pageIndex = addNewPageIndex
         // Given the explicit intent, focus the record button
-        UIAccessibility.focus(element: self.cameraRecordElement)
+        UIAccessibility.focus(element: self.cameraHeaderElement)
     }
     
     /// Action the video corresponding to page
@@ -702,7 +702,7 @@ class DetailViewController: UIViewController {
         configurePage()
         
         // Don't default to pager, go to record button
-        UIAccessibility.focus(element: cameraRecordElement)
+        UIAccessibility.focus(element: cameraHeaderElement)
     }
     
     /// Delete the video
