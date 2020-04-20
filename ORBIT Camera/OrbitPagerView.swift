@@ -36,13 +36,13 @@ class OrbitPagerView: UIView {
             var pageIndexRemaining: Int? = pageIndex
             for categoryView in categoryViews {
                 if pageIndexRemaining != nil {
-                    if pageIndexRemaining! < categoryView.totalCount
+                    if pageIndexRemaining! < categoryView.pageCount
                     {
                         categoryView.pageIndex = pageIndexRemaining!
                         pageIndexRemaining = nil
                     } else {
                         categoryView.pageIndex = nil
-                        pageIndexRemaining! -= categoryView.totalCount
+                        pageIndexRemaining! -= categoryView.pageCount
                     }
                 } else {
                     categoryView.pageIndex = nil
@@ -51,8 +51,78 @@ class OrbitPagerView: UIView {
         }
     }
     
-    /// The page index currently selected by category-index and page-index-within-category
-    // TODO: this
+    var addNewPageIndexes: IndexSet {
+        get {
+            var indexes: [Int] = []
+            var categoryStartCount = 0
+            for categoryView in categoryViews {
+                indexes.append(categoryStartCount + categoryView.pageCount - 1)
+                categoryStartCount += categoryView.pageCount
+            }
+            return IndexSet(indexes)
+        }
+    }
+    
+    var pageIndexForCurrentAddNew: Int? {
+        get {
+            var categoryStartCount = 0
+            for categoryView in categoryViews {
+                if categoryView.pageIndex != nil {
+                    return categoryStartCount + categoryView.pageCount - 1
+                }
+                categoryStartCount += categoryView.pageCount
+            }
+            return nil
+        }
+    }
+    
+    func pageIndexFor(category: String, index: Int) -> Int? {
+        var categoryStartCount = 0
+        for categoryView in categoryViews {
+            if categoryView.name == category {
+                return categoryStartCount + index
+            }
+            categoryStartCount += categoryView.pageCount
+        }
+        return nil
+    }
+    
+    var currentCategoryName: String? {
+        get {
+            for categoryView in categoryViews {
+                if categoryView.pageIndex != nil {
+                    return categoryView.name
+                }
+            }
+            return nil
+        }
+    }
+    
+    var currentCategoryIndex: Int? {
+        get {
+            for categoryView in categoryViews {
+                if let index = categoryView.pageIndex {
+                    return index
+                }
+            }
+            return nil
+        }
+    }
+
+    var pageCount: Int {
+        get { categoryViews.reduce(0) { $0 + $1.pageCount} }
+    }
+    
+    func categoryIndex(pageIndex: Int) -> (String, Int)? {
+        var categoryStartIndex = 0
+        for categoryView in categoryViews {
+            if pageIndex >= categoryStartIndex && pageIndex < categoryStartIndex + categoryView.itemCount {
+                return (categoryView.name, pageIndex - categoryStartIndex)
+            }
+            categoryStartIndex += categoryView.pageCount
+        }
+        return nil
+    }
     
     /// The categories and corresponding counts to display
     var categoryCounts: CategoryCounts {
@@ -131,7 +201,7 @@ fileprivate class OrbitPagerCategoryView: UIView {
         }
     }
     
-    var totalCount: Int {
+    var pageCount: Int {
         get {
             itemCount + addNewCount
         }
