@@ -34,7 +34,7 @@ class OrbitPagerView: UIView {
     var pageIndex: Int = 0 {
         didSet {
             var pageIndexRemaining: Int? = pageIndex
-            for categoryView in stack.arrangedSubviews as! [OrbitPagerCategoryView] {
+            for categoryView in categoryViews {
                 if pageIndexRemaining != nil {
                     if pageIndexRemaining! < categoryView.totalCount
                     {
@@ -62,7 +62,7 @@ class OrbitPagerView: UIView {
                 if !stack.arrangedSubviews.indices.contains(index) {
                     stack.insertArrangedSubview(OrbitPagerCategoryView(), at: index)
                 }
-                let categoryView = stack.arrangedSubviews[index] as! OrbitPagerCategoryView
+                let categoryView = categoryViews[index]
                 categoryView.name = name
                 categoryView.itemCount = count
             }
@@ -75,8 +75,7 @@ class OrbitPagerView: UIView {
             layoutIfNeeded()
         }
         get {
-            let categoryViews = stack.arrangedSubviews as! [OrbitPagerCategoryView]
-            return categoryViews.map { ($0.name, $0.itemCount)}
+            categoryViews.map { ($0.name, $0.itemCount)}
         }
     }
     
@@ -105,6 +104,9 @@ class OrbitPagerView: UIView {
     }
     
     private let stack = UIStackView()
+    private var categoryViews: [OrbitPagerCategoryView] {
+        get { stack.arrangedSubviews as! [OrbitPagerCategoryView] }
+    }
 }
 
 fileprivate class OrbitPagerCategoryView: UIView {
