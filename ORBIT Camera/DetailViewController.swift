@@ -18,7 +18,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var videoCollectionView: UICollectionView!
     @IBOutlet weak var addNewPageShortcutButton: UIButton!
     @IBOutlet weak var videoPagingView: UIView!
-    @IBOutlet weak var videoPageControl: UIPageControl!
+    @IBOutlet weak var videoPageControl: OrbitPagerView!
     @IBOutlet weak var videoLabel: UILabel!
     @IBOutlet weak var videoLabelKindButton: UIButton!
     @IBOutlet weak var videoPagingViewYConstraint: NSLayoutConstraint!
@@ -69,54 +69,62 @@ class DetailViewController: UIViewController {
             if let thing = detailItem,
                let thingID = thing.id
             {
-                let request = Video
-                    .filter(Video.Columns.thingID == thingID)
-                    .order(Video.Columns.id.asc)
-                let observation = request.observationForAll()
-                detailItemObserver = observation.start(
-                    in: dbQueue,
-                    onError: { error in
-                        os_log("DetailViewController observer error")
-                        print(error)
-                    },
-                    onChange: { [weak self] videos in
-                        guard let self = self
-                        else { return }
-                        
-                        // Video collection view
-                        let difference = videos.difference(from: self.videos)
-                        self.videoCollectionView.performBatchUpdates({
-                            self.videos = videos
-                            for change in difference {
-                                switch change {
-                                case let .remove(offset, _, _):
-                                    self.videoCollectionView.deleteItems(at: [IndexPath(row: offset, section: 0)])
-                                case let .insert(offset, _, _):
-                                    self.videoCollectionView.insertItems(at: [IndexPath(row: offset, section: 0)])
+                for kind in Video.Kind.allCases {
+                    let request = Video
+                        .filter(Video.Columns.thingID == thingID && Video.Columns.kind == kind.rawValue)
+                        .order(Video.Columns.id.asc)
+                    let observation = request.observationForAll()
+                    detailItemObservers[kind] = observation.start(
+                        in: dbQueue,
+                        onError: { error in
+                            os_log("DetailViewController observer error")
+                            print(error)
+                        },
+                        onChange: { [weak self] videos in
+                            guard let self = self
+                            else { return }
+                            
+                            // Video collection view
+                            let difference = videos.difference(from: self.videos[kind]!)
+                            self.videoCollectionView.performBatchUpdates({
+                                self.videos[kind] = videos
+                                for change in difference {
+                                    switch change {
+                                    case let .remove(offset, _, _):
+                                        let pageIndex = self.videoPageControl.pageIndexFor(category: kind.description, index: offset)!
+                                        self.videoCollectionView.deleteItems(at: [IndexPath(row: pageIndex, section: 0)])
+                                    case let .insert(offset, _, _):
+                                        let pageIndex = self.videoPageControl.pageIndexFor(category: kind.description, index: offset)!
+                                        self.videoCollectionView.insertItems(at: [IndexPath(row: pageIndex, section: 0)])
+                                    }
                                 }
-                            }
-                        }, completion: nil)
-                        
-                        // Page state via video count
-                        self.videoPageControl.numberOfPages = self.pagesCount
-                        
-                        // Page state via page index
-                        self.configurePage()
-                        
-                        // Page state via collection view position
-                        self.scrollViewDidScroll(self.videoCollectionView)
-                    }
-                )
+                            }, completion: nil)
+                            
+                            // Page state via video kind counts
+                            self.videoPageControl.categoryCounts = Video.Kind.allCases.map({ kind in
+                                (kind.description, self.videos[kind]!.count)
+                            })
+                            
+                            // Page state via page index
+                            self.configurePage()
+                            
+                            // Page state via collection view position
+                            self.scrollViewDidScroll(self.videoCollectionView)
+                        }
+                    )
+                }
+            } else {
+                detailItemObservers = [:]
             }
         }
     }
     
     /// Current state of thing's videos
-    private var videos: [Video] = []
+    private var videos: [Video.Kind: [Video]] = Video.Kind.allCases.reduce(into: [:]) { $0[$1] = []}
     
     /// Handle updates to videos
     private var pagesCount: Int {
-        get { videos.count + 1 }
+        get { videoPageControl.pageCount }
     }
     
     /// The selected page, i.e. index of the currently visible videoCollection item.
@@ -125,8 +133,8 @@ class DetailViewController: UIViewController {
     }
     
     /// The page index where the camera to take new videos is placed. Currently the first, but an alternative could be the last
-    private var addNewPageIndex: Int {
-        get { pagesCount - 1 }
+    private var addNewPageIndexes: IndexSet {
+        get { videoPageControl.addNewPageIndexes }
     }
     
     /// A dynamic set of page indexes where the videos are flagged for re-recording
@@ -134,7 +142,7 @@ class DetailViewController: UIViewController {
     
     /// All pages that need the camera displayed, i.e. `rerecordPageIndexes` and `addNewPageIndex`
     private var cameraPageIndexes: IndexSet {
-        rerecordPageIndexes.union(IndexSet(integer: addNewPageIndex))
+        rerecordPageIndexes.union(addNewPageIndexes)
     }
     
     /// The 'visibility' of the cameraControlView, where 0 is offscreen and 1 is onscreen
@@ -155,8 +163,8 @@ class DetailViewController: UIViewController {
     /// The kind of page being displayed, used to track state change
     private var pageKind: PageKind?
     
-    /// Database observer for detailItem changes
-    private var detailItemObserver: TransactionObserver?
+    /// Database observers for detailItem changes
+    private var detailItemObservers: [Video.Kind: TransactionObserver] = [:]
     
     /// The camera object that encapsulates capture new video functionality
     private let camera = Camera()
@@ -216,31 +224,31 @@ class DetailViewController: UIViewController {
         
         // Update add new shortcut button
         UIView.animate(withDuration: 0.3) {
-            let hidden = (self.pageIndex == self.addNewPageIndex)
+            let hidden = (self.addNewPageIndexes.contains(self.pageIndex))
             self.addNewPageShortcutButton.alpha = hidden ? 0 : 1
         }
         
         // Update page control
-        videoPageControl.currentPage = pageIndex
+        videoPageControl.pageIndex = pageIndex
+        
+        
         let pageDescription: String
-        var kindDescription: String?
+        let kind = videoKind(description: self.videoPageControl.currentCategoryName!)
         let accessibilityDescription: String
-        if pageIndex == addNewPageIndex {
-            pageDescription = "Add new video to collection"
-            accessibilityDescription = "Camera selected, adds a new video to the collection. Swipe down to return to videos."
-            recordTypePicker.kind = .train // default
-        } else if let video = videos[safe: pageIndex] {
+        if addNewPageIndexes.contains(pageIndex) {
+            pageDescription = "Add new \(kind.verboseDescription) video to collection"
+            accessibilityDescription = "Camera selected, adds a new \(kind.verboseDescription) video to the collection. Swipe down to return to videos."
+        } else if let video = videos[kind]![safe: videoPageControl.currentCategoryIndex!]
+        {
             let number = pageIndex + 1 // index-based to count-based
-            let total = videos.count
+            let total = videos[kind]!.count
             if isCameraPage {
-                recordTypePicker.kind = video.kind
-                pageDescription = "Re-record video \(number) of \(total)"
-                accessibilityDescription = "\(pageDescription), a \(video.kind.verboseDescription) video"
+                pageDescription = "Re-record \(kind.verboseDescription) video \(number) of \(total)"
+                accessibilityDescription = pageDescription
             } else {
-                pageDescription = "Video \(number) of \(total): "
-                kindDescription = video.kind.description
+                pageDescription = "\(kind.verboseDescription) video \(number) of \(total)"
                 let isNew = video.recorded > Date(timeIntervalSinceNow: -5) ? "New! " : ""
-                accessibilityDescription = "Video \(number) of \(total) selected. \(isNew)A \(video.kind.verboseDescription) video"
+                accessibilityDescription = "\(isNew)\(kind.verboseDescription) video \(number) of \(total) selected."
             }
         } else {
             os_log("Page is not camera and has no video")
@@ -250,19 +258,10 @@ class DetailViewController: UIViewController {
         }
         videoLabel.text = pageDescription
         pagerElement.accessibilityValue = accessibilityDescription
-        UIView.performWithoutAnimation { // setTitle animates by default, which is out of keeping with link-in-label aesthetic
-            if let kindDescription = kindDescription {
-                videoLabelKindButton.setTitle(kindDescription, for: .normal)
-                videoLabelKindButton.isHidden = false
-            } else {
-                videoLabelKindButton.isHidden = true
-            }
-            videoLabelKindButton.layoutIfNeeded() // will perform with animation without this
-        }
-        
         
         // Update statuses
-        if let video = videos[safe: pageIndex] {
+        if let video = videos[kind]![safe: videoPageControl.currentCategoryIndex!]
+        {
             videoRecordedLabel.text = "Recorded on \(Settings.dateFormatter.string(from:video.recorded))"
             recordedElement.accessibilityLabel = "Recorded on \(Settings.verboseDateFormatter.string(from:video.recorded))"
             
@@ -290,7 +289,7 @@ class DetailViewController: UIViewController {
         }
         
         if previousKind != pageKind {
-            videoPageControl.isEnabled = (pageKind != .disable)
+            //videoPageControl.isEnabled = (pageKind != .disable) // FIXME
 
             videoRerecordButton.isEnabled = (pageKind == .status)
             videoRecordedLabel.isEnabled = (pageKind == .status)
@@ -376,32 +375,32 @@ class DetailViewController: UIViewController {
         typeElement.accessibilityHint = "Adjust to set whether the video is a training or test video"
         typeElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
         typeElement.incrementClosure = { [weak self] in
-            guard
-                let self = self,
-                self.pageIndex < self.videos.count
-            else
-                { return }
-            var video = self.videos[self.pageIndex]
-            let kindIndex = Video.Kind.allCases.firstIndex(of: video.kind)!
-            if let kind = Video.Kind.allCases[safe: kindIndex + 1] {
-                video.kind = kind
-                try! dbQueue.write { db in try video.save(db) }
-                self.typeElement.accessibilityValue = "\(kind.description) selected"
-            }
+//            guard
+//                let self = self,
+//                self.pageIndex < self.videos.count
+//            else
+//                { return }
+//            var video = self.videos[self.pageIndex] // FIXME
+//            let kindIndex = Video.Kind.allCases.firstIndex(of: video.kind)!
+//            if let kind = Video.Kind.allCases[safe: kindIndex + 1] {
+//                video.kind = kind
+//                try! dbQueue.write { db in try video.save(db) }
+//                self.typeElement.accessibilityValue = "\(kind.description) selected"
+//            }
         }
         typeElement.decrementClosure = { [weak self] in
-            guard
-                let self = self,
-                self.pageIndex < self.videos.count
-            else
-                { return }
-            var video = self.videos[self.pageIndex]
-            let kindIndex = Video.Kind.allCases.firstIndex(of: video.kind)!
-            if let kind = Video.Kind.allCases[safe: kindIndex - 1] {
-                video.kind = kind
-                try! dbQueue.write { db in try video.save(db) }
-                self.typeElement.accessibilityValue = "\(kind.description) selected"
-            }
+//            guard
+//                let self = self,
+//                self.pageIndex < self.videos.count
+//            else
+//                { return }
+//            var video = self.videos[self.pageIndex] // FIXME
+//            let kindIndex = Video.Kind.allCases.firstIndex(of: video.kind)!
+//            if let kind = Video.Kind.allCases[safe: kindIndex - 1] {
+//                video.kind = kind
+//                try! dbQueue.write { db in try video.save(db) }
+//                self.typeElement.accessibilityValue = "\(kind.description) selected"
+//            }
         }
         
         recordedElement.accessibilityLabel = "" // Set in configurePage
@@ -587,7 +586,7 @@ class DetailViewController: UIViewController {
         // Start it now so it has the best chance of running by the time the scroll completes
         camera.start()
         // Action going to the page, will start the scroll
-        pageIndex = addNewPageIndex
+        pageIndex = videoPageControl.pageIndexForCurrentAddNew!
     }
     
     /// Action the video corresponding to page
@@ -596,32 +595,32 @@ class DetailViewController: UIViewController {
     }
     
     @IBAction func videoLabelKindButtonAction(sender: UIButton) {
-        guard var video = videos[safe: pageIndex]
-        else {
-            os_log("videoLabelKindButtonAction with no video for page")
-            return
-        }
-        
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let videoKindViewController = storyboard.instantiateViewController(identifier: "VideoKindViewController") as VideoKindPickerViewController
-
-        // Style as popover and set anchor
-        videoKindViewController.modalPresentationStyle = .popover
-        videoKindViewController.popoverPresentationController?.sourceRect = sender.bounds
-        videoKindViewController.popoverPresentationController?.sourceView = sender
-        
-        // VideoKindController overrides adaptive presentation, so here ensures always popover (i.e. and not a form sheet on compact size classes)
-        videoKindViewController.popoverPresentationController?.delegate = videoKindViewController
-        
-        // Handle choice on dismiss
-        videoKindViewController.dismissHandler = { kind in
-            video.kind = kind
-            try! dbQueue.write { db in try video.save(db) } // FIXME: try!
-            self.configurePage()
-        }
-        
-        // Present!
-        self.present(videoKindViewController, animated: true, completion: nil)
+//        guard var video = videos[safe: pageIndex]
+//        else {
+//            os_log("videoLabelKindButtonAction with no video for page")
+//            return
+//        }
+//
+//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+//        let videoKindViewController = storyboard.instantiateViewController(identifier: "VideoKindViewController") as VideoKindPickerViewController
+//
+//        // Style as popover and set anchor
+//        videoKindViewController.modalPresentationStyle = .popover
+//        videoKindViewController.popoverPresentationController?.sourceRect = sender.bounds
+//        videoKindViewController.popoverPresentationController?.sourceView = sender
+//
+//        // VideoKindController overrides adaptive presentation, so here ensures always popover (i.e. and not a form sheet on compact size classes)
+//        videoKindViewController.popoverPresentationController?.delegate = videoKindViewController
+//
+//        // Handle choice on dismiss
+//        videoKindViewController.dismissHandler = { kind in
+//            video.kind = kind
+//            try! dbQueue.write { db in try video.save(db) } // FIXME: try!
+//            self.configurePage()
+//        }
+//
+//        // Present!
+//        self.present(videoKindViewController, animated: true, completion: nil)
     }
 
     /// Action a video recording. This might be a new video, or the re-recording of an existing one.
@@ -630,7 +629,7 @@ class DetailViewController: UIViewController {
         case .active:
             // IF RE-RECORD START
             if rerecordPageIndexes.contains(pageIndex) {
-                guard var video = videos[safe: pageIndex]
+                guard var video = videos[videoKind(description: self.videoPageControl.currentCategoryName!)]![safe: videoPageControl.currentCategoryIndex!]
                 else {
                     os_log("Could not get video for re-record recordStart")
                     return
@@ -678,7 +677,7 @@ class DetailViewController: UIViewController {
                 }
                 
                 // Go, setting completion handler that creates a Video record and updates the UI
-                let kind = recordTypePicker.kind
+                let kind = videoKind(description: videoPageControl.currentCategoryName!)
                 camera.recordStart(to: url) {
                     // Create a Video record
                     guard var video = Video(of: thing, url: url, kind: kind)
@@ -697,7 +696,7 @@ class DetailViewController: UIViewController {
             }
             
             // Disable any navigation etc. while recording!
-            videoPageControl.isEnabled = false
+            //videoPageControl.isEnabled = false // FIXME
             recordTypePicker.isUserInteractionEnabled = false
             navigationItem.hidesBackButton = true
             accessibilityElements = [cameraRecordElement]
@@ -706,7 +705,7 @@ class DetailViewController: UIViewController {
             camera.recordStop()
             
             // Allow navigation again
-            videoPageControl.isEnabled = true
+            //videoPageControl.isEnabled = true // FIXME
             recordTypePicker.isUserInteractionEnabled = true
             navigationItem.hidesBackButton = false
             accessibilityElements = [pagerElement] // page refresh on database write will deal with this properly
@@ -736,7 +735,7 @@ class DetailViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Delete video", style: .destructive, handler: { [weak self] _ in
             guard
                 let self = self,
-                let video = self.videos[safe: self.pageIndex]
+                let video = self.videos[self.videoKind(description: self.videoPageControl.currentCategoryName!)]![safe: self.videoPageControl.currentCategoryIndex!]
             else {
                 os_log("Could not get video to delete")
                 return
@@ -755,6 +754,9 @@ class DetailViewController: UIViewController {
         
         // Don't monopolise audio with our (silent!) videos, e.g. let music continue to play
         try? AVAudioSession.sharedInstance().setCategory(.ambient)
+        
+        // Set categories to enable addNew pages
+        videoPageControl.categoryCounts = Video.Kind.allCases.map { ($0.description, 0) }
 
         configureAccessibilityElements()
     }
@@ -794,6 +796,21 @@ class DetailViewController: UIViewController {
         layoutAccessibilityElements()
     }
     
+    // TODO: Refactor away, pager category should be protocol stringconvertible or somesuch.
+    func videoKind(description: String) -> Video.Kind {
+        switch description {
+        case Video.Kind.train.description:
+            return Video.Kind.train
+        case Video.Kind.testPan.description:
+            return Video.Kind.testPan
+        case Video.Kind.testZoom.description:
+            return Video.Kind.testZoom
+        default:
+            assertionFailure()
+            return Video.Kind.train
+        }
+    }
+    
     func inexplicableToolingFailureWorkaround() {
         if videoCollectionView == nil {
             os_log("INEXPLICABLE TOOLING FAILURE: videoCollectionView was nil, despite being hooked up in the storyboard.", type: .debug)
@@ -830,7 +847,8 @@ extension DetailViewController: UICollectionViewDataSource {
                 fatalError("Expected a `\(VideoViewCell.self)` but did not receive one.")
             }
             guard
-                let video = videos[safe: indexPath.row]
+                let (name, index) = videoPageControl.categoryIndex(pageIndex: indexPath.row),
+                let video = videos[videoKind(description: name)]![safe: index]
             else {
                 os_log("No video found")
                 assertionFailure()
