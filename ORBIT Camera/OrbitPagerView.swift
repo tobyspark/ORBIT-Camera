@@ -31,7 +31,25 @@ class OrbitPagerView: UIView {
     )
     
     /// The overall page index currently selected
-    // TODO: this
+    var pageIndex: Int = 0 {
+        didSet {
+            var pageIndexRemaining: Int? = pageIndex
+            for categoryView in stack.arrangedSubviews as! [OrbitPagerCategoryView] {
+                if pageIndexRemaining != nil {
+                    if pageIndexRemaining! < categoryView.totalCount
+                    {
+                        categoryView.pageIndex = pageIndexRemaining!
+                        pageIndexRemaining = nil
+                    } else {
+                        categoryView.pageIndex = nil
+                        pageIndexRemaining! -= categoryView.totalCount
+                    }
+                } else {
+                    categoryView.pageIndex = nil
+                }
+            }
+        }
+    }
     
     /// The page index currently selected by category-index and page-index-within-category
     // TODO: this
@@ -46,7 +64,7 @@ class OrbitPagerView: UIView {
                 }
                 let categoryView = stack.arrangedSubviews[index] as! OrbitPagerCategoryView
                 categoryView.name = name
-                categoryView.count = count
+                categoryView.itemCount = count
             }
             // Remove extra category views
             while stack.arrangedSubviews.count > newValue.count {
@@ -58,7 +76,7 @@ class OrbitPagerView: UIView {
         }
         get {
             let categoryViews = stack.arrangedSubviews as! [OrbitPagerCategoryView]
-            return categoryViews.map { ($0.name, $0.count)}
+            return categoryViews.map { ($0.name, $0.itemCount)}
         }
     }
     
@@ -96,17 +114,32 @@ fileprivate class OrbitPagerCategoryView: UIView {
             layoutIfNeeded()
         }
     }
-    var count: Int = 0 {
+
+    var itemCount: Int = 0 {
         didSet {
-            while dotStack.arrangedSubviews.count - addNewCount < count {
+            while dotStack.arrangedSubviews.count - addNewCount < itemCount {
                 dotStack.insertArrangedSubview(dotView(), at: 0)
             }
-            while dotStack.arrangedSubviews.count - addNewCount > count {
+            while dotStack.arrangedSubviews.count - addNewCount > itemCount {
                 let view = dotStack.arrangedSubviews[0]
                 dotStack.removeArrangedSubview(view)
                 view.removeFromSuperview()
             }
             layoutIfNeeded()
+        }
+    }
+    
+    var totalCount: Int {
+        get {
+            itemCount + addNewCount
+        }
+    }
+    
+    var pageIndex: Int? {
+        didSet {
+            for (index, view) in dotStack.arrangedSubviews.enumerated() {
+                view.tintColor = (index == pageIndex) ? UIColor.label : UIColor.placeholderText
+            }
         }
     }
     
