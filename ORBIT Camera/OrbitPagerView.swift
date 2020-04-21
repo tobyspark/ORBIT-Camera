@@ -11,10 +11,9 @@ import UIKit
 /// An array of category tuples, a name and count pair
 typealias CategoryCounts = [(String, Int)]
 
-/// Akin to UIPageControl, OrbitPagerView displays a row of dots corresponding to pages. However here, these dots are sectioned into categories, and each section has an 'add new' page at the end.
-class OrbitPagerView: UIView {
+struct OrbitPagerSettings {
     /// The page marker image for an item (in UIPageControl, a dot)
-    static var itemImage = UIImage(
+    static let itemImage = UIImage(
         systemName: "circle.fill",
         withConfiguration: UIImage.SymbolConfiguration(
             pointSize: 7
@@ -22,7 +21,7 @@ class OrbitPagerView: UIView {
     )
     
     /// The add new page marker image
-    static var addImage = UIImage(
+    static let addImage = UIImage(
         systemName: "plus",
         withConfiguration: UIImage.SymbolConfiguration(
             pointSize: 7,
@@ -30,6 +29,15 @@ class OrbitPagerView: UIView {
         )
     )
     
+    static let pageWidth: CGFloat = 14
+    static let borderWidth: CGFloat = 1
+    static let pageTopSpacing: CGFloat = 2
+    static let labelTopSpacing: CGFloat = 4
+    static let labelLeftSpacing: CGFloat = 3
+}
+
+/// Akin to UIPageControl, OrbitPagerView displays a row of dots corresponding to pages. However here, these dots are sectioned into categories, and each section has an 'add new' page at the end.
+class OrbitPagerView: UIView {
     /// The overall page index currently selected
     var pageIndex: Int = 0 {
         didSet {
@@ -196,10 +204,12 @@ fileprivate class OrbitPagerCategoryView: UIView {
 
     var itemCount: Int = 0 {
         didSet {
-            while pageStack.arrangedSubviews.count - addNewCount < itemCount {
-                pageStack.insertArrangedSubview(itemView(), at: 0)
+            while pageStackViews.count - addNewCount < itemCount {
+                guard let itemImage = OrbitPagerSettings.itemImage
+                else { fatalError("Cannot get item image") }
+                pageStack.insertArrangedSubview(OrbitPagerPageView(image: itemImage), at: 0)
             }
-            while pageStack.arrangedSubviews.count - addNewCount > itemCount {
+            while pageStackViews.count - addNewCount > itemCount {
                 let view = pageStack.arrangedSubviews[0]
                 pageStack.removeArrangedSubview(view)
                 view.removeFromSuperview()
@@ -216,8 +226,8 @@ fileprivate class OrbitPagerCategoryView: UIView {
     
     var pageIndex: Int? {
         didSet {
-            for (index, view) in pageStack.arrangedSubviews.enumerated() {
-                view.tintColor = (index == pageIndex) ? UIColor.label : UIColor.placeholderText
+            for (index, view) in pageStackViews.enumerated() {
+                view.color = (index == pageIndex) ? UIColor.label : UIColor.placeholderText
             }
         }
     }
@@ -233,13 +243,16 @@ fileprivate class OrbitPagerCategoryView: UIView {
     }
     
     func initCommon() {
-        borderView.backgroundColor = UIColor.label
+        borderView.backgroundColor = UIColor.placeholderText
         
         pageStack.axis = .horizontal
-        pageStack.spacing = 7
-        pageStack.distribution = .fillProportionally
+        pageStack.spacing = 0
+        pageStack.distribution = .equalCentering
         pageStack.alignment = .center
-        pageStack.insertArrangedSubview(addView(), at: 0)
+        
+        guard let addImage = OrbitPagerSettings.addImage
+        else { fatalError("Cannot get add image") }
+        pageStack.addArrangedSubview(OrbitPagerPageView(image: addImage))
         
         categoryLabel.lineBreakMode = .byClipping
         
@@ -256,47 +269,73 @@ fileprivate class OrbitPagerCategoryView: UIView {
             borderView.leadingAnchor.constraint(equalTo: leadingAnchor),
             borderView.topAnchor.constraint(equalTo: topAnchor),
             borderView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            borderView.widthAnchor.constraint(equalToConstant: 1),
+            borderView.widthAnchor.constraint(equalToConstant: OrbitPagerSettings.borderWidth),
             
-            pageStack.leadingAnchor.constraint(equalTo: borderView.trailingAnchor, constant: 2),
-            pageStack.topAnchor.constraint(equalTo: topAnchor, constant: 2),
+            pageStack.leadingAnchor.constraint(equalTo: borderView.trailingAnchor),
+            pageStack.topAnchor.constraint(equalTo: topAnchor, constant: OrbitPagerSettings.pageTopSpacing),
             pageStack.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor),
             
-            categoryLabel.leadingAnchor.constraint(equalTo: borderView.trailingAnchor, constant: 2),
-            categoryLabel.topAnchor.constraint(equalTo: pageStack.bottomAnchor),
+            categoryLabel.leadingAnchor.constraint(equalTo: borderView.trailingAnchor, constant: OrbitPagerSettings.labelLeftSpacing),
+            categoryLabel.topAnchor.constraint(equalTo: pageStack.bottomAnchor, constant: OrbitPagerSettings.labelTopSpacing),
             categoryLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor),
             categoryLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
         ]
         NSLayoutConstraint.activate(constraints)
         
         let breakableConstraints = [
-            pageStack.trailingAnchor.constraint(equalTo: trailingAnchor),
-            categoryLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            widthAnchor.constraint(equalToConstant: 0)
         ]
-        breakableConstraints.forEach { $0.priority = .init(rawValue: 999) }
+        breakableConstraints.forEach { $0.priority = .init(rawValue: 750) }
         NSLayoutConstraint.activate(breakableConstraints)
-    }
-    
-    private func itemView() -> UIImageView {
-        guard let image = OrbitPagerView.itemImage
-        else { fatalError("Cannot get dot image") }
-        let view = UIImageView(image: image)
-        view.setContentHuggingPriority(.required, for: .horizontal)
-        view.setContentCompressionResistancePriority(.required, for: .horizontal)
-        return view
-    }
-    
-    private func addView() -> UIImageView {
-        guard let image = OrbitPagerView.addImage
-        else { fatalError("Cannot get add image") }
-        let view = UIImageView(image: image)
-        view.setContentHuggingPriority(.required, for: .horizontal)
-        view.setContentCompressionResistancePriority(.required, for: .horizontal)
-        return view
     }
     
     private let addNewCount = 1
     private var borderView = UIView()
     private var pageStack = UIStackView()
     private var categoryLabel = UILabel()
+    
+    private var pageStackViews: [OrbitPagerPageView] {
+        pageStack.arrangedSubviews as! [OrbitPagerPageView]
+    }
+}
+
+fileprivate class OrbitPagerPageView: UIView {
+    let imageView: UIImageView
+    
+    var color: UIColor {
+        didSet {
+            imageView.tintColor = color
+        }
+    }
+    
+    init(image: UIImage) {
+        imageView = UIImageView(image: image)
+        color = UIColor.placeholderText
+        
+        super.init(frame: CGRect.zero)
+        
+        addSubview(imageView)
+        
+        translatesAutoresizingMaskIntoConstraints = false
+        setContentHuggingPriority(.required, for: .horizontal)
+        setContentCompressionResistancePriority(.required, for: .horizontal)
+        setContentHuggingPriority(.required, for: .vertical)
+        setContentCompressionResistancePriority(.required, for: .vertical)
+        
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.setContentHuggingPriority(.required, for: .horizontal)
+        imageView.setContentCompressionResistancePriority(.required, for: .horizontal)
+        imageView.setContentHuggingPriority(.required, for: .vertical)
+        imageView.setContentCompressionResistancePriority(.required, for: .vertical)
+        
+        widthAnchor.constraint(equalToConstant: OrbitPagerSettings.pageWidth).isActive = true
+        
+        imageView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        imageView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        imageView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
