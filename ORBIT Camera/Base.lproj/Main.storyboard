@@ -68,7 +68,7 @@
                                 </connections>
                             </collectionView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bqO-YL-mhJ">
-                                <rect key="frame" x="361" y="450" width="37" height="37"/>
+                                <rect key="frame" x="373.5" y="462.5" width="24.5" height="24.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <accessibility key="accessibilityConfiguration" hint="Takes you to the camera page" label="Add new video"/>
                                 <constraints>
@@ -77,11 +77,6 @@
                                 <state key="normal" image="plus" catalog="system">
                                     <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large" weight="bold"/>
                                 </state>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="33"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="addNewPageShortcutButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="7Ns-HG-ihN"/>
                                 </connections>

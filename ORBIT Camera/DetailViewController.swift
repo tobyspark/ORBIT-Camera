@@ -726,6 +726,8 @@ class DetailViewController: UIViewController {
             detailItem = try? dbQueue.read { db in try Thing.fetchOne(db) }
         }
         
+        addNewPageShortcutButton.layer.cornerRadius = addNewPageShortcutButton.bounds.height/2
+        
         configureView()
     }
     
