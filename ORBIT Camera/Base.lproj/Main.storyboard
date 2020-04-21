@@ -310,17 +310,17 @@
                                 </constraints>
                             </stackView>
                             <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="W2K-Cg-gTu" userLabel="Video Paging View">
-                                <rect key="frame" x="157" y="450" width="100" height="37"/>
+                                <rect key="frame" x="157" y="462.5" width="100" height="24.5"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ugq-hc-4Q0" customClass="OrbitPagerView" customModule="ORBIT_Camera" customModuleProvider="target">
                                         <rect key="frame" x="8" y="0.0" width="84" height="0.0"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kkB-or-vdo" userLabel="Label Kind Stack View">
-                                        <rect key="frame" x="11.5" y="0.0" width="77" height="33"/>
+                                        <rect key="frame" x="29" y="0.0" width="42" height="20.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="971-XG-rDU">
-                                                <rect key="frame" x="0.0" y="0.0" width="42" height="33"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="42" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -328,15 +328,6 @@
                                                     <userDefinedRuntimeAttribute type="boolean" keyPath="isAccessibilityElement" value="NO"/>
                                                 </userDefinedRuntimeAttributes>
                                             </label>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6MK-eG-FRn">
-                                                <rect key="frame" x="42" y="0.0" width="35" height="33"/>
-                                                <accessibility key="accessibilityConfiguration" hint="Sets whether this is a training or test video" label="Video kind"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <state key="normal" title="Kind"/>
-                                                <connections>
-                                                    <action selector="videoLabelKindButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="con-ap-w9C"/>
-                                                </connections>
-                                            </button>
                                         </subviews>
                                     </stackView>
                                 </subviews>
@@ -381,22 +372,15 @@
                                             <action selector="recordButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="6fg-tj-52s"/>
                                         </connections>
                                     </view>
-                                    <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="clh-Z5-Sla" customClass="VideoKindPickerView" customModule="ORBIT_Camera" customModuleProvider="target">
-                                        <rect key="frame" x="265" y="110" width="129" height="100"/>
-                                    </pickerView>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
                                     <constraint firstItem="1ke-NA-qCX" firstAttribute="centerX" secondItem="c1p-EG-7ue" secondAttribute="centerX" id="0Yj-33-CcE"/>
                                     <constraint firstAttribute="trailing" secondItem="0NL-dH-rxH" secondAttribute="trailing" constant="20" symbolic="YES" id="5Iy-PQ-ZTP"/>
-                                    <constraint firstAttribute="trailing" secondItem="clh-Z5-Sla" secondAttribute="trailing" constant="20" symbolic="YES" id="9K3-iF-iRj"/>
-                                    <constraint firstItem="clh-Z5-Sla" firstAttribute="leading" secondItem="1ke-NA-qCX" secondAttribute="trailing" constant="8" symbolic="YES" id="Deh-Tf-NsU"/>
                                     <constraint firstItem="0NL-dH-rxH" firstAttribute="leading" secondItem="c1p-EG-7ue" secondAttribute="leading" constant="20" symbolic="YES" id="FkI-W5-qqQ"/>
                                     <constraint firstItem="1ke-NA-qCX" firstAttribute="centerY" secondItem="c1p-EG-7ue" secondAttribute="centerY" id="VSD-N9-Woq"/>
                                     <constraint firstAttribute="height" constant="320" id="XyU-oE-jbW"/>
-                                    <constraint firstItem="clh-Z5-Sla" firstAttribute="centerY" secondItem="1ke-NA-qCX" secondAttribute="centerY" id="Y3q-ht-cJL"/>
                                     <constraint firstItem="0NL-dH-rxH" firstAttribute="top" secondItem="c1p-EG-7ue" secondAttribute="top" id="ecl-Lw-BdN"/>
-                                    <constraint firstItem="clh-Z5-Sla" firstAttribute="height" secondItem="1ke-NA-qCX" secondAttribute="height" id="u5E-aN-Jh6"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -431,12 +415,10 @@
                         <outlet property="cameraControlView" destination="c1p-EG-7ue" id="ICN-PS-Way"/>
                         <outlet property="cameraControlYConstraint" destination="27Y-Dc-F5G" id="pwH-ph-j7G"/>
                         <outlet property="recordButton" destination="1ke-NA-qCX" id="ezf-Xd-TUp"/>
-                        <outlet property="recordTypePicker" destination="clh-Z5-Sla" id="R1C-WW-GbE"/>
                         <outlet property="thingNavigationItem" destination="mOI-FS-AaM" id="jez-io-TVJ"/>
                         <outlet property="videoCollectionView" destination="5oc-lW-9vf" id="uQ7-7e-jO7"/>
                         <outlet property="videoDeleteButton" destination="m1S-o9-9xV" id="0Ic-hl-C2g"/>
                         <outlet property="videoLabel" destination="971-XG-rDU" id="lgl-aR-nyM"/>
-                        <outlet property="videoLabelKindButton" destination="6MK-eG-FRn" id="jwI-RQ-zT4"/>
                         <outlet property="videoPageControl" destination="Ugq-hc-4Q0" id="k1k-d2-wO2"/>
                         <outlet property="videoPagingView" destination="W2K-Cg-gTu" id="wvO-1Q-k7k"/>
                         <outlet property="videoPagingViewYConstraint" destination="OYh-bj-FHp" id="ics-xg-Xb4"/>
