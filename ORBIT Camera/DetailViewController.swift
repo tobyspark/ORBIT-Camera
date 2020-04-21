@@ -19,7 +19,6 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var addNewPageShortcutButton: UIButton!
     @IBOutlet weak var videoPagingView: UIView!
     @IBOutlet weak var videoPageControl: OrbitPagerView!
-    @IBOutlet weak var videoLabel: UILabel!
     @IBOutlet weak var videoPagingViewYConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var videoStatusView: UIStackView!
@@ -252,25 +251,19 @@ class DetailViewController: UIViewController {
         }
         
         // Update video label
-        let pageDescription: String
         let accessibilityDescription: String
         switch pageStyle {
         case .addNew:
-            pageDescription = "Add new \(pageKind.verboseDescription) video"
             accessibilityDescription = "Camera selected, adds a new \(pageKind.verboseDescription) video to the collection."
         case .rerecord:
-            pageDescription = "Re-record \(pageKind.verboseDescription) video \(pageKindIndex + 1) of \(pageKindVideoCount)"
-            accessibilityDescription = pageDescription
+            accessibilityDescription = "Re-record \(pageKind.verboseDescription) video \(pageKindIndex + 1) of \(pageKindVideoCount)"
         case .status:
-            pageDescription = "\(pageKind.verboseDescription) video \(pageKindIndex + 1) of \(pageKindVideoCount)"
             assert(pageVideo != nil, "pageVideo should be valid")
             let isNew = pageVideo!.recorded > Date(timeIntervalSinceNow: -5) ? "New! " : ""
             accessibilityDescription = "\(isNew)\(pageKind.verboseDescription) video \(pageKindIndex + 1) of \(pageKindVideoCount) selected."
         case .disable:
-            pageDescription = ""
             accessibilityDescription = ""
         }
-        videoLabel.text = pageDescription
         pagerElement.accessibilityValue = accessibilityDescription
         
         // Update statuses
