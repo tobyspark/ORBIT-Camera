@@ -20,7 +20,6 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var videoPagingView: UIView!
     @IBOutlet weak var videoPageControl: OrbitPagerView!
     @IBOutlet weak var videoLabel: UILabel!
-    @IBOutlet weak var videoLabelKindButton: UIButton!
     @IBOutlet weak var videoPagingViewYConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var videoStatusView: UIStackView!
@@ -39,7 +38,6 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var cameraControlYConstraint: NSLayoutConstraint!
     @IBOutlet weak var cameraControlHConstraint: NSLayoutConstraint!
     @IBOutlet weak var recordButton: RecordButton!
-    @IBOutlet weak var recordTypePicker: VideoKindPickerView!
     
     lazy var addNewElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var pagerElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
@@ -455,25 +453,25 @@ class DetailViewController: UIViewController {
         
         cameraRecordTypeElement.accessibilityLabel = "Video classification selector"
         cameraRecordTypeElement.accessibilityHint = "Adjust to set whether the video to be taken is a training or test video"
-        self.cameraRecordTypeElement.accessibilityValue = "\(self.recordTypePicker.kind.description) selected)"
+//        self.cameraRecordTypeElement.accessibilityValue = "\(self.recordTypePicker.kind.description) selected)"
         cameraRecordTypeElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
         cameraRecordTypeElement.incrementClosure = { [weak self] in
-            guard let self = self
-            else { return }
-            // Set in main UI
-            self.recordTypePicker.incrementSelection()
-            
-            // Update accessibility value
-            self.cameraRecordTypeElement.accessibilityValue = "\(self.recordTypePicker.kind.description) selected)"
+//            guard let self = self
+//            else { return }
+//            // Set in main UI
+//            self.recordTypePicker.incrementSelection()
+//
+//            // Update accessibility value
+//            self.cameraRecordTypeElement.accessibilityValue = "\(self.recordTypePicker.kind.description) selected)"
         }
         cameraRecordTypeElement.decrementClosure = { [weak self] in
-            guard let self = self
-            else { return }
-            // Set in main UI
-            self.recordTypePicker.decrementSelection()
-            
-            // Update accessibility value
-            self.cameraRecordTypeElement.accessibilityValue = "\(self.recordTypePicker.kind.description) selected)"
+//            guard let self = self
+//            else { return }
+//            // Set in main UI
+//            self.recordTypePicker.decrementSelection()
+//
+//            // Update accessibility value
+//            self.cameraRecordTypeElement.accessibilityValue = "\(self.recordTypePicker.kind.description) selected)"
         }
     }
     
@@ -588,40 +586,6 @@ class DetailViewController: UIViewController {
         // Action going to the page, will start the scroll
         pageIndex = videoPageControl.pageIndexForCurrentAddNew!
     }
-    
-    /// Action the video corresponding to page
-    @IBAction func pageControlAction(sender: UIPageControl) {
-        pageIndex = sender.currentPage
-    }
-    
-    @IBAction func videoLabelKindButtonAction(sender: UIButton) {
-//        guard var video = videos[safe: pageIndex]
-//        else {
-//            os_log("videoLabelKindButtonAction with no video for page")
-//            return
-//        }
-//
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//        let videoKindViewController = storyboard.instantiateViewController(identifier: "VideoKindViewController") as VideoKindPickerViewController
-//
-//        // Style as popover and set anchor
-//        videoKindViewController.modalPresentationStyle = .popover
-//        videoKindViewController.popoverPresentationController?.sourceRect = sender.bounds
-//        videoKindViewController.popoverPresentationController?.sourceView = sender
-//
-//        // VideoKindController overrides adaptive presentation, so here ensures always popover (i.e. and not a form sheet on compact size classes)
-//        videoKindViewController.popoverPresentationController?.delegate = videoKindViewController
-//
-//        // Handle choice on dismiss
-//        videoKindViewController.dismissHandler = { kind in
-//            video.kind = kind
-//            try! dbQueue.write { db in try video.save(db) } // FIXME: try!
-//            self.configurePage()
-//        }
-//
-//        // Present!
-//        self.present(videoKindViewController, animated: true, completion: nil)
-    }
 
     /// Action a video recording. This might be a new video, or the re-recording of an existing one.
     @IBAction func recordButtonAction(sender: RecordButton) {
@@ -640,10 +604,6 @@ class DetailViewController: UIViewController {
                     os_log("Could not delete previous recording to re-record")
                     return
                 }
-                
-                // Update kind from camera controls
-                video.kind = recordTypePicker.kind
-                try! dbQueue.write { db in try video.save(db) } // FIXME: try!
                 
                 // Go, configuring completion handler that updates the UI
                 let videoPageIndex = pageIndex
@@ -697,7 +657,6 @@ class DetailViewController: UIViewController {
             
             // Disable any navigation etc. while recording!
             //videoPageControl.isEnabled = false // FIXME
-            recordTypePicker.isUserInteractionEnabled = false
             navigationItem.hidesBackButton = true
             accessibilityElements = [cameraRecordElement]
             cameraRecordElement.accessibilityFrame = UIAccessibility.convertToScreenCoordinates(view.bounds, in: view)
@@ -706,7 +665,6 @@ class DetailViewController: UIViewController {
             
             // Allow navigation again
             //videoPageControl.isEnabled = true // FIXME
-            recordTypePicker.isUserInteractionEnabled = true
             navigationItem.hidesBackButton = false
             accessibilityElements = [pagerElement] // page refresh on database write will deal with this properly
             layoutAccessibilityElements()
