@@ -86,6 +86,13 @@ class DetailViewController: UIViewController {
                             let difference = videos.difference(from: self.videos[kind]!)
                             self.videoCollectionView.performBatchUpdates({
                                 self.videos[kind] = videos
+                                
+                                // Update pager, from which the collection view pulls its number of pages etc.
+                                self.videoPageControl.categoryCounts = Video.Kind.allCases.map({ kind in
+                                    (kind.description, self.videos[kind]!.count)
+                                })
+                                
+                                // Now update collection view
                                 for change in difference {
                                     switch change {
                                     case let .remove(offset, _, _):
@@ -96,18 +103,13 @@ class DetailViewController: UIViewController {
                                         self.videoCollectionView.insertItems(at: [IndexPath(row: pageIndex, section: 0)])
                                     }
                                 }
-                            }, completion: nil)
-                            
-                            // Page state via video kind counts
-                            self.videoPageControl.categoryCounts = Video.Kind.allCases.map({ kind in
-                                (kind.description, self.videos[kind]!.count)
+                            }, completion: { _ in
+                                // Page state via page index
+                                self.configurePage()
+                                
+                                // Page state via collection view position
+                                self.scrollViewDidScroll(self.videoCollectionView)
                             })
-                            
-                            // Page state via page index
-                            self.configurePage()
-                            
-                            // Page state via collection view position
-                            self.scrollViewDidScroll(self.videoCollectionView)
                         }
                     )
                 }
