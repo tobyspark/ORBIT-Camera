@@ -13,8 +13,8 @@ typealias CategoryCounts = [(String, Int)]
 
 /// Akin to UIPageControl, OrbitPagerView displays a row of dots corresponding to pages. However here, these dots are sectioned into categories, and each section has an 'add new' page at the end.
 class OrbitPagerView: UIView {
-    /// The page marker image
-    static var dotImage = UIImage(
+    /// The page marker image for an item (in UIPageControl, a dot)
+    static var itemImage = UIImage(
         systemName: "circle.fill",
         withConfiguration: UIImage.SymbolConfiguration(
             pointSize: 7
@@ -51,6 +51,7 @@ class OrbitPagerView: UIView {
         }
     }
     
+    /// The set of page indexes that are 'add new' pages
     var addNewPageIndexes: IndexSet {
         get {
             var indexes: [Int] = []
@@ -63,6 +64,7 @@ class OrbitPagerView: UIView {
         }
     }
     
+    /// The page index for the 'add new' page of the category containing the currently selected page
     var pageIndexForCurrentAddNew: Int? {
         get {
             var categoryStartCount = 0
@@ -76,6 +78,7 @@ class OrbitPagerView: UIView {
         }
     }
     
+    /// The page index corresponding to the category, and index within that category
     func pageIndexFor(category: String, index: Int) -> Int? {
         var categoryStartCount = 0
         for categoryView in categoryViews {
@@ -87,6 +90,7 @@ class OrbitPagerView: UIView {
         return nil
     }
     
+    /// The name of the category containing the currently selected page
     var currentCategoryName: String? {
         get {
             for categoryView in categoryViews {
@@ -98,6 +102,7 @@ class OrbitPagerView: UIView {
         }
     }
     
+    /// The index within the category of the currently selected page
     var currentCategoryIndex: Int? {
         get {
             for categoryView in categoryViews {
@@ -108,11 +113,13 @@ class OrbitPagerView: UIView {
             return nil
         }
     }
-
+    
+    /// The total number of pages
     var pageCount: Int {
         get { categoryViews.reduce(0) { $0 + $1.pageCount} }
     }
     
+    /// The index within the category corresponding to the overall page index
     func categoryIndex(pageIndex: Int) -> (String, Int)? {
         var categoryStartIndex = 0
         for categoryView in categoryViews {
@@ -189,12 +196,12 @@ fileprivate class OrbitPagerCategoryView: UIView {
 
     var itemCount: Int = 0 {
         didSet {
-            while dotStack.arrangedSubviews.count - addNewCount < itemCount {
-                dotStack.insertArrangedSubview(dotView(), at: 0)
+            while pageStack.arrangedSubviews.count - addNewCount < itemCount {
+                pageStack.insertArrangedSubview(itemView(), at: 0)
             }
-            while dotStack.arrangedSubviews.count - addNewCount > itemCount {
-                let view = dotStack.arrangedSubviews[0]
-                dotStack.removeArrangedSubview(view)
+            while pageStack.arrangedSubviews.count - addNewCount > itemCount {
+                let view = pageStack.arrangedSubviews[0]
+                pageStack.removeArrangedSubview(view)
                 view.removeFromSuperview()
             }
             layoutIfNeeded()
@@ -209,7 +216,7 @@ fileprivate class OrbitPagerCategoryView: UIView {
     
     var pageIndex: Int? {
         didSet {
-            for (index, view) in dotStack.arrangedSubviews.enumerated() {
+            for (index, view) in pageStack.arrangedSubviews.enumerated() {
                 view.tintColor = (index == pageIndex) ? UIColor.label : UIColor.placeholderText
             }
         }
@@ -228,21 +235,21 @@ fileprivate class OrbitPagerCategoryView: UIView {
     func initCommon() {
         borderView.backgroundColor = UIColor.label
         
-        dotStack.axis = .horizontal
-        dotStack.spacing = 7
-        dotStack.distribution = .fillProportionally
-        dotStack.alignment = .center
-        dotStack.insertArrangedSubview(addView(), at: 0)
+        pageStack.axis = .horizontal
+        pageStack.spacing = 7
+        pageStack.distribution = .fillProportionally
+        pageStack.alignment = .center
+        pageStack.insertArrangedSubview(addView(), at: 0)
         
         categoryLabel.lineBreakMode = .byClipping
         
         translatesAutoresizingMaskIntoConstraints = false
         borderView.translatesAutoresizingMaskIntoConstraints = false
-        dotStack.translatesAutoresizingMaskIntoConstraints = false
+        pageStack.translatesAutoresizingMaskIntoConstraints = false
         categoryLabel.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(borderView)
-        addSubview(dotStack)
+        addSubview(pageStack)
         addSubview(categoryLabel)
         
         let constraints = [
@@ -251,27 +258,27 @@ fileprivate class OrbitPagerCategoryView: UIView {
             borderView.bottomAnchor.constraint(equalTo: bottomAnchor),
             borderView.widthAnchor.constraint(equalToConstant: 1),
             
-            dotStack.leadingAnchor.constraint(equalTo: borderView.trailingAnchor, constant: 2),
-            dotStack.topAnchor.constraint(equalTo: topAnchor, constant: 2),
-            dotStack.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor),
+            pageStack.leadingAnchor.constraint(equalTo: borderView.trailingAnchor, constant: 2),
+            pageStack.topAnchor.constraint(equalTo: topAnchor, constant: 2),
+            pageStack.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor),
             
             categoryLabel.leadingAnchor.constraint(equalTo: borderView.trailingAnchor, constant: 2),
-            categoryLabel.topAnchor.constraint(equalTo: dotStack.bottomAnchor),
+            categoryLabel.topAnchor.constraint(equalTo: pageStack.bottomAnchor),
             categoryLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor),
             categoryLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
         ]
         NSLayoutConstraint.activate(constraints)
         
         let breakableConstraints = [
-            dotStack.trailingAnchor.constraint(equalTo: trailingAnchor),
+            pageStack.trailingAnchor.constraint(equalTo: trailingAnchor),
             categoryLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
         ]
         breakableConstraints.forEach { $0.priority = .init(rawValue: 999) }
         NSLayoutConstraint.activate(breakableConstraints)
     }
     
-    private func dotView() -> UIImageView {
-        guard let image = OrbitPagerView.dotImage
+    private func itemView() -> UIImageView {
+        guard let image = OrbitPagerView.itemImage
         else { fatalError("Cannot get dot image") }
         let view = UIImageView(image: image)
         view.setContentHuggingPriority(.required, for: .horizontal)
@@ -290,6 +297,6 @@ fileprivate class OrbitPagerCategoryView: UIView {
     
     private let addNewCount = 1
     private var borderView = UIView()
-    private var dotStack = UIStackView()
+    private var pageStack = UIStackView()
     private var categoryLabel = UILabel()
 }
