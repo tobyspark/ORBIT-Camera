@@ -39,11 +39,11 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var cameraControlHConstraint: NSLayoutConstraint!
     @IBOutlet weak var recordButton: RecordButton!
     
+    lazy var kindElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var addNewElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
     lazy var pagerElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
 
     lazy var detailHeaderElement = UIAccessibilityElement(accessibilityContainer: view!)
-    lazy var kindElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
     lazy var recordedElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var rerecordElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var uploadedElement = UIAccessibilityElement(accessibilityContainer: view!)
@@ -341,6 +341,27 @@ class DetailViewController: UIViewController {
     }
     
     func configureAccessibilityElements() {
+        // Kind element mocks a UISegmentedControl
+        kindElement.isAccessibilityElement = false
+        kindElement.accessibilityElements = Video.Kind.allCases.map { kind in
+            let segment = AccessibilityElementUsingClosures(accessibilityContainer: kindElement)
+            segment.accessibilityLabel = kind.description
+            segment.accessibilityHint = "Activate to add \(kind.verboseDescription) videos, or review ones you have already taken."
+            segment.accessibilityTraits = super.accessibilityTraits.union(.button)
+            segment.activateClosure = { [weak self] in
+                guard let self = self
+                else { return false }
+                
+                let prefix = "Selected. "
+                (self.kindElement.accessibilityElements! as! [UIAccessibilityElement])
+                    .filter { $0.accessibilityLabel!.hasPrefix(prefix) }
+                    .forEach { $0.accessibilityLabel = String($0.accessibilityLabel!.dropFirst(prefix.count)) }
+                segment.accessibilityLabel = prefix + segment.accessibilityLabel!
+                self.pageIndex = self.videoPageControl.pageIndexFor(category: kind.description, index: 0)!
+                return true
+            }
+            return segment
+        }
         addNewElement.accessibilityLabel = "Add new video"
         addNewElement.accessibilityHint = "Brings up the camera controls"
         addNewElement.accessibilityTraits = super.accessibilityTraits.union(.button)
@@ -350,31 +371,6 @@ class DetailViewController: UIViewController {
             // Action even when UIButton is hidden
             self.addNewPageShortcutButtonAction(sender: self.addNewPageShortcutButton)
             return true
-        }
-        
-        kindElement.accessibilityLabel = "Video classification selector."
-        kindElement.accessibilityHint = "Adjust to select what kinds of videos you want to record and review."
-        kindElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
-        kindElement.accessibilityValue = videoPageControl.currentCategoryName
-        kindElement.incrementClosure = { [weak self] in
-            guard let self = self
-            else { return }
-            
-            let kindIndex = Video.Kind.allCases.firstIndex(of: self.pageKind)!
-            if let kind = Video.Kind.allCases[safe: kindIndex + 1] {
-                self.pageIndex = self.videoPageControl.pageIndexFor(category: kind.description, index: 0)!
-                self.kindElement.accessibilityValue = "\(kind.description) selected"
-            }
-        }
-        kindElement.decrementClosure = { [weak self] in
-            guard let self = self
-            else { return }
-            
-            let kindIndex = Video.Kind.allCases.firstIndex(of: self.pageKind)!
-            if let kind = Video.Kind.allCases[safe: kindIndex - 1] {
-                self.pageIndex = self.videoPageControl.pageIndexFor(category: kind.description, index: 0)!
-                self.kindElement.accessibilityValue = "\(kind.description) selected"
-            }
         }
         pagerElement.accessibilityLabel = "Video review selector"
         pagerElement.accessibilityHint = "Adjust to change the video detailed below"
@@ -468,6 +464,7 @@ class DetailViewController: UIViewController {
         let deleteFrame = UIAccessibility.convertToScreenCoordinates(videoDeleteButton.bounds, in: videoDeleteButton)
         
         let viewWidthLessAddNew = addNewFrame.minX - viewFrame.minX
+        let segmentWidth = viewWidthLessAddNew / CGFloat(kindElement.accessibilityElements!.count)
         
         // A strip running down the RHS of the screen, for physical findability
         addNewElement.accessibilityFrame = CGRect(
@@ -483,6 +480,14 @@ class DetailViewController: UIViewController {
             width: viewWidthLessAddNew,
             height: pagerFrame.minY - videoFrame.minY
         )
+        for (index, segment) in (kindElement.accessibilityElements! as! [UIAccessibilityElement]).enumerated() {
+            segment.accessibilityFrame = CGRect(
+                x: kindElement.accessibilityFrame.minX + CGFloat(index)*segmentWidth,
+                y: kindElement.accessibilityFrame.minY,
+                width: segmentWidth,
+                height: kindElement.accessibilityFrame.height
+            )
+        }
         pagerElement.accessibilityFrame = CGRect(
             x: viewFrame.minX,
             y: pagerFrame.minY,
