@@ -24,7 +24,7 @@ struct OrbitPagerSettings {
     static let addImage = UIImage(
         systemName: "plus",
         withConfiguration: UIImage.SymbolConfiguration(
-            pointSize: 7,
+            pointSize: 10,
             weight: .black
         )
     )
@@ -36,6 +36,7 @@ struct OrbitPagerSettings {
     static let labelLeftSpacing: CGFloat = 3
     static let emphasiseSelectedLabel = true
     static let expandSelectedLabel = false
+    static let trimNameWhenUnselected = true
 }
 
 /// Akin to UIPageControl, OrbitPagerView displays a row of dots corresponding to pages. However here, these dots are sectioned into categories, and each section has an 'add new' page at the end.
@@ -237,19 +238,21 @@ fileprivate class OrbitPagerCategoryView: UIView {
                 view.color = (index == pageIndex) ? UIColor.label : UIColor.placeholderText
             }
             if OrbitPagerSettings.emphasiseSelectedLabel {
-                if pageIndex == nil {
-                    categoryLabel.textColor = .placeholderText
-                } else {
-                    categoryLabel.textColor = .label
+                categoryLabel.textColor = (pageIndex == nil) ? .placeholderText : .label
+            }
+            if OrbitPagerSettings.trimNameWhenUnselected {
+                if let firstWord = self.name.split(separator: " ").first {
+                    self.categoryLabel.text = (self.pageIndex == nil) ? String(firstWord) : self.name
                 }
             }
             if OrbitPagerSettings.expandSelectedLabel {
-                if self.pageIndex == nil {
-                    self.categoryLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-                } else {
-                    self.categoryLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
-                }
-                UIView.animate(withDuration: 0.2) {
+                self.categoryLabel.setContentCompressionResistancePriority(
+                    (self.pageIndex == nil) ? .defaultLow : .required,
+                    for: .horizontal
+                )
+            }
+            if OrbitPagerSettings.trimNameWhenUnselected || OrbitPagerSettings.expandSelectedLabel {
+                UIView.animate(withDuration: 0.3) {
                     self.superview!.layoutIfNeeded()
                 }
             }
