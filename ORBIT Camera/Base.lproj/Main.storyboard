@@ -309,7 +309,7 @@
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ugq-hc-4Q0" customClass="OrbitPagerView" customModule="ORBIT_Camera" customModuleProvider="target">
                                         <rect key="frame" x="8" y="0.0" width="84" height="0.0"/>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kkB-or-vdo" userLabel="Label Kind Stack View">
                                         <rect key="frame" x="29" y="0.0" width="42" height="20.5"/>
