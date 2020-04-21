@@ -306,7 +306,7 @@ class DetailViewController: UIViewController {
         switch pageStyle {
         case .disable:
             view.accessibilityElements = []
-            UIAccessibility.focus(element: nil)
+            UIAccessibility.post(notification: .layoutChanged, argument: nil)
         case .status:
             view.accessibilityElements = [
                 kindElement,
@@ -320,6 +320,7 @@ class DetailViewController: UIViewController {
                 publishedElement,
                 deleteElement
             ]
+            UIAccessibility.post(notification: .layoutChanged, argument: nil)
         case .rerecord:
             view.accessibilityElements = [
                 kindElement,
@@ -328,18 +329,14 @@ class DetailViewController: UIViewController {
                 cameraHeaderElement,
                 cameraRecordElement
             ]
+            UIAccessibility.post(notification: .layoutChanged, argument: nil)
         case .addNew:
             view.accessibilityElements = [
                 kindElement,
                 addNewElement
+                // Accessibility flow is different. Actioning add new sets the camera elements.
             ]
-        }
-        if let focussedElement = UIAccessibility.focusedElement(using: nil) as? UIAccessibilityElement,
-            let focussedElements = view.accessibilityElements as? [UIAccessibilityElement],
-            !focussedElements.contains(focussedElement)
-        {
-            os_log("Stale UIAccessibility focussedElement. Refocussing")
-            UIAccessibility.focus(element: focussedElements[0])
+            UIAccessibility.post(notification: .layoutChanged, argument: nil)
         }
     }
     
