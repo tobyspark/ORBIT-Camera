@@ -34,6 +34,8 @@ struct OrbitPagerSettings {
     static let pageTopSpacing: CGFloat = 2
     static let labelTopSpacing: CGFloat = 4
     static let labelLeftSpacing: CGFloat = 3
+    static let emphasiseSelectedLabel = true
+    static let expandSelectedLabel = false
 }
 
 /// Akin to UIPageControl, OrbitPagerView displays a row of dots corresponding to pages. However here, these dots are sectioned into categories, and each section has an 'add new' page at the end.
@@ -175,8 +177,13 @@ class OrbitPagerView: UIView {
     }
     
     private func initCommon() {
+        translatesAutoresizingMaskIntoConstraints = false
+        let width = widthAnchor.constraint(equalToConstant: 0)
+        width.priority = UILayoutPriority(rawValue: 999)
+        width.isActive = true
+        
         stack.axis = .horizontal
-        stack.spacing = 7
+        stack.spacing = OrbitPagerSettings.labelLeftSpacing
         stack.distribution = .fillProportionally
         stack.alignment = .center
         
@@ -228,6 +235,23 @@ fileprivate class OrbitPagerCategoryView: UIView {
         didSet {
             for (index, view) in pageStackViews.enumerated() {
                 view.color = (index == pageIndex) ? UIColor.label : UIColor.placeholderText
+            }
+            if OrbitPagerSettings.emphasiseSelectedLabel {
+                if pageIndex == nil {
+                    categoryLabel.textColor = .placeholderText
+                } else {
+                    categoryLabel.textColor = .label
+                }
+            }
+            if OrbitPagerSettings.expandSelectedLabel {
+                if self.pageIndex == nil {
+                    self.categoryLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+                } else {
+                    self.categoryLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+                }
+                UIView.animate(withDuration: 0.2) {
+                    self.superview!.layoutIfNeeded()
+                }
             }
         }
     }
@@ -287,6 +311,8 @@ fileprivate class OrbitPagerCategoryView: UIView {
         ]
         breakableConstraints.forEach { $0.priority = .init(rawValue: 750) }
         NSLayoutConstraint.activate(breakableConstraints)
+        
+        categoryLabel.setContentCompressionResistancePriority(OrbitPagerSettings.expandSelectedLabel ? .defaultLow : .required, for: .horizontal)
     }
     
     private let addNewCount = 1
