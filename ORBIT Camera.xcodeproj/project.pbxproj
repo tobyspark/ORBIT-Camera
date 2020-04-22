@@ -10,6 +10,7 @@
 		4B3119AB245091ED00E28452 /* Ink in Frameworks */ = {isa = PBXBuildFile; productRef = 4B3119AA245091ED00E28452 /* Ink */; };
 		4B3119AE2450977100E28452 /* TutorialScript.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4B3119AC2450977100E28452 /* TutorialScript.markdown */; };
 		4B3119AF2450977100E28452 /* Introduction.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4B3119AD2450977100E28452 /* Introduction.markdown */; };
+		4B3119B12451030B00E28452 /* UIColor+CSS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3119B02451030B00E28452 /* UIColor+CSS.swift */; };
 		4B318B0524404CA4001F9874 /* Collection+Cycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B318B0424404CA4001F9874 /* Collection+Cycle.swift */; };
 		4B3D772624332C740077DFD0 /* VideoKindPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3D772524332C740077DFD0 /* VideoKindPickerView.swift */; };
 		4B5A6B992424CB9200A5C45B /* NewThingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5A6B982424CB9200A5C45B /* NewThingCell.swift */; };
@@ -72,6 +73,7 @@
 /* Begin PBXFileReference section */
 		4B3119AC2450977100E28452 /* TutorialScript.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = TutorialScript.markdown; path = Resources/TutorialScript.markdown; sourceTree = SOURCE_ROOT; };
 		4B3119AD2450977100E28452 /* Introduction.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = Introduction.markdown; path = Resources/Introduction.markdown; sourceTree = SOURCE_ROOT; };
+		4B3119B02451030B00E28452 /* UIColor+CSS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSS.swift"; sourceTree = "<group>"; };
 		4B318B0424404CA4001F9874 /* Collection+Cycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Cycle.swift"; sourceTree = "<group>"; };
 		4B3707B52436161100254ABF /* AppUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUploader.swift; sourceTree = "<group>"; };
 		4B3D77222432156B0077DFD0 /* README.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.markdown; sourceTree = "<group>"; };
@@ -201,6 +203,7 @@
 				4BF14BC22405730900E31D93 /* Assets.xcassets */,
 				4BF14BC42405730900E31D93 /* LaunchScreen.storyboard */,
 				4BF14BC72405730900E31D93 /* Info.plist */,
+				4B3119B02451030B00E28452 /* UIColor+CSS.swift */,
 			);
 			path = "ORBIT Camera";
 			sourceTree = "<group>";
@@ -360,6 +363,7 @@
 				4B87FD21240D53FC007AB630 /* Video+upload.swift in Sources */,
 				4BF14BBE2405730700E31D93 /* DetailViewController.swift in Sources */,
 				4B87FD0E2406A5DF007AB630 /* Thing+upload.swift in Sources */,
+				4B3119B12451030B00E28452 /* UIColor+CSS.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
