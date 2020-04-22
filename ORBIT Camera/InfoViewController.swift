@@ -130,7 +130,13 @@ class InfoViewController: UIViewController {
             <html>
             <head>
             <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-            <style>body {font-family: system-ui, sans-serif;}</style>
+            <style>
+                body {
+                    font-family: system-ui, sans-serif;
+                    color: \(UIColor.label.css);
+                    background-color: \(UIColor.systemBackground.css);
+                }
+            </style>
             </head>
             <body>
             \(parser.html(from: markdown))
