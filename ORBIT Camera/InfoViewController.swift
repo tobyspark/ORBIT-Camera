@@ -8,6 +8,8 @@
 
 import UIKit
 import GRDB
+import WebKit
+import Ink // Markdown
 import os
 
 class InfoViewController: UIViewController {
@@ -15,8 +17,23 @@ class InfoViewController: UIViewController {
     @IBOutlet weak var unlockCode: UITextField!
     @IBOutlet weak var unlockCodeStatus: UILabel!
     
+    @IBOutlet weak var introWebView: WKWebView!
+    @IBOutlet weak var introWebViewHeightContstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var tutorialWebView: WKWebView!
+    @IBOutlet weak var tutorialWebViewHeightContstraint: NSLayoutConstraint!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        introWebView.navigationDelegate = self
+        let introHTML = html(markdownResource: "Introduction")
+        introWebView.loadHTMLString(introHTML, baseURL: nil)
+        
+        tutorialWebView.navigationDelegate = self
+        let tutorialHTML = html(markdownResource: "TutorialScript")
+        tutorialWebView.loadHTMLString(tutorialHTML, baseURL: nil)
+        
         if let credential = try! Participant.appParticipant().authCredential { // FIXME: try!
             unlockCode.text = credential
             checkCredential(credential)
@@ -97,5 +114,46 @@ class InfoViewController: UIViewController {
                 unlockCodeStatus.text = "Code rejected"
             }
         }
+    }
+    
+    func html(markdownResource: String) -> String {
+        guard let url = Bundle(for: type(of: self)).url(forResource: markdownResource, withExtension: "markdown")
+        else {
+            os_log("Could not find %{public}s.markdown", markdownResource)
+            return ""
+        }
+        
+        do {
+            let markdown = try String(contentsOf: url)
+            let parser = MarkdownParser()
+            return """
+            <html>
+            <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+            <style>body {font-family: system-ui, sans-serif;}</style>
+            </head>
+            <body>
+            \(parser.html(from: markdown))
+            </body>
+            </html>
+            """
+        } catch {
+            print(error)
+            assertionFailure()
+        }
+        return ""
+    }
+}
+
+extension InfoViewController: WKNavigationDelegate {
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        webView.evaluateJavaScript("document.documentElement.scrollHeight", completionHandler: { (height, error) in
+            if webView === self.introWebView {
+                self.introWebViewHeightContstraint.constant = height as! CGFloat
+            }
+            if webView === self.tutorialWebView {
+                self.tutorialWebViewHeightContstraint.constant = height as! CGFloat
+            }
+        })
     }
 }
