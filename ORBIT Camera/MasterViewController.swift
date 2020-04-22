@@ -131,9 +131,9 @@ class MasterViewController: UITableViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        // Default the first voiceover item to the 'add new thing' header
-        let addNewHeader = tableView.headerView(forSection: ThingSection.addNew.rawValue)
-        UIAccessibility.focus(element: addNewHeader)
+        // Announce the screen change
+        // Without this, the element nearest the previous screen's focussed element will become focussed.
+        UIAccessibility.post(notification: .screenChanged, argument: "Things list screen. Nav bar focussed")
         
         // If there is no thing, prompt the user to create one.
         if tableView.numberOfRows(inSection: ThingSection.things.rawValue) == 0 {
@@ -157,13 +157,17 @@ class MasterViewController: UITableViewController {
                         // If we're going ahead, we don't want it still focussed when we unwind back
                         cell.labelField.resignFirstResponder()
                     case .failure(let error):
-                        // If the label isn't adequate, set the field to edit
-                        cell.labelField.becomeFirstResponder()
-                        switch error {
-                        case .blank:
-                            UIAccessibility.post(notification: .announcement, argument: "The thing's name is blank. Please enter it now")
-                        case .tooShort:
-                            UIAccessibility.post(notification: .announcement, argument: "The thing's name is too short. Please enter a more descriptive name")
+                        // Accessible UI: Inform the user, but don't change screen state
+                        if UIAccessibility.isVoiceOverRunning {
+                            switch error {
+                            case .blank:
+                                UIAccessibility.announce(message: "The textfield is blank. Please enter the name there first", delay: .milliseconds(100))
+                            case .tooShort:
+                                UIAccessibility.announce(message: "The name in the textfield is too short. Please enter a more descriptive name", delay: .milliseconds(100))
+                            }
+                        // Visual UI: If the label isn't adequate, set the field to edit
+                        } else {
+                            cell.labelField.becomeFirstResponder()
                         }
                     }
                     // Any addNew selection should not be kept whether if editing or when we unwind back
