@@ -20,6 +20,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var videoPagingView: UIView!
     @IBOutlet weak var videoPageControl: OrbitPagerView!
     @IBOutlet weak var videoPagingViewYConstraint: NSLayoutConstraint!
+    @IBOutlet weak var videoPagingViewWConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var videoStatusView: UIStackView!
     @IBOutlet weak var videoRecordedIcon: UIImageView!
@@ -731,10 +732,11 @@ class DetailViewController: UIViewController {
     // Note: I'd have thought `updateViewConstraints` was the override to use, but it doesn't have the required effect here
     override func viewDidLayoutSubviews() {
         // Layout pager between video and statuses if room. Storyboard defaults it to within video.
-        // Undoubtedly autolayout can do exactly what I want without this manual intervention, but... this works.
+        // Plus, if doing this, widen view to screen width to better capture gestures
         let height = videoPagingView.frame.height + 8
         if videoStatusView.frame.minY - videoCollectionView.frame.maxY > height {
             videoPagingViewYConstraint.constant = height // constant is vertical spacing between video bottom and pager bottom
+            videoPagingViewWConstraint.isActive = true
         }
         
         // Set height of camera control view to cover from bottom of screen up to status view
