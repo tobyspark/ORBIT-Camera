@@ -339,7 +339,8 @@ fileprivate class OrbitPagerPageView: UIView {
     
     init(image: UIImage) {
         imageView = UIImageView(image: image)
-        color = UIColor.placeholderText
+        color = UIColor.placeholderText // init value w/o didSet
+        defer { color = UIColor.placeholderText } // trigger didSet
         
         super.init(frame: CGRect.zero)
         
