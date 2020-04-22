@@ -487,7 +487,7 @@
                                         </textField>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8eN-2e-Foy">
                                             <rect key="frame" x="362" y="0.0" width="52" height="52"/>
-                                            <accessibility key="accessibilityConfiguration" hint="Takes what you entered and creates a new thing with it" label="Add thing"/>
+                                            <accessibility key="accessibilityConfiguration" hint="Creates a new thing and goes to the screen where you can take videos of the thing" label="Add thing"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="8eN-2e-Foy" secondAttribute="height" multiplier="1:1" id="Pbu-bJ-ngs"/>
                                             </constraints>

@@ -205,10 +205,8 @@ class DetailViewController: UIViewController {
         
         // Set title for screen
         self.title = detailItem?.labelParticipant ?? ""
-        if let navItem = navigationController?.navigationBar.topItem,
-           let label = detailItem?.labelParticipant
-        {
-            navItem.accessibilityLabel = "\(label). This screen is about the thing you've named \(label). You can add, remove and re-record videos of the thing."
+        if let label = detailItem?.labelParticipant {
+            thingNavigationItem.accessibilityLabel = "\(label). This screen is about the thing you've named \(label). Choose whether you want the training or testing video collections for this thing, then add videos of the thing. You can also review, re-record, and delete these videos."
         }
         
         // Split view special-cases
@@ -722,6 +720,11 @@ class DetailViewController: UIViewController {
         addNewPageShortcutButton.layer.cornerRadius = addNewPageShortcutButton.bounds.height/2
         
         configureView()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        // Announce the screen change
+        UIAccessibility.post(notification: .screenChanged, argument: "Thing record and review screen. Nav bar focussed")
     }
     
     override func viewWillLayoutSubviews() {
