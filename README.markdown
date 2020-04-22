@@ -1,12 +1,14 @@
 # ORBIT Camera
 
 ## Known issues
-- Thing labels cannot be edited
-- Thing list editing not accessible, i.e. can't delete via voiceover.
-- Re-recording a video does not re-upload
-- AppNetwork.videosSession.tasks is not persisted
+- Thing labels cannot be edited #12
+- Thing list editing not accessible, i.e. can't delete via voiceover. #19
+- Re-recording a video does not re-upload #20
+- AppNetwork.videosSession.tasks is not persisted #24
+- Record should have sonic feedback during recording #14
 
 ## Not yet implemented
+- Help text in info screen
 - Server state changes reflected in app, e.g. video statuses for verified, notifications
 - Deleting a video does not update server
 - Study phases implemented in app
@@ -14,6 +16,10 @@
 - Participant on-boarding
 
 ## Version history
+
+v0.5.4
+- Thing scene has video-kind centric UX
+- PR: [Feature: Thing scene has video kind centric UX](https://github.com/tobyspark/ORBIT-Camera/pull/29)
 
 v0.5.3
 - Improved Thing screen accessibility structure and messaging
