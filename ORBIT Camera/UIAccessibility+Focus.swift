@@ -22,6 +22,20 @@ extension UIAccessibility {
         
         UIAccessibility.post(notification: .layoutChanged, argument: element)
     }
+    
+    /// Trigger announcing the message after a set delay
+    static func announce(message: String, delay: DispatchTimeInterval? = nil) {
+        guard UIAccessibility.isVoiceOverRunning
+        else { return }
+        
+        if let delay = delay {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                UIAccessibility.post(notification: .announcement, argument: message)
+            }
+        } else {
+            UIAccessibility.post(notification: .announcement, argument: message)
+        }
+    }
 }
 
 class AccessibilityElementUsingClosures: UIAccessibilityElement {

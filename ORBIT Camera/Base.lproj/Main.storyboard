@@ -2,7 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="H1p-Uh-vWS">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -67,8 +67,30 @@
                                     <outlet property="delegate" destination="JEX-9P-axG" id="LGa-oN-Oui"/>
                                 </connections>
                             </collectionView>
+                            <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="W2K-Cg-gTu" userLabel="Video Paging View">
+                                <rect key="frame" x="157" y="464.5" width="100" height="22.5"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ugq-hc-4Q0" customClass="OrbitPagerView" customModule="ORBIT_Camera" customModuleProvider="target">
+                                        <rect key="frame" x="8" y="8" width="84" height="6.5"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" priority="250" constant="100" id="DS1-m5-zRK"/>
+                                    <constraint firstAttribute="bottom" secondItem="Ugq-hc-4Q0" secondAttribute="bottom" constant="8" id="YN3-3Z-Czq"/>
+                                    <constraint firstItem="Ugq-hc-4Q0" firstAttribute="leading" secondItem="W2K-Cg-gTu" secondAttribute="leading" constant="8" id="n1r-Hl-6VW"/>
+                                    <constraint firstItem="Ugq-hc-4Q0" firstAttribute="top" secondItem="W2K-Cg-gTu" secondAttribute="top" constant="8" id="sCH-J5-Hdz"/>
+                                    <constraint firstAttribute="trailing" secondItem="Ugq-hc-4Q0" secondAttribute="trailing" constant="8" id="yoe-XH-JTd"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bqO-YL-mhJ">
-                                <rect key="frame" x="332" y="421" width="66" height="66"/>
+                                <rect key="frame" x="375.5" y="464.5" width="22.5" height="22.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <accessibility key="accessibilityConfiguration" hint="Takes you to the camera page" label="Add new video"/>
                                 <constraints>
@@ -77,11 +99,6 @@
                                 <state key="normal" image="plus" catalog="system">
                                     <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="large" weight="bold"/>
                                 </state>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="33"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="addNewPageShortcutButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="7Ns-HG-ihN"/>
                                 </connections>
@@ -309,63 +326,6 @@
                                     <constraint firstAttribute="height" relation="lessThanOrEqual" constant="230" id="oIJ-F1-JN3"/>
                                 </constraints>
                             </stackView>
-                            <view contentMode="scaleToFill" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="W2K-Cg-gTu" userLabel="Video Paging View">
-                                <rect key="frame" x="157" y="421" width="100" height="66"/>
-                                <subviews>
-                                    <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="NGm-Yk-zeV">
-                                        <rect key="frame" x="30.5" y="0.0" width="39" height="37"/>
-                                        <color key="pageIndicatorTintColor" systemColor="placeholderTextColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <color key="currentPageIndicatorTintColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="accessibilityLabel" value="Video selector"/>
-                                        </userDefinedRuntimeAttributes>
-                                        <connections>
-                                            <action selector="pageControlActionWithSender:" destination="JEX-9P-axG" eventType="primaryActionTriggered" id="Q52-hK-yWm"/>
-                                        </connections>
-                                    </pageControl>
-                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kkB-or-vdo" userLabel="Label Kind Stack View">
-                                        <rect key="frame" x="11.5" y="29" width="77" height="33"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="971-XG-rDU">
-                                                <rect key="frame" x="0.0" y="0.0" width="42" height="33"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isAccessibilityElement" value="NO"/>
-                                                </userDefinedRuntimeAttributes>
-                                            </label>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6MK-eG-FRn">
-                                                <rect key="frame" x="42" y="0.0" width="35" height="33"/>
-                                                <accessibility key="accessibilityConfiguration" hint="Sets whether this is a training or test video" label="Video kind"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <state key="normal" title="Kind"/>
-                                                <connections>
-                                                    <action selector="videoLabelKindButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="con-ap-w9C"/>
-                                                </connections>
-                                            </button>
-                                        </subviews>
-                                    </stackView>
-                                </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                <constraints>
-                                    <constraint firstItem="NGm-Yk-zeV" firstAttribute="top" secondItem="W2K-Cg-gTu" secondAttribute="top" id="A0D-yd-pbL"/>
-                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="NGm-Yk-zeV" secondAttribute="trailing" constant="16" id="AqV-kV-b90"/>
-                                    <constraint firstItem="NGm-Yk-zeV" firstAttribute="centerX" secondItem="W2K-Cg-gTu" secondAttribute="centerX" id="Cvn-G5-tHT"/>
-                                    <constraint firstAttribute="width" priority="250" constant="100" id="DS1-m5-zRK"/>
-                                    <constraint firstItem="kkB-or-vdo" firstAttribute="centerX" secondItem="W2K-Cg-gTu" secondAttribute="centerX" id="Hjn-eP-eDm"/>
-                                    <constraint firstItem="kkB-or-vdo" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="W2K-Cg-gTu" secondAttribute="leading" constant="8" id="LZd-Gg-tpi"/>
-                                    <constraint firstItem="NGm-Yk-zeV" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="W2K-Cg-gTu" secondAttribute="leading" constant="16" id="NDE-zx-4st"/>
-                                    <constraint firstItem="kkB-or-vdo" firstAttribute="top" secondItem="NGm-Yk-zeV" secondAttribute="bottom" constant="-8" id="SqN-HE-qOC"/>
-                                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="kkB-or-vdo" secondAttribute="trailing" constant="8" id="byn-tk-Byw"/>
-                                    <constraint firstAttribute="bottom" secondItem="kkB-or-vdo" secondAttribute="bottom" constant="4" id="juQ-9U-IWF"/>
-                                </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="10"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                            </view>
                             <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c1p-EG-7ue">
                                 <rect key="frame" x="0.0" y="1000" width="414" height="320"/>
                                 <subviews>
@@ -387,22 +347,15 @@
                                             <action selector="recordButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="6fg-tj-52s"/>
                                         </connections>
                                     </view>
-                                    <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="clh-Z5-Sla" customClass="VideoKindPickerView" customModule="ORBIT_Camera" customModuleProvider="target">
-                                        <rect key="frame" x="265" y="110" width="129" height="100"/>
-                                    </pickerView>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <constraints>
                                     <constraint firstItem="1ke-NA-qCX" firstAttribute="centerX" secondItem="c1p-EG-7ue" secondAttribute="centerX" id="0Yj-33-CcE"/>
                                     <constraint firstAttribute="trailing" secondItem="0NL-dH-rxH" secondAttribute="trailing" constant="20" symbolic="YES" id="5Iy-PQ-ZTP"/>
-                                    <constraint firstAttribute="trailing" secondItem="clh-Z5-Sla" secondAttribute="trailing" constant="20" symbolic="YES" id="9K3-iF-iRj"/>
-                                    <constraint firstItem="clh-Z5-Sla" firstAttribute="leading" secondItem="1ke-NA-qCX" secondAttribute="trailing" constant="8" symbolic="YES" id="Deh-Tf-NsU"/>
                                     <constraint firstItem="0NL-dH-rxH" firstAttribute="leading" secondItem="c1p-EG-7ue" secondAttribute="leading" constant="20" symbolic="YES" id="FkI-W5-qqQ"/>
                                     <constraint firstItem="1ke-NA-qCX" firstAttribute="centerY" secondItem="c1p-EG-7ue" secondAttribute="centerY" id="VSD-N9-Woq"/>
                                     <constraint firstAttribute="height" constant="320" id="XyU-oE-jbW"/>
-                                    <constraint firstItem="clh-Z5-Sla" firstAttribute="centerY" secondItem="1ke-NA-qCX" secondAttribute="centerY" id="Y3q-ht-cJL"/>
                                     <constraint firstItem="0NL-dH-rxH" firstAttribute="top" secondItem="c1p-EG-7ue" secondAttribute="top" id="ecl-Lw-BdN"/>
-                                    <constraint firstItem="clh-Z5-Sla" firstAttribute="height" secondItem="1ke-NA-qCX" secondAttribute="height" id="u5E-aN-Jh6"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -426,8 +379,14 @@
                             <constraint firstItem="9tw-t3-tsW" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="o4Y-QR-mLk"/>
                             <constraint firstItem="5oc-lW-9vf" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" id="qnx-CY-4ZX"/>
                             <constraint firstItem="9tw-t3-tsW" firstAttribute="top" secondItem="5oc-lW-9vf" secondAttribute="bottom" priority="250" id="xKQ-Ci-Gqb"/>
+                            <constraint firstItem="W2K-Cg-gTu" firstAttribute="width" secondItem="svH-Pt-448" secondAttribute="width" id="ynG-L0-IhB"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="VUw-jc-0yf"/>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="ynG-L0-IhB"/>
+                            </mask>
+                        </variation>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="mOI-FS-AaM"/>
@@ -437,14 +396,12 @@
                         <outlet property="cameraControlView" destination="c1p-EG-7ue" id="ICN-PS-Way"/>
                         <outlet property="cameraControlYConstraint" destination="27Y-Dc-F5G" id="pwH-ph-j7G"/>
                         <outlet property="recordButton" destination="1ke-NA-qCX" id="ezf-Xd-TUp"/>
-                        <outlet property="recordTypePicker" destination="clh-Z5-Sla" id="R1C-WW-GbE"/>
                         <outlet property="thingNavigationItem" destination="mOI-FS-AaM" id="jez-io-TVJ"/>
                         <outlet property="videoCollectionView" destination="5oc-lW-9vf" id="uQ7-7e-jO7"/>
                         <outlet property="videoDeleteButton" destination="m1S-o9-9xV" id="0Ic-hl-C2g"/>
-                        <outlet property="videoLabel" destination="971-XG-rDU" id="lgl-aR-nyM"/>
-                        <outlet property="videoLabelKindButton" destination="6MK-eG-FRn" id="jwI-RQ-zT4"/>
-                        <outlet property="videoPageControl" destination="NGm-Yk-zeV" id="bhQ-Kb-r2h"/>
+                        <outlet property="videoPageControl" destination="Ugq-hc-4Q0" id="k1k-d2-wO2"/>
                         <outlet property="videoPagingView" destination="W2K-Cg-gTu" id="wvO-1Q-k7k"/>
+                        <outlet property="videoPagingViewWConstraint" destination="ynG-L0-IhB" id="SNz-GU-oHc"/>
                         <outlet property="videoPagingViewYConstraint" destination="OYh-bj-FHp" id="ics-xg-Xb4"/>
                         <outlet property="videoPublishedIcon" destination="jJn-6j-63Y" id="blB-9r-jxW"/>
                         <outlet property="videoPublishedLabel" destination="UL9-2k-MLA" id="h72-1n-eiN"/>
@@ -530,7 +487,7 @@
                                         </textField>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8eN-2e-Foy">
                                             <rect key="frame" x="362" y="0.0" width="52" height="52"/>
-                                            <accessibility key="accessibilityConfiguration" hint="Takes what you entered and creates a new thing with it" label="Add thing"/>
+                                            <accessibility key="accessibilityConfiguration" hint="Creates a new thing and goes to the screen where you can take videos of the thing" label="Add thing"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="8eN-2e-Foy" secondAttribute="height" multiplier="1:1" id="Pbu-bJ-ngs"/>
                                             </constraints>

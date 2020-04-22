@@ -18,10 +18,9 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var videoCollectionView: UICollectionView!
     @IBOutlet weak var addNewPageShortcutButton: UIButton!
     @IBOutlet weak var videoPagingView: UIView!
-    @IBOutlet weak var videoPageControl: UIPageControl!
-    @IBOutlet weak var videoLabel: UILabel!
-    @IBOutlet weak var videoLabelKindButton: UIButton!
+    @IBOutlet weak var videoPageControl: OrbitPagerView!
     @IBOutlet weak var videoPagingViewYConstraint: NSLayoutConstraint!
+    @IBOutlet weak var videoPagingViewWConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var videoStatusView: UIStackView!
     @IBOutlet weak var videoRecordedIcon: UIImageView!
@@ -39,13 +38,12 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var cameraControlYConstraint: NSLayoutConstraint!
     @IBOutlet weak var cameraControlHConstraint: NSLayoutConstraint!
     @IBOutlet weak var recordButton: RecordButton!
-    @IBOutlet weak var recordTypePicker: VideoKindPickerView!
     
-    lazy var addNewElement = UIAccessibilityElement(accessibilityContainer: view!)
+    lazy var kindElement = UIAccessibilityElement(accessibilityContainer: view!)
+    lazy var addNewElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
     lazy var pagerElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
 
     lazy var detailHeaderElement = UIAccessibilityElement(accessibilityContainer: view!)
-    lazy var typeElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
     lazy var recordedElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var rerecordElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var uploadedElement = UIAccessibilityElement(accessibilityContainer: view!)
@@ -55,7 +53,6 @@ class DetailViewController: UIViewController {
 
     lazy var cameraHeaderElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var cameraRecordElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
-    lazy var cameraRecordTypeElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
     
     /// The thing this detail view is to show the detail of
     var detailItem: Thing? {
@@ -69,54 +66,64 @@ class DetailViewController: UIViewController {
             if let thing = detailItem,
                let thingID = thing.id
             {
-                let request = Video
-                    .filter(Video.Columns.thingID == thingID)
-                    .order(Video.Columns.id.asc)
-                let observation = request.observationForAll()
-                detailItemObserver = observation.start(
-                    in: dbQueue,
-                    onError: { error in
-                        os_log("DetailViewController observer error")
-                        print(error)
-                    },
-                    onChange: { [weak self] videos in
-                        guard let self = self
-                        else { return }
-                        
-                        // Video collection view
-                        let difference = videos.difference(from: self.videos)
-                        self.videoCollectionView.performBatchUpdates({
-                            self.videos = videos
-                            for change in difference {
-                                switch change {
-                                case let .remove(offset, _, _):
-                                    self.videoCollectionView.deleteItems(at: [IndexPath(row: offset, section: 0)])
-                                case let .insert(offset, _, _):
-                                    self.videoCollectionView.insertItems(at: [IndexPath(row: offset, section: 0)])
+                for kind in Video.Kind.allCases {
+                    let request = Video
+                        .filter(Video.Columns.thingID == thingID && Video.Columns.kind == kind.rawValue)
+                        .order(Video.Columns.id.asc)
+                    let observation = request.observationForAll()
+                    detailItemObservers[kind] = observation.start(
+                        in: dbQueue,
+                        onError: { error in
+                            os_log("DetailViewController observer error")
+                            print(error)
+                        },
+                        onChange: { [weak self] videos in
+                            guard let self = self
+                            else { return }
+                            
+                            // Video collection view
+                            let difference = videos.difference(from: self.videos[kind]!)
+                            self.videoCollectionView.performBatchUpdates({
+                                self.videos[kind] = videos
+                                
+                                // Update pager, from which the collection view pulls its number of pages etc.
+                                self.videoPageControl.categoryCounts = Video.Kind.allCases.map({ kind in
+                                    (kind.description, self.videos[kind]!.count)
+                                })
+                                
+                                // Now update collection view
+                                for change in difference {
+                                    switch change {
+                                    case let .remove(offset, _, _):
+                                        let pageIndex = self.videoPageControl.pageIndexFor(category: kind.description, index: offset)!
+                                        self.videoCollectionView.deleteItems(at: [IndexPath(row: pageIndex, section: 0)])
+                                    case let .insert(offset, _, _):
+                                        let pageIndex = self.videoPageControl.pageIndexFor(category: kind.description, index: offset)!
+                                        self.videoCollectionView.insertItems(at: [IndexPath(row: pageIndex, section: 0)])
+                                    }
                                 }
-                            }
-                        }, completion: nil)
-                        
-                        // Page state via video count
-                        self.videoPageControl.numberOfPages = self.pagesCount
-                        
-                        // Page state via page index
-                        self.configurePage()
-                        
-                        // Page state via collection view position
-                        self.scrollViewDidScroll(self.videoCollectionView)
-                    }
-                )
+                            }, completion: { _ in
+                                // Page state via page index
+                                self.configurePage()
+                                
+                                // Page state via collection view position
+                                self.scrollViewDidScroll(self.videoCollectionView)
+                            })
+                        }
+                    )
+                }
+            } else {
+                detailItemObservers = [:]
             }
         }
     }
     
     /// Current state of thing's videos
-    private var videos: [Video] = []
+    private var videos: [Video.Kind: [Video]] = Video.Kind.allCases.reduce(into: [:]) { $0[$1] = []}
     
     /// Handle updates to videos
     private var pagesCount: Int {
-        get { videos.count + 1 }
+        get { videoPageControl.pageCount }
     }
     
     /// The selected page, i.e. index of the currently visible videoCollection item.
@@ -125,8 +132,8 @@ class DetailViewController: UIViewController {
     }
     
     /// The page index where the camera to take new videos is placed. Currently the first, but an alternative could be the last
-    private var addNewPageIndex: Int {
-        get { pagesCount - 1 }
+    private var addNewPageIndexes: IndexSet {
+        get { videoPageControl.addNewPageIndexes }
     }
     
     /// A dynamic set of page indexes where the videos are flagged for re-recording
@@ -134,7 +141,7 @@ class DetailViewController: UIViewController {
     
     /// All pages that need the camera displayed, i.e. `rerecordPageIndexes` and `addNewPageIndex`
     private var cameraPageIndexes: IndexSet {
-        rerecordPageIndexes.union(IndexSet(integer: addNewPageIndex))
+        rerecordPageIndexes.union(addNewPageIndexes)
     }
     
     /// The 'visibility' of the cameraControlView, where 0 is offscreen and 1 is onscreen
@@ -146,17 +153,41 @@ class DetailViewController: UIViewController {
         }
     }
     
-    /// A kind of page being displayed
-    private enum PageKind {
+    /// A style of page being displayed
+    private enum PageStyle {
         case status
-        case camera
+        case rerecord
+        case addNew
         case disable
     }
-    /// The kind of page being displayed, used to track state change
-    private var pageKind: PageKind?
     
-    /// Database observer for detailItem changes
-    private var detailItemObserver: TransactionObserver?
+    /// The style of page being displayed, i.e. video status, video rerecord, add new.
+    private var pageStyle: PageStyle {
+        if detailItem == nil {
+            return .disable
+        } else if rerecordPageIndexes.contains(pageIndex) {
+            return .rerecord
+        } else if addNewPageIndexes.contains(pageIndex) {
+            return .addNew
+        } else {
+            return .status
+        }
+    }
+    
+    /// What video kind is this page displaying
+    private var pageKind: Video.Kind { videoKind(description: self.videoPageControl.currentCategoryName!) }
+    
+    /// What video (if any) this page is displaying
+    private var pageVideo: Video? { videos[pageKind]![safe: videoPageControl.currentCategoryIndex!] }
+    
+    /// The index of page within the video kind
+    private var pageKindIndex: Int { self.videoPageControl.currentCategoryIndex! }
+    
+    /// The count of pages for the video kind
+    private var pageKindVideoCount: Int { videos[pageKind]!.count }
+    
+    /// Database observers for detailItem changes
+    private var detailItemObservers: [Video.Kind: TransactionObserver] = [:]
     
     /// The camera object that encapsulates capture new video functionality
     private let camera = Camera()
@@ -174,10 +205,8 @@ class DetailViewController: UIViewController {
         
         // Set title for screen
         self.title = detailItem?.labelParticipant ?? ""
-        if let navItem = navigationController?.navigationBar.topItem,
-           let label = detailItem?.labelParticipant
-        {
-            navItem.accessibilityLabel = "\(label). This screen is about the thing you've named \(label). You can add, remove and re-record videos of the thing."
+        if let label = detailItem?.labelParticipant {
+            thingNavigationItem.accessibilityLabel = "\(label). This screen is about the thing you've named \(label). Choose whether you want the training or testing video collections for this thing, then add videos of the thing. You can also review, re-record, and delete these videos."
         }
         
         // Split view special-cases
@@ -195,14 +224,15 @@ class DetailViewController: UIViewController {
         pageIndex = 0
         
         // Set camera controls visibility
-        cameraControlVisibility = cameraPageIndexes.contains(pageIndex) ? 1 : 0
+        cameraControlVisibility = [.rerecord, .addNew].contains(pageStyle) ? 1 : 0
     }
     
     /// Update the user interface for the selected page
     private func configurePage() {
         inexplicableToolingFailureWorkaround()
         
-        let isCameraPage = cameraPageIndexes.contains(pageIndex)
+        // Update page control
+        videoPageControl.pageIndex = pageIndex
         
         // Update collection
         // Don't animate to new position if the position is being set by direct manipulation
@@ -216,53 +246,28 @@ class DetailViewController: UIViewController {
         
         // Update add new shortcut button
         UIView.animate(withDuration: 0.3) {
-            let hidden = (self.pageIndex == self.addNewPageIndex)
-            self.addNewPageShortcutButton.alpha = hidden ? 0 : 1
+            self.addNewPageShortcutButton.alpha = (self.pageStyle == .addNew) ? 0 : 1
         }
         
-        // Update page control
-        videoPageControl.currentPage = pageIndex
-        let pageDescription: String
-        var kindDescription: String?
+        // Update video label
         let accessibilityDescription: String
-        if pageIndex == addNewPageIndex {
-            pageDescription = "Add new video to collection"
-            accessibilityDescription = "Camera selected, adds a new video to the collection. Swipe down to return to videos."
-            recordTypePicker.kind = .train // default
-        } else if let video = videos[safe: pageIndex] {
-            let number = pageIndex + 1 // index-based to count-based
-            let total = videos.count
-            if isCameraPage {
-                recordTypePicker.kind = video.kind
-                pageDescription = "Re-record video \(number) of \(total)"
-                accessibilityDescription = "\(pageDescription), a \(video.kind.verboseDescription) video"
-            } else {
-                pageDescription = "Video \(number) of \(total): "
-                kindDescription = video.kind.description
-                let isNew = video.recorded > Date(timeIntervalSinceNow: -5) ? "New! " : ""
-                accessibilityDescription = "Video \(number) of \(total) selected. \(isNew)A \(video.kind.verboseDescription) video"
-            }
-        } else {
-            os_log("Page is not camera and has no video")
-            assertionFailure()
-            pageDescription = ""
+        switch pageStyle {
+        case .addNew:
+            accessibilityDescription = "Camera selected, adds a new \(pageKind.verboseDescription) video to the collection."
+        case .rerecord:
+            accessibilityDescription = "Re-record \(pageKind.verboseDescription) video \(pageKindIndex + 1) of \(pageKindVideoCount)"
+        case .status:
+            assert(pageVideo != nil, "pageVideo should be valid")
+            let isNew = pageVideo!.recorded > Date(timeIntervalSinceNow: -5) ? "New! " : ""
+            accessibilityDescription = "\(isNew)\(pageKind.verboseDescription) video \(pageKindIndex + 1) of \(pageKindVideoCount) selected."
+        case .disable:
             accessibilityDescription = ""
         }
-        videoLabel.text = pageDescription
         pagerElement.accessibilityValue = accessibilityDescription
-        UIView.performWithoutAnimation { // setTitle animates by default, which is out of keeping with link-in-label aesthetic
-            if let kindDescription = kindDescription {
-                videoLabelKindButton.setTitle(kindDescription, for: .normal)
-                videoLabelKindButton.isHidden = false
-            } else {
-                videoLabelKindButton.isHidden = true
-            }
-            videoLabelKindButton.layoutIfNeeded() // will perform with animation without this
-        }
-        
         
         // Update statuses
-        if let video = videos[safe: pageIndex] {
+        if let video = pageVideo
+        {
             videoRecordedLabel.text = "Recorded on \(Settings.dateFormatter.string(from:video.recorded))"
             recordedElement.accessibilityLabel = "Recorded on \(Settings.verboseDateFormatter.string(from:video.recorded))"
             
@@ -280,81 +285,92 @@ class DetailViewController: UIViewController {
         // Set availability of labels and controls
         // The cameraControlView animation on/off is not reflected by VoiceOver, so doing here (the animation on/off is set elsewhere by cameraControlVisibility which is set by scrollViewDidScroll).
         // The controls should be unresponsive when no thing set
-        let previousKind = pageKind
-        if detailItem == nil {
-            pageKind = .disable
-        } else if isCameraPage {
-            pageKind = .camera
-        } else {
-            pageKind = .status
-        }
         
-        if previousKind != pageKind {
-            videoPageControl.isEnabled = (pageKind != .disable)
-
-            videoRerecordButton.isEnabled = (pageKind == .status)
-            videoRecordedLabel.isEnabled = (pageKind == .status)
-            videoUploadedLabel.isEnabled = (pageKind == .status)
-            videoVerifiedLabel.isEnabled = (pageKind == .status)
-            videoPublishedLabel.isEnabled = (pageKind == .status)
-            videoDeleteButton.isEnabled = (pageKind == .status)
-            
-            recordButton.isEnabled = (pageKind == .camera)
-            
-            switch pageKind {
-            case .none, .disable:
-                view.accessibilityElements = []
-                UIAccessibility.focus(element: nil)
-            case .status:
-                view.accessibilityElements = [
-                    pagerElement,
-                    addNewElement,
-                    detailHeaderElement,
-                    typeElement,
-                    recordedElement,
-                    rerecordElement,
-                    uploadedElement,
-                    verifiedElement,
-                    publishedElement,
-                    deleteElement
-                ]
-                UIAccessibility.focus(element: pagerElement)
-            case .camera:
-                if !videos.isEmpty {
-                    view.accessibilityElements = [
-                        pagerElement,
-                        cameraHeaderElement,
-                        cameraRecordTypeElement,
-                        cameraRecordElement
-                    ]
-                    UIAccessibility.focus(element: cameraHeaderElement)
-                } else {
-                    view.accessibilityElements = [
-                        cameraHeaderElement,
-                        cameraRecordTypeElement,
-                        cameraRecordElement
-                    ]
-                    UIAccessibility.focus(element: cameraHeaderElement)
-                }
-            }
+        videoRerecordButton.isEnabled = (pageStyle == .status)
+        videoRecordedLabel.isEnabled = (pageStyle == .status)
+        videoUploadedLabel.isEnabled = (pageStyle == .status)
+        videoVerifiedLabel.isEnabled = (pageStyle == .status)
+        videoPublishedLabel.isEnabled = (pageStyle == .status)
+        videoDeleteButton.isEnabled = (pageStyle == .status)
+        
+        recordButton.isEnabled = [.rerecord, .addNew].contains(pageStyle)
+        
+        switch pageStyle {
+        case .disable:
+            view.accessibilityElements = []
+            UIAccessibility.post(notification: .layoutChanged, argument: nil)
+        case .status:
+            view.accessibilityElements = [
+                kindElement,
+                addNewElement,
+                pagerElement,
+                detailHeaderElement,
+                recordedElement,
+                rerecordElement,
+                uploadedElement,
+                verifiedElement,
+                publishedElement,
+                deleteElement
+            ]
+            UIAccessibility.post(notification: .layoutChanged, argument: nil)
+        case .rerecord:
+            view.accessibilityElements = [
+                kindElement,
+                pagerElement,
+                addNewElement,
+                cameraHeaderElement,
+                cameraRecordElement
+            ]
+            UIAccessibility.post(notification: .layoutChanged, argument: nil)
+        case .addNew:
+            view.accessibilityElements = [
+                kindElement,
+                addNewElement
+                // Accessibility flow is different. Actioning add new sets the camera elements.
+            ]
+            UIAccessibility.post(notification: .layoutChanged, argument: nil)
         }
     }
     
     func configureAccessibilityElements() {
+        // Kind element mocks a UISegmentedControl
+        kindElement.isAccessibilityElement = false
+        kindElement.accessibilityElements = Video.Kind.allCases.map { kind in
+            let segment = AccessibilityElementUsingClosures(accessibilityContainer: kindElement)
+            segment.accessibilityLabel = kind.description
+            segment.accessibilityHint = "Activate to add \(kind.verboseDescription) videos, or review ones you have already taken."
+            segment.accessibilityTraits = super.accessibilityTraits.union(.button)
+            segment.activateClosure = { [weak self] in
+                guard let self = self
+                else { return false }
+                
+                let prefix = "Selected. "
+                (self.kindElement.accessibilityElements! as! [UIAccessibilityElement])
+                    .filter { $0.accessibilityLabel!.hasPrefix(prefix) }
+                    .forEach { $0.accessibilityLabel = String($0.accessibilityLabel!.dropFirst(prefix.count)) }
+                segment.accessibilityLabel = prefix + segment.accessibilityLabel!
+                self.pageIndex = self.videoPageControl.pageIndexFor(category: kind.description, index: 0)!
+                return true
+            }
+            return segment
+        }
         addNewElement.accessibilityLabel = "Add new video"
         addNewElement.accessibilityHint = "Brings up the camera controls"
         addNewElement.accessibilityTraits = super.accessibilityTraits.union(.button)
-        
-        // Don't overload the pagerElement. As opposed to visual UI –
-        // - don't include camera as last page, have add new button as the one true way
-        // - move changing video kind function into separate element
-        pagerElement.accessibilityLabel = "Video selector"
+        addNewElement.activateClosure = { [weak self] in
+            guard let self = self
+            else { return false }
+            // Action even when UIButton is hidden
+            self.addNewPageShortcutButtonAction(sender: self.addNewPageShortcutButton)
+            return true
+        }
+        pagerElement.accessibilityLabel = "Video review selector"
         pagerElement.accessibilityHint = "Adjust to change the video detailed below"
         pagerElement.accessibilityTraits = super.accessibilityTraits.union([.adjustable, .header])
         pagerElement.incrementClosure = { [weak self] in
             guard
                 let self = self,
-                self.pageIndex < self.videos.count - 1
+                self.pageIndex + 1 < self.videoPageControl.pageIndexForCurrentAddNew!
             else
                 { return }
             self.pageIndex += 1
@@ -362,47 +378,15 @@ class DetailViewController: UIViewController {
         pagerElement.decrementClosure = { [weak self] in
             guard
                 let self = self,
-                self.pageIndex > 0
+                self.pageIndex > self.videoPageControl.pageIndexFor(category: self.videoPageControl.currentCategoryName!, index: 0)!
             else
                 { return }
             self.pageIndex -= 1
         }
         
-        detailHeaderElement.accessibilityLabel = "Video Detail"
+        detailHeaderElement.accessibilityLabel = "Video review detail"
         detailHeaderElement.accessibilityHint = "The following relates to the selected video"
         detailHeaderElement.accessibilityTraits = super.accessibilityTraits.union(.header)
-        
-        typeElement.accessibilityLabel = "Video classification selector"
-        typeElement.accessibilityHint = "Adjust to set whether the video is a training or test video"
-        typeElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
-        typeElement.incrementClosure = { [weak self] in
-            guard
-                let self = self,
-                self.pageIndex < self.videos.count
-            else
-                { return }
-            var video = self.videos[self.pageIndex]
-            let kindIndex = Video.Kind.allCases.firstIndex(of: video.kind)!
-            if let kind = Video.Kind.allCases[safe: kindIndex + 1] {
-                video.kind = kind
-                try! dbQueue.write { db in try video.save(db) }
-                self.typeElement.accessibilityValue = "\(kind.description) selected"
-            }
-        }
-        typeElement.decrementClosure = { [weak self] in
-            guard
-                let self = self,
-                self.pageIndex < self.videos.count
-            else
-                { return }
-            var video = self.videos[self.pageIndex]
-            let kindIndex = Video.Kind.allCases.firstIndex(of: video.kind)!
-            if let kind = Video.Kind.allCases[safe: kindIndex - 1] {
-                video.kind = kind
-                try! dbQueue.write { db in try video.save(db) }
-                self.typeElement.accessibilityValue = "\(kind.description) selected"
-            }
-        }
         
         recordedElement.accessibilityLabel = "" // Set in configurePage
         
@@ -453,29 +437,6 @@ class DetailViewController: UIViewController {
             
             return true
         }
-        
-        cameraRecordTypeElement.accessibilityLabel = "Video classification selector"
-        cameraRecordTypeElement.accessibilityHint = "Adjust to set whether the video to be taken is a training or test video"
-        self.cameraRecordTypeElement.accessibilityValue = "\(self.recordTypePicker.kind.description) selected)"
-        cameraRecordTypeElement.accessibilityTraits = super.accessibilityTraits.union(.adjustable)
-        cameraRecordTypeElement.incrementClosure = { [weak self] in
-            guard let self = self
-            else { return }
-            // Set in main UI
-            self.recordTypePicker.incrementSelection()
-            
-            // Update accessibility value
-            self.cameraRecordTypeElement.accessibilityValue = "\(self.recordTypePicker.kind.description) selected)"
-        }
-        cameraRecordTypeElement.decrementClosure = { [weak self] in
-            guard let self = self
-            else { return }
-            // Set in main UI
-            self.recordTypePicker.decrementSelection()
-            
-            // Update accessibility value
-            self.cameraRecordTypeElement.accessibilityValue = "\(self.recordTypePicker.kind.description) selected)"
-        }
     }
     
     func layoutAccessibilityElements() {
@@ -483,12 +444,10 @@ class DetailViewController: UIViewController {
         else { return }
         
         // For voiceover, extend the touch target to maximise screen coverage for controls
-        // Top here is in View coordinate space, i.e. coord 0 is at the visual top, coord top here is the visual bottom
         let viewFrame = UIAccessibility.convertToScreenCoordinates(view.bounds, in: view)
         let videoFrame = UIAccessibility.convertToScreenCoordinates(videoCollectionView.bounds, in: videoCollectionView)
         let addNewFrame = UIAccessibility.convertToScreenCoordinates(addNewPageShortcutButton.bounds, in: addNewPageShortcutButton)
-        let pagerDotsFrame = UIAccessibility.convertToScreenCoordinates(videoPageControl.bounds, in: videoPageControl)
-        let pagerLabelFrame = UIAccessibility.convertToScreenCoordinates(videoLabel.bounds, in: videoLabel)
+        let pagerFrame = UIAccessibility.convertToScreenCoordinates(videoPagingView.bounds, in: videoPagingView)
         let recordedFrame = UIAccessibility.convertToScreenCoordinates(videoRecordedIcon.bounds, in: videoRecordedIcon)
                             .union(UIAccessibility.convertToScreenCoordinates(videoRecordedLabel.bounds, in: videoRecordedLabel))
         let uploadedFrame = UIAccessibility.convertToScreenCoordinates(videoUploadedIcon.bounds, in: videoUploadedIcon)
@@ -497,6 +456,7 @@ class DetailViewController: UIViewController {
         let deleteFrame = UIAccessibility.convertToScreenCoordinates(videoDeleteButton.bounds, in: videoDeleteButton)
         
         let viewWidthLessAddNew = addNewFrame.minX - viewFrame.minX
+        let segmentWidth = viewWidthLessAddNew / CGFloat(kindElement.accessibilityElements!.count)
         
         // A strip running down the RHS of the screen, for physical findability
         addNewElement.accessibilityFrame = CGRect(
@@ -506,17 +466,31 @@ class DetailViewController: UIViewController {
             height: viewFrame.maxY - videoFrame.minY
         )
         // Other controls are arranged in a stack from left hand side to the addNew strip
-        pagerElement.accessibilityFrame = CGRect(
+        kindElement.accessibilityFrame = CGRect(
             x: viewFrame.minX,
             y: videoFrame.minY,
             width: viewWidthLessAddNew,
-            height: pagerDotsFrame.maxY - videoFrame.minY
+            height: pagerFrame.minY - videoFrame.minY
         )
-        typeElement.accessibilityFrame = CGRect(
+        for (index, segment) in (kindElement.accessibilityElements! as! [UIAccessibilityElement]).enumerated() {
+            segment.accessibilityFrame = CGRect(
+                x: kindElement.accessibilityFrame.minX + CGFloat(index)*segmentWidth,
+                y: kindElement.accessibilityFrame.minY,
+                width: segmentWidth,
+                height: kindElement.accessibilityFrame.height
+            )
+        }
+        pagerElement.accessibilityFrame = CGRect(
             x: viewFrame.minX,
-            y: pagerLabelFrame.minY,
+            y: pagerFrame.minY,
             width: viewWidthLessAddNew,
-            height: pagerLabelFrame.height
+            height: videoFrame.union(pagerFrame).maxY - pagerFrame.minY
+        )
+        detailHeaderElement.accessibilityFrame = CGRect(
+            x: viewFrame.minX,
+            y: pagerElement.accessibilityFrame.maxY,
+            width: viewWidthLessAddNew,
+            height: deleteFrame.maxY - pagerElement.accessibilityFrame.maxY
         )
         recordedElement.accessibilityFrame = CGRect(
             x: viewFrame.minX,
@@ -554,30 +528,17 @@ class DetailViewController: UIViewController {
             width: viewWidthLessAddNew,
             height: deleteFrame.height
         )
-        detailHeaderElement.accessibilityFrame = typeElement.accessibilityFrame.union(deleteElement.accessibilityFrame)
         
         
         let cameraControlFrame = UIAccessibility.convertToScreenCoordinates(cameraControlView.bounds, in: cameraControlView)
         
         cameraHeaderElement.accessibilityFrame = cameraControlFrame
-        cameraRecordTypeElement.accessibilityFrame = CGRect(
-            x: cameraControlFrame.minX,
-            y: cameraControlFrame.minY,
-            width: cameraControlFrame.width,
-            height: 44
-        )
-        cameraRecordElement.accessibilityFrame = CGRect(
-            x: cameraControlFrame.minX,
-            y: cameraRecordTypeElement.accessibilityFrame.maxY ,
-            width: cameraControlFrame.width,
-            height: cameraControlFrame.maxY - cameraRecordTypeElement.accessibilityFrame.maxY
-        )
+        cameraRecordElement.accessibilityFrame = cameraControlFrame
         
         let videoRerecordButtonFrame = UIAccessibility.convertToScreenCoordinates(videoRerecordButton.bounds, in: videoRerecordButton)
         let videoDeleteButtonFrame = UIAccessibility.convertToScreenCoordinates(videoDeleteButton.bounds, in: videoDeleteButton)
         
-        addNewElement.accessibilityActivationPoint = CGPoint(x: addNewFrame.midX, y: addNewFrame.midY)
-        recordedElement.accessibilityActivationPoint = CGPoint(x: videoRerecordButtonFrame.midX, y: videoRerecordButtonFrame.midY)
+        rerecordElement.accessibilityActivationPoint = CGPoint(x: videoRerecordButtonFrame.midX, y: videoRerecordButtonFrame.midY)
         deleteElement.accessibilityActivationPoint = CGPoint(x: videoDeleteButtonFrame.midX, y: videoDeleteButtonFrame.midY)
     }
     
@@ -587,50 +548,23 @@ class DetailViewController: UIViewController {
         // Start it now so it has the best chance of running by the time the scroll completes
         camera.start()
         // Action going to the page, will start the scroll
-        pageIndex = addNewPageIndex
-    }
-    
-    /// Action the video corresponding to page
-    @IBAction func pageControlAction(sender: UIPageControl) {
-        pageIndex = sender.currentPage
-    }
-    
-    @IBAction func videoLabelKindButtonAction(sender: UIButton) {
-        guard var video = videos[safe: pageIndex]
-        else {
-            os_log("videoLabelKindButtonAction with no video for page")
-            return
-        }
-        
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let videoKindViewController = storyboard.instantiateViewController(identifier: "VideoKindViewController") as VideoKindPickerViewController
-
-        // Style as popover and set anchor
-        videoKindViewController.modalPresentationStyle = .popover
-        videoKindViewController.popoverPresentationController?.sourceRect = sender.bounds
-        videoKindViewController.popoverPresentationController?.sourceView = sender
-        
-        // VideoKindController overrides adaptive presentation, so here ensures always popover (i.e. and not a form sheet on compact size classes)
-        videoKindViewController.popoverPresentationController?.delegate = videoKindViewController
-        
-        // Handle choice on dismiss
-        videoKindViewController.dismissHandler = { kind in
-            video.kind = kind
-            try! dbQueue.write { db in try video.save(db) } // FIXME: try!
-            self.configurePage()
-        }
-        
-        // Present!
-        self.present(videoKindViewController, animated: true, completion: nil)
+        pageIndex = videoPageControl.pageIndexForCurrentAddNew!
+        // Accessibility steps through this button to bring up the camera controls
+        view.accessibilityElements = [
+            kindElement,
+            cameraHeaderElement,
+            cameraRecordElement
+        ]
+        UIAccessibility.focus(element: cameraHeaderElement)
     }
 
     /// Action a video recording. This might be a new video, or the re-recording of an existing one.
     @IBAction func recordButtonAction(sender: RecordButton) {
         switch sender.recordingState {
         case .active:
-            // IF RE-RECORD START
-            if rerecordPageIndexes.contains(pageIndex) {
-                guard var video = videos[safe: pageIndex]
+            switch pageStyle {
+            case .rerecord:
+                guard var video = pageVideo
                 else {
                     os_log("Could not get video for re-record recordStart")
                     return
@@ -641,10 +575,6 @@ class DetailViewController: UIViewController {
                     os_log("Could not delete previous recording to re-record")
                     return
                 }
-                
-                // Update kind from camera controls
-                video.kind = recordTypePicker.kind
-                try! dbQueue.write { db in try video.save(db) } // FIXME: try!
                 
                 // Go, configuring completion handler that updates the UI
                 let videoPageIndex = pageIndex
@@ -661,8 +591,7 @@ class DetailViewController: UIViewController {
                     
                     os_log("Record completion handler has updated video on page %d", type: .debug, videoPageIndex)
                 }
-            // IF NEW VIDEO START
-            } else {
+            case .addNew:
                 guard let thing = detailItem
                 else {
                     os_log("No thing on recordStart")
@@ -678,7 +607,7 @@ class DetailViewController: UIViewController {
                 }
                 
                 // Go, setting completion handler that creates a Video record and updates the UI
-                let kind = recordTypePicker.kind
+                let kind = videoKind(description: videoPageControl.currentCategoryName!)
                 camera.recordStart(to: url) {
                     // Create a Video record
                     guard var video = Video(of: thing, url: url, kind: kind)
@@ -694,11 +623,13 @@ class DetailViewController: UIViewController {
                     
                     os_log("Record completion handler has inserted video", type: .debug)
                 }
+            default:
+                os_log("recordButtonAction on non-camera page")
+                assertionFailure()
             }
             
             // Disable any navigation etc. while recording!
-            videoPageControl.isEnabled = false
-            recordTypePicker.isUserInteractionEnabled = false
+            videoCollectionView.isUserInteractionEnabled = false
             navigationItem.hidesBackButton = true
             accessibilityElements = [cameraRecordElement]
             cameraRecordElement.accessibilityFrame = UIAccessibility.convertToScreenCoordinates(view.bounds, in: view)
@@ -706,8 +637,7 @@ class DetailViewController: UIViewController {
             camera.recordStop()
             
             // Allow navigation again
-            videoPageControl.isEnabled = true
-            recordTypePicker.isUserInteractionEnabled = true
+            videoCollectionView.isUserInteractionEnabled = true
             navigationItem.hidesBackButton = false
             accessibilityElements = [pagerElement] // page refresh on database write will deal with this properly
             layoutAccessibilityElements()
@@ -736,7 +666,7 @@ class DetailViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Delete video", style: .destructive, handler: { [weak self] _ in
             guard
                 let self = self,
-                let video = self.videos[safe: self.pageIndex]
+                let video = self.pageVideo
             else {
                 os_log("Could not get video to delete")
                 return
@@ -755,6 +685,27 @@ class DetailViewController: UIViewController {
         
         // Don't monopolise audio with our (silent!) videos, e.g. let music continue to play
         try? AVAudioSession.sharedInstance().setCategory(.ambient)
+        
+        // Set categories to enable addNew pages
+        videoPageControl.categoryCounts = Video.Kind.allCases.map { ($0.description, 0) }
+        
+        // Set gesture handlers
+        videoPageControl.actionNextPage = { [weak self] in
+            guard
+                let self = self,
+                self.pageIndex + 1 < self.pagesCount
+            else
+                { return }
+            self.pageIndex += 1
+        }
+        videoPageControl.actionPrevPage = { [weak self] in
+            guard
+                let self = self,
+                self.pageIndex > 0
+            else
+                { return }
+            self.pageIndex -= 1
+        }
 
         configureAccessibilityElements()
     }
@@ -766,7 +717,14 @@ class DetailViewController: UIViewController {
             detailItem = try? dbQueue.read { db in try Thing.fetchOne(db) }
         }
         
+        addNewPageShortcutButton.layer.cornerRadius = addNewPageShortcutButton.bounds.height/2
+        
         configureView()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        // Announce the screen change
+        UIAccessibility.post(notification: .screenChanged, argument: "Thing record and review screen. Nav bar focussed")
     }
     
     override func viewWillLayoutSubviews() {
@@ -777,10 +735,11 @@ class DetailViewController: UIViewController {
     // Note: I'd have thought `updateViewConstraints` was the override to use, but it doesn't have the required effect here
     override func viewDidLayoutSubviews() {
         // Layout pager between video and statuses if room. Storyboard defaults it to within video.
-        // Undoubtedly autolayout can do exactly what I want without this manual intervention, but... this works.
+        // Plus, if doing this, widen view to screen width to better capture gestures
         let height = videoPagingView.frame.height + 8
         if videoStatusView.frame.minY - videoCollectionView.frame.maxY > height {
             videoPagingViewYConstraint.constant = height // constant is vertical spacing between video bottom and pager bottom
+            videoPagingViewWConstraint.isActive = true
         }
         
         // Set height of camera control view to cover from bottom of screen up to status view
@@ -792,6 +751,21 @@ class DetailViewController: UIViewController {
         
         // Layout accessibility elements
         layoutAccessibilityElements()
+    }
+    
+    // TODO: Refactor away, pager category should be protocol stringconvertible or somesuch.
+    func videoKind(description: String) -> Video.Kind {
+        switch description {
+        case Video.Kind.train.description:
+            return Video.Kind.train
+        case Video.Kind.testPan.description:
+            return Video.Kind.testPan
+        case Video.Kind.testZoom.description:
+            return Video.Kind.testZoom
+        default:
+            assertionFailure()
+            return Video.Kind.train
+        }
     }
     
     func inexplicableToolingFailureWorkaround() {
@@ -830,7 +804,8 @@ extension DetailViewController: UICollectionViewDataSource {
                 fatalError("Expected a `\(VideoViewCell.self)` but did not receive one.")
             }
             guard
-                let video = videos[safe: indexPath.row]
+                let (name, index) = videoPageControl.categoryIndex(pageIndex: indexPath.row),
+                let video = videos[videoKind(description: name)]![safe: index]
             else {
                 os_log("No video found")
                 assertionFailure()
