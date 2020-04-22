@@ -689,6 +689,24 @@ class DetailViewController: UIViewController {
         
         // Set categories to enable addNew pages
         videoPageControl.categoryCounts = Video.Kind.allCases.map { ($0.description, 0) }
+        
+        // Set gesture handlers
+        videoPageControl.actionNextPage = { [weak self] in
+            guard
+                let self = self,
+                self.pageIndex + 1 < self.pagesCount
+            else
+                { return }
+            self.pageIndex += 1
+        }
+        videoPageControl.actionPrevPage = { [weak self] in
+            guard
+                let self = self,
+                self.pageIndex > 0
+            else
+                { return }
+            self.pageIndex -= 1
+        }
 
         configureAccessibilityElements()
     }
