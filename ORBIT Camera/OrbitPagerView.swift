@@ -167,6 +167,12 @@ class OrbitPagerView: UIView {
         }
     }
     
+    // A closure to call if a right hand side tap, or rightwards swipe is detected
+    var actionNextPage: ( ()->Void )?
+    
+    // A closure to call if a left hand side tap, or leftwards swipe is detected
+    var actionPrevPage: ( ()->Void )?
+    
     override init (frame: CGRect) {
         super.init(frame: frame)
         initCommon()
@@ -194,11 +200,54 @@ class OrbitPagerView: UIView {
         stack.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
         stack.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         stack.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleGesture))
+        let swipeLeftGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(handleGesture))
+        swipeLeftGestureRecognizer.direction = .left
+        let swipeRightGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(handleGesture))
+        swipeRightGestureRecognizer.direction = .right
+        gestureRecognizers = [
+            tapGestureRecognizer,
+            swipeLeftGestureRecognizer,
+            swipeRightGestureRecognizer
+        ]
     }
     
     private let stack = UIStackView()
     private var categoryViews: [OrbitPagerCategoryView] {
         get { stack.arrangedSubviews as! [OrbitPagerCategoryView] }
+    }
+    
+    @objc private func handleGesture(_ gestureRecognizer: UIGestureRecognizer) {
+        guard
+            gestureRecognizer.view != nil,
+            let actionNextPage = actionNextPage,
+            let actionPrevPage = actionPrevPage
+        else
+            { return }
+        
+        if let tapRecognizer = gestureRecognizer as? UITapGestureRecognizer,
+           gestureRecognizer.state == .ended
+        {
+            let isRHS = tapRecognizer.location(in: self).x > bounds.midX
+            if isRHS {
+                actionNextPage()
+            } else {
+                actionPrevPage()
+            }
+        }
+        if let swipeRecognizer = gestureRecognizer as? UISwipeGestureRecognizer,
+           gestureRecognizer.state == .ended
+        {
+            switch swipeRecognizer.direction {
+            case .left:
+                actionNextPage() // Swipes mimic direct interaction on supposed content not pager, e.g. swipe on carousel
+            case .right:
+                actionPrevPage()
+            default:
+                break
+            }
+        }
     }
 }
 
