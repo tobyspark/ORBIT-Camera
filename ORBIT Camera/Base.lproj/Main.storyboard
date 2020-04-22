@@ -379,8 +379,14 @@
                             <constraint firstItem="9tw-t3-tsW" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" constant="20" id="o4Y-QR-mLk"/>
                             <constraint firstItem="5oc-lW-9vf" firstAttribute="leading" secondItem="VUw-jc-0yf" secondAttribute="leading" id="qnx-CY-4ZX"/>
                             <constraint firstItem="9tw-t3-tsW" firstAttribute="top" secondItem="5oc-lW-9vf" secondAttribute="bottom" priority="250" id="xKQ-Ci-Gqb"/>
+                            <constraint firstItem="W2K-Cg-gTu" firstAttribute="width" secondItem="svH-Pt-448" secondAttribute="width" id="ynG-L0-IhB"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="VUw-jc-0yf"/>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="ynG-L0-IhB"/>
+                            </mask>
+                        </variation>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="mOI-FS-AaM"/>
@@ -395,6 +401,7 @@
                         <outlet property="videoDeleteButton" destination="m1S-o9-9xV" id="0Ic-hl-C2g"/>
                         <outlet property="videoPageControl" destination="Ugq-hc-4Q0" id="k1k-d2-wO2"/>
                         <outlet property="videoPagingView" destination="W2K-Cg-gTu" id="wvO-1Q-k7k"/>
+                        <outlet property="videoPagingViewWConstraint" destination="ynG-L0-IhB" id="SNz-GU-oHc"/>
                         <outlet property="videoPagingViewYConstraint" destination="OYh-bj-FHp" id="ics-xg-Xb4"/>
                         <outlet property="videoPublishedIcon" destination="jJn-6j-63Y" id="blB-9r-jxW"/>
                         <outlet property="videoPublishedLabel" destination="UL9-2k-MLA" id="h72-1n-eiN"/>

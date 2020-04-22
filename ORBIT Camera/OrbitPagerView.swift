@@ -185,9 +185,6 @@ class OrbitPagerView: UIView {
     
     private func initCommon() {
         translatesAutoresizingMaskIntoConstraints = false
-        let width = widthAnchor.constraint(equalToConstant: 0)
-        width.priority = UILayoutPriority(rawValue: 999)
-        width.isActive = true
         
         stack.axis = .horizontal
         stack.spacing = OrbitPagerSettings.labelLeftSpacing
@@ -197,9 +194,13 @@ class OrbitPagerView: UIView {
         addSubview(stack)
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        stack.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
         stack.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        stack.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
+        stack.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        stack.leftAnchor.constraint(greaterThanOrEqualTo: leftAnchor).isActive = true
+        stack.rightAnchor.constraint(lessThanOrEqualTo: rightAnchor).isActive = true
+        let width = stack.widthAnchor.constraint(equalToConstant: 0)
+        width.priority = UILayoutPriority(rawValue: 999)
+        width.isActive = true
         
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleGesture))
         let swipeLeftGestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(handleGesture))
