@@ -30,7 +30,7 @@ Let’s first talk about training videos. Let’s say you want your recognition 
 
 Let’s get started!
 
-elect one of the three things you’ve chosen to record. If your thing is small-to-medium sized, see the next section on [Training videos for small/medium things](#training-videos-for-small-medium-things). If your thing is larger or cannot be moved, see the section after that, [Training videos for large or immobile things](#training-videos-for-large-or-immobile-things). You will need to record videos for each of your things in two different environments. 
+Select one of the three things you’ve chosen to record. If your thing is small-to-medium sized, see the next section on [Training videos for small/medium things](#training-videos-for-small-medium-things). If your thing is larger or cannot be moved, see the section after that, [Training videos for large or immobile things](#training-videos-for-large-or-immobile-things). You will need to record videos for each of your things in two different environments. 
 
 #### Training videos for small/medium things
 
@@ -91,6 +91,7 @@ There are two kinds of testing videos: “zoom out” and “pan”.
 The first type of testing video is called “zoom out” testing video and uses a similar technique to the training videos. You will need take one zoom out testing video for each of your three things.
 
 ##### Step 1. Select one of your things.
+
 ##### Step 2. Find an environment to record your video. 
 
 Go to a surface or location where you would regularly place or look for your thing. For immovable things go to the location where your item is.
@@ -114,6 +115,7 @@ Repeat these five steps for each of your three things!
 The second type of testing video is called a scanning testing video. You will need to take one scanning testing video for each of your 3 things.
 
 ##### Step 1. Select one of your things.
+
 ##### Step 2. Find an environment to record your video. 
 
 Go to a surface or location where you would regularly place or look for your thing. For immovable things, go to the location where your item is.
