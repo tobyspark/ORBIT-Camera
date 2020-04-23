@@ -774,6 +774,11 @@ class DetailViewController: UIViewController {
             videoCollectionView = view.subviews[0] as! UICollectionView
         }
     }
+    
+    /// Allow unwind segues to this view controller
+    // This is found by Help Scene's exit doohikey.
+    // The presence of the method is enough to allow the unwind on the storyboard.
+    @IBAction func unwindAction(unwindSegue: UIStoryboardSegue) {}
 }
 
 extension DetailViewController: UICollectionViewDataSource {

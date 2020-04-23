@@ -12,6 +12,7 @@
 		4B3119AF2450977100E28452 /* Introduction.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4B3119AD2450977100E28452 /* Introduction.markdown */; };
 		4B3119B12451030B00E28452 /* UIColor+CSS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3119B02451030B00E28452 /* UIColor+CSS.swift */; };
 		4B3119B32451B06600E28452 /* String+slugify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3119B22451B06600E28452 /* String+slugify.swift */; };
+		4B3119B52451E99D00E28452 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3119B42451E99C00E28452 /* HelpViewController.swift */; };
 		4B318B0524404CA4001F9874 /* Collection+Cycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B318B0424404CA4001F9874 /* Collection+Cycle.swift */; };
 		4B3D772624332C740077DFD0 /* VideoKindPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3D772524332C740077DFD0 /* VideoKindPickerView.swift */; };
 		4B5A6B992424CB9200A5C45B /* NewThingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5A6B982424CB9200A5C45B /* NewThingCell.swift */; };
@@ -76,6 +77,7 @@
 		4B3119AD2450977100E28452 /* Introduction.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = Introduction.markdown; path = Resources/Introduction.markdown; sourceTree = SOURCE_ROOT; };
 		4B3119B02451030B00E28452 /* UIColor+CSS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSS.swift"; sourceTree = "<group>"; };
 		4B3119B22451B06600E28452 /* String+slugify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+slugify.swift"; sourceTree = "<group>"; };
+		4B3119B42451E99C00E28452 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
 		4B318B0424404CA4001F9874 /* Collection+Cycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Cycle.swift"; sourceTree = "<group>"; };
 		4B3707B52436161100254ABF /* AppUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUploader.swift; sourceTree = "<group>"; };
 		4B3D77222432156B0077DFD0 /* README.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.markdown; sourceTree = "<group>"; };
@@ -182,6 +184,7 @@
 				4BF14BBD2405730700E31D93 /* DetailViewController.swift */,
 				4B87FD3824126110007AB630 /* VideoViewCell.swift */,
 				4B9AA9F52417A63C002380B1 /* InfoViewController.swift */,
+				4B3119B42451E99C00E28452 /* HelpViewController.swift */,
 				4B9AA9F92417E4A7002380B1 /* Camera.swift */,
 				4BA13A59242D6EC4006D838B /* PreviewMetalView.swift */,
 				4BA13A5B242D71E4006D838B /* PassThrough.metal */,
@@ -364,6 +367,7 @@
 				4B87FD3624111E57007AB630 /* AppDatabase+TestData.swift in Sources */,
 				4B5A6B992424CB9200A5C45B /* NewThingCell.swift in Sources */,
 				4B87FD21240D53FC007AB630 /* Video+upload.swift in Sources */,
+				4B3119B52451E99D00E28452 /* HelpViewController.swift in Sources */,
 				4BF14BBE2405730700E31D93 /* DetailViewController.swift in Sources */,
 				4B87FD0E2406A5DF007AB630 /* Thing+upload.swift in Sources */,
 				4B3119B32451B06600E28452 /* String+slugify.swift in Sources */,
