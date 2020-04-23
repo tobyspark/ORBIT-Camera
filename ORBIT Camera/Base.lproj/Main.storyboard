@@ -708,6 +708,7 @@
                     <connections>
                         <outlet property="introWebView" destination="Y6i-mN-HVc" id="7SW-Ng-gPO"/>
                         <outlet property="introWebViewHeightContstraint" destination="bPI-WX-iAf" id="iPH-Yb-2x0"/>
+                        <outlet property="scrollView" destination="FfH-Ja-3I0" id="SXc-ea-B1k"/>
                         <outlet property="tutorialWebView" destination="Nte-nl-xTt" id="e8V-XS-mZb"/>
                         <outlet property="tutorialWebViewHeightContstraint" destination="vdb-rL-mHt" id="yb1-Zc-XoD"/>
                         <outlet property="unlockCode" destination="419-dk-hXK" id="Rkx-qM-sN1"/>
