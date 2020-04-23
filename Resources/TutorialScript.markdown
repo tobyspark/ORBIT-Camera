@@ -30,7 +30,7 @@ Let’s first talk about training videos. Let’s say you want your recognition 
 
 Let’s get started!
 
-Select one of the three things you’ve chosen to record. If your thing is small-to-medium sized, see the next section on [Training videos for small/medium things](#training-videos-for-small-medium-things). If your thing is larger or cannot be moved, see the section after that, [Training videos for large or immobile things](#training-videos-for-large-or-immobile-things). You will need to record videos for each of your things in two different environments. 
+Select one of the three things you’ve chosen to record. If your thing is small-to-medium sized, see the next section on [Training videos for small/medium things](#training-videos-for-smallmedium-things). If your thing is larger or cannot be moved, see the section after that, [Training videos for large or immobile things](#training-videos-for-large-or-immobile-things). You will need to record videos for each of your things in two different environments. 
 
 #### Training videos for small/medium things
 
