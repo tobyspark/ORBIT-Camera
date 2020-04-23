@@ -116,6 +116,17 @@ class InfoViewController: UIViewController {
         }
     }
     
+    let parser = MarkdownParser(modifiers: [
+        // Add id to header elements, to enable linking to them
+        // i.e. <h1>A glorious heading</h1> -> <h1 id="a-glorious-heading">A glorious heading</h1>
+        Modifier(target: .headings) { html, markdown in
+            let header = markdown.trimmingCharacters(in: CharacterSet(charactersIn: "#"))
+            let slug = header.slugify()
+            let insertIndex = html.firstIndex(of: ">")!
+            return html[html.startIndex..<insertIndex] + " id=\"" + slug + "\"" + html[insertIndex...]
+        }
+    ])
+    
     // The Ink markdown parser doesn't like Windows line-endings, so this will replace CRLF with LF on import
     func html(markdownResource: String) -> String {
         guard let url = Bundle(for: type(of: self)).url(forResource: markdownResource, withExtension: "markdown")
@@ -126,7 +137,6 @@ class InfoViewController: UIViewController {
         
         do {
             let markdown = try String(contentsOf: url).replacingOccurrences(of: "\r\n", with: "\n")
-            let parser = MarkdownParser()
             return """
             <!DOCTYPE html>
             <html>
