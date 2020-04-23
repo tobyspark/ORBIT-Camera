@@ -128,8 +128,10 @@ class InfoViewController: UIViewController {
             let markdown = try String(contentsOf: url).replacingOccurrences(of: "\r\n", with: "\n")
             let parser = MarkdownParser()
             return """
+            <!DOCTYPE html>
             <html>
             <head>
+            <title>\(markdownResource)</title>
             <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
             <style>
                 body {
