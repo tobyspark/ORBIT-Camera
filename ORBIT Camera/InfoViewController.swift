@@ -14,6 +14,8 @@ import os
 
 class InfoViewController: UIViewController {
 
+    @IBOutlet weak var scrollView: UIScrollView!
+    
     @IBOutlet weak var unlockCode: UITextField!
     @IBOutlet weak var unlockCodeStatus: UILabel!
     
@@ -165,14 +167,32 @@ class InfoViewController: UIViewController {
 }
 
 extension InfoViewController: WKNavigationDelegate {
+    // On page load, set the WebView to be the height of the page
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        webView.evaluateJavaScript("document.documentElement.scrollHeight", completionHandler: { (height, error) in
+        webView.evaluateJavaScript("document.documentElement.scrollHeight") { [weak self] (height, error) in
+            guard let self = self else { return }
             if webView === self.introWebView {
                 self.introWebViewHeightContstraint.constant = height as! CGFloat
             }
             if webView === self.tutorialWebView {
                 self.tutorialWebViewHeightContstraint.constant = height as! CGFloat
             }
-        })
+        }
+    }
+    
+    // On clicking a link, scroll the overall view to the appropriate place (as the webview is sized to be static) 
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        let aboutBlank = "about:blank%23"
+        if navigationAction.navigationType == .linkActivated,
+           let link = navigationAction.request.url?.absoluteString,
+           link.hasPrefix(aboutBlank)
+        {
+            let anchor = link.dropFirst(aboutBlank.count)
+            webView.evaluateJavaScript("document.getElementById('\(anchor)').offsetTop") { [weak self] (offset, error) in
+                guard let self = self else { return }
+                self.scrollView.contentOffset.y = webView.frame.minY + (offset as! CGFloat) - 8
+            }
+        }
+        decisionHandler(WKNavigationActionPolicy.allow)
     }
 }
