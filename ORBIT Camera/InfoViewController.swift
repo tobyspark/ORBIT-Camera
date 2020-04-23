@@ -116,6 +116,7 @@ class InfoViewController: UIViewController {
         }
     }
     
+    // The Ink markdown parser doesn't like Windows line-endings, so this will replace CRLF with LF on import
     func html(markdownResource: String) -> String {
         guard let url = Bundle(for: type(of: self)).url(forResource: markdownResource, withExtension: "markdown")
         else {
@@ -124,7 +125,7 @@ class InfoViewController: UIViewController {
         }
         
         do {
-            let markdown = try String(contentsOf: url)
+            let markdown = try String(contentsOf: url).replacingOccurrences(of: "\r\n", with: "\n")
             let parser = MarkdownParser()
             return """
             <html>
