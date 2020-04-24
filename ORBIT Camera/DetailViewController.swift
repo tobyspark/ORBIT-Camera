@@ -753,6 +753,18 @@ class DetailViewController: UIViewController {
         layoutAccessibilityElements()
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        switch segue.identifier {
+        case "showHelp":
+            guard let helpViewController = segue.destination as? HelpViewController
+            else { return }
+        
+            helpViewController.kind = pageKind
+        default:
+            break
+        }
+    }
+    
     // TODO: Refactor away, pager category should be protocol stringconvertible or somesuch.
     func videoKind(description: String) -> Video.Kind {
         switch description {
