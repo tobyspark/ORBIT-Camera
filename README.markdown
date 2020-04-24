@@ -1,5 +1,19 @@
 # ORBIT Camera
 
+## Informational content
+
+The non-UI text such as introduction prose is parsed into the app from markdown files in the `Resources` folder of this repository.
+
+### Linking to headers
+Links within each document work. Use the markdown link format, with the slugified heading text as fragment identifier. What's a slug? It's the URL-friendly form, i.e. with dashes instead of spaces, lowercase, etc. What's the fragment identifier? It's the part of the URL after the page in the form `#xxx`.
+i.e. at the time of writing, one document has the link `[Training videos for small/medium things](#training-videos-for-smallmedium-things)` which links to `#### Training videos for small/medium things`. To be clear, the number of hashes in the markdown heading is irrelevant, you'll always use one hash in the link.
+
+### Setting the help screen selection points
+The help screen displays the whole tutorial text but attempts to present it at a heading appropriate to the current video kind. Which heading is to be used for which video kind is set at the top of the tutorial script document. The video kind is the key, on the left. The heading is the value, on the right. 
+Example – `train-header: training-videos-for-smallmedium-things`
+
+(Attempts, because... as of iOS 13-or-so, it seems security has locked down something that accessibility relies on, and accessibility hasn't yet caught up) 
+
 ## Known issues
 - Thing labels cannot be edited #12
 - Thing list editing not accessible, i.e. can't delete via voiceover. #19
@@ -16,6 +30,11 @@
 - Participant on-boarding
 
 ## Version history
+
+v0.5.6
+- Info sheet features info and tutorial text, parsed from bundled markdown file
+- Things detail scene features help scene with tutorial text
+- PR: [Feature: Introduction, tutorial text](https://github.com/tobyspark/ORBIT-Camera/pull/31)
 
 v0.5.4
 - Thing scene has video-kind centric UX
