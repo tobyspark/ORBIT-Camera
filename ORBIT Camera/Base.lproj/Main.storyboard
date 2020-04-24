@@ -507,6 +507,7 @@
                         <viewLayoutGuide key="safeArea" id="IxC-JV-znz"/>
                     </view>
                     <connections>
+                        <outlet property="dismissButton" destination="htf-pD-8OF" id="Hve-3h-wKx"/>
                         <outlet property="scrollView" destination="VKJ-iT-Smm" id="7gD-zB-BY6"/>
                         <outlet property="webView" destination="W1q-WG-AR0" id="ylb-3j-4WO"/>
                         <outlet property="webViewHeightContstraint" destination="471-8J-kgI" id="YWr-eV-qTG"/>
@@ -804,6 +805,7 @@
                         <viewLayoutGuide key="safeArea" id="7eM-8t-mVq"/>
                     </view>
                     <connections>
+                        <outlet property="dismissButton" destination="ZDt-uB-H9e" id="BY8-Ga-hRv"/>
                         <outlet property="introWebView" destination="Y6i-mN-HVc" id="7SW-Ng-gPO"/>
                         <outlet property="introWebViewHeightContstraint" destination="bPI-WX-iAf" id="iPH-Yb-2x0"/>
                         <outlet property="scrollView" destination="FfH-Ja-3I0" id="SXc-ea-B1k"/>

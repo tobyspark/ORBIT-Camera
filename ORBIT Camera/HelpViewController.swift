@@ -14,6 +14,8 @@ import os
 
 class HelpViewController: UIViewController {
     
+    @IBOutlet weak var dismissButton: UIButton!
+    
     @IBOutlet weak var scrollView: UIScrollView!
     
     @IBOutlet weak var webView: WKWebView!
@@ -30,6 +32,29 @@ class HelpViewController: UIViewController {
         
         webView.navigationDelegate = self
         webView.loadHTMLString(result.html, baseURL: nil)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        // Make the dismiss accessibility frame a strip down the RHS edge of the screen
+        // To not mess with the visual UI expected touches, this requires a separate element to mock the button
+        let dismissElement = UIAccessibilityElement(accessibilityContainer: view!)
+        dismissElement.accessibilityLabel = dismissButton.accessibilityLabel
+        dismissElement.accessibilityTraits = dismissButton.accessibilityTraits
+        
+        let viewFrame = UIAccessibility.convertToScreenCoordinates(view.bounds, in: view)
+        let dismissButtonFrame = UIAccessibility.convertToScreenCoordinates(dismissButton.bounds, in: dismissButton)
+        dismissElement.accessibilityFrame = CGRect(
+            x: dismissButtonFrame.minX,
+            y: viewFrame.minY,
+            width: viewFrame.maxX - dismissButtonFrame.minX,
+            height: viewFrame.height
+        )
+        dismissElement.accessibilityActivationPoint = CGPoint(x: dismissButtonFrame.midX, y: dismissButtonFrame.midY)
+        
+        view.accessibilityElements = [
+            dismissElement,
+            scrollView!
+        ]
     }
     
     let parser = MarkdownParser(modifiers: [
