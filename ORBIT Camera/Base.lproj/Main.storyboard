@@ -391,6 +391,10 @@
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="mOI-FS-AaM">
                         <barButtonItem key="rightBarButtonItem" title="Item" image="questionmark.circle" catalog="system" id="Qyt-XI-k0g">
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityLabel" value="Help"/>
+                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityHint" value="Brings up a help screen with the how-to steps for the currently selected video type"/>
+                            </userDefinedRuntimeAttributes>
                             <connections>
                                 <segue destination="eDj-Yg-tEO" kind="popoverPresentation" identifier="showHelp" popoverAnchorBarButtonItem="Qyt-XI-k0g" id="C5e-uX-2XX">
                                     <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
@@ -474,6 +478,7 @@
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="htf-pD-8OF">
                                 <rect key="frame" x="360" y="10" width="44" height="44"/>
+                                <accessibility key="accessibilityConfiguration" label="Dismiss help sheet"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="AKb-i7-xOC"/>
                                     <constraint firstAttribute="width" constant="44" id="FDH-fq-jnq"/>
