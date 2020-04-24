@@ -9,6 +9,15 @@
           "revision": "4c8574aa4c08ff715ce0e63b38502ac1e8529069",
           "version": "4.10.0"
         }
+      },
+      {
+        "package": "Ink",
+        "repositoryURL": "https://github.com/johnsundell/ink.git",
+        "state": {
+          "branch": null,
+          "revision": "878fd897945500be1885f2c88f81f8f909224796",
+          "version": "0.4.0"
+        }
       }
     ]
   },

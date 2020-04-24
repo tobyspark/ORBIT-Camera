@@ -753,6 +753,18 @@ class DetailViewController: UIViewController {
         layoutAccessibilityElements()
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        switch segue.identifier {
+        case "showHelp":
+            guard let helpViewController = segue.destination as? HelpViewController
+            else { return }
+        
+            helpViewController.kind = pageKind
+        default:
+            break
+        }
+    }
+    
     // TODO: Refactor away, pager category should be protocol stringconvertible or somesuch.
     func videoKind(description: String) -> Video.Kind {
         switch description {
@@ -774,6 +786,11 @@ class DetailViewController: UIViewController {
             videoCollectionView = view.subviews[0] as! UICollectionView
         }
     }
+    
+    /// Allow unwind segues to this view controller
+    // This is found by Help Scene's exit doohikey.
+    // The presence of the method is enough to allow the unwind on the storyboard.
+    @IBAction func unwindAction(unwindSegue: UIStoryboardSegue) {}
 }
 
 extension DetailViewController: UICollectionViewDataSource {
