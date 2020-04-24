@@ -9,7 +9,6 @@
 import UIKit
 import GRDB
 import WebKit
-import Ink // Markdown
 import os
 
 class InfoViewController: UIViewController {
@@ -31,11 +30,11 @@ class InfoViewController: UIViewController {
         super.viewDidLoad()
         
         introWebView.navigationDelegate = self
-        let introHTML = html(markdownResource: "Introduction")
+        let introHTML = MarkdownParser.html(markdownResource: "Introduction")
         introWebView.loadHTMLString(introHTML, baseURL: nil)
         
         tutorialWebView.navigationDelegate = self
-        let tutorialHTML = html(markdownResource: "TutorialScript")
+        let tutorialHTML = MarkdownParser.html(markdownResource: "TutorialScript")
         tutorialWebView.loadHTMLString(tutorialHTML, baseURL: nil)
         
         if let credential = try! Participant.appParticipant().authCredential { // FIXME: try!
@@ -141,53 +140,6 @@ class InfoViewController: UIViewController {
                 unlockCodeStatus.text = "Code rejected"
             }
         }
-    }
-    
-    let parser = MarkdownParser(modifiers: [
-        // Add id to header elements, to enable linking to them
-        // i.e. <h1>A glorious heading</h1> -> <h1 id="a-glorious-heading">A glorious heading</h1>
-        Modifier(target: .headings) { html, markdown in
-            let header = markdown.trimmingCharacters(in: CharacterSet(charactersIn: "#"))
-            let slug = header.slugify()
-            let insertIndex = html.firstIndex(of: ">")!
-            return html[html.startIndex..<insertIndex] + " id=\"" + slug + "\"" + html[insertIndex...]
-        }
-    ])
-    
-    // The Ink markdown parser doesn't like Windows line-endings, so this will replace CRLF with LF on import
-    func html(markdownResource: String) -> String {
-        guard let url = Bundle(for: type(of: self)).url(forResource: markdownResource, withExtension: "markdown")
-        else {
-            os_log("Could not find %{public}s.markdown", markdownResource)
-            return ""
-        }
-        
-        do {
-            let markdown = try String(contentsOf: url).replacingOccurrences(of: "\r\n", with: "\n")
-            return """
-            <!DOCTYPE html>
-            <html>
-            <head>
-            <title>\(markdownResource)</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-            <style>
-                body {
-                    font-family: system-ui, sans-serif;
-                    color: \(UIColor.label.css);
-                    background-color: \(UIColor.systemBackground.css);
-                }
-            </style>
-            </head>
-            <body>
-            \(parser.html(from: markdown))
-            </body>
-            </html>
-            """
-        } catch {
-            print(error)
-            assertionFailure()
-        }
-        return ""
     }
 }
 
