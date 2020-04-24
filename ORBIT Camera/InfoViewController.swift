@@ -8,19 +8,67 @@
 
 import UIKit
 import GRDB
+import WebKit
 import os
 
 class InfoViewController: UIViewController {
 
+    @IBOutlet weak var dismissButton: UIButton!
+    
+    @IBOutlet weak var scrollView: UIScrollView!
+    
     @IBOutlet weak var unlockCode: UITextField!
     @IBOutlet weak var unlockCodeStatus: UILabel!
     
+    @IBOutlet weak var introWebView: WKWebView!
+    @IBOutlet weak var introWebViewHeightContstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var tutorialWebView: WKWebView!
+    @IBOutlet weak var tutorialWebViewHeightContstraint: NSLayoutConstraint!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        introWebView.navigationDelegate = self
+        let introHTML = MarkdownParser.html(markdownResource: "Introduction")
+        introWebView.loadHTMLString(introHTML, baseURL: nil)
+        
+        tutorialWebView.navigationDelegate = self
+        let tutorialHTML = MarkdownParser.html(markdownResource: "TutorialScript")
+        tutorialWebView.loadHTMLString(tutorialHTML, baseURL: nil)
+        
         if let credential = try! Participant.appParticipant().authCredential { // FIXME: try!
             unlockCode.text = credential
             checkCredential(credential)
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        // Announce the screen change
+        UIAccessibility.post(notification: .screenChanged, argument: "Info sheet")
+    }
+    
+    override func viewDidLayoutSubviews() {
+        // Make the dismiss accessibility frame a strip down the RHS edge of the screen
+        // To not mess with the visual UI expected touches, this requires a separate element to mock the button
+        let dismissElement = UIAccessibilityElement(accessibilityContainer: view!)
+        dismissElement.accessibilityLabel = dismissButton.accessibilityLabel
+        dismissElement.accessibilityTraits = dismissButton.accessibilityTraits
+        
+        let viewFrame = UIAccessibility.convertToScreenCoordinates(view.bounds, in: view)
+        let dismissButtonFrame = UIAccessibility.convertToScreenCoordinates(dismissButton.bounds, in: dismissButton)
+        dismissElement.accessibilityFrame = CGRect(
+            x: dismissButtonFrame.minX,
+            y: viewFrame.minY,
+            width: viewFrame.maxX - dismissButtonFrame.minX,
+            height: viewFrame.height
+        )
+        dismissElement.accessibilityActivationPoint = CGPoint(x: dismissButtonFrame.midX, y: dismissButtonFrame.midY)
+        
+        view.accessibilityElements = [
+            dismissElement,
+            scrollView!
+        ]
     }
     
     @IBAction func unlockCodeEditingDidEnd(_ sender: Any) {
@@ -97,5 +145,36 @@ class InfoViewController: UIViewController {
                 unlockCodeStatus.text = "Code rejected"
             }
         }
+    }
+}
+
+extension InfoViewController: WKNavigationDelegate {
+    // On page load, set the WebView to be the height of the page
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        webView.evaluateJavaScript("document.documentElement.scrollHeight") { [weak self] (height, error) in
+            guard let self = self else { return }
+            if webView === self.introWebView {
+                self.introWebViewHeightContstraint.constant = height as! CGFloat
+            }
+            if webView === self.tutorialWebView {
+                self.tutorialWebViewHeightContstraint.constant = height as! CGFloat
+            }
+        }
+    }
+    
+    // On clicking a link, scroll the overall view to the appropriate place (as the webview is sized to be static) 
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        let aboutBlank = "about:blank%23"
+        if navigationAction.navigationType == .linkActivated,
+           let link = navigationAction.request.url?.absoluteString,
+           link.hasPrefix(aboutBlank)
+        {
+            let anchor = link.dropFirst(aboutBlank.count)
+            webView.evaluateJavaScript("document.getElementById('\(anchor)').offsetTop") { [weak self] (offset, error) in
+                guard let self = self else { return }
+                self.scrollView.contentOffset.y = webView.frame.minY + (offset as! CGFloat) - 8
+            }
+        }
+        decisionHandler(WKNavigationActionPolicy.allow)
     }
 }

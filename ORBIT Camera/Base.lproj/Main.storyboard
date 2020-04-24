@@ -389,7 +389,19 @@
                         </variation>
                     </view>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" id="mOI-FS-AaM"/>
+                    <navigationItem key="navigationItem" id="mOI-FS-AaM">
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="questionmark.circle" catalog="system" id="Qyt-XI-k0g">
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityLabel" value="Help"/>
+                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityHint" value="Brings up a help screen with the how-to steps for the currently selected video type"/>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <segue destination="eDj-Yg-tEO" kind="popoverPresentation" identifier="showHelp" popoverAnchorBarButtonItem="Qyt-XI-k0g" id="C5e-uX-2XX">
+                                    <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                                </segue>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="addNewPageShortcutButton" destination="bqO-YL-mhJ" id="d0c-NY-srC"/>
                         <outlet property="cameraControlHConstraint" destination="XyU-oE-jbW" id="XOt-Cl-HJz"/>
@@ -419,6 +431,93 @@
             </objects>
             <point key="canvasLocation" x="707.24637681159425" y="127.90178571428571"/>
         </scene>
+        <!--Help View Controller-->
+        <scene sceneID="eSg-2d-m07">
+            <objects>
+                <viewController id="eDj-Yg-tEO" customClass="HelpViewController" customModule="ORBIT_Camera" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="yxm-Pz-2MD">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VKJ-iT-Smm">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5BX-MQ-Zxh">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                                        <subviews>
+                                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W1q-WG-AR0">
+                                                <rect key="frame" x="20" y="54" width="374" height="746"/>
+                                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="746" id="471-8J-kgI"/>
+                                                </constraints>
+                                                <wkWebViewConfiguration key="configuration">
+                                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                                    <wkPreferences key="preferences"/>
+                                                </wkWebViewConfiguration>
+                                            </wkWebView>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="trailing" secondItem="W1q-WG-AR0" secondAttribute="trailing" constant="20" id="Vtu-1G-9Ka"/>
+                                            <constraint firstItem="W1q-WG-AR0" firstAttribute="top" secondItem="5BX-MQ-Zxh" secondAttribute="top" constant="54" id="p7i-11-ku3"/>
+                                            <constraint firstItem="W1q-WG-AR0" firstAttribute="leading" secondItem="5BX-MQ-Zxh" secondAttribute="leading" constant="20" id="sVp-uR-M6r"/>
+                                            <constraint firstAttribute="bottom" secondItem="W1q-WG-AR0" secondAttribute="bottom" constant="42" id="zEZ-01-JOY"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="5BX-MQ-Zxh" secondAttribute="trailing" id="6jb-XR-rWW"/>
+                                    <constraint firstItem="5BX-MQ-Zxh" firstAttribute="width" secondItem="VKJ-iT-Smm" secondAttribute="width" id="8Ht-Jc-r8D"/>
+                                    <constraint firstAttribute="bottom" secondItem="5BX-MQ-Zxh" secondAttribute="bottom" id="TPx-zg-47o"/>
+                                    <constraint firstItem="5BX-MQ-Zxh" firstAttribute="top" secondItem="VKJ-iT-Smm" secondAttribute="top" id="V61-OE-kP5"/>
+                                    <constraint firstItem="5BX-MQ-Zxh" firstAttribute="leading" secondItem="VKJ-iT-Smm" secondAttribute="leading" id="WdR-wp-gcD"/>
+                                </constraints>
+                                <viewLayoutGuide key="contentLayoutGuide" id="hhc-0i-jnT"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="IRg-dT-lCR"/>
+                            </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="htf-pD-8OF">
+                                <rect key="frame" x="360" y="10" width="44" height="44"/>
+                                <accessibility key="accessibilityConfiguration" label="Dismiss help sheet"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="AKb-i7-xOC"/>
+                                    <constraint firstAttribute="width" constant="44" id="FDH-fq-jnq"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                                <state key="normal" image="xmark.circle" catalog="system">
+                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="22" scale="medium"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="string" keyPath="accessibilityLabel" value="Dismiss info sheet"/>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <segue destination="OIW-bH-GlO" kind="unwind" unwindAction="unwindActionWithUnwindSegue:" id="Mvp-ZC-Wdb"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="IxC-JV-znz" firstAttribute="trailing" secondItem="VKJ-iT-Smm" secondAttribute="trailing" id="0UG-RV-vL0"/>
+                            <constraint firstItem="VKJ-iT-Smm" firstAttribute="top" secondItem="IxC-JV-znz" secondAttribute="top" id="0W2-W4-buH"/>
+                            <constraint firstItem="IxC-JV-znz" firstAttribute="trailing" secondItem="htf-pD-8OF" secondAttribute="trailing" constant="10" id="58S-Wm-xQ5"/>
+                            <constraint firstItem="htf-pD-8OF" firstAttribute="top" secondItem="IxC-JV-znz" secondAttribute="top" constant="10" id="BKe-Ej-n0f"/>
+                            <constraint firstItem="VKJ-iT-Smm" firstAttribute="leading" secondItem="IxC-JV-znz" secondAttribute="leading" id="Fdo-rm-YVG"/>
+                            <constraint firstItem="VKJ-iT-Smm" firstAttribute="bottom" secondItem="IxC-JV-znz" secondAttribute="bottom" id="P6e-Eo-1A7"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="IxC-JV-znz"/>
+                    </view>
+                    <connections>
+                        <outlet property="dismissButton" destination="htf-pD-8OF" id="Hve-3h-wKx"/>
+                        <outlet property="scrollView" destination="VKJ-iT-Smm" id="7gD-zB-BY6"/>
+                        <outlet property="webView" destination="W1q-WG-AR0" id="ylb-3j-4WO"/>
+                        <outlet property="webViewHeightContstraint" destination="471-8J-kgI" id="YWr-eV-qTG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="EhI-Gs-rUf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="OIW-bH-GlO" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="1602.8985507246377" y="128.57142857142856"/>
+        </scene>
         <!--Video Kind Picker View Controller-->
         <scene sceneID="Jr5-8m-FaI">
             <objects>
@@ -443,7 +542,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NLX-TI-n20" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1382.608695652174" y="125.89285714285714"/>
+            <point key="canvasLocation" x="2164" y="129"/>
         </scene>
         <!--Split View Controller-->
         <scene sceneID="Nki-YV-4Qg">
@@ -576,37 +675,106 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ORBIT logo" translatesAutoresizingMaskIntoConstraints="NO" id="2aO-i4-d58">
-                                <rect key="frame" x="107" y="60" width="200" height="200"/>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FfH-Ja-3I0">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="808"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WCh-lR-RMy">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="632"/>
+                                        <subviews>
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ORBIT logo" translatesAutoresizingMaskIntoConstraints="NO" id="2aO-i4-d58">
+                                                <rect key="frame" x="107" y="40" width="200" height="200"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="200" id="H8N-ZL-43w"/>
+                                                    <constraint firstAttribute="width" constant="200" id="XAt-iE-Qga"/>
+                                                </constraints>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ORBIT Camera" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7I2-IG-5Lu">
+                                                <rect key="frame" x="0.0" y="260" width="414" height="26.5"/>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isAccessibilityElement" value="NO"/>
+                                                </userDefinedRuntimeAttributes>
+                                            </label>
+                                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y6i-mN-HVc">
+                                                <rect key="frame" x="20" y="326.5" width="374" height="100"/>
+                                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="100" id="bPI-WX-iAf"/>
+                                                </constraints>
+                                                <wkWebViewConfiguration key="configuration">
+                                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                                    <wkPreferences key="preferences"/>
+                                                </wkWebViewConfiguration>
+                                            </wkWebView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Unlock code" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iWv-G2-byB">
+                                                <rect key="frame" x="159" y="434.5" width="96" height="21"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter code sent to you" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="419-dk-hXK">
+                                                <rect key="frame" x="120" y="465.5" width="174" height="34"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits" returnKeyType="go"/>
+                                                <connections>
+                                                    <action selector="unlockCodeEditingDidEnd:" destination="hQ4-tG-xkv" eventType="primaryActionTriggered" id="ivN-h6-W1Z"/>
+                                                    <action selector="unlockCodeEditingDidEnd:" destination="hQ4-tG-xkv" eventType="editingDidEnd" id="suT-gq-xVh"/>
+                                                </connections>
+                                            </textField>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Unverified" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JcU-sZ-Nrr">
+                                                <rect key="frame" x="120" y="509.5" width="174" height="14.5"/>
+                                                <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nte-nl-xTt">
+                                                <rect key="frame" x="20" y="532" width="374" height="100"/>
+                                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="100" id="vdb-rL-mHt"/>
+                                                </constraints>
+                                                <wkWebViewConfiguration key="configuration">
+                                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                                    <wkPreferences key="preferences"/>
+                                                </wkWebViewConfiguration>
+                                            </wkWebView>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <constraints>
+                                            <constraint firstItem="Nte-nl-xTt" firstAttribute="width" secondItem="Y6i-mN-HVc" secondAttribute="width" id="6mU-6N-EQ6"/>
+                                            <constraint firstItem="419-dk-hXK" firstAttribute="centerX" secondItem="WCh-lR-RMy" secondAttribute="centerX" id="7jd-8l-brj"/>
+                                            <constraint firstItem="JcU-sZ-Nrr" firstAttribute="width" secondItem="419-dk-hXK" secondAttribute="width" id="Ewg-zK-xtZ"/>
+                                            <constraint firstItem="Nte-nl-xTt" firstAttribute="centerX" secondItem="WCh-lR-RMy" secondAttribute="centerX" id="JsA-TE-pXI"/>
+                                            <constraint firstAttribute="trailing" secondItem="Y6i-mN-HVc" secondAttribute="trailing" constant="20" id="Kay-pn-uU6"/>
+                                            <constraint firstItem="2aO-i4-d58" firstAttribute="top" secondItem="WCh-lR-RMy" secondAttribute="top" constant="40" id="LRN-XK-U2u"/>
+                                            <constraint firstAttribute="bottom" secondItem="Nte-nl-xTt" secondAttribute="bottom" id="MOZ-KC-axV"/>
+                                            <constraint firstItem="419-dk-hXK" firstAttribute="top" secondItem="iWv-G2-byB" secondAttribute="bottom" constant="10" id="OmK-jT-6m4"/>
+                                            <constraint firstAttribute="trailing" secondItem="7I2-IG-5Lu" secondAttribute="trailing" id="RXM-Va-t6B"/>
+                                            <constraint firstItem="7I2-IG-5Lu" firstAttribute="leading" secondItem="WCh-lR-RMy" secondAttribute="leading" id="SLV-gj-bBh"/>
+                                            <constraint firstItem="Nte-nl-xTt" firstAttribute="top" secondItem="JcU-sZ-Nrr" secondAttribute="bottom" constant="8" symbolic="YES" id="Ukj-ev-dY0"/>
+                                            <constraint firstItem="JcU-sZ-Nrr" firstAttribute="centerX" secondItem="WCh-lR-RMy" secondAttribute="centerX" id="d4T-ed-dwu"/>
+                                            <constraint firstItem="iWv-G2-byB" firstAttribute="top" secondItem="Y6i-mN-HVc" secondAttribute="bottom" constant="8" symbolic="YES" id="d5D-67-Kgi"/>
+                                            <constraint firstItem="Y6i-mN-HVc" firstAttribute="leading" secondItem="WCh-lR-RMy" secondAttribute="leading" constant="20" id="kDd-1z-bwg"/>
+                                            <constraint firstItem="Y6i-mN-HVc" firstAttribute="top" secondItem="7I2-IG-5Lu" secondAttribute="bottom" constant="40" id="qfL-g3-cFD"/>
+                                            <constraint firstItem="2aO-i4-d58" firstAttribute="centerX" secondItem="WCh-lR-RMy" secondAttribute="centerX" id="ru2-1p-AoZ"/>
+                                            <constraint firstItem="7I2-IG-5Lu" firstAttribute="top" secondItem="2aO-i4-d58" secondAttribute="bottom" constant="20" id="xzJ-Tf-Hui"/>
+                                            <constraint firstItem="iWv-G2-byB" firstAttribute="centerX" secondItem="WCh-lR-RMy" secondAttribute="centerX" id="yP8-2f-reD"/>
+                                            <constraint firstItem="JcU-sZ-Nrr" firstAttribute="top" secondItem="419-dk-hXK" secondAttribute="bottom" constant="10" id="zip-CA-Ydu"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="200" id="H8N-ZL-43w"/>
-                                    <constraint firstAttribute="width" constant="200" id="XAt-iE-Qga"/>
+                                    <constraint firstAttribute="trailing" secondItem="WCh-lR-RMy" secondAttribute="trailing" id="2RK-w2-qBN"/>
+                                    <constraint firstItem="WCh-lR-RMy" firstAttribute="top" secondItem="FfH-Ja-3I0" secondAttribute="top" id="DY1-M4-zoY"/>
+                                    <constraint firstItem="WCh-lR-RMy" firstAttribute="leading" secondItem="FfH-Ja-3I0" secondAttribute="leading" id="O6E-E8-Le7"/>
+                                    <constraint firstAttribute="bottom" secondItem="WCh-lR-RMy" secondAttribute="bottom" id="SRA-tI-KGh"/>
+                                    <constraint firstItem="WCh-lR-RMy" firstAttribute="width" secondItem="FfH-Ja-3I0" secondAttribute="width" id="daV-9k-dBU"/>
                                 </constraints>
-                            </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Unlock code" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iWv-G2-byB">
-                                <rect key="frame" x="159" y="346.5" width="96" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter code sent to you" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="419-dk-hXK">
-                                <rect key="frame" x="20" y="377.5" width="374" height="34"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" returnKeyType="go"/>
-                                <connections>
-                                    <action selector="unlockCodeEditingDidEnd:" destination="hQ4-tG-xkv" eventType="primaryActionTriggered" id="ivN-h6-W1Z"/>
-                                    <action selector="unlockCodeEditingDidEnd:" destination="hQ4-tG-xkv" eventType="editingDidEnd" id="suT-gq-xVh"/>
-                                </connections>
-                            </textField>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ORBIT Camera" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7I2-IG-5Lu">
-                                <rect key="frame" x="131.5" y="280" width="151" height="26.5"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isAccessibilityElement" value="NO"/>
-                                </userDefinedRuntimeAttributes>
-                            </label>
+                                <viewLayoutGuide key="contentLayoutGuide" id="Gs4-ii-aw9"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="eq8-0k-31R"/>
+                            </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZDt-uB-H9e">
                                 <rect key="frame" x="360" y="10" width="44" height="44"/>
                                 <constraints>
@@ -624,33 +792,25 @@
                                     <segue destination="1Sf-T3-s2e" kind="unwind" unwindAction="unwindActionWithUnwindSegue:" id="6m9-Ak-qS8"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Unverified" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JcU-sZ-Nrr">
-                                <rect key="frame" x="20" y="421.5" width="374" height="14.5"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="7eM-8t-mVq" firstAttribute="trailing" secondItem="ZDt-uB-H9e" secondAttribute="trailing" constant="10" id="1W5-jb-jW5"/>
-                            <constraint firstItem="2aO-i4-d58" firstAttribute="centerX" secondItem="ftw-Fm-72o" secondAttribute="centerX" id="53J-OX-fSU"/>
-                            <constraint firstItem="7I2-IG-5Lu" firstAttribute="top" secondItem="2aO-i4-d58" secondAttribute="bottom" constant="20" id="Am0-0f-UVI"/>
-                            <constraint firstItem="JcU-sZ-Nrr" firstAttribute="centerX" secondItem="ftw-Fm-72o" secondAttribute="centerX" id="Law-Se-GOv"/>
-                            <constraint firstItem="JcU-sZ-Nrr" firstAttribute="top" secondItem="419-dk-hXK" secondAttribute="bottom" constant="10" id="OIh-jU-vPA"/>
                             <constraint firstItem="ZDt-uB-H9e" firstAttribute="top" secondItem="7eM-8t-mVq" secondAttribute="top" constant="10" id="QWg-Wg-vJI"/>
-                            <constraint firstItem="7I2-IG-5Lu" firstAttribute="centerX" secondItem="ftw-Fm-72o" secondAttribute="centerX" id="S6S-nP-H67"/>
-                            <constraint firstItem="7eM-8t-mVq" firstAttribute="trailing" secondItem="419-dk-hXK" secondAttribute="trailing" constant="20" id="aGs-Ss-5MO"/>
-                            <constraint firstItem="419-dk-hXK" firstAttribute="top" secondItem="iWv-G2-byB" secondAttribute="bottom" constant="10" id="lep-mf-Jlq"/>
-                            <constraint firstItem="iWv-G2-byB" firstAttribute="centerX" secondItem="ftw-Fm-72o" secondAttribute="centerX" id="m8T-nZ-gMW"/>
-                            <constraint firstItem="JcU-sZ-Nrr" firstAttribute="width" secondItem="419-dk-hXK" secondAttribute="width" id="ps1-by-6nv"/>
-                            <constraint firstItem="iWv-G2-byB" firstAttribute="top" secondItem="7I2-IG-5Lu" secondAttribute="bottom" constant="40" id="rj4-iX-JWh"/>
-                            <constraint firstItem="2aO-i4-d58" firstAttribute="top" secondItem="7eM-8t-mVq" secondAttribute="top" constant="60" id="xUe-7Y-Ogq"/>
-                            <constraint firstItem="419-dk-hXK" firstAttribute="leading" secondItem="7eM-8t-mVq" secondAttribute="leading" constant="20" id="ybd-tu-Tgn"/>
+                            <constraint firstItem="FfH-Ja-3I0" firstAttribute="leading" secondItem="7eM-8t-mVq" secondAttribute="leading" id="Wnt-kP-cvQ"/>
+                            <constraint firstItem="7eM-8t-mVq" firstAttribute="bottom" secondItem="FfH-Ja-3I0" secondAttribute="bottom" id="Yy8-7R-bLr"/>
+                            <constraint firstItem="FfH-Ja-3I0" firstAttribute="top" secondItem="7eM-8t-mVq" secondAttribute="top" id="uGd-o2-YBe"/>
+                            <constraint firstItem="FfH-Ja-3I0" firstAttribute="trailing" secondItem="7eM-8t-mVq" secondAttribute="trailing" id="zTT-mh-972"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="7eM-8t-mVq"/>
                     </view>
                     <connections>
+                        <outlet property="dismissButton" destination="ZDt-uB-H9e" id="BY8-Ga-hRv"/>
+                        <outlet property="introWebView" destination="Y6i-mN-HVc" id="7SW-Ng-gPO"/>
+                        <outlet property="introWebViewHeightContstraint" destination="bPI-WX-iAf" id="iPH-Yb-2x0"/>
+                        <outlet property="scrollView" destination="FfH-Ja-3I0" id="SXc-ea-B1k"/>
+                        <outlet property="tutorialWebView" destination="Nte-nl-xTt" id="e8V-XS-mZb"/>
+                        <outlet property="tutorialWebViewHeightContstraint" destination="vdb-rL-mHt" id="yb1-Zc-XoD"/>
                         <outlet property="unlockCode" destination="419-dk-hXK" id="Rkx-qM-sN1"/>
                         <outlet property="unlockCodeStatus" destination="JcU-sZ-Nrr" id="JtT-Zr-61A"/>
                     </connections>
@@ -678,7 +838,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="M3h-NW-8hv"/>
+        <segue reference="VfW-pl-Nv3"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="ORBIT logo" width="200" height="200"/>
@@ -688,6 +848,7 @@
         <image name="info.circle" catalog="system" width="128" height="121"/>
         <image name="lock.circle" catalog="system" width="128" height="121"/>
         <image name="plus" catalog="system" width="128" height="113"/>
+        <image name="questionmark.circle" catalog="system" width="128" height="121"/>
         <image name="trash" catalog="system" width="121" height="128"/>
         <image name="xmark.circle" catalog="system" width="128" height="121"/>
     </resources>
