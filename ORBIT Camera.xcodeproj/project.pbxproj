@@ -13,6 +13,7 @@
 		4B3119B12451030B00E28452 /* UIColor+CSS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3119B02451030B00E28452 /* UIColor+CSS.swift */; };
 		4B3119B32451B06600E28452 /* String+slugify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3119B22451B06600E28452 /* String+slugify.swift */; };
 		4B3119B52451E99D00E28452 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3119B42451E99C00E28452 /* HelpViewController.swift */; };
+		4B3119B72452F75700E28452 /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3119B62452F75700E28452 /* MarkdownParser.swift */; };
 		4B318B0524404CA4001F9874 /* Collection+Cycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B318B0424404CA4001F9874 /* Collection+Cycle.swift */; };
 		4B3D772624332C740077DFD0 /* VideoKindPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3D772524332C740077DFD0 /* VideoKindPickerView.swift */; };
 		4B5A6B992424CB9200A5C45B /* NewThingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B5A6B982424CB9200A5C45B /* NewThingCell.swift */; };
@@ -78,6 +79,7 @@
 		4B3119B02451030B00E28452 /* UIColor+CSS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSS.swift"; sourceTree = "<group>"; };
 		4B3119B22451B06600E28452 /* String+slugify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+slugify.swift"; sourceTree = "<group>"; };
 		4B3119B42451E99C00E28452 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
+		4B3119B62452F75700E28452 /* MarkdownParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownParser.swift; sourceTree = "<group>"; };
 		4B318B0424404CA4001F9874 /* Collection+Cycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+Cycle.swift"; sourceTree = "<group>"; };
 		4B3707B52436161100254ABF /* AppUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUploader.swift; sourceTree = "<group>"; };
 		4B3D77222432156B0077DFD0 /* README.markdown */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.markdown; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 				4B87FD2F240EC756007AB630 /* MultipartFormData.swift */,
 				4B8409B224499B470001F654 /* OrbitPagerView.swift */,
 				4B9AA9FE2418EA49002380B1 /* RecordButton.swift */,
+				4B3119B62452F75700E28452 /* MarkdownParser.swift */,
 				4B3D772524332C740077DFD0 /* VideoKindPickerView.swift */,
 				4BE50EF42437F07C00BE79C7 /* Collection+SafeSubscript.swift */,
 				4B318B0424404CA4001F9874 /* Collection+Cycle.swift */,
@@ -351,6 +354,7 @@
 				4B318B0524404CA4001F9874 /* Collection+Cycle.swift in Sources */,
 				4B87FD33240EF4A0007AB630 /* Uploadable.swift in Sources */,
 				4B8409B324499B470001F654 /* OrbitPagerView.swift in Sources */,
+				4B3119B72452F75700E28452 /* MarkdownParser.swift in Sources */,
 				4BF14BD02405771900E31D93 /* Thing.swift in Sources */,
 				4BA13A5C242D71E5006D838B /* PassThrough.metal in Sources */,
 				4BA680F2243DE7CD0092DAEF /* UIAccessibility+Focus.swift in Sources */,

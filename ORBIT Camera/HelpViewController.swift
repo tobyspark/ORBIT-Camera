@@ -9,7 +9,6 @@
 import UIKit
 import GRDB
 import WebKit
-import Ink // Markdown
 import os
 
 class HelpViewController: UIViewController {
@@ -27,7 +26,7 @@ class HelpViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let result = parse(markdownResource: "TutorialScript")
+        let result = MarkdownParser.parse(markdownResource: "TutorialScript")
         kindElementIds = result.kindElementIDs
         
         webView.navigationDelegate = self
@@ -55,60 +54,6 @@ class HelpViewController: UIViewController {
             dismissElement,
             scrollView!
         ]
-    }
-    
-    let parser = MarkdownParser(modifiers: [
-        // Add id to header elements, to enable linking to them
-        // i.e. <h1>A glorious heading</h1> -> <h1 id="a-glorious-heading">A glorious heading</h1>
-        Modifier(target: .headings) { html, markdown in
-            let header = markdown.trimmingCharacters(in: CharacterSet(charactersIn: "#"))
-            let slug = header.slugify()
-            let insertIndex = html.firstIndex(of: ">")!
-            return html[html.startIndex..<insertIndex] + " id=\"" + slug + "\"" + html[insertIndex...]
-        }
-    ])
-    
-    // The Ink markdown parser doesn't like Windows line-endings, so this will replace CRLF with LF on import
-    func parse(markdownResource: String) -> (html: String, kindElementIDs: Dictionary<Video.Kind, String>) {
-        guard
-            let url = Bundle(for: type(of: self)).url(forResource: markdownResource, withExtension: "markdown"),
-            let markdown = try? String(contentsOf: url).replacingOccurrences(of: "\r\n", with: "\n")
-        else {
-            os_log("Could not load %{public}s.markdown", markdownResource)
-            assertionFailure()
-            return ("", [:])
-        }
-
-        let result = parser.parse(markdown)
-        let html = """
-            <!DOCTYPE html>
-            <html>
-            <head>
-            <title>\(markdownResource)</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-            <style>
-                body {
-                    font-family: system-ui, sans-serif;
-                    color: \(UIColor.label.css);
-                    background-color: \(UIColor.systemBackground.css);
-                }
-            </style>
-            </head>
-            <body>
-            \(result.html)
-            </body>
-            </html>
-            """
-        let kindElementIDs = Video.Kind.allCases.reduce(into: Dictionary<Video.Kind, String>(), { (dict, kind) in
-            let key = kind.description.replacingOccurrences(of: " ", with: "-") + "-header"
-            if let markdownValue = result.metadata[key] {
-                dict[kind] = markdownValue
-            } else {
-                os_log("Could not find expected markdown metadata key: %{public}s", key)
-                assertionFailure()
-            }
-        })
-        return (html, kindElementIDs)
     }
 }
 
