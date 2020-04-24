@@ -43,6 +43,11 @@ class InfoViewController: UIViewController {
         }
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        // Announce the screen change
+        UIAccessibility.post(notification: .screenChanged, argument: "Info sheet")
+    }
+    
     override func viewDidLayoutSubviews() {
         // Make the dismiss accessibility frame a strip down the RHS edge of the screen
         // To not mess with the visual UI expected touches, this requires a separate element to mock the button
