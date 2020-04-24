@@ -392,7 +392,7 @@
                     <navigationItem key="navigationItem" id="mOI-FS-AaM">
                         <barButtonItem key="rightBarButtonItem" title="Item" image="questionmark.circle" catalog="system" id="Qyt-XI-k0g">
                             <connections>
-                                <segue destination="eDj-Yg-tEO" kind="popoverPresentation" popoverAnchorBarButtonItem="Qyt-XI-k0g" id="C5e-uX-2XX">
+                                <segue destination="eDj-Yg-tEO" kind="popoverPresentation" identifier="showHelp" popoverAnchorBarButtonItem="Qyt-XI-k0g" id="C5e-uX-2XX">
                                     <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
                                 </segue>
                             </connections>
@@ -503,7 +503,7 @@
                     </view>
                     <connections>
                         <outlet property="scrollView" destination="VKJ-iT-Smm" id="7gD-zB-BY6"/>
-                        <outlet property="webView" destination="W1q-WG-AR0" id="Qg9-Qk-nSJ"/>
+                        <outlet property="webView" destination="W1q-WG-AR0" id="ylb-3j-4WO"/>
                         <outlet property="webViewHeightContstraint" destination="471-8J-kgI" id="YWr-eV-qTG"/>
                     </connections>
                 </viewController>
@@ -831,7 +831,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="M3h-NW-8hv"/>
+        <segue reference="VfW-pl-Nv3"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="ORBIT logo" width="200" height="200"/>

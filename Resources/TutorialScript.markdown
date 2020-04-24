@@ -1,3 +1,9 @@
+---
+train-header: training-videos-for-smallmedium-things
+zoom-out-test-header: how-to-record-a-zoom-out-testing-video
+pan-test-header: how-to-record-a-pan-testing-video
+---
+
 # Collecting videos with ORBIT
 
 ## Choosing your things
