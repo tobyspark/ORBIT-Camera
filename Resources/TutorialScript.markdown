@@ -52,7 +52,7 @@ Each screen has a button that brings up a sheet with more information. The _Thin
 
 ## Recording videos with the ORBIT Camera app 
 
-Once you have chosen your things and identified your surfaces and locations, you are ready to start recording your videos! You will record two types of videos of your things - [training](#Training-videos) and [testing](#Testing-videos) videos.
+Once you have chosen your things and identified your surfaces and locations, you are ready to start recording your videos! You will record two types of videos of your things - [training](#training-videos) and [testing](#testing-videos) videos.
 
 ### Training videos
 
@@ -116,7 +116,7 @@ Now let’s talk about testing videos. We call these testing videos because we w
 
 Because we want this to be as realistic as possible, you will need to record a video of your thing on a surface where you commonly look for it.  You will need to construct a realistic scene by arranging your thing and at least five other objects on this same surface. This might be tricky sometimes but try to do your best to make it as realistic as possible. These other objects could be some of your ten things or completely different items. For immovable objects like your front door, try to position some likely objects around or in front of it, such as packages, umbrellas, or shoes. When you are arranging your scene, try to imagine how your thing might be placed with the other objects by someone who doesn’t know your habits. Remember, the more realistic your arrangement of different objects together with your thing, the better. The point is to create a realistic scene where we can test if the app would find your thing even among other stuff.  
 
-There are two kinds of testing videos: [zoom out](#How-to-record-a-zoom-out-testing-video) and [pan](#How-to-record-a-pan-testing-video). We would like you to record at least one of each for your things. 
+There are two kinds of testing videos: [zoom out](#how-to-record-a-zoom-out-testing-video) and [pan](#how-to-record-a-pan-testing-video). We would like you to record at least one of each for your things. 
 
 #### How to record a zoom out testing video
 
@@ -130,7 +130,7 @@ Go to a surface or location where you would regularly place or look for your thi
 
 ##### Step 3. Construct a realistic scene with your thing and other objects. 
 
-For more information on how this scene should look, read the [Testing videos section](#Testing-videos) on arranging the scene with other objects. 
+For more information on how this scene should look, read the [Testing videos section](#testing-videos) on arranging the scene with other objects. 
 
 ##### Step 4. Open the ORBIT Camera App. 
 
@@ -154,7 +154,7 @@ Go to a surface or location where you would regularly place or look for your thi
 
 ##### Step 3. Construct a realistic scene with your thing and other objects. 
 
-For more information on how this scene should look, read the [Testing videos section](#Testing-videos) on arranging the scene with other objects. 
+For more information on how this scene should look, read the [Testing videos section](#testing-videos) on arranging the scene with other objects. 
 
 ##### Step 4. Open the ORBIT App.
 
