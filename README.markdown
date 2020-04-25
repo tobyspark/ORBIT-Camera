@@ -23,14 +23,17 @@ Example – `train-header: training-videos-for-smallmedium-things`
 - Record should have sonic feedback during recording #14
 
 ## Not yet implemented
-- Help text in info screen
+- First-run: participant info → consent w/email address → creates server participant
 - Server state changes reflected in app, e.g. video statuses for verified, notifications
 - Deleting a video does not update server
 - Study phases implemented in app
 - Contrast effect and control for viewfinder / videos
-- Participant on-boarding
 
 ## Version history
+
+v0.5.7
+- Markdown updated by ORBIT Team
+- Unlock UI stripped out
 
 v0.5.6
 - Info sheet features info and tutorial text, parsed from bundled markdown file
