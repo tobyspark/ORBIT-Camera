@@ -5,11 +5,12 @@
 The non-UI text such as introduction prose is parsed into the app from markdown files in the `Resources` folder of this repository.
 
 ### Linking to headers
-Links within each document work. Use the markdown link format, with the slugified heading text as fragment identifier. What's a slug? It's the URL-friendly form, i.e. with dashes instead of spaces, lowercase, etc. What's the fragment identifier? It's the part of the URL after the page in the form `#xxx`.
+Links within a document work. Use the markdown link format, with the slugified heading text as fragment identifier. What's a slug? It's the URL-friendly form, i.e. with dashes instead of spaces, lowercase, etc. What's the fragment identifier? It's the part of the URL after the page in the form `#xxx`.
 i.e. at the time of writing, one document has the link `[Training videos for small/medium things](#training-videos-for-smallmedium-things)` which links to `#### Training videos for small/medium things`. To be clear, the number of hashes in the markdown heading is irrelevant, you'll always use one hash in the link.
 
 ### Setting the help screen selection points
-The help screen displays the whole tutorial text but attempts to present it at a heading appropriate to the current video kind. Which heading is to be used for which video kind is set at the top of the tutorial script document. The video kind is the key, on the left. The heading is the value, on the right. 
+The help screen displays an excerpt of the TutorialScript markdown file. The excerpt starts at a heading, and the help screen will then attempt to present it at a heading appropriate to the current video kind. Where to start, and which heading is to be used for which video kind is set at the top of the tutorial script document. They are `key: value` pairs, so the heading in the document is the value, on the right. 
+Example – `help-start-header: collecting-videos-with-orbit`
 Example – `train-header: training-videos-for-smallmedium-things`
 
 (Attempts, because... as of iOS 13-or-so, it seems security has locked down something that accessibility relies on, and accessibility hasn't yet caught up) 

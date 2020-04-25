@@ -1,8 +1,8 @@
 ---
-help-start-header: # Collecting videos with ORBIT
-train-header: #### Training videos for small/medium things
-zoom-out-test-header: #### How to record a zoom out testing video
-pan-test-header: #### How to record a pan testing video
+help-start-header: collecting-videos-with-orbit
+train-header: training-videos-for-smallmedium-things
+zoom-out-test-header: how-to-record-a-zoom-out-testing-video
+pan-test-header: how-to-record-a-pan-testing-video
 ---
 # Introduction
 
