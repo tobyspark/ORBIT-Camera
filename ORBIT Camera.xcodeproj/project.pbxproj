@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		4B3119AB245091ED00E28452 /* Ink in Frameworks */ = {isa = PBXBuildFile; productRef = 4B3119AA245091ED00E28452 /* Ink */; };
 		4B3119AE2450977100E28452 /* TutorialScript.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4B3119AC2450977100E28452 /* TutorialScript.markdown */; };
-		4B3119AF2450977100E28452 /* Introduction.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4B3119AD2450977100E28452 /* Introduction.markdown */; };
 		4B3119B12451030B00E28452 /* UIColor+CSS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3119B02451030B00E28452 /* UIColor+CSS.swift */; };
 		4B3119B32451B06600E28452 /* String+slugify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3119B22451B06600E28452 /* String+slugify.swift */; };
 		4B3119B52451E99D00E28452 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3119B42451E99C00E28452 /* HelpViewController.swift */; };
@@ -75,7 +74,6 @@
 
 /* Begin PBXFileReference section */
 		4B3119AC2450977100E28452 /* TutorialScript.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = TutorialScript.markdown; path = Resources/TutorialScript.markdown; sourceTree = SOURCE_ROOT; };
-		4B3119AD2450977100E28452 /* Introduction.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = Introduction.markdown; path = Resources/Introduction.markdown; sourceTree = SOURCE_ROOT; };
 		4B3119B02451030B00E28452 /* UIColor+CSS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSS.swift"; sourceTree = "<group>"; };
 		4B3119B22451B06600E28452 /* String+slugify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+slugify.swift"; sourceTree = "<group>"; };
 		4B3119B42451E99C00E28452 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
@@ -208,7 +206,6 @@
 				4B3119B22451B06600E28452 /* String+slugify.swift */,
 				4B87FD132409B678007AB630 /* Settings.swift */,
 				4BF14BBF2405730700E31D93 /* Main.storyboard */,
-				4B3119AD2450977100E28452 /* Introduction.markdown */,
 				4B3119AC2450977100E28452 /* TutorialScript.markdown */,
 				4BF14BC22405730900E31D93 /* Assets.xcassets */,
 				4BF14BC42405730900E31D93 /* LaunchScreen.storyboard */,
@@ -320,7 +317,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4B3119AF2450977100E28452 /* Introduction.markdown in Resources */,
 				4BF14BC62405730900E31D93 /* LaunchScreen.storyboard in Resources */,
 				4B3119AE2450977100E28452 /* TutorialScript.markdown in Resources */,
 				4BF14BC32405730900E31D93 /* Assets.xcassets in Resources */,
