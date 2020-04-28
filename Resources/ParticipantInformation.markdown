@@ -1,6 +1,8 @@
 # Participant information
 
-We would like to invite you to take part in a research study. Before you decide whether you would like to take part it is important that you understand why the research is being done and what it would involve for you. Please take time to read the following information carefully and discuss it with others if you wish. Ask us if there is anything that is not clear or if you would like more information. You will be given a copy of this information sheet to keep.
+We would like to invite you to take part in a research study. Before you decide whether you would like to take part it is important that you understand why the research is being done and what it would involve for you. Please take time to read the following information carefully and discuss it with others if you wish. Ask us if there is anything that is not clear or if you would like more information. You can print this sheet using the button above.
+
+TODO BEFORE RELEASE: PRINT ACTION
 
 Version of information sheet: 01
 
@@ -8,7 +10,7 @@ Dated: 16th March 2020
 
 ## The study
 
-Name: Phase 1 study ORBIT dataset - metalearning for personalised object recognition aimed at visually impaired people
+Name: ORBIT Dataset Phase 1 study (metalearning for personalised object recognition aimed at visually impaired people)
 
 Principal investigator: Dr Simone Stumpf
 
@@ -20,7 +22,7 @@ Smartphones are really useful in making visual information accessible to visuall
 
 The problem is that while these kinds of AI currently can say “this is a mug”, they can’t tell you which of your mugs is which, and they don’t know what a white cane is. We are trying to change this. We want these assistive technologies to work for you, so we are working with people like you to identify what things are important to your everyday life, and figure out how best to get the phone to recognise them. To recognise a particular thing by an app, we need first to show what that thing looks like.
 
-Specifically, the aim of this project is to create a large open dataset of videos taken by visually impaired people. The videos will show things those people judge important in their lives and then the dataset will be used to train AI systems to recognise those things. We made this iPhone app to do this, so that we can involve hundreds or thousands of people. 
+Specifically, the aim of this project is to create a large open dataset of videos taken by visually impaired people. The videos will show things those people judge important in their lives and then the dataset will be used to train AI systems to recognise those things. We made this iOS app to do this, so that we can involve hundreds or thousands of people. 
 
 ## Why have I been invited to take part?
 
@@ -52,7 +54,7 @@ N/A
 
 ## What should I do if I want to take part?
 
-If you would like to continue with the study, you will need to give us consent by signing the consent form provided. If you have any questions, get in touch with Lida on the following email address lida.theodorou.2@city.ac.uk
+If you would like to continue with the study, you will need to give us consent by signing the consent form provided. If you have any questions, get in touch with Lida on the following email address info@orbit.city.ac.uk
 
 Once you have provided consent you can start using the app.
 
@@ -97,7 +99,7 @@ City holds insurance policies which apply to this study. If you feel you have be
 
 ## Further information and contact details
 
-Lida Theodorou – Lida.Theodorou.2@city.ac.uk
+Lida Theodorou – info@orbit.ac.uk.uk
 
 ## Sign-up
 
