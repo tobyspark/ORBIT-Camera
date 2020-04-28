@@ -185,7 +185,8 @@ class MasterViewController: UITableViewController {
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "showDetail" {
+        switch segue.identifier {
+        case "showDetail":
             let indexPath = tableView.indexPathForSelectedRow ?? addNewPath
 
             // Create or get thing to detail
@@ -210,6 +211,12 @@ class MasterViewController: UITableViewController {
             controller.navigationItem.leftBarButtonItem = splitViewController?.displayModeButtonItem
             controller.navigationItem.leftItemsSupplementBackButton = true
             detailViewController = controller
+        case "showInfo":
+            let controller = (segue.destination as! InfoViewController)
+            controller.page = .appInfo
+        default:
+            os_log("Unknown segue")
+            assertionFailure()
         }
     }
 

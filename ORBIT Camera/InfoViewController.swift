@@ -13,19 +13,114 @@ import os
 
 class InfoViewController: UIViewController {
 
-    @IBOutlet weak var dismissButton: UIButton!
+    @IBOutlet weak var sheetButton: UIButton!
     
     @IBOutlet weak var scrollView: UIScrollView!
     
+    @IBOutlet weak var stackView: UIStackView!
+    
     @IBOutlet weak var webView: WKWebView!
     @IBOutlet weak var webViewHeightContstraint: NSLayoutConstraint!
+    
+    /// The kinds of page the info scene can display
+    enum InfoPageKind {
+        /// Participant Info
+        /// - Share button
+        /// - Markdown text
+        /// - Continue button
+        case participantInfo
+        
+        /// InformedConsent
+        /// - Dismiss button
+        /// - Markdown text
+        /// - Name text field
+        /// - Series of checkbox consents
+        /// - Email text field
+        /// - Submit button
+        case informedConsent
+        
+        /// App Information
+        /// - Dismiss button
+        /// - Markdown text
+        case appInfo
+    }
+    /// The page the info scene is set to display
+    var page: InfoPageKind = .participantInfo {
+        didSet { configurePage() }
+    }
+    
+    @IBAction func dismissButtonAction() {
+        switch page {
+        case .participantInfo:
+            //TODO: implement share action
+            break
+        case .informedConsent:
+            page = .participantInfo
+        case .appInfo:
+            dismiss(animated: true)
+        }
+        
+    }
+    
+    @objc func participantInfoContinueAction() {
+        page = .informedConsent
+    }
+    
+    func configurePage() {
+        guard
+            sheetButton != nil,
+            webView != nil,
+            webViewHeightContstraint != nil,
+            stackView != nil
+        else
+            { return }
+        
+        let html: String
+        
+        webViewHeightContstraint.constant = 0
+        for view in stackView.subviews {
+            stackView.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
+        
+        switch page {
+        case .participantInfo:
+            let shareImage = UIImage(systemName: "square.and.arrow.up")!
+            sheetButton.setImage(shareImage, for: .normal)
+            sheetButton.accessibilityLabel = "Share"
+            sheetButton.accessibilityHint = "Brings up share sheet so you can save this information"
+            
+            html = MarkdownParser.html(markdownResource: "ParticipantInformation")
+            
+            let button = UIButton(type: .system)
+            button.setTitle("Continue", for: .normal)
+            button.addTarget(self, action: #selector(participantInfoContinueAction), for: .touchUpInside)
+            stackView.addArrangedSubview(button)
+        case .informedConsent:
+            let backImage = UIImage(systemName: "xmark.circle")!
+            sheetButton.setImage(backImage, for: .normal)
+            sheetButton.accessibilityLabel = "Back"
+            sheetButton.accessibilityHint = "Returns to Participant Information"
+            
+            html = MarkdownParser.html(markdownResource: "InformedConsent")
+        case .appInfo:
+            let closeImage = UIImage(systemName: "xmark.circle")!
+            sheetButton.setImage(closeImage, for: .normal)
+            
+            html = MarkdownParser.html(markdownResource: "TutorialScript")
+        }
+        
+        webView.loadHTMLString(html, baseURL: Bundle.main.resourceURL)
+        
+        scrollView.setContentOffset(CGPoint.zero, animated: true)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         webView.navigationDelegate = self
-        let introHTML = MarkdownParser.html(markdownResource: "TutorialScript")
-        webView.loadHTMLString(introHTML, baseURL: nil)
+        
+        configurePage()
 
 // TODO: Move to first-run
 //        if let credential = try! Participant.appParticipant().authCredential { // FIXME: try!
@@ -42,22 +137,22 @@ class InfoViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         // Make the dismiss accessibility frame a strip down the RHS edge of the screen
         // To not mess with the visual UI expected touches, this requires a separate element to mock the button
-        let dismissElement = UIAccessibilityElement(accessibilityContainer: view!)
-        dismissElement.accessibilityLabel = dismissButton.accessibilityLabel
-        dismissElement.accessibilityTraits = dismissButton.accessibilityTraits
+        let buttonElement = UIAccessibilityElement(accessibilityContainer: view!)
+        buttonElement.accessibilityLabel = sheetButton.accessibilityLabel
+        buttonElement.accessibilityTraits = sheetButton.accessibilityTraits
         
         let viewFrame = UIAccessibility.convertToScreenCoordinates(view.bounds, in: view)
-        let dismissButtonFrame = UIAccessibility.convertToScreenCoordinates(dismissButton.bounds, in: dismissButton)
-        dismissElement.accessibilityFrame = CGRect(
+        let dismissButtonFrame = UIAccessibility.convertToScreenCoordinates(sheetButton.bounds, in: sheetButton)
+        buttonElement.accessibilityFrame = CGRect(
             x: dismissButtonFrame.minX,
             y: viewFrame.minY,
             width: viewFrame.maxX - dismissButtonFrame.minX,
             height: viewFrame.height
         )
-        dismissElement.accessibilityActivationPoint = CGPoint(x: dismissButtonFrame.midX, y: dismissButtonFrame.midY)
+        buttonElement.accessibilityActivationPoint = CGPoint(x: dismissButtonFrame.midX, y: dismissButtonFrame.midY)
         
         view.accessibilityElements = [
-            dismissElement,
+            buttonElement,
             scrollView!
         ]
     }
