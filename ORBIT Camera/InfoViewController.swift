@@ -133,6 +133,18 @@ class InfoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Webview: inject CSS on page load
+        let cssInjectJS = """
+            var style = document.createElement('style');
+            style.innerHTML = "\(MarkdownParser.css.components(separatedBy: .newlines).joined())";
+            document.head.appendChild(style);
+            """
+        let userScript = WKUserScript(source: cssInjectJS,
+                                      injectionTime: .atDocumentEnd,
+                                      forMainFrameOnly: true)
+        webView.configuration.userContentController.addUserScript(userScript)
+        
+        // Webview: handle page load completion, etc.
         webView.navigationDelegate = self
         
         configurePage()

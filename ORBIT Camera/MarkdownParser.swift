@@ -93,33 +93,6 @@ struct MarkdownParser {
         <head>
         <title>Title to validate</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-        <style>
-            body {
-                font-family: system-ui, sans-serif;
-                color: \(UIColor.label.css);
-                background-color: \(UIColor.systemBackground.css);
-            }
-            form ul {
-                list-style-type: none;
-                padding-inline-start: unset;
-                margin-block-start: unset;
-            }
-            form li {
-                margin-bottom: 0.5em;
-            }
-            form label, input {
-                display: inline-block;
-            }
-            form input[type='checkbox'] {
-                width: 10vw;
-                vertical-align: top;
-                position: relative;
-                top: 0.1875em;
-            }
-            form label {
-                width: 80vw;
-            }
-        </style>
         </head>
         <body>
         \(bodyHTML)
@@ -127,6 +100,35 @@ struct MarkdownParser {
         </html>
         """
     }
+    
+    // Use only single-quotes.
+    static let css = """
+    body {
+        font-family: system-ui, sans-serif;
+        color: \(UIColor.label.css);
+        background-color: \(UIColor.systemBackground.css);
+    }
+    form ul {
+        list-style-type: none;
+        padding-inline-start: unset;
+        margin-block-start: unset;
+    }
+    form li {
+        margin-bottom: 0.5em;
+    }
+    form label, input {
+        display: inline-block;
+    }
+    form input[type='checkbox'] {
+        width: 10vw;
+        vertical-align: top;
+        position: relative;
+        top: 0.1875em;
+    }
+    form label {
+        width: 80vw;
+    }
+    """
     
     private static let inkParser = Ink.MarkdownParser(modifiers: [
         // Add id to header elements, to enable linking to them
