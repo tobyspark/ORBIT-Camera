@@ -124,20 +124,21 @@ class InfoViewController: UIViewController {
             
             // Webview: get HTML, appending form created from markdown metadata
             let result = MarkdownParser.parse(markdownResource: "InformedConsent")
+            let metaKeys = result.metadata.keys.sorted()
             
             var formHTML = "<form><ul>"
-            for (key, value) in result.metadata {
+            for key in metaKeys {
                 formHTML += """
                     <li>
                         <input type='checkbox' name='consent-checkbox' id='id-\(key)' required>
-                        <label for='id-\(key)'>\(value)</label>
+                        <label for='id-\(key)'>\(result.metadata[key]!)</label>
                     </li>
                 """
             }
             formHTML += "</ul></form>"
             
             html = result.html + formHTML
-            
+                        
             // Webview: inject script on page load
             var notifyOnChangeJS = """
                 const checkboxOnChange = () => {
@@ -147,7 +148,7 @@ class InfoViewController: UIViewController {
                 };
                 
                 """
-            for (key, _) in result.metadata {
+            for key in metaKeys {
                 notifyOnChangeJS += """
                 document.getElementById('id-\(key)').onchange = checkboxOnChange;
                 
