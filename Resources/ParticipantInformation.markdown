@@ -97,7 +97,7 @@ City holds insurance policies which apply to this study. If you feel you have be
 
 ## Further information and contact details
 
-Lida Theodorou – info@orbit.ac.uk.uk
+Lida Theodorou – info@orbit.city.ac.uk
 
 ## Sign-up
 
