@@ -42,6 +42,8 @@ class InfoViewController: UIViewController {
         /// App Information
         /// - Dismiss button
         /// - Markdown text
+        /// - Registered email address
+        /// - Verified
         case appInfo
     }
     /// The page the info scene is set to display
@@ -102,7 +104,20 @@ class InfoViewController: UIViewController {
             sheetButton.accessibilityLabel = "Back"
             sheetButton.accessibilityHint = "Returns to Participant Information"
             
-            html = MarkdownParser.html(markdownResource: "InformedConsent")
+            let result = MarkdownParser.parse(markdownResource: "InformedConsent")
+            
+            var formHTML = "<form><ul>"
+            for (key, value) in result.metadata {
+                formHTML += """
+                    <li>
+                        <input type='checkbox' name='\(key)' id='id-\(key)' required>
+                        <label for='id-\(key)'>\(value)</label>
+                    </li>
+                """
+            }
+            formHTML += "</ul></form>"
+            
+            html = result.html + formHTML
         case .appInfo:
             let closeImage = UIImage(systemName: "xmark.circle")!
             sheetButton.setImage(closeImage, for: .normal)
