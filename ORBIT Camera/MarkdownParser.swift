@@ -23,7 +23,7 @@ struct MarkdownParser {
             return ("")
         }
 
-        return MarkdownParser.htmlPage(bodyHTML: MarkdownParser.inkParser.html(from: markdown))
+        return MarkdownParser.htmlPage(bodyHTML: MarkdownParser.inkParser.html(from: markdown), title: markdownResource)
     }
     
     /// Return a HTML page and metadata generated from a markdown file bundled as an app's resource
@@ -39,7 +39,7 @@ struct MarkdownParser {
         }
         
         var result = MarkdownParser.inkParser.parse(markdown)
-        result.html = MarkdownParser.htmlPage(bodyHTML: result.html)
+        result.html = MarkdownParser.htmlPage(bodyHTML: result.html, title: markdownResource)
         return result
     }
     
@@ -82,16 +82,16 @@ struct MarkdownParser {
                 assertionFailure()
             }
         })
-        return (MarkdownParser.htmlPage(bodyHTML: html), kindElementIDs)
+        return (MarkdownParser.htmlPage(bodyHTML: html, title: markdownResource), kindElementIDs)
     }
     
     /// Wrap the supplied HTML body content in a full HTML page
-    static func htmlPage(bodyHTML: String) -> String {
+    static func htmlPage(bodyHTML: String, title: String) -> String {
         return """
         <!DOCTYPE html>
         <html>
         <head>
-        <title>Title to validate</title>
+        <title>\(title)</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
         </head>
         <body>

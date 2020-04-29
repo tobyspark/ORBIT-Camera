@@ -1,8 +1,6 @@
 # Participant information
 
-We would like to invite you to take part in a research study. Before you decide whether you would like to take part it is important that you understand why the research is being done and what it would involve for you. Please take time to read the following information carefully and discuss it with others if you wish. Ask us if there is anything that is not clear or if you would like more information. You can print this sheet using the button above.
-
-TODO BEFORE RELEASE: PRINT ACTION
+We would like to invite you to take part in a research study. Before you decide whether you would like to take part it is important that you understand why the research is being done and what it would involve for you. Please take time to read the following information carefully and discuss it with others if you wish. Ask us if there is anything that is not clear or if you would like more information. You can save this sheet using the share button above.
 
 Version of information sheet: 01
 
