@@ -18,6 +18,6 @@ Name: ORBIT Dataset Phase 1 study (metalearning for personalised object recognit
 
 Principal investigator: Dr Simone Stumpf
 
-REC reference number: ETH1920-0331 City, University of London
+REC reference number: ETH1920-1126 City, University of London
 
 ## Consents
