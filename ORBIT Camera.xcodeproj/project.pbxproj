@@ -62,6 +62,7 @@
 		4BF14C192405B81900E31D93 /* AppDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14C182405B81900E31D93 /* AppDatabase.swift */; };
 		4BFC5F212458ACE200E5A3C1 /* ParticipantInformation.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4BFC5F202458ACE200E5A3C1 /* ParticipantInformation.markdown */; };
 		4BFC5F232458B12800E5A3C1 /* InformedConsent.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4BFC5F222458B12800E5A3C1 /* InformedConsent.markdown */; };
+		4BFC5F252459DA6000E5A3C1 /* Settings+secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFC5F242459DA6000E5A3C1 /* Settings+secrets.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -123,6 +124,7 @@
 		4BF14C182405B81900E31D93 /* AppDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabase.swift; sourceTree = "<group>"; };
 		4BFC5F202458ACE200E5A3C1 /* ParticipantInformation.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = ParticipantInformation.markdown; path = Resources/ParticipantInformation.markdown; sourceTree = SOURCE_ROOT; };
 		4BFC5F222458B12800E5A3C1 /* InformedConsent.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = InformedConsent.markdown; path = Resources/InformedConsent.markdown; sourceTree = SOURCE_ROOT; };
+		4BFC5F242459DA6000E5A3C1 /* Settings+secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Settings+secrets.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -209,6 +211,7 @@
 				4B3119B02451030B00E28452 /* UIColor+CSS.swift */,
 				4B3119B22451B06600E28452 /* String+slugify.swift */,
 				4B87FD132409B678007AB630 /* Settings.swift */,
+				4BFC5F242459DA6000E5A3C1 /* Settings+secrets.swift */,
 				4BF14BBF2405730700E31D93 /* Main.storyboard */,
 				4BFC5F202458ACE200E5A3C1 /* ParticipantInformation.markdown */,
 				4BFC5F222458B12800E5A3C1 /* InformedConsent.markdown */,
@@ -347,6 +350,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BFC5F252459DA6000E5A3C1 /* Settings+secrets.swift in Sources */,
 				4BF14C192405B81900E31D93 /* AppDatabase.swift in Sources */,
 				4B87FD1124098D57007AB630 /* Participant.swift in Sources */,
 				4B3D772624332C740077DFD0 /* VideoKindPickerView.swift in Sources */,
