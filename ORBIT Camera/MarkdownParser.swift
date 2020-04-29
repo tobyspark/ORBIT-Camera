@@ -26,12 +26,29 @@ struct MarkdownParser {
         return MarkdownParser.htmlPage(bodyHTML: MarkdownParser.inkParser.html(from: markdown))
     }
     
+    /// Return a HTML page and metadata generated from a markdown file bundled as an app's resource
+    /// The file extension must be '.markdown'
+    static func parse(markdownResource: String) -> Markdown {
+        guard
+            let url = Bundle.main.url(forResource: markdownResource, withExtension: "markdown"),
+            let markdown = try? String(contentsOf: url).replacingOccurrences(of: "\r\n", with: "\n")
+        else {
+            os_log("Could not load %{public}s.markdown", markdownResource)
+            assertionFailure()
+            return (MarkdownParser.inkParser.parse(""))
+        }
+        
+        var result = MarkdownParser.inkParser.parse(markdown)
+        result.html = MarkdownParser.htmlPage(bodyHTML: result.html)
+        return result
+    }
+    
     /// Return a HTML page and a dictionary of HTML element IDs keyed by Video.Kind.
     /// The results are generated from a markdown file bundled as an app's resource, with metadata values such as
     /// `train-header: training-video-tutorial`
     /// The file extension must be '.markdown'
     // The Ink markdown parser doesn't like Windows line-endings, so this will replace CRLF with LF on import
-    static func parse(markdownResource: String, startKey: String? = nil) -> (html: String, kindElementIDs: Dictionary<Video.Kind, String>) {
+    static func videoKindParse(markdownResource: String, startKey: String? = nil) -> (html: String, kindElementIDs: Dictionary<Video.Kind, String>) {
         guard
             let url = Bundle.main.url(forResource: markdownResource, withExtension: "markdown"),
             let markdown = try? String(contentsOf: url).replacingOccurrences(of: "\r\n", with: "\n")
@@ -81,6 +98,26 @@ struct MarkdownParser {
                 font-family: system-ui, sans-serif;
                 color: \(UIColor.label.css);
                 background-color: \(UIColor.systemBackground.css);
+            }
+            form ul {
+                list-style-type: none;
+                padding-inline-start: unset;
+                margin-block-start: unset;
+            }
+            form li {
+                margin-bottom: 0.5em;
+            }
+            form label, input {
+                display: inline-block;
+            }
+            form input[type='checkbox'] {
+                width: 10vw;
+                vertical-align: top;
+                position: relative;
+                top: 0.1875em;
+            }
+            form label {
+                width: 80vw;
             }
         </style>
         </head>
