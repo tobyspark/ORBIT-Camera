@@ -68,6 +68,10 @@ class InfoViewController: UIViewController {
         page = .informedConsent
     }
     
+    @objc func informedConsentSubmitAction() {
+        print("informedConsentSubmitAction")
+    }
+    
     func configurePage() {
         guard
             sheetButton != nil,
@@ -104,13 +108,14 @@ class InfoViewController: UIViewController {
             sheetButton.accessibilityLabel = "Back"
             sheetButton.accessibilityHint = "Returns to Participant Information"
             
+            // Webview: get HTML, appending form created from markdown metadata
             let result = MarkdownParser.parse(markdownResource: "InformedConsent")
             
             var formHTML = "<form><ul>"
             for (key, value) in result.metadata {
                 formHTML += """
                     <li>
-                        <input type='checkbox' name='\(key)' id='id-\(key)' required>
+                        <input type='checkbox' name='consent-checkbox' id='id-\(key)' required>
                         <label for='id-\(key)'>\(value)</label>
                     </li>
                 """
@@ -118,6 +123,33 @@ class InfoViewController: UIViewController {
             formHTML += "</ul></form>"
             
             html = result.html + formHTML
+            
+            // Webview: inject script on page load
+            var notifyOnChangeJS = """
+                const checkboxOnChange = () => {
+                    const checkboxes = document.getElementsByName('consent-checkbox');
+                    const allChecked = Array.from(checkboxes).every( element => element.checked );
+                    window.webkit.messageHandlers.orbitcamera.postMessage(allChecked);
+                };
+                
+                """
+            for (key, _) in result.metadata {
+                notifyOnChangeJS += """
+                document.getElementById('id-\(key)').onchange = checkboxOnChange;
+                
+                """
+            }
+            
+            let userScript = WKUserScript(source: notifyOnChangeJS,
+                                          injectionTime: .atDocumentEnd,
+                                          forMainFrameOnly: true)
+            webView.configuration.userContentController.addUserScript(userScript)
+            
+            let button = UIButton(type: .system)
+            button.setTitle("Submit consent", for: .normal)
+            button.isEnabled = false
+            button.addTarget(self, action: #selector(informedConsentSubmitAction), for: .touchUpInside)
+            stackView.addArrangedSubview(button)
         case .appInfo:
             let closeImage = UIImage(systemName: "xmark.circle")!
             sheetButton.setImage(closeImage, for: .normal)
@@ -143,6 +175,9 @@ class InfoViewController: UIViewController {
                                       injectionTime: .atDocumentEnd,
                                       forMainFrameOnly: true)
         webView.configuration.userContentController.addUserScript(userScript)
+        
+        // Webview: Set message handler
+        webView.configuration.userContentController.add(self, name: "orbitcamera")
         
         // Webview: handle page load completion, etc.
         webView.navigationDelegate = self
@@ -285,5 +320,15 @@ extension InfoViewController: WKNavigationDelegate {
             }
         }
         decisionHandler(WKNavigationActionPolicy.allow)
+    }
+}
+
+extension InfoViewController: WKScriptMessageHandler {
+    func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
+        if let allConsentsChecked = message.body as? Bool,
+            let submitButton = stackView.arrangedSubviews.last as? UIButton
+        {
+            submitButton.isEnabled = allConsentsChecked
+        }
     }
 }
