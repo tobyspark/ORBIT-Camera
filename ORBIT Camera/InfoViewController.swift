@@ -54,8 +54,7 @@ class InfoViewController: UIViewController {
     @IBAction func dismissButtonAction() {
         switch page {
         case .participantInfo:
-            //TODO: implement share action
-            break
+            shareParticipantInfo()
         case .informedConsent:
             page = .participantInfo
         case .appInfo:
@@ -70,6 +69,21 @@ class InfoViewController: UIViewController {
     
     @objc func informedConsentSubmitAction() {
         print("informedConsentSubmitAction")
+    }
+    
+    func shareParticipantInfo() {
+        // Create document. HTML good for accessibility and more known than markdown.
+        let html = MarkdownParser.html(markdownResource: "ParticipantInformation")
+        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent("ORBIT-Participation-Information.html")
+        do {
+            try html.write(to: tempURL, atomically: false, encoding: .utf8)
+        } catch {
+            os_log("Participant Information HTML file creation failed")
+            return
+        }
+        
+        let docController = UIDocumentInteractionController(url: tempURL)
+        docController.presentOpenInMenu(from: sheetButton.frame, in: view, animated: true)
     }
     
     func configurePage() {
