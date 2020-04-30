@@ -78,7 +78,7 @@ Let’s first talk about training videos. Let’s say you want your recognition 
 
 1.	Each training video should record only one thing at a time. There should be no other objects in the background or on the same surface as the keys.  
 2. Each training video must show the keys in at least six different settings. For example, you might take one training video when the keys are on a kitchen counter, one when they have dropped on the floor, one when they are on the couch, etc.  
-3.	Each training video must include views of the keys from different sides.  You will need to think about what parts of the keys are the most identifiable. Do they have a keyring with a particular shape or colour? Maybe you have a whistle on the ring as well. The training video should capture these important parts of the object.   
+3.	When filming your keys, you must rotate them around on the surface to show them from different sides. You will need to think about what parts of the keys are the most identifiable. Do they have a keyring with a particular shape or colour? Maybe you have a whistle on the ring as well. The way you will do this differs depending on the size of your selected item and is explained in detail in the two following sections.    
 
 Let’s get started!
 
@@ -174,7 +174,7 @@ Go to a surface or location where you would regularly place or look for your thi
 
 For more information on how this scene should look, read the [Testing videos section](#testing-videos) on arranging the scene with other objects. 
 
-##### Step 4. Open the ORBIT App.
+##### Step 4. Open the ORBIT Camera App.
 
 This step is the same as before, except you need to ensure _Pan test_ is selected. If you want to record a new thing, enter the name of thing in the text field and either select _Go_ on the keyboard or activate the _Add thing_ button. Otherwise, if you have already added that thing to the library, you can select that thing from the list. On creating or selecting the thing, you will be taken to the _Thing record and review screen_. This is to be a _Pan test_ video, so check _Pan test_ is selected. If not, activate the button to set the selection. Then activate the _Add new video_ button to bring up the camera controls. 
 
