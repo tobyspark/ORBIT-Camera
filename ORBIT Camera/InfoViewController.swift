@@ -11,10 +11,19 @@ import GRDB
 import WebKit
 import os
 
+/// This presents a screen about the app. It contains
+/// - Logo and name
+/// - A webview for loading in structured text etc.
+/// - A stackview that can be used for page specific UI elements
+///
+/// Currently, it can display three different types of page. See `InfoPageKind`
+/// Aaaand this whole thing should probably be refactored into a subclass per page. But so it goes.
 class InfoViewController: UIViewController {
 
+    /// Top-right button anchored to sheet.
     @IBOutlet weak var sheetButton: UIButton!
     
+    /// Content is enclosed in scroll view
     @IBOutlet weak var scrollView: UIScrollView!
     
     @IBOutlet weak var stackView: UIStackView!
@@ -51,6 +60,7 @@ class InfoViewController: UIViewController {
         didSet { configurePage() }
     }
     
+    /// Navigate internally, or dismiss.
     @IBAction func dismissButtonAction() {
         switch page {
         case .participantInfo:
@@ -95,7 +105,6 @@ class InfoViewController: UIViewController {
             isValidName(name) &&
             isValidEmail(email)
     }
-
     @objc func informedConsentSubmitAction() {
         guard
             let name = informedConsentNameField?.text,
@@ -132,6 +141,7 @@ class InfoViewController: UIViewController {
         
         let html: String
         
+        // Reset
         webViewHeightContstraint.constant = 0
         for view in stackView.subviews {
             stackView.removeArrangedSubview(view)
@@ -272,12 +282,6 @@ class InfoViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardShow), name: UIWindow.keyboardWillHideNotification, object: nil)
         
         configurePage()
-
-// TODO: Move to first-run
-//        if let credential = try! Participant.appParticipant().authCredential { // FIXME: try!
-//            unlockCode.text = credential
-//            checkCredential(credential)
-//        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -328,6 +332,7 @@ class InfoViewController: UIViewController {
     }
     
     func isValidEmail(_ candidate: String) -> Bool {
+        // Test: does the data detector think it's a link
         guard
             let dataDetector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue),
             let matchRange = dataDetector.firstMatch(in: candidate, options: .anchored, range: NSMakeRange(0, candidate.count))
@@ -335,122 +340,10 @@ class InfoViewController: UIViewController {
         
         return matchRange.range.length == candidate.count
     }
-    
-    enum CredentialError: Error {
-        case transportError
-        case responseError
-        case badRequest([String: [String]])
-        case forbidden
-        case unexpectedResponse
-    }
-
-    func requestCredential(name: String, email: String) {
-        guard informedConsentIsSubmitting == false
-        else { return }
-        
-        informedConsentIsSubmitting = true
-        
-        guard let uploadData = try? JSONEncoder().encode(
-            Settings.endpointCreateParticipantRequest(name: name, email: email)
-            )
-        else {
-            os_log("Could not create uploadData")
-            assertionFailure()
-            return
-        }
-        
-        let url = URL(string: Settings.endpointCreateParticipant)!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue(Settings.appAuthCredential, forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let task = URLSession.shared.uploadTask(with: request, from: uploadData) { (data, response, error) in
-            let result: Result<String, CredentialError>
-            if error != nil {
-                result = .failure(.transportError)
-            } else {
-                if let httpResponse = response as? HTTPURLResponse {
-                    switch httpResponse.statusCode {
-                    case 201:
-                        if let data = data,
-                           let json = try? JSONDecoder().decode(Settings.endpointCreateParticipantResponse.self, from: data)
-                        {
-                            result = .success(json.auth_credential)
-                        }
-                        else {
-                            result = .failure(.unexpectedResponse)
-                        }
-                    case 400:
-                        if let data = data,
-                           let json = try? JSONSerialization.jsonObject(with: data) as? [String:[String]]
-                        {
-                            result = .failure(.badRequest(json))
-                        } else {
-                            result = .failure(.badRequest([:]))
-                        }
-                    case 403:
-                        result = .failure(.forbidden)
-                    default:
-                        result = .failure(.unexpectedResponse)
-                    }
-                } else {
-                    result = .failure(.responseError)
-                }
-            }
-            if case .failure(let error) = result {
-                os_log("Request credential %{public}@", error.localizedDescription)
-            }
-            DispatchQueue.main.async {
-                self.handleCredentialResult(result)
-            }
-        }
-        task.resume()
-    }
-
-    func handleCredentialResult(_ result: Result<String, CredentialError>) {
-        switch result {
-        case .success(let credential):
-            // Save validated credential
-            var participant = try! Participant.appParticipant() // FIXME: try!
-            participant.authCredential = credential
-            try! dbQueue.write { db in try participant.save(db) } // FIXME: try!
-            
-            // Dismiss screen, i.e. enter app proper
-            dismiss(animated: true)
-        case .failure(let error):
-            if let informedConsentErrorLabel = informedConsentErrorLabel,
-               let informedConsentSubmitButton = informedConsentSubmitButton
-            {
-                switch error {
-                case .transportError:
-                    informedConsentErrorLabel.text = "There was a network problem submitting your consent. Is your iOS connected to the internet?\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
-                case .responseError:
-                    informedConsentErrorLabel.text = "There was a problem submitting your consent. The app received an unexpected response from the ORBIT servers.\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
-                case .badRequest(let response):
-                    var message = "There was a problem submitting your consent. The ORBIT servers rejected the request.\n\n"
-                    for (field, values) in response {
-                        for value in values {
-                            message += value.replacingOccurrences(of: "this field", with: field) + "\n"
-                        }
-                    }
-                    message += "\nIf this problem persists, please contact info@orbit.city.ac.uk"
-                    informedConsentErrorLabel.text = message
-                case .unexpectedResponse:
-                    informedConsentErrorLabel.text = "There was a problem submitting your consent. The app received an unexpected response from the ORBIT servers.\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
-                case .forbidden:
-                    informedConsentErrorLabel.text = "There was a problem submitting your consent. The app could not authenticate with the ORBIT servers.\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
-                }
-                informedConsentErrorLabel.isHidden = false
-                scrollView.scrollRectToVisible(stackView.frame, animated: true)
-                informedConsentIsSubmitting = false
-            }
-        }
-    }
 }
 
 extension InfoViewController: WKNavigationDelegate {
-    // On page load, set the WebView to be the height of the page
+    /// On page load, set the WebView to be the height of the page
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         webView.evaluateJavaScript("document.documentElement.scrollHeight") { [weak self] (height, error) in
             guard let self = self else { return }
@@ -458,7 +351,7 @@ extension InfoViewController: WKNavigationDelegate {
         }
     }
     
-    // On clicking a link, scroll the overall view to the appropriate place (as the webview is sized to be static) 
+    /// On clicking a link, scroll the overall view to the appropriate place (as the webview is sized to be static)
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         let aboutBlank = "about:blank%23"
         if navigationAction.navigationType == .linkActivated,
@@ -476,6 +369,7 @@ extension InfoViewController: WKNavigationDelegate {
 }
 
 extension InfoViewController: WKScriptMessageHandler {
+    /// On a user checking/unchecking a consent checkbox
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         if let allConsentsChecked = message.body as? Bool
         {
@@ -485,6 +379,7 @@ extension InfoViewController: WKScriptMessageHandler {
 }
 
 extension InfoViewController: UITextFieldDelegate {
+    /// On return, either go to next or dismiss
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField === informedConsentNameField {
             informedConsentEmailField?.becomeFirstResponder()
@@ -494,6 +389,7 @@ extension InfoViewController: UITextFieldDelegate {
         return false
     }
     
+    /// On the user entering name or email, validate to enable the submit button
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         informedConsentSetSubmitEnable()
         return true

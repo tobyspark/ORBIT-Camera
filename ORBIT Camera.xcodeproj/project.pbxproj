@@ -63,6 +63,7 @@
 		4BFC5F212458ACE200E5A3C1 /* ParticipantInformation.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4BFC5F202458ACE200E5A3C1 /* ParticipantInformation.markdown */; };
 		4BFC5F232458B12800E5A3C1 /* InformedConsent.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4BFC5F222458B12800E5A3C1 /* InformedConsent.markdown */; };
 		4BFC5F252459DA6000E5A3C1 /* Settings+secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFC5F242459DA6000E5A3C1 /* Settings+secrets.swift */; };
+		4BFC5F27245B11A300E5A3C1 /* InfoViewController+requestCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFC5F26245B11A300E5A3C1 /* InfoViewController+requestCredential.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -125,6 +126,7 @@
 		4BFC5F202458ACE200E5A3C1 /* ParticipantInformation.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = ParticipantInformation.markdown; path = Resources/ParticipantInformation.markdown; sourceTree = SOURCE_ROOT; };
 		4BFC5F222458B12800E5A3C1 /* InformedConsent.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = InformedConsent.markdown; path = Resources/InformedConsent.markdown; sourceTree = SOURCE_ROOT; };
 		4BFC5F242459DA6000E5A3C1 /* Settings+secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Settings+secrets.swift"; sourceTree = "<group>"; };
+		4BFC5F26245B11A300E5A3C1 /* InfoViewController+requestCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InfoViewController+requestCredential.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,6 +192,7 @@
 				4BF14BBD2405730700E31D93 /* DetailViewController.swift */,
 				4B87FD3824126110007AB630 /* VideoViewCell.swift */,
 				4B9AA9F52417A63C002380B1 /* InfoViewController.swift */,
+				4BFC5F26245B11A300E5A3C1 /* InfoViewController+requestCredential.swift */,
 				4B3119B42451E99C00E28452 /* HelpViewController.swift */,
 				4B9AA9F92417E4A7002380B1 /* Camera.swift */,
 				4BA13A59242D6EC4006D838B /* PreviewMetalView.swift */,
@@ -354,6 +357,7 @@
 				4BF14C192405B81900E31D93 /* AppDatabase.swift in Sources */,
 				4B87FD1124098D57007AB630 /* Participant.swift in Sources */,
 				4B3D772624332C740077DFD0 /* VideoKindPickerView.swift in Sources */,
+				4BFC5F27245B11A300E5A3C1 /* InfoViewController+requestCredential.swift in Sources */,
 				4B87FD30240EC757007AB630 /* MultipartFormData.swift in Sources */,
 				4B9AA9FF2418EA49002380B1 /* RecordButton.swift in Sources */,
 				4BF14BBA2405730700E31D93 /* SceneDelegate.swift in Sources */,
