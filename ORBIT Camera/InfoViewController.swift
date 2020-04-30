@@ -69,6 +69,7 @@ class InfoViewController: UIViewController {
     
     var informedConsentNameField: UITextField?
     var informedConsentEmailField: UITextField?
+    var informedConsentErrorLabel: UILabel?
     var informedConsentSubmitButton: UIButton?
     var informedConsentAllConsentsChecked = false {
         didSet { informedConsentSetSubmitEnable() }
@@ -87,7 +88,13 @@ class InfoViewController: UIViewController {
     }
 
     @objc func informedConsentSubmitAction() {
-        print("informedConsentSubmitAction")
+        guard
+            let name = informedConsentNameField?.text,
+            let email = informedConsentEmailField?.text
+        else
+            { return }
+
+        requestCredential(name: name, email: email)
     }
     
     func shareParticipantInfo() {
@@ -200,6 +207,13 @@ class InfoViewController: UIViewController {
             informedConsentEmailField = emailField
             stackView.addArrangedSubview(emailField)
             
+            let errorLabel = UILabel()
+            errorLabel.numberOfLines = 0 // As many as needed
+            errorLabel.textColor = .systemRed
+            errorLabel.isHidden = true
+            informedConsentErrorLabel = errorLabel
+            stackView.addArrangedSubview(errorLabel)
+            
             let button = UIButton(type: .system)
             button.setTitle("Submit consent", for: .normal)
             button.isEnabled = false
@@ -307,82 +321,111 @@ class InfoViewController: UIViewController {
         return matchRange.range.length == candidate.count
     }
     
-// TODO: Move to first-run
-//    @IBAction func unlockCodeEditingDidEnd(_ sender: Any) {
-//        if let credential = unlockCode.text {
-//            checkCredential(credential)
-//        }
-//    }
-//
-//    enum CredentialError: Error {
-//        case transportError
-//        case responseError
-//        case unexpectedResponse
-//        case credentialRejected
-//    }
-//
-//    func checkCredential(_ credential: String) {
-//        // Test the auth credential by hitting an API endpoint
-//        let url = URL(string: Settings.endpointThing)!
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "GET"
-//        request.setValue(credential, forHTTPHeaderField: "Authorization")
-//        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-//
-//        let task = URLSession.shared.dataTask(with: request) { (_, response, error) in
-//            let result: Result<String, CredentialError>
-//            if error != nil {
-//                result = .failure(.transportError)
-//            } else {
-//                if let httpResponse = response as? HTTPURLResponse {
-//                    switch httpResponse.statusCode {
-//                    case 200...299:
-//                        result = .success(credential) // TODO: also return the ORBIT participant ID, having hit a participant end-point and decoding the json
-//                    case 403:
-//                        result = .failure(.credentialRejected)
-//                    default:
-//                        result = .failure(.unexpectedResponse)
-//                    }
-//                } else {
-//                    result = .failure(.responseError)
-//                }
-//            }
-//            if case .failure(let error) = result {
-//                os_log("%{public}@", error.localizedDescription)
-//            }
-//            DispatchQueue.main.async {
-//                self.handleCredentialResult(result)
-//            }
-//        }
-//        task.resume()
-//        unlockCodeStatus.textColor = .label
-//        unlockCodeStatus.text = "Verifying credential..."
-//    }
-//
-//    func handleCredentialResult(_ result: Result<String, CredentialError>) {
-//        switch result {
-//        case .success(let credential):
-//            // UI
-//            unlockCodeStatus.textColor = .systemGreen
-//            unlockCodeStatus.text = "Code accepted"
-//            // Save validated credential
-//            var participant = try! Participant.appParticipant() // FIXME: try!
-//            participant.authCredential = credential
-//            try! dbQueue.write { db in try participant.save(db) } // FIXME: try!
-//        case .failure(let error):
-//            unlockCodeStatus.textColor = .systemRed
-//            switch error {
-//            case .transportError:
-//                unlockCodeStatus.text = "Could not verify: transport error"
-//            case .responseError:
-//                unlockCodeStatus.text = "Could not verify: error in server response"
-//            case .unexpectedResponse:
-//                unlockCodeStatus.text = "Could not verify: unexpected server response"
-//            case .credentialRejected:
-//                unlockCodeStatus.text = "Code rejected"
-//            }
-//        }
-//    }
+    enum CredentialError: Error {
+        case transportError
+        case responseError
+        case badRequest([String: [String]])
+        case forbidden
+        case unexpectedResponse
+    }
+
+    func requestCredential(name: String, email: String) {
+        guard let uploadData = try? JSONEncoder().encode(
+            Settings.endpointCreateParticipantRequest(name: name, email: email)
+            )
+        else {
+            os_log("Could not create uploadData")
+            assertionFailure()
+            return
+        }
+        
+        let url = URL(string: Settings.endpointCreateParticipant)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue(Settings.appAuthCredential, forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        let task = URLSession.shared.uploadTask(with: request, from: uploadData) { (data, response, error) in
+            let result: Result<String, CredentialError>
+            if error != nil {
+                result = .failure(.transportError)
+            } else {
+                if let httpResponse = response as? HTTPURLResponse {
+                    switch httpResponse.statusCode {
+                    case 201:
+                        if let data = data,
+                           let json = try? JSONDecoder().decode(Settings.endpointCreateParticipantResponse.self, from: data)
+                        {
+                            result = .success(json.auth_credential)
+                        }
+                        else {
+                            result = .failure(.unexpectedResponse)
+                        }
+                    case 400:
+                        if let data = data,
+                           let json = try? JSONSerialization.jsonObject(with: data) as? [String:[String]]
+                        {
+                            result = .failure(.badRequest(json))
+                        } else {
+                            result = .failure(.badRequest([:]))
+                        }
+                    case 403:
+                        result = .failure(.forbidden)
+                    default:
+                        result = .failure(.unexpectedResponse)
+                    }
+                } else {
+                    result = .failure(.responseError)
+                }
+            }
+            if case .failure(let error) = result {
+                os_log("Request credential %{public}@", error.localizedDescription)
+            }
+            DispatchQueue.main.async {
+                self.handleCredentialResult(result)
+            }
+        }
+        task.resume()
+    }
+
+    func handleCredentialResult(_ result: Result<String, CredentialError>) {
+        print(result)
+        switch result {
+        case .success(let credential):
+            // Save validated credential
+            var participant = try! Participant.appParticipant() // FIXME: try!
+            participant.authCredential = credential
+            try! dbQueue.write { db in try participant.save(db) } // FIXME: try!
+            
+            // Dismiss screen, i.e. enter app proper
+            dismiss(animated: true)
+        case .failure(let error):
+            if let informedConsentErrorLabel = informedConsentErrorLabel {
+                switch error {
+                case .transportError:
+                    informedConsentErrorLabel.text = "There was a network problem submitting your consent. Is your iOS connected to the internet?\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
+                case .responseError:
+                    informedConsentErrorLabel.text = "There was a problem submitting your consent. The app received an unexpected response from the ORBIT servers.\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
+                case .badRequest(let response):
+                    var message = "There was a problem submitting your consent. The ORBIT servers rejected the request.\n\n"
+                    for (field, values) in response {
+                        for value in values {
+                            message += value.replacingOccurrences(of: "this field", with: field) + "\n"
+                        }
+                    }
+                    message += "\nIf this problem persists, please contact info@orbit.city.ac.uk"
+                    informedConsentErrorLabel.text = message
+                case .unexpectedResponse:
+                    informedConsentErrorLabel.text = "There was a problem submitting your consent. The app received an unexpected response from the ORBIT servers.\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
+                case .forbidden:
+                    informedConsentErrorLabel.text = "There was a problem submitting your consent. The app could not authenticate with the ORBIT servers.\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
+                }
+                informedConsentErrorLabel.isHidden = false
+                scrollView.layoutIfNeeded()
+                scrollView.scrollRectToVisible(stackView.frame, animated: true)
+            }
+        }
+    }
 }
 
 extension InfoViewController: WKNavigationDelegate {
