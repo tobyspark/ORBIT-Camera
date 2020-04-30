@@ -74,6 +74,15 @@ class InfoViewController: UIViewController {
     var informedConsentAllConsentsChecked = false {
         didSet { informedConsentSetSubmitEnable() }
     }
+    var informedConsentIsSubmitting = false {
+        didSet {
+            guard let informedConsentSubmitButton = informedConsentSubmitButton
+            else { return }
+            
+            informedConsentSubmitButton.isEnabled = !informedConsentIsSubmitting
+            informedConsentSubmitButton.setTitle(!informedConsentIsSubmitting ? "Submit" : "Submitting...", for: .normal)
+        }
+    }
     func informedConsentSetSubmitEnable() {
         guard
             let button = informedConsentSubmitButton,
@@ -334,6 +343,11 @@ class InfoViewController: UIViewController {
     }
 
     func requestCredential(name: String, email: String) {
+        guard informedConsentIsSubmitting == false
+        else { return }
+        
+        informedConsentIsSubmitting = true
+        
         guard let uploadData = try? JSONEncoder().encode(
             Settings.endpointCreateParticipantRequest(name: name, email: email)
             )
@@ -393,7 +407,6 @@ class InfoViewController: UIViewController {
     }
 
     func handleCredentialResult(_ result: Result<String, CredentialError>) {
-        print(result)
         switch result {
         case .success(let credential):
             // Save validated credential
@@ -404,7 +417,9 @@ class InfoViewController: UIViewController {
             // Dismiss screen, i.e. enter app proper
             dismiss(animated: true)
         case .failure(let error):
-            if let informedConsentErrorLabel = informedConsentErrorLabel {
+            if let informedConsentErrorLabel = informedConsentErrorLabel,
+               let informedConsentSubmitButton = informedConsentSubmitButton
+            {
                 switch error {
                 case .transportError:
                     informedConsentErrorLabel.text = "There was a network problem submitting your consent. Is your iOS connected to the internet?\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
@@ -425,8 +440,8 @@ class InfoViewController: UIViewController {
                     informedConsentErrorLabel.text = "There was a problem submitting your consent. The app could not authenticate with the ORBIT servers.\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
                 }
                 informedConsentErrorLabel.isHidden = false
-                scrollView.layoutIfNeeded()
                 scrollView.scrollRectToVisible(stackView.frame, animated: true)
+                informedConsentIsSubmitting = false
             }
         }
     }
