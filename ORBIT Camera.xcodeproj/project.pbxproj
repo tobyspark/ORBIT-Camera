@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4B3119AB245091ED00E28452 /* Ink in Frameworks */ = {isa = PBXBuildFile; productRef = 4B3119AA245091ED00E28452 /* Ink */; };
-		4B3119AE2450977100E28452 /* TutorialScript.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4B3119AC2450977100E28452 /* TutorialScript.markdown */; };
+		4B3119AE2450977100E28452 /* Recording.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4B3119AC2450977100E28452 /* Recording.markdown */; };
 		4B3119B12451030B00E28452 /* UIColor+CSS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3119B02451030B00E28452 /* UIColor+CSS.swift */; };
 		4B3119B32451B06600E28452 /* String+slugify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3119B22451B06600E28452 /* String+slugify.swift */; };
 		4B3119B52451E99D00E28452 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3119B42451E99C00E28452 /* HelpViewController.swift */; };
@@ -64,6 +64,7 @@
 		4BFC5F232458B12800E5A3C1 /* InformedConsent.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4BFC5F222458B12800E5A3C1 /* InformedConsent.markdown */; };
 		4BFC5F252459DA6000E5A3C1 /* Settings+secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFC5F242459DA6000E5A3C1 /* Settings+secrets.swift */; };
 		4BFC5F27245B11A300E5A3C1 /* InfoViewController+requestCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFC5F26245B11A300E5A3C1 /* InfoViewController+requestCredential.swift */; };
+		4BFC5F29245B6BD600E5A3C1 /* Introduction.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4BFC5F28245B6BD600E5A3C1 /* Introduction.markdown */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,7 +78,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		4B3119AC2450977100E28452 /* TutorialScript.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = TutorialScript.markdown; path = Resources/TutorialScript.markdown; sourceTree = SOURCE_ROOT; };
+		4B3119AC2450977100E28452 /* Recording.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = Recording.markdown; path = Resources/Recording.markdown; sourceTree = SOURCE_ROOT; };
 		4B3119B02451030B00E28452 /* UIColor+CSS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSS.swift"; sourceTree = "<group>"; };
 		4B3119B22451B06600E28452 /* String+slugify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+slugify.swift"; sourceTree = "<group>"; };
 		4B3119B42451E99C00E28452 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
@@ -127,6 +128,7 @@
 		4BFC5F222458B12800E5A3C1 /* InformedConsent.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = InformedConsent.markdown; path = Resources/InformedConsent.markdown; sourceTree = SOURCE_ROOT; };
 		4BFC5F242459DA6000E5A3C1 /* Settings+secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Settings+secrets.swift"; sourceTree = "<group>"; };
 		4BFC5F26245B11A300E5A3C1 /* InfoViewController+requestCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InfoViewController+requestCredential.swift"; sourceTree = "<group>"; };
+		4BFC5F28245B6BD600E5A3C1 /* Introduction.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = Introduction.markdown; path = Resources/Introduction.markdown; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -218,7 +220,8 @@
 				4BF14BBF2405730700E31D93 /* Main.storyboard */,
 				4BFC5F202458ACE200E5A3C1 /* ParticipantInformation.markdown */,
 				4BFC5F222458B12800E5A3C1 /* InformedConsent.markdown */,
-				4B3119AC2450977100E28452 /* TutorialScript.markdown */,
+				4BFC5F28245B6BD600E5A3C1 /* Introduction.markdown */,
+				4B3119AC2450977100E28452 /* Recording.markdown */,
 				4BF14BC22405730900E31D93 /* Assets.xcassets */,
 				4BF14BC42405730900E31D93 /* LaunchScreen.storyboard */,
 				4BF14BC72405730900E31D93 /* Info.plist */,
@@ -331,7 +334,8 @@
 			files = (
 				4BF14BC62405730900E31D93 /* LaunchScreen.storyboard in Resources */,
 				4BFC5F232458B12800E5A3C1 /* InformedConsent.markdown in Resources */,
-				4B3119AE2450977100E28452 /* TutorialScript.markdown in Resources */,
+				4BFC5F29245B6BD600E5A3C1 /* Introduction.markdown in Resources */,
+				4B3119AE2450977100E28452 /* Recording.markdown in Resources */,
 				4BF14BC32405730900E31D93 /* Assets.xcassets in Resources */,
 				4BF14BC12405730700E31D93 /* Main.storyboard in Resources */,
 				4BFC5F212458ACE200E5A3C1 /* ParticipantInformation.markdown in Resources */,

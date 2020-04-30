@@ -43,48 +43,6 @@ struct MarkdownParser {
         return result
     }
     
-    /// Return a HTML page and a dictionary of HTML element IDs keyed by Video.Kind.
-    /// The results are generated from a markdown file bundled as an app's resource, with metadata values such as
-    /// `train-header: training-video-tutorial`
-    /// The file extension must be '.markdown'
-    // The Ink markdown parser doesn't like Windows line-endings, so this will replace CRLF with LF on import
-    static func videoKindParse(markdownResource: String, startKey: String? = nil) -> (html: String, kindElementIDs: Dictionary<Video.Kind, String>) {
-        guard
-            let url = Bundle.main.url(forResource: markdownResource, withExtension: "markdown"),
-            let markdown = try? String(contentsOf: url).replacingOccurrences(of: "\r\n", with: "\n")
-        else {
-            os_log("Could not load %{public}s.markdown", markdownResource)
-            assertionFailure()
-            return ("", [:])
-        }
-        
-        let result = MarkdownParser.inkParser.parse(markdown)
-        
-        // If startKey header markdown provided, start the HTML at the corresponding header tag
-        // Find the slugified header id value within the header tag, and then work backwards to the opening bracket
-        let html: String
-        if let startKey = startKey,
-           let startIDValue = result.metadata[startKey]?.slugify(),
-           let startIDRange = result.html.range(of: startIDValue),
-           let startIndex = result.html[..<startIDRange.lowerBound].lastIndex(of: "<")
-        {
-            html = String(result.html[startIndex...])
-        } else {
-            html = result.html
-        }
-        
-        let kindElementIDs = Video.Kind.allCases.reduce(into: Dictionary<Video.Kind, String>(), { (dict, kind) in
-            let key = kind.description.replacingOccurrences(of: " ", with: "-") + "-header"
-            if let markdownValue = result.metadata[key] {
-                dict[kind] = markdownValue.slugify()
-            } else {
-                os_log("Could not find expected markdown metadata key: %{public}s", key)
-                assertionFailure()
-            }
-        })
-        return (MarkdownParser.htmlPage(bodyHTML: html, title: markdownResource), kindElementIDs)
-    }
-    
     /// Wrap the supplied HTML body content in a full HTML page
     static func htmlPage(bodyHTML: String, title: String) -> String {
         return """
@@ -101,6 +59,7 @@ struct MarkdownParser {
         """
     }
     
+    /// App-style CSS to inject as script tag
     // Use only single-quotes.
     static let css = """
     body {
