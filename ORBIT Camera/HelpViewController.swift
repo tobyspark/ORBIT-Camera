@@ -26,7 +26,7 @@ class HelpViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let result = MarkdownParser.parse(markdownResource: "TutorialScript", startKey: "help-start-header")
+        let result = MarkdownParser.videoKindParse(markdownResource: "TutorialScript", startKey: "help-start-header")
         kindElementIds = result.kindElementIDs
         
         webView.navigationDelegate = self
