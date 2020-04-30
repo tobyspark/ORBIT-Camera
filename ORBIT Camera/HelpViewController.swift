@@ -59,6 +59,10 @@ class HelpViewController: UIViewController {
             dismissElement,
             scrollView!
         ]
+        
+        // iPad: size to be within the videoview, half width and stopping above pager and add button
+        let insetToClearControls: CGFloat = 83 // a magic number
+        preferredContentSize = CGSize(width: UIScreen.main.bounds.width/2, height: UIScreen.main.bounds.width - insetToClearControls)
     }
 }
 
