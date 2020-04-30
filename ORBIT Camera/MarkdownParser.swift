@@ -23,7 +23,24 @@ struct MarkdownParser {
             return ("")
         }
 
-        return MarkdownParser.htmlPage(bodyHTML: MarkdownParser.inkParser.html(from: markdown))
+        return MarkdownParser.htmlPage(bodyHTML: MarkdownParser.inkParser.html(from: markdown), title: markdownResource)
+    }
+    
+    /// Return a HTML page and metadata generated from a markdown file bundled as an app's resource
+    /// The file extension must be '.markdown'
+    static func parse(markdownResource: String) -> Markdown {
+        guard
+            let url = Bundle.main.url(forResource: markdownResource, withExtension: "markdown"),
+            let markdown = try? String(contentsOf: url).replacingOccurrences(of: "\r\n", with: "\n")
+        else {
+            os_log("Could not load %{public}s.markdown", markdownResource)
+            assertionFailure()
+            return (MarkdownParser.inkParser.parse(""))
+        }
+        
+        var result = MarkdownParser.inkParser.parse(markdown)
+        result.html = MarkdownParser.htmlPage(bodyHTML: result.html, title: markdownResource)
+        return result
     }
     
     /// Return a HTML page and a dictionary of HTML element IDs keyed by Video.Kind.
@@ -31,7 +48,7 @@ struct MarkdownParser {
     /// `train-header: training-video-tutorial`
     /// The file extension must be '.markdown'
     // The Ink markdown parser doesn't like Windows line-endings, so this will replace CRLF with LF on import
-    static func parse(markdownResource: String, startKey: String? = nil) -> (html: String, kindElementIDs: Dictionary<Video.Kind, String>) {
+    static func videoKindParse(markdownResource: String, startKey: String? = nil) -> (html: String, kindElementIDs: Dictionary<Video.Kind, String>) {
         guard
             let url = Bundle.main.url(forResource: markdownResource, withExtension: "markdown"),
             let markdown = try? String(contentsOf: url).replacingOccurrences(of: "\r\n", with: "\n")
@@ -65,24 +82,17 @@ struct MarkdownParser {
                 assertionFailure()
             }
         })
-        return (MarkdownParser.htmlPage(bodyHTML: html), kindElementIDs)
+        return (MarkdownParser.htmlPage(bodyHTML: html, title: markdownResource), kindElementIDs)
     }
     
     /// Wrap the supplied HTML body content in a full HTML page
-    static func htmlPage(bodyHTML: String) -> String {
+    static func htmlPage(bodyHTML: String, title: String) -> String {
         return """
         <!DOCTYPE html>
         <html>
         <head>
-        <title>Title to validate</title>
+        <title>\(title)</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-        <style>
-            body {
-                font-family: system-ui, sans-serif;
-                color: \(UIColor.label.css);
-                background-color: \(UIColor.systemBackground.css);
-            }
-        </style>
         </head>
         <body>
         \(bodyHTML)
@@ -90,6 +100,35 @@ struct MarkdownParser {
         </html>
         """
     }
+    
+    // Use only single-quotes.
+    static let css = """
+    body {
+        font-family: system-ui, sans-serif;
+        color: \(UIColor.label.css);
+        background-color: \(UIColor.systemBackground.css);
+    }
+    form ul {
+        list-style-type: none;
+        padding-inline-start: unset;
+        margin-block-start: unset;
+    }
+    form li {
+        margin-bottom: 0.5em;
+    }
+    form label, input {
+        display: inline-block;
+    }
+    form input[type='checkbox'] {
+        width: 10vw;
+        vertical-align: top;
+        position: relative;
+        top: 0.1875em;
+    }
+    form label {
+        width: 80vw;
+    }
+    """
     
     private static let inkParser = Ink.MarkdownParser(modifiers: [
         // Add id to header elements, to enable linking to them
