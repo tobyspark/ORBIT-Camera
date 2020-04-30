@@ -56,7 +56,7 @@ The things list will be empty on your first use. To add something, select the _T
 
 You can freely navigate between the _Things list screen_ and the _Thing record and review screen_ for each of those things. This means you can add things, and videos of any of those things, as opportunities arise. You do not have to add all the videos for a thing in one go. 
 
-Each screen has a button that brings up a sheet with more information. The _Things list screen_ has _App info_ button that brings up a sheet with this text. The _Thing record and review screen_ has a help button that should bring you to the relevant recording videos instructions. 
+Each screen has a button that brings up a sheet with more information. The _Things list screen_ has _ORBIT instructions_ button that brings up a sheet with this text. The _Thing record and review screen_ has _Recording instructions_ button that should bring you to the relevant recording videos instructions. 
 
 # Contacting the ORBIT team
 If you have any questions, difficulties, or concerns about using the ORBIT Camera app or these instructions, please email us at info@orbit.city.ac.uk

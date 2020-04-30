@@ -263,7 +263,7 @@ class InfoViewController: UIViewController {
         case .appInfo:
             isModalInPresentation = false
             
-            headingElement.accessibilityLabel = "App information sheet"
+            headingElement.accessibilityLabel = "ORBIT instructions sheet"
             
             let closeImage = UIImage(systemName: "xmark.circle")!
             sheetButton.setImage(closeImage, for: .normal)
