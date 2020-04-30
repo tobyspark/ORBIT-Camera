@@ -708,7 +708,7 @@
                                                     <wkPreferences key="preferences"/>
                                                 </wkWebViewConfiguration>
                                             </wkWebView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="W4X-x0-kh1">
+                                            <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" distribution="equalSpacing" spacing="40" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W4X-x0-kh1">
                                                 <rect key="frame" x="20" y="434.5" width="374" height="12"/>
                                             </stackView>
                                         </subviews>
@@ -720,11 +720,11 @@
                                             <constraint firstItem="W4X-x0-kh1" firstAttribute="width" secondItem="Y6i-mN-HVc" secondAttribute="width" id="OZw-9f-O42"/>
                                             <constraint firstAttribute="trailing" secondItem="7I2-IG-5Lu" secondAttribute="trailing" id="RXM-Va-t6B"/>
                                             <constraint firstItem="7I2-IG-5Lu" firstAttribute="leading" secondItem="WCh-lR-RMy" secondAttribute="leading" id="SLV-gj-bBh"/>
+                                            <constraint firstAttribute="bottom" secondItem="W4X-x0-kh1" secondAttribute="bottom" constant="40" id="V4c-fN-asT"/>
                                             <constraint firstItem="Y6i-mN-HVc" firstAttribute="leading" secondItem="WCh-lR-RMy" secondAttribute="leading" constant="20" id="kDd-1z-bwg"/>
                                             <constraint firstItem="W4X-x0-kh1" firstAttribute="centerX" secondItem="WCh-lR-RMy" secondAttribute="centerX" id="nKx-vz-Kj1"/>
                                             <constraint firstItem="Y6i-mN-HVc" firstAttribute="top" secondItem="7I2-IG-5Lu" secondAttribute="bottom" constant="40" id="qfL-g3-cFD"/>
                                             <constraint firstItem="2aO-i4-d58" firstAttribute="centerX" secondItem="WCh-lR-RMy" secondAttribute="centerX" id="ru2-1p-AoZ"/>
-                                            <constraint firstAttribute="bottom" secondItem="W4X-x0-kh1" secondAttribute="bottom" constant="40" id="s34-U1-3HF"/>
                                             <constraint firstItem="7I2-IG-5Lu" firstAttribute="top" secondItem="2aO-i4-d58" secondAttribute="bottom" constant="20" id="xzJ-Tf-Hui"/>
                                         </constraints>
                                     </view>

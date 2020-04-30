@@ -160,6 +160,27 @@ class InfoViewController: UIViewController {
                                           forMainFrameOnly: true)
             webView.configuration.userContentController.addUserScript(userScript)
             
+            let signedLabel = UILabel()
+            signedLabel.text = "Signed –"
+            stackView.addArrangedSubview(signedLabel)
+            
+            let nameField = UITextField()
+            nameField.placeholder = "Enter your name"
+            nameField.accessibilityLabel = "Name"
+            nameField.returnKeyType = .next
+            nameField.tag = 0
+            nameField.delegate = self
+            stackView.addArrangedSubview(nameField)
+            
+            let emailField = UITextField()
+            emailField.placeholder = "Enter your email address"
+            emailField.accessibilityLabel = "Email address"
+            emailField.keyboardType = .emailAddress
+            emailField.returnKeyType = .done
+            emailField.tag = 1
+            emailField.delegate = self
+            stackView.addArrangedSubview(emailField)
+            
             let button = UIButton(type: .system)
             button.setTitle("Submit consent", for: .normal)
             button.isEnabled = false
@@ -197,6 +218,10 @@ class InfoViewController: UIViewController {
         // Webview: handle page load completion, etc.
         webView.navigationDelegate = self
         
+        // Keyboard: handle it showing
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardShow), name: UIWindow.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardShow), name: UIWindow.keyboardWillHideNotification, object: nil)
+        
         configurePage()
 
 // TODO: Move to first-run
@@ -233,7 +258,22 @@ class InfoViewController: UIViewController {
             scrollView!
         ]
     }
-
+    
+    @objc func handleKeyboardShow(notification: Notification) {
+        guard
+            let keyboardEndRect = notification.userInfo?["UIKeyboardFrameEndUserInfoKey"] as? CGRect
+        else { return }
+        
+        switch notification.name {
+        case UIWindow.keyboardWillShowNotification:
+            scrollView.contentInset.bottom = keyboardEndRect.height
+        case UIWindow.keyboardWillHideNotification:
+            scrollView.contentInset.bottom = 0
+        default:
+            break
+        }
+    }
+    
 // TODO: Move to first-run
 //    @IBAction func unlockCodeEditingDidEnd(_ sender: Any) {
 //        if let credential = unlockCode.text {
@@ -345,5 +385,17 @@ extension InfoViewController: WKScriptMessageHandler {
         {
             submitButton.isEnabled = allConsentsChecked
         }
+    }
+}
+
+extension InfoViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField.tag == 0 {
+            let nextField = stackView.arrangedSubviews.first { $0.tag == 1 }
+            nextField?.becomeFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+        }
+        return false
     }
 }
