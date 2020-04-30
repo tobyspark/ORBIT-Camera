@@ -272,7 +272,7 @@ class InfoViewController: UIViewController {
             sheetButtonElement.accessibilityLabel = sheetButton.accessibilityLabel
             sheetButtonElement.accessibilityHint = sheetButton.accessibilityHint
             
-            html = MarkdownParser.html(markdownResource: "TutorialScript")
+            html = MarkdownParser.html(markdownResource: "Introduction")
         }
         
         webView.loadHTMLString(html, baseURL: Bundle.main.resourceURL)
