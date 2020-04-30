@@ -43,6 +43,10 @@ class RecordButton: UIControl {
             pipTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self](timer) in
                 guard let self = self else { return }
                 self.pipCount += 1
+                if self.pipCount > Int(Settings.recordTimeOutSecs) - 5 {
+                    AudioServicesPlaySystemSound(RecordButton.systemSoundTink)
+                    return
+                }
                 if self.pipCount % 20 == 0 {
                     AudioServicesPlaySystemSound(RecordButton.systemSoundTink)
                     return
