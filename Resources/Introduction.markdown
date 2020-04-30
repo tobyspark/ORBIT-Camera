@@ -14,7 +14,7 @@ Before you begin taking videos, it might help to understand how they will be use
 
 However, we also need to measure how well the AI works by seeing how it handles new images that it wasn’t trained on in real-life scenarios. This is called testing the AI. It’s not helpful if the AI works perfectly for identifying your keys sitting on a table by themselves but not when they are next to a phone or cutlery! So, we need to have different videos of objects for training and testing the AI. 
 
-The ORBIT app is designed to collect both training and testing videos. These instructions should help you to record videos that will be used for both purposes. 
+The ORBIT Camera app is designed to collect both training and testing videos. These instructions should help you to record videos that will be used for both purposes. 
 
 # Collecting videos with ORBIT
 
@@ -28,7 +28,7 @@ Your next task is to choose at least six different places where you will record 
 
 It is okay if you reuse locations and record a training video of one thing on the same surface as the training video of another thing. What is important is that you do not record multiple training videos of the same thing in the same environment. If your things can be easily moved, you can speed up the process by taking several things at once to one location and then taking a training video of each separately before moving them all to the next environment. 
 
-If the items you choose cannot be moved to different environments because they are too large or they are immovable, don’t worry. We’ll give you [specific instructions](#training-videos-for-large-or-immobile-things) for how to deal with these items. 
+If the items you choose cannot be moved to different environments because they are too large or they are immovable, don’t worry. We’ll give you specific instructions for how to deal with these items. 
 
 ## The ORBIT Camera app  
 
@@ -59,5 +59,4 @@ You can freely navigate between the _Things list screen_ and the _Thing record a
 Each screen has a button that brings up a sheet with more information. The _Things list screen_ has _App info_ button that brings up a sheet with this text. The _Thing record and review screen_ has a help button that should bring you to the relevant recording videos instructions. 
 
 # Contacting the ORBIT team
-If you have any questions, difficulties, or concerns about using the ORBIT app to collect data, please email us at info@orbit.city.ac.uk
-
+If you have any questions, difficulties, or concerns about using the ORBIT Camera app or these instructions, please email us at info@orbit.city.ac.uk
