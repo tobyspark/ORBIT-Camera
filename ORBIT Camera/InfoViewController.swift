@@ -151,6 +151,7 @@ class InfoViewController: UIViewController {
             
             let button = UIButton(type: .system)
             button.setTitle("Continue", for: .normal)
+            button.titleLabel?.font = UIFont.systemFont(ofSize: 17)
             button.addTarget(self, action: #selector(participantInfoContinueAction), for: .touchUpInside)
             stackView.addArrangedSubview(button)
         case .informedConsent:
@@ -227,6 +228,7 @@ class InfoViewController: UIViewController {
             
             let button = UIButton(type: .system)
             button.setTitle("Submit consent", for: .normal)
+            button.titleLabel?.font = UIFont.systemFont(ofSize: 17)
             button.isEnabled = false
             button.addTarget(self, action: #selector(informedConsentSubmitAction), for: .touchUpInside)
             informedConsentSubmitButton = button
