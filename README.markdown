@@ -23,13 +23,17 @@ Example – `train-header: training-videos-for-smallmedium-things`
 - Record should have sonic feedback during recording #14
 
 ## Not yet implemented
-- First-run: participant info → consent w/email address → creates server participant
 - Server state changes reflected in app, e.g. video statuses for verified, notifications
 - Deleting a video does not update server
 - Study phases implemented in app
 - Contrast effect and control for viewfinder / videos
 
 ## Version history
+
+v0.6.0
+- First-run: participant info → consent w/email address → app unlocks
+- Consent requests server participant record → further API use authenticated as that participant
+- PR: [Feature: First-run](https://github.com/tobyspark/ORBIT-Camera/pull/33)
 
 v0.5.7
 - Markdown updated by ORBIT Team
