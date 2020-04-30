@@ -142,6 +142,9 @@ class InfoViewController: UIViewController {
         let html: String
         
         // Reset
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.scrollView.alpha = 0
+        }
         webViewHeightContstraint.constant = 0
         for view in stackView.subviews {
             stackView.removeArrangedSubview(view)
@@ -255,6 +258,11 @@ class InfoViewController: UIViewController {
         webView.loadHTMLString(html, baseURL: Bundle.main.resourceURL)
         
         scrollView.setContentOffset(CGPoint.zero, animated: true)
+        
+        // Really, this should be in the WebView page loaded handler. But lets keep it here.
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?.scrollView.alpha = 1
+        }
     }
     
     override func viewDidLoad() {
