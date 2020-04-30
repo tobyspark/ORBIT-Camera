@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 import os
 
 class RecordButton: UIControl {
@@ -37,10 +38,28 @@ class RecordButton: UIControl {
         case .idle:
             recordingState = .active(Date())
             os_log("RecordButton.state active")
+            AudioServicesPlaySystemSound(RecordButton.systemSoundVideoBegin)
+            pipCount = 0
+            pipTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self](timer) in
+                guard let self = self else { return }
+                self.pipCount += 1
+                if self.pipCount % 20 == 0 {
+                    AudioServicesPlaySystemSound(RecordButton.systemSoundTink)
+                    return
+                }
+                if self.pipCount % 5 == 0 {
+                    AudioServicesPlaySystemSound(RecordButton.systemSoundTockAlt)
+                    return
+                }
+                AudioServicesPlaySystemSound(RecordButton.systemSoundTock)
+            })
         case .active(let date):
             recordingState = .idle
             let duration = DateInterval(start: date, end: Date()).duration
             os_log("RecordButton.state idle, active for %fs", duration)
+            pipTimer?.invalidate()
+            pipTimer = nil
+            AudioServicesPlaySystemSound(RecordButton.systemSoundVideoEnd)
         }
         setNeedsDisplay()
     }
@@ -76,4 +95,18 @@ class RecordButton: UIControl {
         }
         context.fillEllipse(in: CGRect(origin: buttonOrigin, size: buttonSize))
     }
+    
+    private var pipTimer: Timer?
+    private var pipCount: Int = 0
+    // SystemSoundID    File name    Category
+    // 1117    begin_video_record.caf    BeginVideoRecording
+    private static let systemSoundVideoBegin: SystemSoundID = 1117
+    // 1118    end_video_record.caf    EndVideoRecording
+    private static let systemSoundVideoEnd: SystemSoundID = 1118
+    // 1103    Tink.caf    sq_tock.caf    KeyPressed
+    private static let systemSoundTink: SystemSoundID = 1103
+    // 1104    Tock.caf    sq_tock.caf    KeyPressed
+    private static let systemSoundTock: SystemSoundID = 1104
+    // 1105    Tock.caf    sq_tock.caf    KeyPressed
+    private static let systemSoundTockAlt: SystemSoundID = 1105
 }
