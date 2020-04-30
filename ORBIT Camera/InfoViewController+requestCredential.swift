@@ -91,8 +91,23 @@ extension InfoViewController {
             participant.authCredential = credential
             try! dbQueue.write { db in try participant.save(db) } // FIXME: try!
             
-            // Dismiss screen, i.e. enter app proper
-            dismiss(animated: true)
+            // Dismiss this screen, i.e. enter app proper
+            //   Accessibility: the things screen doesn't seem to announce itself despire viewDidAppear below, for some unknown reason
+            //   So, announce something else here, that won't interfere if that does magically start working
+            if let presentingViewController = presentingViewController {
+                if UIAccessibility.isVoiceOverRunning {
+                    UIAccessibility.post(notification: .announcement, argument: "Consent submission successful. You are now a participant in the ORBIT research project. The app will load shortly")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(7)) {
+                        presentingViewController.dismiss(animated: true) {
+                            presentingViewController.viewDidAppear(true)
+                        }
+                    }
+                } else {
+                    presentingViewController.dismiss(animated: true) {
+                        presentingViewController.viewDidAppear(true)
+                    }
+                }
+            }
         case .failure(let error):
             if let informedConsentErrorLabel = informedConsentErrorLabel
             {
@@ -117,6 +132,7 @@ extension InfoViewController {
                 }
                 informedConsentErrorLabel.isHidden = false
                 scrollView.scrollRectToVisible(stackView.frame, animated: true)
+                UIAccessibility.focus(element: informedConsentErrorLabel)
                 informedConsentIsSubmitting = false
             }
         }

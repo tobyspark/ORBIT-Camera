@@ -263,6 +263,16 @@ class InfoViewController: UIViewController {
         UIView.animate(withDuration: 0.3) { [weak self] in
             self?.scrollView.alpha = 1
         }
+        
+        // Announce the screen change
+        switch page {
+        case .participantInfo:
+            UIAccessibility.post(notification: .screenChanged, argument: "ORBIT Dataset research project participant information sheet")
+        case .informedConsent:
+            UIAccessibility.post(notification: .screenChanged, argument: "Consent sheet")
+        default:
+            UIAccessibility.post(notification: .screenChanged, argument: "Info sheet")
+        }
     }
     
     override func viewDidLoad() {
@@ -290,11 +300,6 @@ class InfoViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardShow), name: UIWindow.keyboardWillHideNotification, object: nil)
         
         configurePage()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        // Announce the screen change
-        UIAccessibility.post(notification: .screenChanged, argument: "Info sheet")
     }
     
     override func viewDidLayoutSubviews() {
@@ -389,10 +394,14 @@ extension InfoViewController: WKScriptMessageHandler {
 extension InfoViewController: UITextFieldDelegate {
     /// On return, either go to next or dismiss
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField === informedConsentNameField {
+        switch textField {
+        case informedConsentNameField:
             informedConsentEmailField?.becomeFirstResponder()
-        } else {
-            textField.resignFirstResponder()
+        case informedConsentEmailField:
+            informedConsentEmailField?.resignFirstResponder()
+            UIAccessibility.focus(element: informedConsentSubmitButton)
+        default:
+            break
         }
         return false
     }
