@@ -39,4 +39,13 @@ extension Participant: FetchableRecord, MutablePersistableRecord {
         assert(participant.id == 1, "appParticipant created with ID other than 1")
         return participant
     }
+    
+    static func appParticipantGivenConsent() -> Bool {
+        if let participant = try? appParticipant(),
+           participant.authCredential != nil
+        {
+            return true
+        }
+        return false
+    }
 }

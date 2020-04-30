@@ -131,6 +131,12 @@ class MasterViewController: UITableViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        // First-run
+        if !Participant.appParticipantGivenConsent() {
+            performSegue(withIdentifier: "showInfo", sender: self)
+            return
+        }
+        
         // Announce the screen change
         // Without this, the element nearest the previous screen's focussed element will become focussed.
         UIAccessibility.post(notification: .screenChanged, argument: "Things list screen. Nav bar focussed")
@@ -213,7 +219,7 @@ class MasterViewController: UITableViewController {
             detailViewController = controller
         case "showInfo":
             let controller = (segue.destination as! InfoViewController)
-            controller.page = .appInfo
+            controller.page = Participant.appParticipantGivenConsent() ? .appInfo : .participantInfo
         default:
             os_log("Unknown segue")
             assertionFailure()
