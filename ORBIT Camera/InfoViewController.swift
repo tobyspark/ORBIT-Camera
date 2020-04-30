@@ -131,6 +131,8 @@ class InfoViewController: UIViewController {
         
         switch page {
         case .participantInfo:
+            isModalInPresentation = true
+            
             let shareImage = UIImage(systemName: "square.and.arrow.up")!
             sheetButton.setImage(shareImage, for: .normal)
             sheetButton.accessibilityLabel = "Share"
@@ -221,6 +223,8 @@ class InfoViewController: UIViewController {
             informedConsentSubmitButton = button
             stackView.addArrangedSubview(button)
         case .appInfo:
+            isModalInPresentation = false
+            
             let closeImage = UIImage(systemName: "xmark.circle")!
             sheetButton.setImage(closeImage, for: .normal)
             
