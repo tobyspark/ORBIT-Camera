@@ -384,13 +384,13 @@ class DetailViewController: UIViewController {
             self.pageIndex -= 1
         }
         
-        detailHeaderElement.accessibilityLabel = "Video review detail"
-        detailHeaderElement.accessibilityHint = "The following relates to the selected video"
+        detailHeaderElement.accessibilityLabel = "Details of your selected video"
+        detailHeaderElement.accessibilityHint = "The following relates to the selected video. It is currently being shown on the screen."
         detailHeaderElement.accessibilityTraits = super.accessibilityTraits.union(.header)
         
         recordedElement.accessibilityLabel = "" // Set in configurePage
         
-        rerecordElement.accessibilityLabel = "Re-record video" // Set in configurePage
+        rerecordElement.accessibilityLabel = "Re-record selected video" // Set in configurePage
         rerecordElement.accessibilityHint = "If you wish to re-record, activate to bring up the camera controls"
         rerecordElement.accessibilityTraits = super.accessibilityTraits.union(.button)
                 
@@ -400,7 +400,7 @@ class DetailViewController: UIViewController {
         
         publishedElement.accessibilityLabel = "" // Set in configurePage
         
-        deleteElement.accessibilityLabel = "Delete video"
+        deleteElement.accessibilityLabel = "Delete selected video"
         deleteElement.accessibilityHint = "Removes this video from the thing's collection"
         deleteElement.accessibilityTraits = super.accessibilityTraits.union(.button)
         
