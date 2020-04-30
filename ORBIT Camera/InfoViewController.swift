@@ -19,9 +19,15 @@ import os
 /// Currently, it can display three different types of page. See `InfoPageKind`
 /// Aaaand this whole thing should probably be refactored into a subclass per page. But so it goes.
 class InfoViewController: UIViewController {
-
+    
+    /// Accessibility - a heading element to name the screen.
+    // `screenChanged` notification messages were not proving reliable, without this would lead to "dismiss" etc. as the announcement.
+    var headingElement: UIAccessibilityElement!
+    
     /// Top-right button anchored to sheet.
     @IBOutlet weak var sheetButton: UIButton!
+    /// Accessibility - equivalent to the sheetButton, but with frame down RHS of screen for easy, always there access.
+    var sheetButtonElement: UIAccessibilityElement!
     
     /// Content is enclosed in scroll view
     @IBOutlet weak var scrollView: UIScrollView!
@@ -130,7 +136,7 @@ class InfoViewController: UIViewController {
         docController.presentOpenInMenu(from: sheetButton.frame, in: view, animated: true)
     }
     
-    func configurePage() {
+    func configurePage(accessibilityScreenChangedMessage: String? = nil) {
         guard
             sheetButton != nil,
             webView != nil,
@@ -155,10 +161,14 @@ class InfoViewController: UIViewController {
         case .participantInfo:
             isModalInPresentation = true
             
+            headingElement.accessibilityLabel = "Participant information sheet"
+            
             let shareImage = UIImage(systemName: "square.and.arrow.up")!
             sheetButton.setImage(shareImage, for: .normal)
             sheetButton.accessibilityLabel = "Share"
             sheetButton.accessibilityHint = "Brings up share sheet so you can save this information"
+            sheetButtonElement.accessibilityLabel = sheetButton.accessibilityLabel
+            sheetButtonElement.accessibilityHint = sheetButton.accessibilityHint
             
             html = MarkdownParser.html(markdownResource: "ParticipantInformation")
             
@@ -168,10 +178,14 @@ class InfoViewController: UIViewController {
             button.addTarget(self, action: #selector(participantInfoContinueAction), for: .touchUpInside)
             stackView.addArrangedSubview(button)
         case .informedConsent:
+            headingElement.accessibilityLabel = "Consent sheet"
+            
             let backImage = UIImage(systemName: "xmark.circle")!
             sheetButton.setImage(backImage, for: .normal)
             sheetButton.accessibilityLabel = "Back"
             sheetButton.accessibilityHint = "Returns to Participant Information"
+            sheetButtonElement.accessibilityLabel = sheetButton.accessibilityLabel
+            sheetButtonElement.accessibilityHint = sheetButton.accessibilityHint
             
             // Webview: get HTML, appending form created from markdown metadata
             let result = MarkdownParser.parse(markdownResource: "InformedConsent")
@@ -249,8 +263,14 @@ class InfoViewController: UIViewController {
         case .appInfo:
             isModalInPresentation = false
             
+            headingElement.accessibilityLabel = "App information sheet"
+            
             let closeImage = UIImage(systemName: "xmark.circle")!
             sheetButton.setImage(closeImage, for: .normal)
+            sheetButton.accessibilityLabel = "Close"
+            sheetButton.accessibilityHint = "Returns you to the Things list screen"
+            sheetButtonElement.accessibilityLabel = sheetButton.accessibilityLabel
+            sheetButtonElement.accessibilityHint = sheetButton.accessibilityHint
             
             html = MarkdownParser.html(markdownResource: "TutorialScript")
         }
@@ -259,24 +279,22 @@ class InfoViewController: UIViewController {
         
         scrollView.setContentOffset(CGPoint.zero, animated: true)
         
+        UIAccessibility.post(notification: .screenChanged, argument: accessibilityScreenChangedMessage)
+        
         // Really, this should be in the WebView page loaded handler. But lets keep it here.
         UIView.animate(withDuration: 0.3) { [weak self] in
             self?.scrollView.alpha = 1
-        }
-        
-        // Announce the screen change
-        switch page {
-        case .participantInfo:
-            UIAccessibility.post(notification: .screenChanged, argument: "ORBIT Dataset research project participant information sheet")
-        case .informedConsent:
-            UIAccessibility.post(notification: .screenChanged, argument: "Consent sheet")
-        default:
-            UIAccessibility.post(notification: .screenChanged, argument: "Info sheet")
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        headingElement = UIAccessibilityElement(accessibilityContainer: view!)
+        headingElement.accessibilityTraits = .header
+        
+        sheetButtonElement = UIAccessibilityElement(accessibilityContainer: view!)
+        sheetButtonElement.accessibilityTraits = sheetButton.accessibilityTraits
         
         // Webview: inject CSS on page load
         let cssInjectJS = """
@@ -299,28 +317,33 @@ class InfoViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardShow), name: UIWindow.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardShow), name: UIWindow.keyboardWillHideNotification, object: nil)
         
-        configurePage()
+        // First-run
+        if page == .participantInfo {
+            configurePage(accessibilityScreenChangedMessage: "Welcome to the ORBIT Dataset research project")
+        }
+        // Not first-run
+        else {
+            configurePage()
+        }
     }
     
     override func viewDidLayoutSubviews() {
-        // Make the dismiss accessibility frame a strip down the RHS edge of the screen
-        // To not mess with the visual UI expected touches, this requires a separate element to mock the button
-        let buttonElement = UIAccessibilityElement(accessibilityContainer: view!)
-        buttonElement.accessibilityLabel = sheetButton.accessibilityLabel
-        buttonElement.accessibilityTraits = sheetButton.accessibilityTraits
-        
+
+        //   Make the dismiss accessibility frame a strip down the RHS edge of the screen
+        //   To not mess with the visual UI expected touches, this requires a separate element to mock the button
         let viewFrame = UIAccessibility.convertToScreenCoordinates(view.bounds, in: view)
         let dismissButtonFrame = UIAccessibility.convertToScreenCoordinates(sheetButton.bounds, in: sheetButton)
-        buttonElement.accessibilityFrame = CGRect(
+        sheetButtonElement.accessibilityFrame = CGRect(
             x: dismissButtonFrame.minX,
             y: viewFrame.minY,
             width: viewFrame.maxX - dismissButtonFrame.minX,
             height: viewFrame.height
         )
-        buttonElement.accessibilityActivationPoint = CGPoint(x: dismissButtonFrame.midX, y: dismissButtonFrame.midY)
+        sheetButtonElement.accessibilityActivationPoint = CGPoint(x: dismissButtonFrame.midX, y: dismissButtonFrame.midY)
         
         view.accessibilityElements = [
-            buttonElement,
+            headingElement!,
+            sheetButtonElement!,
             scrollView!
         ]
     }
