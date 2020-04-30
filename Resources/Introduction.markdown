@@ -38,7 +38,7 @@ The things list will be empty on your first use. To add something, select the _T
 
 1. Buttons for _Train_, _Zoom Out Test_, and _Pan Test_ video collections. Activate to add that kind of videos, or review ones you have already taken. 
 
-2. Add new video button. Brings up the camera controls. Bringing up the camera controls will provide a record button that will start and stop a recording. Upon stop, the camera controls will dismiss and the video will be selected in the video review selector. 
+2. Add new video button. Brings up the camera controls. Bringing up the camera controls will provide a record button that will start and stop a recording. Upon stop, the camera controls will dismiss and the video will be selected in the video review selector. You will hear a tick-tick-tick-tick-tock while recording.
 
 3. Video review selector. Adjust to change the video detailed in the rest of the screen, as follows. 
 
