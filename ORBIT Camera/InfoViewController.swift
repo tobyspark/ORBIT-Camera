@@ -346,6 +346,9 @@ class InfoViewController: UIViewController {
             sheetButtonElement!,
             scrollView!
         ]
+        
+        // iPad: size to be more like full-screen
+        preferredContentSize = CGSize(width: UIScreen.main.bounds.width*2/3, height: UIScreen.main.bounds.height)
     }
     
     @objc func handleKeyboardShow(notification: Notification) {
