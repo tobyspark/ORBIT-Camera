@@ -67,6 +67,25 @@ class InfoViewController: UIViewController {
         page = .informedConsent
     }
     
+    var informedConsentNameField: UITextField?
+    var informedConsentEmailField: UITextField?
+    var informedConsentSubmitButton: UIButton?
+    var informedConsentAllConsentsChecked = false {
+        didSet { informedConsentSetSubmitEnable() }
+    }
+    func informedConsentSetSubmitEnable() {
+        guard
+            let button = informedConsentSubmitButton,
+            let name = informedConsentNameField?.text,
+            let email = informedConsentEmailField?.text
+        else
+            { return }
+        
+        button.isEnabled = informedConsentAllConsentsChecked &&
+            isValidName(name) &&
+            isValidEmail(email)
+    }
+
     @objc func informedConsentSubmitAction() {
         print("informedConsentSubmitAction")
     }
@@ -168,8 +187,8 @@ class InfoViewController: UIViewController {
             nameField.placeholder = "Enter your name"
             nameField.accessibilityLabel = "Name"
             nameField.returnKeyType = .next
-            nameField.tag = 0
             nameField.delegate = self
+            informedConsentNameField = nameField
             stackView.addArrangedSubview(nameField)
             
             let emailField = UITextField()
@@ -177,14 +196,15 @@ class InfoViewController: UIViewController {
             emailField.accessibilityLabel = "Email address"
             emailField.keyboardType = .emailAddress
             emailField.returnKeyType = .done
-            emailField.tag = 1
             emailField.delegate = self
+            informedConsentEmailField = emailField
             stackView.addArrangedSubview(emailField)
             
             let button = UIButton(type: .system)
             button.setTitle("Submit consent", for: .normal)
             button.isEnabled = false
             button.addTarget(self, action: #selector(informedConsentSubmitAction), for: .touchUpInside)
+            informedConsentSubmitButton = button
             stackView.addArrangedSubview(button)
         case .appInfo:
             let closeImage = UIImage(systemName: "xmark.circle")!
@@ -272,6 +292,19 @@ class InfoViewController: UIViewController {
         default:
             break
         }
+    }
+    
+    func isValidName(_ candidate: String) -> Bool {
+        return candidate.trimmingCharacters(in: .whitespaces).count > 2
+    }
+    
+    func isValidEmail(_ candidate: String) -> Bool {
+        guard
+            let dataDetector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue),
+            let matchRange = dataDetector.firstMatch(in: candidate, options: .anchored, range: NSMakeRange(0, candidate.count))
+        else { return false }
+        
+        return matchRange.range.length == candidate.count
     }
     
 // TODO: Move to first-run
@@ -380,22 +413,25 @@ extension InfoViewController: WKNavigationDelegate {
 
 extension InfoViewController: WKScriptMessageHandler {
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if let allConsentsChecked = message.body as? Bool,
-            let submitButton = stackView.arrangedSubviews.last as? UIButton
+        if let allConsentsChecked = message.body as? Bool
         {
-            submitButton.isEnabled = allConsentsChecked
+            informedConsentAllConsentsChecked = allConsentsChecked
         }
     }
 }
 
 extension InfoViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField.tag == 0 {
-            let nextField = stackView.arrangedSubviews.first { $0.tag == 1 }
-            nextField?.becomeFirstResponder()
+        if textField === informedConsentNameField {
+            informedConsentEmailField?.becomeFirstResponder()
         } else {
             textField.resignFirstResponder()
         }
         return false
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        informedConsentSetSubmitEnable()
+        return true
     }
 }
