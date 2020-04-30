@@ -392,8 +392,8 @@
                     <navigationItem key="navigationItem" id="mOI-FS-AaM">
                         <barButtonItem key="rightBarButtonItem" title="Item" image="questionmark.circle" catalog="system" id="Qyt-XI-k0g">
                             <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityLabel" value="Help"/>
-                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityHint" value="Brings up a help screen with the how-to steps for the currently selected video type"/>
+                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityLabel" value="Recording instructions - please read"/>
+                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityHint" value="Brings up an instructions screen with the how-to steps for recording each type of video"/>
                             </userDefinedRuntimeAttributes>
                             <connections>
                                 <segue destination="eDj-Yg-tEO" kind="popoverPresentation" identifier="showHelp" popoverAnchorBarButtonItem="Qyt-XI-k0g" id="C5e-uX-2XX">
@@ -649,8 +649,8 @@
                     <navigationItem key="navigationItem" title="Things" id="Zdf-7t-Un8">
                         <barButtonItem key="rightBarButtonItem" title="Info" image="info.circle" catalog="system" id="tLb-og-RZ7">
                             <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityLabel" value="App Info"/>
-                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityHint" value="Find out more about the ORBIT project, and register"/>
+                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityLabel" value="ORBIT instructions – please read"/>
+                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityHint" value="Brings up an instructions screen that you will need to read to participate"/>
                             </userDefinedRuntimeAttributes>
                             <connections>
                                 <segue destination="hQ4-tG-xkv" kind="popoverPresentation" identifier="showInfo" popoverAnchorBarButtonItem="tLb-og-RZ7" id="ZJu-Cn-xgj">
