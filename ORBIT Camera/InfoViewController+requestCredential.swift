@@ -113,7 +113,7 @@ extension InfoViewController {
             {
                 switch error {
                 case .transportError:
-                    informedConsentErrorLabel.text = "There was a network problem submitting your consent. Is your iOS connected to the internet?\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
+                    informedConsentErrorLabel.text = "There was a problem submitting your consent. The ORBIT servers could not be reached. Is this iOS device connected to the internet?\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
                 case .responseError:
                     informedConsentErrorLabel.text = "There was a problem submitting your consent. The app received an unexpected response from the ORBIT servers.\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
                 case .badRequest(let response):
