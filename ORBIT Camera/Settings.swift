@@ -10,6 +10,11 @@ import QuartzCore
 import AVFoundation
 
 struct Settings {
+    static let endpointCreateParticipant = "https://example.com/phaseone/api/createparticipant/"
+    struct endpointCreateParticipantResponse: Codable {
+        let auth_credential: String
+    }
+    
     static let endpointThing = "https://example.com/phaseone/api/thing/"
     static let endpointVideo = "https://example.com/phaseone/api/video/"
     
