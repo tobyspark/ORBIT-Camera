@@ -6,6 +6,13 @@
 //  Copyright © 2020 Toby Harris. All rights reserved.
 //
 
+/// Further changes to this file should not be tracked in Git.
+/// The file is included in Git so the project compiles and future users have an idea what's going on.
+///
+/// Relevant Git arcana –
+/// `git update-index --assume-unchanged 'ORBIT Camera/Settings+secrets.swift'`
+///
+
 import Foundation
 
 extension Settings {
