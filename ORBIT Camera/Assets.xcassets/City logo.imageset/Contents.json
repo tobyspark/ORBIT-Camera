@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "ORBIT Black Stroke-1.png",
+      "filename" : "City Black Stroke-1.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -12,7 +12,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "ORBIT Black Stroke.png",
+      "filename" : "City Black Stroke.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -23,12 +23,12 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ORBIT White Stroke.png",
+      "filename" : "City White Stroke.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "ORBIT Black Stroke@2x-1.png",
+      "filename" : "City Black Stroke@2x-1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -39,7 +39,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "ORBIT Black Stroke@2x.png",
+      "filename" : "City Black Stroke@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
@@ -50,12 +50,12 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ORBIT White Stroke@2x.png",
+      "filename" : "City White Stroke@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "ORBIT Black Stroke@3x-1.png",
+      "filename" : "City Black Stroke@3x-1.png",
       "idiom" : "universal",
       "scale" : "3x"
     },
@@ -66,7 +66,7 @@
           "value" : "light"
         }
       ],
-      "filename" : "ORBIT Black Stroke@3x.png",
+      "filename" : "City Black Stroke@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     },
@@ -77,7 +77,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "ORBIT White Stroke@3x.png",
+      "filename" : "City White Stroke@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

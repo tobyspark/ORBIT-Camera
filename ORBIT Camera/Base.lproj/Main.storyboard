@@ -392,8 +392,8 @@
                     <navigationItem key="navigationItem" id="mOI-FS-AaM">
                         <barButtonItem key="rightBarButtonItem" title="Item" image="questionmark.circle" catalog="system" id="Qyt-XI-k0g">
                             <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityLabel" value="Help"/>
-                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityHint" value="Brings up a help screen with the how-to steps for the currently selected video type"/>
+                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityLabel" value="Recording instructions - please read"/>
+                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityHint" value="Brings up an instructions screen with the how-to steps for recording each type of video"/>
                             </userDefinedRuntimeAttributes>
                             <connections>
                                 <segue destination="eDj-Yg-tEO" kind="popoverPresentation" identifier="showHelp" popoverAnchorBarButtonItem="Qyt-XI-k0g" id="C5e-uX-2XX">
@@ -649,8 +649,8 @@
                     <navigationItem key="navigationItem" title="Things" id="Zdf-7t-Un8">
                         <barButtonItem key="rightBarButtonItem" title="Info" image="info.circle" catalog="system" id="tLb-og-RZ7">
                             <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityLabel" value="App Info"/>
-                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityHint" value="Find out more about the ORBIT project, and register"/>
+                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityLabel" value="ORBIT instructions – please read"/>
+                                <userDefinedRuntimeAttribute type="string" keyPath="accessibilityHint" value="Brings up an instructions screen that you will need to read to participate"/>
                             </userDefinedRuntimeAttributes>
                             <connections>
                                 <segue destination="hQ4-tG-xkv" kind="popoverPresentation" identifier="showInfo" popoverAnchorBarButtonItem="tLb-og-RZ7" id="ZJu-Cn-xgj">
@@ -769,6 +769,7 @@
                         <viewLayoutGuide key="safeArea" id="7eM-8t-mVq"/>
                     </view>
                     <connections>
+                        <outlet property="logoView" destination="2aO-i4-d58" id="cn3-05-8tx"/>
                         <outlet property="scrollView" destination="FfH-Ja-3I0" id="SXc-ea-B1k"/>
                         <outlet property="sheetButton" destination="ZDt-uB-H9e" id="BY8-Ga-hRv"/>
                         <outlet property="stackView" destination="W4X-x0-kh1" id="EFQ-UT-eyo"/>
@@ -801,7 +802,7 @@
         <segue reference="VfW-pl-Nv3"/>
     </inferredMetricsTieBreakers>
     <resources>
-        <image name="ORBIT logo" width="200" height="200"/>
+        <image name="ORBIT logo" width="300" height="300"/>
         <image name="arrow.up.circle" catalog="system" width="128" height="121"/>
         <image name="camera.circle.fill" catalog="system" width="128" height="121"/>
         <image name="checkmark.circle" catalog="system" width="128" height="121"/>

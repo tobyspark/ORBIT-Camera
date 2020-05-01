@@ -20,17 +20,29 @@ class HelpViewController: UIViewController {
     @IBOutlet weak var webView: WKWebView!
     @IBOutlet weak var webViewHeightContstraint: NSLayoutConstraint!
     
-    var kind: Video.Kind?
-    var kindElementIds: [Video.Kind: String]?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let result = MarkdownParser.videoKindParse(markdownResource: "TutorialScript", startKey: "help-start-header")
-        kindElementIds = result.kindElementIDs
+        // Hide until we're ready, reveal by WKNavigationDelegate
+        scrollView.alpha = 0
         
+        let html = MarkdownParser.html(markdownResource: "Recording")
+        
+        // Webview: handle page load completion, etc.
         webView.navigationDelegate = self
-        webView.loadHTMLString(result.html, baseURL: nil)
+        
+        // Webview: inject CSS on page load
+        let cssInjectJS = """
+            var style = document.createElement('style');
+            style.innerHTML = "\(MarkdownParser.css.components(separatedBy: .newlines).joined())";
+            document.head.appendChild(style);
+            """
+        let userScript = WKUserScript(source: cssInjectJS,
+                                      injectionTime: .atDocumentEnd,
+                                      forMainFrameOnly: true)
+        webView.configuration.userContentController.addUserScript(userScript)
+        
+        webView.loadHTMLString(html, baseURL: nil)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -59,6 +71,10 @@ class HelpViewController: UIViewController {
             dismissElement,
             scrollView!
         ]
+        
+        // iPad: size to be within the videoview, half width and stopping above pager and add button
+        let insetToClearControls: CGFloat = 83 // a magic number
+        preferredContentSize = CGSize(width: UIScreen.main.bounds.width/2, height: UIScreen.main.bounds.width - insetToClearControls)
     }
 }
 
@@ -69,24 +85,10 @@ extension HelpViewController: WKNavigationDelegate {
         webView.evaluateJavaScript("document.documentElement.scrollHeight") { [weak self] (height, error) in
             guard let self = self else { return }
             self.webViewHeightContstraint.constant = height as! CGFloat
-        }
-        // Scroll the scrollView to the desired element, and set accessibility focus to it.
-        //
-        // Except that, as of iOS 11.3.2, the javascript focus() method is ignored when not user-initiated.
-        // Which is a bummer, as per a 2016 Apple Accessibility mailing list post, that's how you set the accessibility focus.
-        // Want to swizzle obj-c? You can hack into WKWebView and flip the isUserInteractive flag or somesuch. But this ain't that kind of project.
-        // Alternatives around setting the javascript location.hash didn't work out (but loading the page with the fragment identifier has to be possible somehow).
-        // Less deterministic, but there is some logic to scrolling and then telling UIAccessibility to find the first on-screen element
-        // And that seems to work? If you set it to focus the enclosing scroll view? Which is fixed to the screen, rather than the web view, which very much ain't.
-        // ...but, well, not reliably. Hmm.
-        if let kind = kind,
-           let kindElementIds = kindElementIds,
-           let anchor = kindElementIds[kind]
-        {
-            webView.evaluateJavaScript("document.getElementById('\(anchor)').offsetTop") { [weak self] (offset, error) in
-                guard let self = self else { return }
-                self.scrollView.contentOffset.y = self.webView.frame.minY + (offset as! CGFloat) - 8
-                UIAccessibility.post(notification: .layoutChanged, argument: self.scrollView)
+            
+            // Reveal the content
+            UIView.animate(withDuration: 0.3) { [weak self] in
+                self?.scrollView.alpha = 1
             }
         }
     }
