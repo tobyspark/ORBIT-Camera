@@ -36,7 +36,7 @@ The app has two main screens. The first, called the _Things list screen_, is a l
 
 The things list will be empty on your first use. To add something, select the _Thing name_ text field and enter a name. Once named, you will be taken to the record and review screen. On this screen you choose whether you want the training or testing video collections for this thing, then add videos to that collection. You can also review, re-record, and delete these videos. Here is how the screen is structured: 
 
-1. Buttons for _Train_, _Zoom Out Test_, and _Pan Test_ video collections. Select to add that kind of videos, or review ones you have already taken. 
+1. Buttons for _Train_, _Zoom Out Test_, and _Pan Test_ video collections. Use to add that kind of videos, or review ones you have already taken. 
 
 2. Add new video button. Brings up the camera controls. Bringing up the camera controls will provide a record button that will start and stop a recording. Upon stop, the camera controls will dismiss and the video will be selected in the video review selector. There will be a tic sound every 5 seconds to help you time your recording. 
 
@@ -44,7 +44,7 @@ The things list will be empty on your first use. To add something, select the _T
 
 4. Video recorded date. 
 
-5. Re-record video button. If you wish to re-record, activate to bring up the camera controls. 
+5. Re-record video button. If you wish to re-record, use the re-record button to bring up the camera controls. 
 
 6. Orbit dataset status: uploaded. The app will attempt to upload the video to our online repository. The app uses iOS’s built-in background uploading, which will typically wait for power and Wi-Fi before uploading. 
 
