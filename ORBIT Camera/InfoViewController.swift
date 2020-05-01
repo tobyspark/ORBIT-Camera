@@ -32,6 +32,8 @@ class InfoViewController: UIViewController {
     /// Content is enclosed in scroll view
     @IBOutlet weak var scrollView: UIScrollView!
     
+    @IBOutlet weak var logoView: UIImageView!
+    
     @IBOutlet weak var stackView: UIStackView!
     
     @IBOutlet weak var webView: WKWebView!
@@ -170,6 +172,8 @@ class InfoViewController: UIViewController {
             sheetButtonElement.accessibilityLabel = sheetButton.accessibilityLabel
             sheetButtonElement.accessibilityHint = sheetButton.accessibilityHint
             
+            logoView.image = UIImage(named: "City logo")
+            
             html = MarkdownParser.html(markdownResource: "ParticipantInformation")
             
             let button = UIButton(type: .system)
@@ -295,6 +299,8 @@ class InfoViewController: UIViewController {
         
         sheetButtonElement = UIAccessibilityElement(accessibilityContainer: view!)
         sheetButtonElement.accessibilityTraits = sheetButton.accessibilityTraits
+        
+        logoView.image = UIImage(named: "ORBIT logo")
         
         // Webview: inject CSS on page load
         let cssInjectJS = """

@@ -769,6 +769,7 @@
                         <viewLayoutGuide key="safeArea" id="7eM-8t-mVq"/>
                     </view>
                     <connections>
+                        <outlet property="logoView" destination="2aO-i4-d58" id="cn3-05-8tx"/>
                         <outlet property="scrollView" destination="FfH-Ja-3I0" id="SXc-ea-B1k"/>
                         <outlet property="sheetButton" destination="ZDt-uB-H9e" id="BY8-Ga-hRv"/>
                         <outlet property="stackView" destination="W4X-x0-kh1" id="EFQ-UT-eyo"/>
@@ -801,7 +802,7 @@
         <segue reference="VfW-pl-Nv3"/>
     </inferredMetricsTieBreakers>
     <resources>
-        <image name="ORBIT logo" width="200" height="200"/>
+        <image name="ORBIT logo" width="300" height="300"/>
         <image name="arrow.up.circle" catalog="system" width="128" height="121"/>
         <image name="camera.circle.fill" catalog="system" width="128" height="121"/>
         <image name="checkmark.circle" catalog="system" width="128" height="121"/>
