@@ -72,7 +72,11 @@ extension Video: Uploadable {
         // Return the task ID
         return task.taskIdentifier
     }
-
+    
+    func cancelUpload() {
+        appNetwork.videosSession.cancelUpload(of: self)
+    }
+    
     /// Assign orbitID from returned data
     mutating func uploadDidReceive(_ data: Data) throws {
         let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)

@@ -79,6 +79,22 @@ struct UploadableSession {
         tasks[taskIdentifier] = nil
     }
     
+    mutating func cancelUpload(of uploadable: Uploadable) {
+        guard let (identifier, _) = tasks.first(where: { $0.value.id == uploadable.id })
+        else { return }
+        
+        clear(identifier)
+        session.getAllTasks {
+            for task in $0 {
+                if task.taskIdentifier == identifier {
+                    task.cancel()
+                    os_log("Cancelled upload of %{public}s", log: appNetLog, uploadable.description)
+                    return
+                }
+            }
+        }
+    }
+    
     func uploadable(with taskIdentifier: Int) -> Uploadable? {
         return tasks[taskIdentifier]
     }
