@@ -57,7 +57,7 @@ class DetailViewController: UIViewController {
     /// The thing this detail view is to show the detail of
     var detailItem: Thing? {
         didSet {
-            os_log("Setting detailItem to %{public}s item", type: .debug, detailItem == nil ? "no" : "an")
+            os_log("Setting detailItem to %{public}s item", log: appUILog, type: .debug, detailItem == nil ? "no" : "an")
             
             // Update the view.
             configureView()
@@ -74,7 +74,7 @@ class DetailViewController: UIViewController {
                     detailItemObservers[kind] = observation.start(
                         in: dbQueue,
                         onError: { error in
-                            os_log("DetailViewController observer error")
+                            os_log("DetailViewController observer error", log: appUILog)
                             print(error)
                         },
                         onChange: { [weak self] videos in
@@ -547,7 +547,7 @@ class DetailViewController: UIViewController {
     
     /// Action the addNewPageShortcutButton
     @IBAction func addNewPageShortcutButtonAction(sender: UIButton) {
-        os_log("Add new shortcut action", type: .debug)
+        os_log("Add new shortcut action", log: appUILog, type: .debug)
         // Start it now so it has the best chance of running by the time the scroll completes
         camera.start()
         // Action going to the page, will start the scroll
@@ -569,13 +569,13 @@ class DetailViewController: UIViewController {
             case .rerecord:
                 guard var video = pageVideo
                 else {
-                    os_log("Could not get video for re-record recordStart")
+                    os_log("Could not get video for re-record recordStart", log: appUILog)
                     return
                 }
                 do {
                     try FileManager.default.removeItem(at: video.url)
                 } catch {
-                    os_log("Could not delete previous recording to re-record")
+                    os_log("Could not delete previous recording to re-record", log: appUILog)
                     return
                 }
                 
@@ -592,12 +592,12 @@ class DetailViewController: UIViewController {
                     video.recorded = Date() // TODO: This needs to trigger a re-upload
                     try! dbQueue.write { db in try video.save(db) }
                     
-                    os_log("Record completion handler has updated video on page %d", type: .debug, videoPageIndex)
+                    os_log("Record completion handler has updated video on page %d", log: appUILog, type: .debug, videoPageIndex)
                 }
             case .addNew:
                 guard let thing = detailItem
                 else {
-                    os_log("No thing on recordStart")
+                    os_log("No thing on recordStart", log: appUILog)
                     return
                 }
                 guard let url = try? FileManager.default
@@ -605,7 +605,7 @@ class DetailViewController: UIViewController {
                         .appendingPathComponent(NSUUID().uuidString)
                         .appendingPathExtension("mov")
                 else {
-                    os_log("Could not create URL for recordStart")
+                    os_log("Could not create URL for recordStart", log: appUILog)
                     return
                 }
                 
@@ -615,19 +615,19 @@ class DetailViewController: UIViewController {
                     // Create a Video record
                     guard var video = Video(of: thing, url: url, kind: kind)
                     else {
-                        os_log("Could not create video")
+                        os_log("Could not create video", log: appUILog)
                         return
                     }
                     do {
                         try dbQueue.write { db in try video.save(db) }
                     } catch {
-                        os_log("Could not save video to database")
+                        os_log("Could not save video to database", log: appUILog)
                     }
                     
-                    os_log("Record completion handler has inserted video", type: .debug)
+                    os_log("Record completion handler has inserted video", log: appUILog, type: .debug)
                 }
             default:
-                os_log("recordButtonAction on non-camera page")
+                os_log("recordButtonAction on non-camera page", log: appUILog)
                 assertionFailure()
             }
             
@@ -658,7 +658,7 @@ class DetailViewController: UIViewController {
     
     /// Put a video in a state to re-record
     @IBAction func rerecordButtonAction(sender: UIButton) {
-        os_log("DetailViewController.rerecordButtonAction, pageIndex %d", type: .debug, pageIndex)
+        os_log("DetailViewController.rerecordButtonAction, pageIndex %d", log: appUILog, type: .debug, pageIndex)
         rerecordPageIndexes.insert(pageIndex)
         
         // Update UI
@@ -680,7 +680,7 @@ class DetailViewController: UIViewController {
                 let self = self,
                 let video = self.pageVideo
             else {
-                os_log("Could not get video to delete")
+                os_log("Could not get video to delete", log: appUILog)
                 return
             }
             // Delete
@@ -725,7 +725,7 @@ class DetailViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         // Attempt to display an item if none set (e.g. launch on iPad)
         if detailItem == nil {
-            os_log("viewWillAppear without detailItem. Attempting load from database.", type: .debug)
+            os_log("viewWillAppear without detailItem. Attempting load from database.", log: appUILog, type: .debug)
             detailItem = try? dbQueue.read { db in try Thing.fetchOne(db) }
         }
         
@@ -782,7 +782,7 @@ class DetailViewController: UIViewController {
     
     func inexplicableToolingFailureWorkaround() {
         if videoCollectionView == nil {
-            os_log("INEXPLICABLE TOOLING FAILURE: videoCollectionView was nil, despite being hooked up in the storyboard.", type: .debug)
+            os_log("INEXPLICABLE TOOLING FAILURE: videoCollectionView was nil, despite being hooked up in the storyboard.", log: appUILog, type: .debug)
             videoCollectionView = view.subviews[0] as! UICollectionView
         }
     }
@@ -806,14 +806,14 @@ extension DetailViewController: UICollectionViewDataSource {
     
     /// The videoCollectionView cells should display the camera and videos
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        os_log("DetailViewController.cellForItemAt entered with page %d", type: .debug, indexPath.row)
+        os_log("DetailViewController.cellForItemAt entered with page %d", log: appUILog, type: .debug, indexPath.row)
         if cameraPageIndexes.contains(indexPath.row) {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Camera Cell", for: indexPath)
             guard let view = cell.contentView as? PreviewMetalView else {
                 fatalError("Expected a `\(PreviewMetalView.self)` but did not receive one.")
             }
             camera.attachPreview(to: view)
-            os_log("DetailViewController.cellForItemAt returning camera cell", type: .debug, indexPath.row)
+            os_log("DetailViewController.cellForItemAt returning camera cell", log: appUILog, type: .debug, indexPath.row)
             return cell
         } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Video Cell", for: indexPath) as? VideoViewCell
@@ -824,12 +824,12 @@ extension DetailViewController: UICollectionViewDataSource {
                 let (name, index) = videoPageControl.categoryIndex(pageIndex: indexPath.row),
                 let video = videos[videoKind(description: name)]![safe: index]
             else {
-                os_log("No video found")
+                os_log("No video found", log: appUILog)
                 assertionFailure()
                 return cell
             }
             cell.videoURL = video.url
-            os_log("DetailViewController.cellForItemAt returning video cell", type: .debug, indexPath.row)
+            os_log("DetailViewController.cellForItemAt returning video cell", log: appUILog, type: .debug, indexPath.row)
             return cell
         }
     }

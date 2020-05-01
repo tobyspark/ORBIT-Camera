@@ -130,7 +130,7 @@ class InfoViewController: UIViewController {
         do {
             try html.write(to: tempURL, atomically: false, encoding: .utf8)
         } catch {
-            os_log("Participant Information HTML file creation failed")
+            os_log("Participant Information HTML file creation failed", log: appUILog)
             return
         }
         

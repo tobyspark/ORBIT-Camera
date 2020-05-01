@@ -44,7 +44,7 @@ extension Thing: Uploadable {
     /// Upload the thing. This should action the creation of a server record for the thing, and (handled in `uploadDidReceive`) return that record's ID.
     func upload(by participant: Participant, using session: URLSession) -> Int? {
         guard orbitID == nil else {
-            os_log("Aborting upload of %{public}s: it has already been uploaded", description)
+            os_log("Aborting upload of %{public}s: it has already been uploaded", log: appNetLog, description)
             return nil
         }
         
@@ -58,7 +58,7 @@ extension Thing: Uploadable {
         // Create data to upload
         let uploadStruct = APIRequest(label_participant: labelParticipant)
         guard let uploadData = try? JSONEncoder().encode(uploadStruct) else {
-            os_log("Aborting upload of %{public}s: could not create upload data", description)
+            os_log("Aborting upload of %{public}s: could not create upload data", log: appNetLog, description)
             assertionFailure("uploadStruct: \(uploadStruct)")
             return nil
         }
@@ -74,7 +74,7 @@ extension Thing: Uploadable {
     /// Assign orbitID from returned data
     mutating func uploadDidReceive(_ data: Data) throws {
         let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
-        os_log("Parsed upload response for %{public}s", description)
+        os_log("Parsed upload response for %{public}s", log: appNetLog, description)
         orbitID = apiResponse.id
         try dbQueue.write { db in try update(db) }
     }

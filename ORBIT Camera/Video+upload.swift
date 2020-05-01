@@ -31,7 +31,7 @@ extension Video: Uploadable {
     /// Upload the video. This should action the creation of a server record for the video, and (handled in `uploadDidReceive`) return that record's ID.
     func upload(by participant: Participant, using session: URLSession) -> Int? {
         guard orbitID == nil else {
-            os_log("Aborting upload of Video %d: it has already been uploaded", description)
+            os_log("Aborting upload of Video %d: it has already been uploaded", log: appNetLog, description)
             return nil
         }
         
@@ -39,7 +39,7 @@ extension Video: Uploadable {
             let thing = try? dbQueue.read({ db in try Thing.filter(key: thingID).fetchOne(db) }),
             let thingOrbitID = thing.orbitID
         else {
-            os_log("Aborting upload of %{public}s: could not get the associated Thing's id", description)
+            os_log("Aborting upload of %{public}s: could not get the associated Thing's id", log: appNetLog, description)
             return nil
         }
         
@@ -54,7 +54,7 @@ extension Video: Uploadable {
                         ]
                     )
         else {
-            os_log("Aborting upload of %{public}s: could not create upload data", description)
+            os_log("Aborting upload of %{public}s: could not create upload data", log: appNetLog, description)
             return nil
         }
         
@@ -76,7 +76,7 @@ extension Video: Uploadable {
     /// Assign orbitID from returned data
     mutating func uploadDidReceive(_ data: Data) throws {
         let apiResponse = try JSONDecoder().decode(APIResponse.self, from: data)
-        os_log("Parsed upload response for %{public}s", description)
+        os_log("Parsed upload response for %{public}s", log: appNetLog, description)
         orbitID = apiResponse.id
         try dbQueue.write { db in try update(db) }
     }
