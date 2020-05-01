@@ -192,6 +192,9 @@ class DetailViewController: UIViewController {
     /// The camera object that encapsulates capture new video functionality
     private let camera = Camera()
     
+    /// The timer to limit recording length
+    private var recordTimeOut: Timer? = nil
+    
     /// Implementation detail: need to be able to differentiate whether scrolling is happening due to direct manipulation or actioned animation
     private var isManuallyScrolling = false
     
@@ -384,13 +387,13 @@ class DetailViewController: UIViewController {
             self.pageIndex -= 1
         }
         
-        detailHeaderElement.accessibilityLabel = "Video review detail"
-        detailHeaderElement.accessibilityHint = "The following relates to the selected video"
+        detailHeaderElement.accessibilityLabel = "Details of your selected video"
+        detailHeaderElement.accessibilityHint = "The following relates to the selected video. It is currently being shown on the screen."
         detailHeaderElement.accessibilityTraits = super.accessibilityTraits.union(.header)
         
         recordedElement.accessibilityLabel = "" // Set in configurePage
         
-        rerecordElement.accessibilityLabel = "Re-record video" // Set in configurePage
+        rerecordElement.accessibilityLabel = "Re-record selected video" // Set in configurePage
         rerecordElement.accessibilityHint = "If you wish to re-record, activate to bring up the camera controls"
         rerecordElement.accessibilityTraits = super.accessibilityTraits.union(.button)
                 
@@ -400,7 +403,7 @@ class DetailViewController: UIViewController {
         
         publishedElement.accessibilityLabel = "" // Set in configurePage
         
-        deleteElement.accessibilityLabel = "Delete video"
+        deleteElement.accessibilityLabel = "Delete selected video"
         deleteElement.accessibilityHint = "Removes this video from the thing's collection"
         deleteElement.accessibilityTraits = super.accessibilityTraits.union(.button)
         
@@ -633,6 +636,15 @@ class DetailViewController: UIViewController {
             navigationItem.hidesBackButton = true
             accessibilityElements = [cameraRecordElement]
             cameraRecordElement.accessibilityFrame = UIAccessibility.convertToScreenCoordinates(view.bounds, in: view)
+            
+            // Start the time-out
+            recordTimeOut = Timer.scheduledTimer(withTimeInterval: Settings.recordTimeOutSecs, repeats: false, block: { [weak self] (timer) in
+                guard let self = self else { return }
+                if case .active = self.recordButton.recordingState {
+                    self.recordButton.toggleRecord() // This is a bit shonky, chance of a simultaneous press.
+                    self.recordButtonAction(sender: self.recordButton)
+                }
+            })
         case .idle:
             camera.recordStop()
             
@@ -751,18 +763,6 @@ class DetailViewController: UIViewController {
         
         // Layout accessibility elements
         layoutAccessibilityElements()
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        switch segue.identifier {
-        case "showHelp":
-            guard let helpViewController = segue.destination as? HelpViewController
-            else { return }
-        
-            helpViewController.kind = pageKind
-        default:
-            break
-        }
     }
     
     // TODO: Refactor away, pager category should be protocol stringconvertible or somesuch.
