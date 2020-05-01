@@ -20,7 +20,6 @@ Example – `train-header: training-videos-for-smallmedium-things`
 - Thing list editing not accessible, i.e. can't delete via voiceover. #19
 - Re-recording a video does not re-upload #20
 - AppNetwork.videosSession.tasks is not persisted #24
-- Record should have sonic feedback during recording #14
 
 ## Not yet implemented
 - Server state changes reflected in app, e.g. video statuses for verified, notifications
@@ -29,6 +28,10 @@ Example – `train-header: training-videos-for-smallmedium-things`
 - Contrast effect and control for viewfinder / videos
 
 ## Version history
+
+v0.6.1
+- Informational content restructure, recording pips, various tweaks
+- PR: [Tweaks: Informational content restructure, Recording pips](https://github.com/tobyspark/ORBIT-Camera/pull/35)
 
 v0.6.0
 - First-run: participant info → consent w/email address → app unlocks
