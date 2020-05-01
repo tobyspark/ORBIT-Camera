@@ -24,7 +24,7 @@ struct AppNetwork {
     var thingsSession: UploadableSession
     
     /// The network session used for videos
-    var videosSession: UploadableSession!
+    var videosSession: UploadableSession
     
     /// The completion handler to call once all background tasks have completed
     var completionHandler: (() -> Void)?
@@ -95,6 +95,20 @@ extension AppDelegate: URLSessionTaskDelegate {
         default:
             fatalError("Unknown session")
         }
+    }
+    
+    func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+        // Find uploadable for this task
+        guard let uploadable = appNetwork.uploadable(in: session, with: task.taskIdentifier)
+        else {
+            os_log("URLSession didSendBodyData cannot find Uploadable with task", log: appNetLog)
+            return
+        }
+        os_log("Uploading %{public}s. %d bytes sent. %.1f progress.", log: appNetLog, type: .debug,
+               uploadable.description,
+               bytesSent,
+               100 * Float(totalBytesSent)/Float(totalBytesExpectedToSend)
+        )
     }
 }
 

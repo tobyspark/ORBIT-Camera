@@ -46,10 +46,18 @@ struct UploadableSession {
         guard let participant = try? Participant.appParticipant()
         else { return }
         
+        // Check we have a trackable id
+        guard uploadable.id != nil
+        else {
+            os_log("Attempted upload of pre-db uploadable", log: appNetLog)
+            assertionFailure()
+            return
+        }
+        
         // Check we're not mid-upload already
         guard !tasks.values.map({ $0.id }).contains(uploadable.id)
         else {
-            os_log("Aborting upload %{public}s, is already being uploaded.", uploadable.description)
+            os_log("Aborting upload %{public}s, is already being uploaded.", log: appNetLog, type: .debug, uploadable.description)
             return
         }
         
@@ -61,7 +69,7 @@ struct UploadableSession {
     
     mutating func associate(_ taskIdentifier: Int, with uploadable: Uploadable) {
         if tasks.keys.contains(taskIdentifier) {
-            os_log("Continuing with %{public}s; stale task identifier present in session", uploadable.description)
+            os_log("Continuing with %{public}s; stale task identifier present in session", log: appNetLog, uploadable.description)
             assertionFailure("task \(taskIdentifier) in \(tasks)")
         }
         tasks[taskIdentifier] = uploadable
@@ -78,7 +86,33 @@ struct UploadableSession {
     init(_ session: URLSession) {
         self.session = session
         self.tasks = [:]
+        
+        // If a background session, restore `tasks`
+        if let backgroundIdentifier = session.configuration.identifier {
+            try! dbQueue.read { db in
+                if let taskIDArray = UserDefaults.standard.array(forKey: backgroundIdentifier + "-task") as? [Int],
+                   let uploadableIDArray = UserDefaults.standard.array(forKey: backgroundIdentifier + "-uploadable") as? [Int]
+                   
+                {
+                    let uploadableArray = try Video.filter(keys: uploadableIDArray).fetchAll(db) // This is a hack. Hardcoded Video. Right now, better architecture would be for the task ID should be saved as a property of the uploadable, in the database. But I started with that, and abandoned. Hmm.
+                    if taskIDArray.count == uploadableArray.count {
+                        self.tasks = Dictionary(uniqueKeysWithValues: zip(taskIDArray, uploadableArray))
+                    } else {
+                        os_log("Failure restoring background upload task list")
+                        assertionFailure()
+                    }
+                }
+            }
+        }
     }
     
-    private var tasks: [Int: Uploadable]
+    private var tasks: [Int: Uploadable] {
+        didSet {
+            // If a background session, persist
+            if let backgroundIdentifier = session.configuration.identifier {
+                UserDefaults.standard.set(Array(tasks.keys), forKey: backgroundIdentifier + "-task")
+                UserDefaults.standard.set(tasks.values.map { $0.id! }, forKey: backgroundIdentifier + "-uploadable")
+            }
+        }
+    }
 }
