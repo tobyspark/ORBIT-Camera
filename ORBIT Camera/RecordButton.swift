@@ -47,15 +47,10 @@ class RecordButton: UIControl {
                     AudioServicesPlaySystemSound(RecordButton.systemSoundTink)
                     return
                 }
-                if self.pipCount % 20 == 0 {
+                if self.pipCount % 5 == 0 {
                     AudioServicesPlaySystemSound(RecordButton.systemSoundTink)
                     return
                 }
-                if self.pipCount % 5 == 0 {
-                    AudioServicesPlaySystemSound(RecordButton.systemSoundTockAlt)
-                    return
-                }
-                AudioServicesPlaySystemSound(RecordButton.systemSoundTock)
             })
         case .active(let date):
             recordingState = .idle
