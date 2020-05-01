@@ -103,20 +103,21 @@ extension AppDelegate: URLSessionDataDelegate {
         // Find uploadable for this task
         guard var uploadable = appNetwork.uploadable(in: session, with: dataTask.taskIdentifier)
         else {
-            os_log("URLSession didReceive cannot find Uploadable with task")
+            os_log("URLSession didReceive cannot find Uploadable with task", log: appNetLog)
             return
         }
         
         // Check response
         guard let httpResponse = dataTask.response as? HTTPURLResponse
         else {
-            os_log("URLSessionDataDelegate dataTaskDidReceive – %{public}s – could not parse response", uploadable.description)
+            os_log("URLSessionDataDelegate dataTaskDidReceive – %{public}s – could not parse response", log: appNetLog, uploadable.description)
             return
         }
         guard (200..<300).contains(httpResponse.statusCode)
         else {
             os_log(
                 "URLSessionDataDelegate dataTaskDidReceive – %{public}s – failed with status %d: %{public}s",
+                log: appNetLog,
                 uploadable.description,
                 httpResponse.statusCode,
                 HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
@@ -128,7 +129,7 @@ extension AppDelegate: URLSessionDataDelegate {
         do {
             try uploadable.uploadDidReceive(data)
         } catch {
-            os_log("Upload failed for %{public}s", uploadable.description)
+            os_log("Upload failed for %{public}s", log: appNetLog, uploadable.description)
         }
     }
 }

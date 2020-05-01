@@ -51,7 +51,7 @@ struct AppUploader {
             onChange: { things in
                 for thing in things {
                     uploadQueue.async {
-                        os_log("Attempting upload of %{public}s in foreground session (things change)", type: .debug, thing.description)
+                        os_log("Attempting upload of %{public}s in foreground session (things change)", log: appNetLog, type: .debug, thing.description)
                         appNetwork.thingsSession.upload(thing)
                     }
                 }
@@ -68,7 +68,7 @@ struct AppUploader {
             onChange: { videos in
                 for video in videos {
                     uploadQueue.async {
-                        os_log("Attempting upload of %{public}s in background session (videos change)", type: .debug, video.description)
+                        os_log("Attempting upload of %{public}s in background session (videos change)", log: appNetLog, type: .debug, video.description)
                         appNetwork.videosSession.upload(video)
                     }
                 }
@@ -86,14 +86,14 @@ struct AppUploader {
                 let things = try! dbQueue.read { db in try thingsRequest.fetchAll(db) }
                 for thing in things {
                     uploadQueue.async {
-                        os_log("Attempting upload of %{public}s in foreground session (participant credential change)", type: .debug, thing.description)
+                        os_log("Attempting upload of %{public}s in foreground session (participant credential change)", log: appNetLog, type: .debug, thing.description)
                         appNetwork.thingsSession.upload(thing)
                     }
                 }
                 let videos = try! dbQueue.read { db in try videosRequest.fetchAll(db) }
                 for video in videos {
                     uploadQueue.async {
-                        os_log("Attempting upload of %{public}s in background session (participant credential change)", type: .debug, video.description)
+                        os_log("Attempting upload of %{public}s in background session (participant credential change)", log: appNetLog, type: .debug, video.description)
                         appNetwork.videosSession.upload(video)
                     }
                 }
@@ -105,14 +105,14 @@ struct AppUploader {
                 let things = try! dbQueue.read { db in try thingsRequest.fetchAll(db) }
                 for thing in things {
                     uploadQueue.async {
-                        os_log("Attempting upload of %{public}s in foreground session (network change)", type: .debug, thing.description)
+                        os_log("Attempting upload of %{public}s in foreground session (network change)", log: appNetLog, type: .debug, thing.description)
                         appNetwork.thingsSession.upload(thing)
                     }
                 }
                 let videos = try! dbQueue.read { db in try videosRequest.fetchAll(db) }
                 for video in videos {
                     uploadQueue.async {
-                        os_log("Attempting upload of %{public}s in background session (network change)", type: .debug, video.description)
+                        os_log("Attempting upload of %{public}s in background session (network change)", log: appNetLog, type: .debug, video.description)
                         appNetwork.videosSession.upload(video)
                     }
                 }

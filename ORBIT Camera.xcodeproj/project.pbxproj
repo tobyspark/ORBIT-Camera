@@ -65,6 +65,7 @@
 		4BFC5F252459DA6000E5A3C1 /* Settings+secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFC5F242459DA6000E5A3C1 /* Settings+secrets.swift */; };
 		4BFC5F27245B11A300E5A3C1 /* InfoViewController+requestCredential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFC5F26245B11A300E5A3C1 /* InfoViewController+requestCredential.swift */; };
 		4BFC5F29245B6BD600E5A3C1 /* Introduction.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4BFC5F28245B6BD600E5A3C1 /* Introduction.markdown */; };
+		4BFC5F2B245C4E2500E5A3C1 /* AppLogging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFC5F2A245C4E2500E5A3C1 /* AppLogging.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -129,6 +130,7 @@
 		4BFC5F242459DA6000E5A3C1 /* Settings+secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Settings+secrets.swift"; sourceTree = "<group>"; };
 		4BFC5F26245B11A300E5A3C1 /* InfoViewController+requestCredential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InfoViewController+requestCredential.swift"; sourceTree = "<group>"; };
 		4BFC5F28245B6BD600E5A3C1 /* Introduction.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = Introduction.markdown; path = Resources/Introduction.markdown; sourceTree = SOURCE_ROOT; };
+		4BFC5F2A245C4E2500E5A3C1 /* AppLogging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLogging.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,6 +189,7 @@
 				4BF14C182405B81900E31D93 /* AppDatabase.swift */,
 				4B87FD3524111E57007AB630 /* AppDatabase+TestData.swift */,
 				4B3707B52436161100254ABF /* AppUploader.swift */,
+				4BFC5F2A245C4E2500E5A3C1 /* AppLogging.swift */,
 				4BF14BB92405730700E31D93 /* SceneDelegate.swift */,
 				4BF14BBB2405730700E31D93 /* MasterViewController.swift */,
 				4B5A6B982424CB9200A5C45B /* NewThingCell.swift */,
@@ -364,6 +367,7 @@
 				4BFC5F27245B11A300E5A3C1 /* InfoViewController+requestCredential.swift in Sources */,
 				4B87FD30240EC757007AB630 /* MultipartFormData.swift in Sources */,
 				4B9AA9FF2418EA49002380B1 /* RecordButton.swift in Sources */,
+				4BFC5F2B245C4E2500E5A3C1 /* AppLogging.swift in Sources */,
 				4BF14BBA2405730700E31D93 /* SceneDelegate.swift in Sources */,
 				4BF14BBC2405730700E31D93 /* MasterViewController.swift in Sources */,
 				4BA13A5A242D6EC4006D838B /* PreviewMetalView.swift in Sources */,

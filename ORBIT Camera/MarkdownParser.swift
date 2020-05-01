@@ -18,7 +18,7 @@ struct MarkdownParser {
             let url = Bundle.main.url(forResource: markdownResource, withExtension: "markdown"),
             let markdown = try? String(contentsOf: url).replacingOccurrences(of: "\r\n", with: "\n")
         else {
-            os_log("Could not load %{public}s.markdown", markdownResource)
+            os_log("Could not load %{public}s.markdown", log: appUILog, markdownResource)
             assertionFailure()
             return ("")
         }
@@ -33,7 +33,7 @@ struct MarkdownParser {
             let url = Bundle.main.url(forResource: markdownResource, withExtension: "markdown"),
             let markdown = try? String(contentsOf: url).replacingOccurrences(of: "\r\n", with: "\n")
         else {
-            os_log("Could not load %{public}s.markdown", markdownResource)
+            os_log("Could not load %{public}s.markdown", log: appUILog, markdownResource)
             assertionFailure()
             return (MarkdownParser.inkParser.parse(""))
         }
