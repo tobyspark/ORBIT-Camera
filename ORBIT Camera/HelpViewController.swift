@@ -23,6 +23,9 @@ class HelpViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Hide until we're ready, reveal by WKNavigationDelegate
+        scrollView.alpha = 0
+        
         let html = MarkdownParser.html(markdownResource: "Recording")
         
         // Webview: handle page load completion, etc.
@@ -82,6 +85,11 @@ extension HelpViewController: WKNavigationDelegate {
         webView.evaluateJavaScript("document.documentElement.scrollHeight") { [weak self] (height, error) in
             guard let self = self else { return }
             self.webViewHeightContstraint.constant = height as! CGFloat
+            
+            // Reveal the content
+            UIView.animate(withDuration: 0.3) { [weak self] in
+                self?.scrollView.alpha = 1
+            }
         }
     }
     
