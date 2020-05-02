@@ -117,7 +117,7 @@
                                                     <constraint firstAttribute="width" constant="30" id="R26-As-xwZ"/>
                                                 </constraints>
                                             </imageView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" text="Recorded" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nE7-zn-h22">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" text="Recorded" textAlignment="natural" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nE7-zn-h22">
                                                 <rect key="frame" x="50" y="6.5" width="74" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
@@ -134,8 +134,9 @@
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         <constraints>
+                                            <constraint firstItem="JUV-UT-Gbo" firstAttribute="leading" secondItem="nE7-zn-h22" secondAttribute="trailing" priority="250" constant="20" id="Mz8-Qn-Hly"/>
                                             <constraint firstItem="COH-CL-lcJ" firstAttribute="leading" secondItem="jZN-Zs-Y29" secondAttribute="leading" id="TPr-yt-4TW"/>
-                                            <constraint firstItem="JUV-UT-Gbo" firstAttribute="leading" secondItem="nE7-zn-h22" secondAttribute="trailing" constant="20" id="aIA-SI-Y8A"/>
+                                            <constraint firstItem="JUV-UT-Gbo" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="nE7-zn-h22" secondAttribute="trailing" constant="8" id="aIA-SI-Y8A"/>
                                             <constraint firstItem="nE7-zn-h22" firstAttribute="centerY" secondItem="COH-CL-lcJ" secondAttribute="centerY" id="b12-Ty-S0N"/>
                                             <constraint firstItem="COH-CL-lcJ" firstAttribute="height" secondItem="jZN-Zs-Y29" secondAttribute="height" id="cvr-EW-yIX"/>
                                             <constraint firstItem="nE7-zn-h22" firstAttribute="leading" secondItem="COH-CL-lcJ" secondAttribute="trailing" constant="20" id="kWG-Sg-3Nb"/>

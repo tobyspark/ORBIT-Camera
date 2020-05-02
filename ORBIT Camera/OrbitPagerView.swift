@@ -59,6 +59,10 @@ class OrbitPagerView: UIView {
                     categoryView.pageIndex = nil
                 }
             }
+            // Animate any container
+            UIView.animate(withDuration: 0.3) { [weak self] in
+                self?.superview?.layoutIfNeeded()
+            }
         }
     }
     
@@ -167,11 +171,14 @@ class OrbitPagerView: UIView {
         }
     }
     
-    // A closure to call if a right hand side tap, or rightwards swipe is detected
+    /// A closure called when a right hand side tap outside of a category, or rightwards swipe is detected
     var actionNextPage: ( ()->Void )?
     
-    // A closure to call if a left hand side tap, or leftwards swipe is detected
+    /// A closure called when a left hand side tap outside of a category, or leftwards swipe is detected
     var actionPrevPage: ( ()->Void )?
+    
+    /// A closure called when a tap on a category view is detected, with the page index for the first item of that category
+    var actionPage: ( (Int)->Void )?
     
     override init (frame: CGRect) {
         super.init(frame: frame)
@@ -230,6 +237,17 @@ class OrbitPagerView: UIView {
         if let tapRecognizer = gestureRecognizer as? UITapGestureRecognizer,
            gestureRecognizer.state == .ended
         {
+            // Is the tap on a category?
+            for view in categoryViews {
+                if view.frame.contains(tapRecognizer.location(in: self)),
+                   let pageIndex = pageIndexFor(category: view.name, index: 0),
+                   let actionPage = actionPage
+                {
+                    actionPage(pageIndex)
+                    return
+                }
+            }
+            // Otherwise, LHS vs RHS
             let isRHS = tapRecognizer.location(in: self).x > bounds.midX
             if isRHS {
                 actionNextPage()
