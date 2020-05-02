@@ -141,6 +141,13 @@ extension AppDelegate: URLSessionDelegate {
 
 extension AppDelegate: URLSessionTaskDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        guard let uploadable = appNetwork.uploadable(in: session, with: task.taskIdentifier)
+        else {
+            os_log("URLSession didSendBodyData cannot find Uploadable with task", log: appNetLog)
+            return
+        }
+        os_log("Upload task for %{public}s did complete", log: appNetLog, uploadable.description)
+        
         switch session {
         case appNetwork.thingsSession.session:
             appNetwork.thingsSession.clear(task.taskIdentifier)
