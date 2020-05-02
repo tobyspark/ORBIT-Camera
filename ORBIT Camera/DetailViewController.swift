@@ -271,7 +271,7 @@ class DetailViewController: UIViewController {
         // Update statuses
         if let video = pageVideo
         {
-            videoRecordedLabel.text = "Recorded on \(Settings.dateFormatter.string(from:video.recorded))"
+            videoRecordedLabel.text = Settings.dateFormatter.string(from:video.recorded)
             recordedElement.accessibilityLabel = "Recorded on \(Settings.verboseDateFormatter.string(from:video.recorded))"
             
             videoUploadedIcon.image = video.orbitID == nil ? UIImage(systemName: "arrow.up.circle") : UIImage(systemName: "arrow.up.circle.fill")
@@ -722,7 +722,15 @@ class DetailViewController: UIViewController {
                 { return }
             self.pageIndex -= 1
         }
-
+        videoPageControl.actionPage = { [weak self] newPageIndex in
+            guard
+                let self = self
+                // No point bounds checking, as newPageIndex comes from the control that supplies the bounds
+            else
+                { return }
+            self.pageIndex = newPageIndex
+        }
+        
         configureAccessibilityElements()
     }
     
