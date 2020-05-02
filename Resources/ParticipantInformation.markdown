@@ -32,7 +32,7 @@ Participation in the study is voluntary, and you can choose not to participate i
 
 ## What will happen if I take part? What do I have to do?
 
-You will use the app to film short videos of 10 objects you might like your phone to recognise. You will take around 80 of these videos using different filming techniques and in different locations. After taking a video you will upload it to the ORBIT server for approval. If the video doesn’t include any personal identifying information, it will be added to the open dataset. Otherwise, you will get notified via email and kindly asked to take another video of the same object. With setup and reviewing the data we anticipate that the overall time that you will spend collecting data over the study period is no longer than 2.5 hours.
+You will use the app to film short videos of 10 objects you might like your phone to recognise. You will take around 80 of these videos using different filming techniques and in different locations. After taking a video you will upload it to the ORBIT server for approval. If the video doesn’t include any personal identifying information and is considered appropriate for this study, it will be added to the open dataset. Otherwise, you will get notified via email and kindly asked to take another video of the same object. With setup and reviewing the data we anticipate that the overall time that you will spend collecting data over the study period is no longer than 2.5 hours. However, you will be able to take videos of your objects using the ORBIT camera app until the 30th of June 2020. 
 
 ## What are the possible disadvantages and risks of taking part?
 
