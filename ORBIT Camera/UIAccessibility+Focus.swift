@@ -16,7 +16,7 @@ extension UIAccessibility {
         
         guard let element = element
         else {
-            os_log("Accessibility focus attempted on nil object")
+            os_log("Accessibility focus attempted on nil object", log: appUILog)
             return
         }
         

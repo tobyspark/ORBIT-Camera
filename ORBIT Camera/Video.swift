@@ -104,6 +104,13 @@ extension Video: FetchableRecord, MutablePersistableRecord {
     // Note any within-db delete will not invoke this, e.g. foreign key cascade
     @discardableResult
     func delete(_ db: Database) throws -> Bool {
+        // Cancel any in-progress upload
+        cancelUploading()
+        
+        // Delete video from server
+        deleteUpload()
+        
+        // Remove file
         try FileManager.default.removeItem(at: url)
         let deleted = try performDelete(db)
         if !deleted { os_log("Failed to delete Video") }

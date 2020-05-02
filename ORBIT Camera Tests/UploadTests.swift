@@ -39,7 +39,7 @@ class UploadTests: XCTestCase {
         var thing = Thing(withLabel: "labelParticipant")
         try dbQueue.write { db in try thing.save(db) }
 
-        guard let taskIdentifier = thing.upload(by: Settings.participant, using: uploadableSession.session)
+        guard let taskIdentifier = thing.upload(with: Settings.authCredential, in: uploadableSession.session)
         else {
             XCTFail("No taskIdentifier returned")
             return
@@ -66,7 +66,7 @@ class UploadTests: XCTestCase {
         var video = Video(of: thing, url: testURL, kind:.testPan)!
         try dbQueue.write { db in try video.save(db) }
 
-        guard let taskIdentifier = video.upload(by: Settings.participant, using: uploadableSession.session)
+        guard let taskIdentifier = video.upload(with: Settings.authCredential, in: uploadableSession.session)
         else {
             XCTFail("No taskIdentifier returned")
             return

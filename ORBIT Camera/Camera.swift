@@ -31,7 +31,7 @@ class Camera {
             // Holding a weak ref should allow 'detach' of the views.
             let result = self.previewViews.insert(WeakRef(object: view))
             if result.inserted {
-                os_log("Camera adding preview", type: .debug)
+                os_log("Camera adding preview", log: appCamLog, type: .debug)
             }
         }
         start()
@@ -43,12 +43,12 @@ class Camera {
         #if !targetEnvironment(simulator)
         queue.async {
             if self.stopCancellableWorkItem != nil {
-                os_log("Camera cancelling pending stop", type: .debug)
+                os_log("Camera cancelling pending stop", log: appCamLog, type: .debug)
                 self.stopCancellableWorkItem?.cancel()
                 self.stopCancellableWorkItem = nil
             }
             if !self.captureSession.isRunning {
-                os_log("Camera start", type: .debug)
+                os_log("Camera start", log: appCamLog, type: .debug)
                 self.captureSession.startRunning()
             }
         }
@@ -60,7 +60,7 @@ class Camera {
         #if !targetEnvironment(simulator)
         queue.async {
             if self.captureSession.isRunning {
-                os_log("Camera stop", type: .debug)
+                os_log("Camera stop", log: appCamLog, type: .debug)
                 self.captureSession.stopRunning()
             }
         }
@@ -77,7 +77,7 @@ class Camera {
                 guard let self = self
                 else { return }
                 if self.captureSession.isRunning {
-                    os_log("Camera stop, was cancellable", type: .debug)
+                    os_log("Camera stop, was cancellable", log: appCamLog, type: .debug)
                     self.captureSession.stopRunning()
                 }
             }
@@ -96,7 +96,7 @@ class Camera {
                 self.writerInput == nil,
                 self.writer == nil
             else {
-                os_log("Stale capture object(s) on recordStart")
+                os_log("Stale capture object(s) on recordStart", log: appCamLog)
                 return
             }
 
@@ -118,13 +118,13 @@ class Camera {
                 let writer = try? AVAssetWriter(url: url, fileType: .mp4),
                 writer.canAdd(writerInput)
             else {
-                os_log("Could not create AVAssetWriter")
+                os_log("Could not create AVAssetWriter", log: appCamLog)
                 return
             }
             writer.add(writerInput)
             guard writer.startWriting()
             else {
-                os_log("Could not start AVAssetWriter")
+                os_log("Could not start AVAssetWriter", log: appCamLog)
                 return
             }
 
@@ -148,7 +148,7 @@ class Camera {
                 {
                     writer.finishWriting {
                         DispatchQueue.main.async {
-                            os_log("Camera.recordStop calling completionHandler", type: .debug)
+                            os_log("Camera.recordStop calling completionHandler", log: appCamLog, type: .debug)
                             completionHandler()
                         }
                     }
@@ -185,7 +185,7 @@ class Camera {
                 let videoDeviceInput = try? AVCaptureDeviceInput(device: videoDevice),
                 self.captureSession.canAddInput(videoDeviceInput)
             else {
-                os_log("Could not configure camera")
+                os_log("Could not configure camera", log: appCamLog)
                 return
             }
             self.captureSession.addInput(videoDeviceInput)
@@ -195,7 +195,7 @@ class Camera {
             videoDataOutput.setSampleBufferDelegate(self.videoDataDelegate, queue: self.videoDataDelegate.queue)
             guard self.captureSession.canAddOutput(videoDataOutput)
             else {
-                os_log("Could not add AVCaptureVideoDataOutput")
+                os_log("Could not add AVCaptureVideoDataOutput", log: appCamLog)
                 return
             }
             self.captureSession.addOutput(videoDataOutput)
@@ -228,7 +228,7 @@ class Camera {
     
     // FIXME: Debugging (for now)
     @objc func handleNotification(notification: Notification) {
-        os_log("%{public}s", type: .debug, notification.name.rawValue)
+        os_log("%{public}s", log: appCamLog, type: .debug, notification.name.rawValue)
     }
     
     /// The `AVCaptureSession` behind this "Camera"
@@ -274,7 +274,7 @@ fileprivate class VideoDataDelegate: NSObject, AVCaptureVideoDataOutputSampleBuf
                 if let view = viewRef.object {
                     view.image = ciImage
                 } else {
-                    os_log("Camera removing previewLayer", type: .debug)
+                    os_log("Camera removing previewLayer", log: appCamLog, type: .debug)
                     camera.previewViews.remove(viewRef)
                 }
             }

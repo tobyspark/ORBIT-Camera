@@ -37,7 +37,7 @@ class RecordButton: UIControl {
         switch recordingState {
         case .idle:
             recordingState = .active(Date())
-            os_log("RecordButton.state active")
+            os_log("RecordButton.state active", log: appUILog)
             AudioServicesPlaySystemSound(RecordButton.systemSoundVideoBegin)
             pipCount = 0
             pipTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self](timer) in
@@ -55,7 +55,7 @@ class RecordButton: UIControl {
         case .active(let date):
             recordingState = .idle
             let duration = DateInterval(start: date, end: Date()).duration
-            os_log("RecordButton.state idle, active for %fs", duration)
+            os_log("RecordButton.state idle, active for %fs", log: appUILog, duration)
             pipTimer?.invalidate()
             pipTimer = nil
             AudioServicesPlaySystemSound(RecordButton.systemSoundVideoEnd)

@@ -86,7 +86,7 @@ class MasterViewController: UITableViewController {
         thingsObserver = observation.start(
             in: dbQueue,
             onError: { error in
-                os_log("MasterViewController observer error")
+                os_log("MasterViewController observer error", log: appUILog)
                 print(error)
             },
             onChange: { [weak self] things in
@@ -221,7 +221,7 @@ class MasterViewController: UITableViewController {
             let controller = (segue.destination as! InfoViewController)
             controller.page = Participant.appParticipantGivenConsent() ? .appInfo : .participantInfo
         default:
-            os_log("Unknown segue")
+            os_log("Unknown segue", log: appUILog)
             assertionFailure()
         }
     }
