@@ -59,6 +59,10 @@ class OrbitPagerView: UIView {
                     categoryView.pageIndex = nil
                 }
             }
+            // Animate any container
+            UIView.animate(withDuration: 0.3) { [weak self] in
+                self?.superview?.layoutIfNeeded()
+            }
         }
     }
     
