@@ -14,6 +14,7 @@ The consent markdown file has the introductory prose preceded by the consent ite
 ## Known issues
 - Thing labels cannot be edited #12
 - Thing list editing not accessible, i.e. can't delete via voiceover. #19
+- Voiceover rotor headings etc. don’t work in embedded web views #37
 
 ## Not yet implemented
 - Server state changes reflected in app, e.g. video statuses for verified, notifications
@@ -21,6 +22,10 @@ The consent markdown file has the introductory prose preceded by the consent ite
 - Contrast effect and control for viewfinder / videos
 
 ## Version history
+
+v0.6.3
+- Prerelease polish
+- PR: [Tweaks: Prerelease polish](https://github.com/tobyspark/ORBIT-Camera/pull/38)
 
 v0.6.2
 - Uploading fixes
