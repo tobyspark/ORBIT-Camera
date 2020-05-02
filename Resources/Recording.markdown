@@ -122,7 +122,7 @@ Repeat these five steps for each of your things!
 
 ## What happens after recording? 
 
-When you end your recording, the video will automatically be uploaded to the ORBIT server. We will then check your videos to make sure that they don’t have any information in them that could reveal your identity. We will also check if the video you took is appropriate for this research project. For example, we will check if we can see the thing you have named in the video and if you have reported the correct type of video, _train_, _zoom out_ test or _pan test_. If there are problems, we will ask you to record more videos of your thing. If your videos pass that check they will be added to the final dataset which will be made public after the study ends. You can delete or re-record any of your videos until the end of the study.  
+When you end your recording, the video will automatically be uploaded to the ORBIT server. We will then check your videos to make sure that they don’t have any information in them that could reveal your identity. We will also check if the videos and names you gave to your objects are appropriate for this research project. We will also check if we can see the thing you have named in the video and if you have reported the correct type of video, _train_, _zoom out_ test or _pan test_. If there are problems, we will ask you to record more videos of your thing. If your videos pass that check they will be added to the final dataset which will be made public after the study ends. You can delete or re-record any of your videos until the end of the study.  
 
 # Contacting the ORBIT team
 If you have any questions, difficulties, or concerns about using the ORBIT Camera app or these instructions, please email us at info@orbit.city.ac.uk
