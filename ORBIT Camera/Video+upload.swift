@@ -73,8 +73,16 @@ extension Video: Uploadable {
         return task.taskIdentifier
     }
     
-    func cancelUpload() {
+    func cancelUploading() {
         appNetwork.videosSession.cancelUpload(of: self)
+    }
+    
+    func deleteUpload() {
+        guard let orbitID = orbitID
+        else { return }
+        
+        os_log("Should delete %{public}s", log: appNetLog, description)
+        appNetwork.deleteURLs.append(Settings.endpointVideo(id: orbitID))
     }
     
     /// Assign orbitID from returned data

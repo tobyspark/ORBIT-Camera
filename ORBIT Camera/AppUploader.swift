@@ -116,6 +116,7 @@ struct AppUploader {
                         appNetwork.videosSession.upload(video)
                     }
                 }
+                appNetwork.actionDeleteURLs()
             }
         }
         networkMonitor.start(queue: networkQueue)

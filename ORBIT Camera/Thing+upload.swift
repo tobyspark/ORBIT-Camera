@@ -70,6 +70,14 @@ extension Thing: Uploadable {
         // Return the task ID
         return task.taskIdentifier
     }
+    
+    func deleteUpload() {
+        guard let orbitID = orbitID
+        else { return }
+        
+        os_log("Should delete %{public}s", log: appNetLog, description)
+        appNetwork.deleteURLs.append(Settings.endpointThing(id: orbitID))
+    }
 
     /// Assign orbitID from returned data
     mutating func uploadDidReceive(_ data: Data) throws {

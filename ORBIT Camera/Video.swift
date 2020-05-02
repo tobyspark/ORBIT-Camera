@@ -105,7 +105,10 @@ extension Video: FetchableRecord, MutablePersistableRecord {
     @discardableResult
     func delete(_ db: Database) throws -> Bool {
         // Cancel any in-progress upload
-        cancelUpload()
+        cancelUploading()
+        
+        // Delete video from server
+        deleteUpload()
         
         // Remove file
         try FileManager.default.removeItem(at: url)
