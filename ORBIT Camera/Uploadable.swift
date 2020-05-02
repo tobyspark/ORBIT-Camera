@@ -75,6 +75,10 @@ struct UploadableSession {
         tasks[taskIdentifier] = nil
     }
     
+    mutating func clear(except keepIdentifiers: [Int]) {
+        tasks = tasks.filter { keepIdentifiers.contains($0.key)  }
+    }
+    
     mutating func cancelUpload(of uploadable: Uploadable) {
         guard let (identifier, _) = tasks.first(where: { $0.value.id == uploadable.id })
         else { return }

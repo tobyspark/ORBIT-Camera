@@ -10,12 +10,12 @@
 /// - Tracks tasks to the uploadable item.
 /// - Provides URLSession infrastructure able to handle background tasks
 
-// Note: this is patterned on AppDatabase. A global, a struct static func to initialise it, delegates not on the struct etc. might look a bit wierd, but this works out neatly and swifty, avoiding obj-c classes, singletons and suchlike.
-
 import UIKit
 import os
 
-var appNetwork: AppNetwork!
+var appNetwork = DispatchQueue.main.sync {
+    AppNetwork(delegate: UIApplication.shared.delegate as! URLSessionDelegate)
+}
 
 /// A struct, instantiated as an app global, to support network transfers in the backround.
 struct AppNetwork {
@@ -107,18 +107,18 @@ struct AppNetwork {
     }
     
     /// Configure and assign the app's network struct
-    static func setup(delegate: URLSessionDelegate) throws {
+    init(delegate: URLSessionDelegate) {
         let thingsConfig = URLSessionConfiguration.ephemeral
+        thingsSession = UploadableSession(URLSession(configuration: thingsConfig, delegate: delegate, delegateQueue: nil))
+        
         let videosConfig = URLSessionConfiguration.background(withIdentifier: "uk.ac.city.orbit-camera")
         videosConfig.isDiscretionary = true
         videosConfig.sessionSendsLaunchEvents = true
-        appNetwork = AppNetwork(
-            thingsSession: UploadableSession(URLSession(configuration: thingsConfig, delegate: delegate, delegateQueue: nil)),
-            videosSession: UploadableSession(URLSession(configuration: videosConfig, delegate: delegate, delegateQueue: nil)),
-            authCredential: nil, // AppUploader database observer will set
-            completionHandler: nil,
-            deleteURLs: UserDefaults.standard.stringArray(forKey: "deleteURLs")?.compactMap { URL(string: $0)! } ?? []
-        )
+        videosSession = UploadableSession(URLSession(configuration: videosConfig, delegate: delegate, delegateQueue: nil))
+        
+        authCredential = nil // AppUploader database observer will set
+        completionHandler = nil
+        deleteURLs = UserDefaults.standard.stringArray(forKey: "deleteURLs")?.compactMap { URL(string: $0)! } ?? []
     }
 }
 
@@ -127,6 +127,14 @@ extension AppDelegate: URLSessionDelegate {
         DispatchQueue.main.async {
             appNetwork.completionHandler?()
             appNetwork.completionHandler = nil
+            
+            // Clear any remaining stale UploadableSession tasks
+            if session.configuration.identifier == appNetwork.videosSession.session.configuration.identifier {
+                session.getAllTasks { tasks in
+                    os_log("urlSessionDidFinishEvents. Session tasks remaining %d (expect: 0).", log: appNetLog, tasks.count)
+                    appNetwork.videosSession.clear(except: tasks.map { $0.taskIdentifier })
+                }
+            }
         }
     }
 }

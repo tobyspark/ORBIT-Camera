@@ -66,6 +66,7 @@ extension Thing: Uploadable {
         // Create and action task
         let task = session.uploadTask(with: request, from: uploadData)
         task.resume()
+        os_log("Upload started of %{public}s", log: appNetLog, description)
         
         // Return the task ID
         return task.taskIdentifier
