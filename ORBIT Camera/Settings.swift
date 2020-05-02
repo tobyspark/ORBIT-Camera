@@ -38,7 +38,8 @@ struct Settings {
     
     static let dateFormatter: DateFormatter = {
         let df = DateFormatter()
-        df.dateFormat = "dd/MM" // TODO: Localise
+        df.dateStyle = .short
+        df.timeStyle = .short
         return df
     }()
     
