@@ -42,7 +42,7 @@ extension Thing: Uploadable {
     }
     
     /// Upload the thing. This should action the creation of a server record for the thing, and (handled in `uploadDidReceive`) return that record's ID.
-    func upload(by participant: Participant, using session: URLSession) -> Int? {
+    func upload(with authCredential: String, using session: URLSession) -> Int? {
         guard orbitID == nil else {
             os_log("Aborting upload of %{public}s: it has already been uploaded", log: appNetLog, description)
             return nil
@@ -52,7 +52,7 @@ extension Thing: Uploadable {
         let url = URL(string: Settings.endpointThing)!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        request.setValue(participant.authCredential, forHTTPHeaderField: "Authorization")
+        request.setValue(authCredential, forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
         // Create data to upload
