@@ -83,6 +83,10 @@ struct AppUploader {
                 print(error)
             },
             onChange: { participant in
+                // Set credential for API access as participant
+                appNetwork.authCredential = participant?.authCredential
+                
+                // Action pending API tasks
                 let things = try! dbQueue.read { db in try thingsRequest.fetchAll(db) }
                 for thing in things {
                     uploadQueue.async {
@@ -97,6 +101,7 @@ struct AppUploader {
                         appNetwork.videosSession.upload(video)
                     }
                 }
+                appNetwork.actionDeleteURLs()
             }
         )
         
