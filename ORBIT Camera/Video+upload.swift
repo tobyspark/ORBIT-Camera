@@ -29,7 +29,7 @@ extension Video: Uploadable {
     }
     
     /// Upload the video. This should action the creation of a server record for the video, and (handled in `uploadDidReceive`) return that record's ID.
-    func upload(by participant: Participant, using session: URLSession) -> Int? {
+    func upload(with authCredential: String, using session: URLSession) -> Int? {
         guard orbitID == nil else {
             os_log("Aborting upload of Video %d: it has already been uploaded", log: appNetLog, description)
             return nil
@@ -62,7 +62,7 @@ extension Video: Uploadable {
         let endpointURL = URL(string: Settings.endpointVideo)!
         var request = URLRequest(url: endpointURL)
         request.httpMethod = "POST"
-        request.setValue(participant.authCredential, forHTTPHeaderField: "Authorization")
+        request.setValue(authCredential, forHTTPHeaderField: "Authorization")
         request.setValue(formFile.contentType, forHTTPHeaderField: "Content-Type")
         
         // Create and action task

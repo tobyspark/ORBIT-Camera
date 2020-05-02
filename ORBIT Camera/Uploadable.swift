@@ -18,7 +18,7 @@ protocol Uploadable: CustomStringConvertible {
     var orbitID: Int? { get set }
     
     /// Upload the uploadable
-    func upload(by participant: Participant, using session: URLSession) -> Int?
+    func upload(with credential: String, using session: URLSession) -> Int?
     
     /// Assign orbitID from returned data
     mutating func uploadDidReceive(_ data: Data) throws
@@ -41,11 +41,7 @@ protocol Uploadable: CustomStringConvertible {
 struct UploadableSession {
     let session: URLSession
     
-    mutating func upload(_ uploadable: Uploadable) {
-        // Get participant
-        guard let participant = try? Participant.appParticipant()
-        else { return }
-        
+    mutating func upload(_ uploadable: Uploadable, with authCredential: String) {
         // Check we have a trackable id
         guard uploadable.id != nil
         else {
@@ -62,7 +58,7 @@ struct UploadableSession {
         }
         
         // Upload and associate taskIdentifier
-        if let taskIdentifier = uploadable.upload(by: participant, using: session) {
+        if let taskIdentifier = uploadable.upload(with: authCredential, using: session) {
             associate(taskIdentifier, with: uploadable)
         }
     }
