@@ -114,7 +114,9 @@ struct AppUploader {
         )
         
         networkMonitor.pathUpdateHandler = { path in
-            if path.status == .satisfied { 
+            if path.status == .satisfied,
+                Self.networkNextBackoffTime.compare(Date()) == .orderedAscending
+            {
                 let things = try! dbQueue.read { db in try thingsRequest.fetchAll(db) }
                 for thing in things {
                     uploadQueue.async {
@@ -134,6 +136,10 @@ struct AppUploader {
                     }
                 }
                 appNetwork.actionDeleteURLs()
+                
+                // Set to 30mins in future
+                // OK, really, this isn't a back-off. Should progressively increasing the interval, and resetting on success. 
+                Self.networkNextBackoffTime = Date(timeIntervalSinceNow: 30*60)
             }
         }
         networkMonitor.start(queue: networkQueue)
@@ -144,4 +150,6 @@ struct AppUploader {
             appUploader = AppUploader()
         }
     }
+    
+    static var networkNextBackoffTime = Date() // FIXME: This is an avoiding mutating self hack
 }
