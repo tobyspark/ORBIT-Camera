@@ -115,7 +115,7 @@ struct AppNetwork {
         appNetwork = AppNetwork(
             thingsSession: UploadableSession(URLSession(configuration: thingsConfig, delegate: delegate, delegateQueue: nil)),
             videosSession: UploadableSession(URLSession(configuration: videosConfig, delegate: delegate, delegateQueue: nil)),
-            authCredential: try! Participant.appParticipant().authCredential,
+            authCredential: nil, // AppUploader database observer will set
             completionHandler: nil,
             deleteURLs: UserDefaults.standard.stringArray(forKey: "deleteURLs")?.compactMap { URL(string: $0)! } ?? []
         )
