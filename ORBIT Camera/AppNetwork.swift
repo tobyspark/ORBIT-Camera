@@ -197,7 +197,22 @@ extension AppDelegate: URLSessionDataDelegate {
         do {
             try uploadable.uploadDidReceive(data)
         } catch {
-            os_log("Upload failed for %{public}s", log: appNetLog, uploadable.description)
+            // Body of upload response is lost if app not running. WTF.
+            // https://forums.developer.apple.com/thread/84413
+            // Well, hack through it may be, we own the server, and lo! the orbit ID is now stuffed in the header.
+            // The following will re-create the data response the app expects, using the header value.
+            // This assumes Videos are the only background type. Could be made generic...
+            guard
+                let orbitIDString = httpResponse.allHeaderFields["orbit-id"] as? String,
+                let orbitID = Int(orbitIDString),
+                var video = uploadable as? Video,
+                let data = try? JSONEncoder().encode(Video.APIResponse(id: orbitID))
+            else {
+                os_log("Upload failed for %{public}s. Upload likely success at server but response could not be parsed.", log: appNetLog, type: .error, uploadable.description)
+                return
+            }
+            try! video.uploadDidReceive(data)
+            os_log("Upload succeeded for %{public}s. Response body parse failed but used fall-back header.", log: appNetLog, uploadable.description)
         }
     }
 }
