@@ -26,8 +26,21 @@ struct AppNetwork {
     /// The network session used for videos
     var videosSession: UploadableSession
     
+    /// The authorisation credential used to identify the participant
+    // TODO: Refactor app to use this? Or move deleteURLS to database, so
+    var authCredential: String?
+    
     /// The completion handler to call once all background tasks have completed
     var completionHandler: (() -> Void)?
+    
+    /// A list of server records to ensure deleted, as endpoint URLs to call delete on
+    var deleteURLs: [URL] {
+        didSet {
+            os_log("deleteURLs: %d", log: appNetLog, deleteURLs.count)
+            UserDefaults.standard.set(deleteURLs.map { $0.absoluteString }, forKey: "deleteURLs")
+            actionDeleteURLs()
+        }
+    }
     
     mutating func associate(task taskIdentifier: Int, in session: URLSession, with uploadable: Uploadable) {
         switch session {
@@ -62,6 +75,37 @@ struct AppNetwork {
         }
     }
     
+    mutating func actionDeleteURLs() {
+        guard
+            let url = deleteURLs.randomElement(),
+            let authCredential = authCredential
+        else
+            { return }
+        
+        // Create the delete request
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        request.setValue(authCredential, forHTTPHeaderField: "Authorization")
+        
+        // Create and action task
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let httpResponse = response as? HTTPURLResponse
+            else {
+                os_log("actionDeleteURLs failed, cannot parse response", log: appNetLog)
+                return
+            }
+            // Deleted success is 204
+            // If it's already deleted, 404 Forbidden
+            guard httpResponse.statusCode == 204 || httpResponse.statusCode == 404
+            else {
+                os_log("actionDeleteURLs failed: %d", log: appNetLog, httpResponse.statusCode)
+                return
+            }
+            appNetwork.deleteURLs.removeAll(where: { $0 == url }) // FIXME: appNetwork not self is cheating
+        }
+        task.resume()
+    }
+    
     /// Configure and assign the app's network struct
     static func setup(delegate: URLSessionDelegate) throws {
         let thingsConfig = URLSessionConfiguration.ephemeral
@@ -71,7 +115,9 @@ struct AppNetwork {
         appNetwork = AppNetwork(
             thingsSession: UploadableSession(URLSession(configuration: thingsConfig, delegate: delegate, delegateQueue: nil)),
             videosSession: UploadableSession(URLSession(configuration: videosConfig, delegate: delegate, delegateQueue: nil)),
-            completionHandler: nil
+            authCredential: try! Participant.appParticipant().authCredential,
+            completionHandler: nil,
+            deleteURLs: UserDefaults.standard.stringArray(forKey: "deleteURLs")?.compactMap { URL(string: $0)! } ?? []
         )
     }
 }

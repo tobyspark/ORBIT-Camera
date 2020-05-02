@@ -20,7 +20,14 @@ struct Settings {
     }
     
     static let endpointThing = "https://orbit-data.city.ac.uk/phaseone/api/thing/"
+    static func endpointThing(id orbitID: Int) -> URL {
+        URL(string: Settings.endpointThing)!.appendingPathComponent("\(orbitID)/")
+    }
+    
     static let endpointVideo = "https://orbit-data.city.ac.uk/phaseone/api/video/"
+    static func endpointVideo(id orbitID: Int) -> URL {
+        URL(string: Settings.endpointVideo)!.appendingPathComponent("\(orbitID)/")
+    }
     
     static let captureSessionPreset: AVCaptureSession.Preset = .hd1920x1080
     static let recordingResolution = CGSize(width: 1080, height: 1080)
