@@ -722,7 +722,15 @@ class DetailViewController: UIViewController {
                 { return }
             self.pageIndex -= 1
         }
-
+        videoPageControl.actionPage = { [weak self] newPageIndex in
+            guard
+                let self = self
+                // No point bounds checking, as newPageIndex comes from the control that supplies the bounds
+            else
+                { return }
+            self.pageIndex = newPageIndex
+        }
+        
         configureAccessibilityElements()
     }
     
