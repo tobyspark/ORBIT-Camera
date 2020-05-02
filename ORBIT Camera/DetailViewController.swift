@@ -588,8 +588,12 @@ class DetailViewController: UIViewController {
                     // Update controller state
                     self.rerecordPageIndexes.remove(videoPageIndex)
                     
+                    // Delete server record
+                    video.deleteUpload()
+                    video.orbitID = nil
+                    
                     // Update record
-                    video.recorded = Date() // TODO: This needs to trigger a re-upload
+                    video.recorded = Date()
                     try! dbQueue.write { db in try video.save(db) }
                     
                     os_log("Record completion handler has updated video on page %d", log: appUILog, type: .debug, videoPageIndex)
