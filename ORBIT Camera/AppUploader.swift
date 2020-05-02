@@ -51,8 +51,10 @@ struct AppUploader {
             onChange: { things in
                 for thing in things {
                     uploadQueue.async {
-                        os_log("Attempting upload of %{public}s in foreground session (things change)", type: .debug, thing.description)
-                        appNetwork.thingsSession.upload(thing)
+                        guard let authCredential = appNetwork.authCredential
+                        else { return }
+                        os_log("Attempting upload of %{public}s in foreground session (things change)", log: appNetLog, type: .debug, thing.description)
+                        appNetwork.thingsSession.upload(thing, with: authCredential)
                     }
                 }
             }
@@ -68,8 +70,10 @@ struct AppUploader {
             onChange: { videos in
                 for video in videos {
                     uploadQueue.async {
-                        os_log("Attempting upload of %{public}s in background session (videos change)", type: .debug, video.description)
-                        appNetwork.videosSession.upload(video)
+                        guard let authCredential = appNetwork.authCredential
+                        else { return }
+                        os_log("Attempting upload of %{public}s in background session (videos change)", log: appNetLog, type: .debug, video.description)
+                        appNetwork.videosSession.upload(video, with: authCredential)
                     }
                 }
             }
@@ -83,39 +87,59 @@ struct AppUploader {
                 print(error)
             },
             onChange: { participant in
+                // Set credential for API access as participant
+                appNetwork.authCredential = participant?.authCredential
+                
+                // Action pending API tasks
                 let things = try! dbQueue.read { db in try thingsRequest.fetchAll(db) }
                 for thing in things {
                     uploadQueue.async {
-                        os_log("Attempting upload of %{public}s in foreground session (participant credential change)", type: .debug, thing.description)
-                        appNetwork.thingsSession.upload(thing)
+                        guard let authCredential = appNetwork.authCredential
+                        else { return }
+                        os_log("Attempting upload of %{public}s in foreground session (participant credential change)", log: appNetLog, type: .debug, thing.description)
+                        appNetwork.thingsSession.upload(thing, with: authCredential)
                     }
                 }
                 let videos = try! dbQueue.read { db in try videosRequest.fetchAll(db) }
                 for video in videos {
                     uploadQueue.async {
-                        os_log("Attempting upload of %{public}s in background session (participant credential change)", type: .debug, video.description)
-                        appNetwork.videosSession.upload(video)
+                        guard let authCredential = appNetwork.authCredential
+                        else { return }
+                        os_log("Attempting upload of %{public}s in background session (participant credential change)", log: appNetLog, type: .debug, video.description)
+                        appNetwork.videosSession.upload(video, with: authCredential)
                     }
                 }
+                appNetwork.actionDeleteURLs()
             }
         )
         
         networkMonitor.pathUpdateHandler = { path in
-            if path.status == .satisfied { 
+            if path.status == .satisfied,
+                Self.networkNextBackoffTime.compare(Date()) == .orderedAscending
+            {
                 let things = try! dbQueue.read { db in try thingsRequest.fetchAll(db) }
                 for thing in things {
                     uploadQueue.async {
-                        os_log("Attempting upload of %{public}s in foreground session (network change)", type: .debug, thing.description)
-                        appNetwork.thingsSession.upload(thing)
+                        guard let authCredential = appNetwork.authCredential
+                        else { return }
+                        os_log("Attempting upload of %{public}s in foreground session (network change)", log: appNetLog, type: .debug, thing.description)
+                        appNetwork.thingsSession.upload(thing, with: authCredential)
                     }
                 }
                 let videos = try! dbQueue.read { db in try videosRequest.fetchAll(db) }
                 for video in videos {
                     uploadQueue.async {
-                        os_log("Attempting upload of %{public}s in background session (network change)", type: .debug, video.description)
-                        appNetwork.videosSession.upload(video)
+                        guard let authCredential = appNetwork.authCredential
+                        else { return }
+                        os_log("Attempting upload of %{public}s in background session (network change)", log: appNetLog, type: .debug, video.description)
+                        appNetwork.videosSession.upload(video, with: authCredential)
                     }
                 }
+                appNetwork.actionDeleteURLs()
+                
+                // Set to 30mins in future
+                // OK, really, this isn't a back-off. Should progressively increasing the interval, and resetting on success. 
+                Self.networkNextBackoffTime = Date(timeIntervalSinceNow: 30*60)
             }
         }
         networkMonitor.start(queue: networkQueue)
@@ -126,4 +150,6 @@ struct AppUploader {
             appUploader = AppUploader()
         }
     }
+    
+    static var networkNextBackoffTime = Date() // FIXME: This is an avoiding mutating self hack
 }

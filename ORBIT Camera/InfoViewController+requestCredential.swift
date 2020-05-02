@@ -73,14 +73,18 @@ extension InfoViewController {
                     result = .failure(.responseError)
                 }
             }
-            if case .failure(let error) = result {
-                os_log("Request credential %{public}@", error.localizedDescription)
+            switch result {
+            case .success:
+                os_log("Request credential success", log: appNetLog)
+            case .failure(let error):
+                os_log("Request credential %{public}@", log: appNetLog, error.localizedDescription)
             }
             DispatchQueue.main.async {
                 self.handleCredentialResult(result)
             }
         }
         task.resume()
+        os_log("Request credential sent", log: appNetLog)
     }
 
     func handleCredentialResult(_ result: Result<String, CredentialError>) {

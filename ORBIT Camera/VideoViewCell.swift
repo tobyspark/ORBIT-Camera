@@ -1,5 +1,5 @@
 //
-//  Participant.swift
+//  VideoViewCell.swift
 //  ORBIT Camera
 //
 //  Created by Toby Harris on 06/03/2020.
