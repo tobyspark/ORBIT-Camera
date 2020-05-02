@@ -14,16 +14,18 @@ The consent markdown file has the introductory prose preceded by the consent ite
 ## Known issues
 - Thing labels cannot be edited #12
 - Thing list editing not accessible, i.e. can't delete via voiceover. #19
-- Re-recording a video does not re-upload #20
-- AppNetwork.videosSession.tasks is not persisted #24
 
 ## Not yet implemented
 - Server state changes reflected in app, e.g. video statuses for verified, notifications
-- Deleting a video does not update server
 - Study phases implemented in app
 - Contrast effect and control for viewfinder / videos
 
 ## Version history
+
+v0.6.2
+- Uploading fixes
+- Informational content updates
+- PR: [Fixes: Uploading](https://github.com/tobyspark/ORBIT-Camera/pull/36)
 
 v0.6.1
 - Informational content restructure, recording pips, various tweaks
