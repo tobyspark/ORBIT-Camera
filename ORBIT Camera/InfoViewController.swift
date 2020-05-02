@@ -244,6 +244,7 @@ class InfoViewController: UIViewController {
             let emailField = UITextField()
             emailField.placeholder = "Enter your email address"
             emailField.accessibilityLabel = "Email address"
+            emailField.autocapitalizationType = .none
             emailField.keyboardType = .emailAddress
             emailField.returnKeyType = .done
             emailField.delegate = self
