@@ -57,6 +57,8 @@ extension AppDatabase {
                         assertionFailure("When loading test data could not locate video file")
                     }
                     var video = Video(of: thing, url: videoURL, kind: videoKind)!
+                    video.recorded = Date(timeIntervalSinceNow: -Double.random(in: 0...7*24*60*60))
+                    video.orbitID = 1
                     try dbQueue.write { db in try video.save(db) }
                 }
             }
