@@ -735,6 +735,11 @@ class DetailViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        // Ensure consent screen if no consent (e.g. first launch on iPad)
+        if let splitViewController = splitViewController {
+            splitViewController.preferredDisplayMode = Participant.appParticipantGivenConsent() ? .automatic : .primaryOverlay
+        }
+        
         // Attempt to display an item if none set (e.g. launch on iPad)
         if detailItem == nil {
             os_log("viewWillAppear without detailItem. Attempting load from database.", log: appUILog, type: .debug)

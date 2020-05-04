@@ -41,6 +41,11 @@ extension Participant: FetchableRecord, MutablePersistableRecord {
     }
     
     static func appParticipantGivenConsent() -> Bool {
+        // Optimisation
+        if appNetwork.authCredential != nil {
+            return true
+        }
+        // Truth
         if let participant = try? appParticipant(),
            participant.authCredential != nil
         {
