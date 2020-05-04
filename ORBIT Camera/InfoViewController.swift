@@ -151,7 +151,7 @@ class InfoViewController: UIViewController {
         
         // Reset
         UIView.animate(withDuration: 0.3) { [weak self] in
-            self?.scrollView.alpha = 0
+            self?.scrollView.alpha = 0 // Set back to 1 on page load. This is set in webview delegate.
         }
         webViewHeightContstraint.constant = 0
         for view in stackView.subviews {
@@ -285,11 +285,6 @@ class InfoViewController: UIViewController {
         scrollView.setContentOffset(CGPoint.zero, animated: true)
         
         UIAccessibility.post(notification: .screenChanged, argument: accessibilityScreenChangedMessage)
-        
-        // Really, this should be in the WebView page loaded handler. But lets keep it here.
-        UIView.animate(withDuration: 0.3) { [weak self] in
-            self?.scrollView.alpha = 1
-        }
     }
     
     override func viewDidLoad() {
@@ -394,6 +389,11 @@ extension InfoViewController: WKNavigationDelegate {
         webView.evaluateJavaScript("document.documentElement.scrollHeight") { [weak self] (height, error) in
             guard let self = self else { return }
             self.webViewHeightContstraint.constant = height as! CGFloat
+            
+            // Now content has loaded, reveal. Should have been set to 0 in configurePage.
+            UIView.animate(withDuration: 0.3) { [weak self] in
+                self?.scrollView.alpha = 1
+            }
         }
     }
     
