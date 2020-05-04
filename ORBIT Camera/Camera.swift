@@ -177,7 +177,9 @@ class Camera {
             self.captureSession.beginConfiguration()
             
             // Configure the AVCaptureSession
-            self.captureSession.sessionPreset = Settings.captureSessionPreset
+            if self.captureSession.canSetSessionPreset(Settings.captureSessionPreset) {
+                self.captureSession.sessionPreset = Settings.captureSessionPreset
+            } // Otherwise, default.
             
             // Create AVCaptureDeviceInput
             guard
