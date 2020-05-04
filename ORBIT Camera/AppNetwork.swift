@@ -13,9 +13,7 @@
 import UIKit
 import os
 
-var appNetwork = DispatchQueue.main.sync {
-    AppNetwork(delegate: UIApplication.shared.delegate as! URLSessionDelegate)
-}
+var appNetwork = AppNetwork(delegate: AppNetworkDelegate())
 
 /// A struct, instantiated as an app global, to support network transfers in the backround.
 struct AppNetwork {
@@ -122,7 +120,9 @@ struct AppNetwork {
     }
 }
 
-extension AppDelegate: URLSessionDelegate {
+class AppNetworkDelegate: NSObject {}
+
+extension AppNetworkDelegate: URLSessionDelegate {
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
         DispatchQueue.main.async {
             appNetwork.completionHandler?()
@@ -139,7 +139,7 @@ extension AppDelegate: URLSessionDelegate {
     }
 }
 
-extension AppDelegate: URLSessionTaskDelegate {
+extension AppNetworkDelegate: URLSessionTaskDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
         guard let uploadable = appNetwork.uploadable(in: session, with: task.taskIdentifier)
         else {
@@ -173,7 +173,7 @@ extension AppDelegate: URLSessionTaskDelegate {
     }
 }
 
-extension AppDelegate: URLSessionDataDelegate {
+extension AppNetworkDelegate: URLSessionDataDelegate {
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         // Find uploadable for this task
         guard var uploadable = appNetwork.uploadable(in: session, with: dataTask.taskIdentifier)
