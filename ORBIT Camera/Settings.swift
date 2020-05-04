@@ -30,6 +30,7 @@ struct Settings {
     }
     
     static let captureSessionPreset: AVCaptureSession.Preset = .hd1920x1080
+    static let captureSessionStablisesVideo = false
     static let recordingResolution = CGSize(width: 1080, height: 1080)
     
     static let recordTimeOutSecs: TimeInterval = 120
