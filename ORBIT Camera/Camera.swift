@@ -204,13 +204,15 @@ class Camera {
                 if connection.isVideoOrientationSupported {
                     connection.videoOrientation = .portrait
                 }
-                // FIXME: After moving from AVCaptureVideoPreviewLayer the following stablisation was causing a run-time error starting the capture queue.
-                //   name = AVCaptureSessionRuntimeErrorNotification, object = Optional(<AVCaptureSession: 0x2827f01f0 [AVCaptureSessionPreset1920x1080]>
-                //   <AVCaptureDeviceInput: 0x2825fd400 [Back Camera]>[vide] -> <AVCaptureVideoDataOutput: 0x2825fd600>), userInfo = Optional([AnyHashable("AVCaptureSessionErrorKey"): Error Domain=AVFoundationErrorDomain Code=-11819 "Cannot Complete Action" UserInfo={NSLocalizedDescription=Cannot Complete Action, NSLocalizedRecoverySuggestion=Try again later.}])
-                // // Stablise if possible
-                // if connection.isVideoStabilizationSupported {
-                //     connection.preferredVideoStabilizationMode = .auto
-                // }
+                // Stablise if wanted
+                //   This delays the viewfinder to the point of being unusable.
+                //   Could set up separate outputs for non-stabilised viewfinder and stablilised recording, but that is a) more code and b) has UX implications, where the recorded video appearing is delayed by a second or more.
+                //   What is better for machine learning / ORBIT dataset?
+                if Settings.captureSessionStablisesVideo,
+                   connection.isVideoStabilizationSupported
+                {
+                    connection.preferredVideoStabilizationMode = .auto
+                }
             }
             
             // AVCaptureSession END
