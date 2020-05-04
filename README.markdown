@@ -23,6 +23,10 @@ The consent markdown file has the introductory prose preceded by the consent ite
 
 ## Version history
 
+v1.0.2
+- iPad first-run tweak
+- Robustness pass
+
 v0.6.3
 - Prerelease polish
 - PR: [Tweaks: Prerelease polish](https://github.com/tobyspark/ORBIT-Camera/pull/38)
