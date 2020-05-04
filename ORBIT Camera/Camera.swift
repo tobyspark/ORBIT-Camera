@@ -127,12 +127,14 @@ class Camera {
                 os_log("Could not start AVAssetWriter", log: appCamLog)
                 return
             }
-
-            // Now everything is set, declare the record objects
-            // This will start recording, enacted in the videoDataSource delegate
-            self.writer = writer
-            self.writerInput = writerInput
-            self.completionHandler = completionHandler
+        
+            self.videoDataDelegate.queue.sync {
+                // Now everything is set, declare the record objects
+                // This will start recording, enacted in the videoDataSource delegate
+                self.writer = writer
+                self.writerInput = writerInput
+                self.completionHandler = completionHandler
+            }
         }
         #endif
     }
