@@ -86,7 +86,9 @@ class InfoViewController: UIViewController {
     }
     
     var informedConsentNameField: UITextField?
+    var informedConsentNameErrorLabel: UILabel?
     var informedConsentEmailField: UITextField?
+    var informedConsentEmailErrorLabel: UILabel?
     var informedConsentErrorLabel: UILabel?
     var informedConsentSubmitButton: UIButton?
     var informedConsentAllConsentsChecked = false {
@@ -241,6 +243,14 @@ class InfoViewController: UIViewController {
             informedConsentNameField = nameField
             stackView.addArrangedSubview(nameField)
             
+            let nameErrorLabel = UILabel()
+            nameErrorLabel.text = "Name is too short"
+            nameErrorLabel.textColor = .systemRed
+            nameErrorLabel.font = UIFont.systemFont(ofSize: 12)
+            nameErrorLabel.isHidden = true
+            informedConsentNameErrorLabel = nameErrorLabel
+            stackView.addArrangedSubview(nameErrorLabel)
+            
             let emailField = UITextField()
             emailField.placeholder = "Enter your email address"
             emailField.accessibilityLabel = "Email address"
@@ -250,6 +260,14 @@ class InfoViewController: UIViewController {
             emailField.delegate = self
             informedConsentEmailField = emailField
             stackView.addArrangedSubview(emailField)
+            
+            let emailErrorLabel = UILabel()
+            emailErrorLabel.text = "Invalid email address"
+            emailErrorLabel.textColor = .systemRed
+            emailErrorLabel.font = UIFont.systemFont(ofSize: 12)
+            emailErrorLabel.isHidden = true
+            informedConsentEmailErrorLabel = emailErrorLabel
+            stackView.addArrangedSubview(emailErrorLabel)
             
             let errorLabel = UILabel()
             errorLabel.numberOfLines = 0 // As many as needed
@@ -441,6 +459,27 @@ extension InfoViewController: UITextFieldDelegate {
     
     /// On the user entering name or email, validate to enable the submit button
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField === informedConsentNameField,
+           let errorLabel = informedConsentNameErrorLabel
+        {
+            let shouldBeHidden = isValidName(textField.text ?? "")
+            if errorLabel.isHidden != shouldBeHidden {
+                UIView.animate(withDuration: 0.3) {
+                    errorLabel.isHidden = shouldBeHidden
+                }
+            }
+        }
+        if textField === informedConsentEmailField,
+           let errorLabel = informedConsentEmailErrorLabel
+        {
+            let shouldBeHidden = isValidEmail(textField.text ?? "")
+            if errorLabel.isHidden != shouldBeHidden {
+                UIView.animate(withDuration: 0.3) {
+                    errorLabel.isHidden = shouldBeHidden
+                }
+            }
+        }
+        
         informedConsentSetSubmitEnable()
         return true
     }
