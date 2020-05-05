@@ -23,6 +23,9 @@ The consent markdown file has the introductory prose preceded by the consent ite
 
 ## Version history
 
+v1.0.3
+- Consent form as-you-type validation labels
+
 v1.0.2
 - iPad first-run tweak
 - Robustness pass
