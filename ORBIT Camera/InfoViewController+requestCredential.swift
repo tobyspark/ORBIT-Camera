@@ -113,38 +113,34 @@ extension InfoViewController {
                 }
             }
         case .failure(let error):
-            if let informedConsentErrorLabel = informedConsentErrorLabel
-            {
-                switch error {
-                case .transportError:
-                    informedConsentErrorLabelText = "There was a problem submitting your consent. The ORBIT servers could not be reached. Is this iOS device connected to the internet?\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
-                case .responseError:
-                    informedConsentErrorLabelText = "There was a problem submitting your consent. The app received an unexpected response from the ORBIT servers.\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
-                case .badRequest(let response):
-                    var genericMessage = "There was a problem submitting your consent. The ORBIT servers rejected the request.\n"
-                    for (field, values) in response {
-                        let message = values.reduce("") { $0 + $1.replacingOccurrences(of: "this field", with: field)}
-                        switch field {
-                        case "name":
-                            informedConsentNameErrorLabelText = message
-                        case "email":
-                            informedConsentEmailErrorLabelText = message
-                        default:
-                            genericMessage += message + "\n"
-                        }
+            switch error {
+            case .transportError:
+                informedConsentErrorLabel?.text = "There was a problem submitting your consent. The ORBIT servers could not be reached. Is this iOS device connected to the internet?\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
+            case .responseError:
+                informedConsentErrorLabel?.text = "There was a problem submitting your consent. The app received an unexpected response from the ORBIT servers.\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
+            case .badRequest(let response):
+                var genericMessage = "There was a problem submitting your consent. The ORBIT servers rejected the request.\n"
+                for (field, values) in response {
+                    let message = values.reduce("") { $0 + $1.replacingOccurrences(of: "this field", with: field)}
+                    switch field {
+                    case "name":
+                        informedConsentNameErrorLabel?.text = message
+                    case "email":
+                        informedConsentEmailErrorLabel?.text = message
+                    default:
+                        genericMessage += message + "\n"
                     }
-                    genericMessage += "\nIf this problem persists, please contact info@orbit.city.ac.uk"
-                    informedConsentErrorLabelText = genericMessage
-                case .unexpectedResponse:
-                    informedConsentErrorLabelText = "There was a problem submitting your consent. The app received an unexpected response from the ORBIT servers.\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
-                case .forbidden:
-                    informedConsentErrorLabelText = "There was a problem submitting your consent. The app could not authenticate with the ORBIT servers.\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
                 }
-                informedConsentErrorLabel.isHidden = false
-                scrollView.scrollRectToVisible(stackView.frame, animated: true)
-                UIAccessibility.focus(element: informedConsentErrorLabel)
-                informedConsentIsSubmitting = false
+                genericMessage += "\nIf this problem persists, please contact info@orbit.city.ac.uk"
+                informedConsentErrorLabel?.text = genericMessage
+            case .unexpectedResponse:
+                informedConsentErrorLabel?.text = "There was a problem submitting your consent. The app received an unexpected response from the ORBIT servers.\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
+            case .forbidden:
+                informedConsentErrorLabel?.text = "There was a problem submitting your consent. The app could not authenticate with the ORBIT servers.\n\nIf this problem persists, please contact info@orbit.city.ac.uk"
             }
+            scrollView.scrollRectToVisible(stackView.frame, animated: true)
+            UIAccessibility.focus(element: informedConsentErrorLabel)
+            informedConsentIsSubmitting = false
         }
     }
 }

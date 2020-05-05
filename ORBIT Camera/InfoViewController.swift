@@ -86,49 +86,10 @@ class InfoViewController: UIViewController {
     }
     
     var informedConsentNameField: UITextField?
-    var informedConsentNameErrorLabel: UILabel?
-    var informedConsentNameErrorLabelText: String? {
-        didSet {
-            if informedConsentNameErrorLabelText != nil {
-                informedConsentNameErrorLabel?.text = informedConsentNameErrorLabelText
-            }
-            if informedConsentNameErrorLabelText != oldValue {
-                UIView.animate(withDuration: 0.3) { [weak self] in
-                    guard let self = self else { return }
-                    self.informedConsentNameErrorLabel?.isHidden = self.informedConsentNameErrorLabelText == nil
-                }
-            }
-        }
-    }
+    var informedConsentNameErrorLabel: ErrorLabel?
     var informedConsentEmailField: UITextField?
-    var informedConsentEmailErrorLabel: UILabel?
-    var informedConsentEmailErrorLabelText: String? {
-        didSet {
-            if informedConsentEmailErrorLabelText != nil {
-                informedConsentEmailErrorLabel?.text = informedConsentEmailErrorLabelText
-            }
-            if informedConsentEmailErrorLabelText != oldValue {
-                UIView.animate(withDuration: 0.3) { [weak self] in
-                    guard let self = self else { return }
-                    self.informedConsentEmailErrorLabel?.isHidden = self.informedConsentEmailErrorLabelText == nil
-                }
-            }
-        }
-    }
-    var informedConsentErrorLabel: UILabel?
-    var informedConsentErrorLabelText: String? {
-        didSet {
-            if informedConsentErrorLabelText != nil {
-                informedConsentErrorLabel?.text = informedConsentErrorLabelText
-            }
-            if informedConsentErrorLabelText != oldValue {
-                UIView.animate(withDuration: 0.3) { [weak self] in
-                    guard let self = self else { return }
-                    self.informedConsentErrorLabel?.isHidden = self.informedConsentErrorLabelText == nil
-                }
-            }
-        }
-    }
+    var informedConsentEmailErrorLabel: ErrorLabel?
+    var informedConsentErrorLabel: ErrorLabel?
     var informedConsentSubmitButton: UIButton?
     var informedConsentAllConsentsChecked = false {
         didSet { informedConsentSetValidationUI() }
@@ -144,7 +105,6 @@ class InfoViewController: UIViewController {
     }
     func informedConsentSetValidationUI() {
         guard
-            let button = informedConsentSubmitButton,
             let nameField = informedConsentNameField,
             let emailField = informedConsentEmailField
         else
@@ -152,10 +112,10 @@ class InfoViewController: UIViewController {
         let nameValid = isValidName(nameField.text ?? "")
         let emailValid = isValidEmail(emailField.text ?? "")
         
-        informedConsentErrorLabelText = nil
-        informedConsentNameErrorLabelText = nameValid ? nil : "Name is too short"
-        informedConsentEmailErrorLabelText = emailValid ? nil : "Email is not a valid address"
-        button.isEnabled = informedConsentAllConsentsChecked && nameValid && emailValid
+        informedConsentErrorLabel?.text = nil
+        informedConsentNameErrorLabel?.text = nameValid ? nil : "Name is too short"
+        informedConsentEmailErrorLabel?.text = emailValid ? nil : "Email is not a valid address"
+        informedConsentSubmitButton?.isEnabled = informedConsentAllConsentsChecked && nameValid && emailValid
     }
     @objc func informedConsentSubmitAction() {
         guard
@@ -285,11 +245,7 @@ class InfoViewController: UIViewController {
             informedConsentNameField = nameField
             stackView.addArrangedSubview(nameField)
             
-            let nameErrorLabel = UILabel()
-            nameErrorLabel.text = "Name is too short"
-            nameErrorLabel.textColor = .systemRed
-            nameErrorLabel.font = UIFont.systemFont(ofSize: 12)
-            nameErrorLabel.isHidden = true
+            let nameErrorLabel = ErrorLabel()
             informedConsentNameErrorLabel = nameErrorLabel
             stackView.addArrangedSubview(nameErrorLabel)
             
@@ -303,24 +259,19 @@ class InfoViewController: UIViewController {
             informedConsentEmailField = emailField
             stackView.addArrangedSubview(emailField)
             
-            let emailErrorLabel = UILabel()
-            emailErrorLabel.text = "Invalid email address"
-            emailErrorLabel.textColor = .systemRed
-            emailErrorLabel.font = UIFont.systemFont(ofSize: 12)
-            emailErrorLabel.isHidden = true
+            let emailErrorLabel = ErrorLabel()
             informedConsentEmailErrorLabel = emailErrorLabel
             stackView.addArrangedSubview(emailErrorLabel)
             
-            let errorLabel = UILabel()
+            let errorLabel = ErrorLabel()
             errorLabel.numberOfLines = 0 // As many as needed
-            errorLabel.textColor = .systemRed
-            errorLabel.isHidden = true
+            errorLabel.font = emailField.font!
             informedConsentErrorLabel = errorLabel
             stackView.addArrangedSubview(errorLabel)
             
             let button = UIButton(type: .system)
             button.setTitle("Submit consent", for: .normal)
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 17)
+            button.titleLabel?.font = emailField.font!
             button.isEnabled = false
             button.addTarget(self, action: #selector(informedConsentSubmitAction), for: .touchUpInside)
             informedConsentSubmitButton = button
