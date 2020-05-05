@@ -87,12 +87,51 @@ class InfoViewController: UIViewController {
     
     var informedConsentNameField: UITextField?
     var informedConsentNameErrorLabel: UILabel?
+    var informedConsentNameErrorLabelText: String? {
+        didSet {
+            if informedConsentNameErrorLabelText != nil {
+                informedConsentNameErrorLabel?.text = informedConsentNameErrorLabelText
+            }
+            if informedConsentNameErrorLabelText != oldValue {
+                UIView.animate(withDuration: 0.3) { [weak self] in
+                    guard let self = self else { return }
+                    self.informedConsentNameErrorLabel?.isHidden = self.informedConsentNameErrorLabelText == nil
+                }
+            }
+        }
+    }
     var informedConsentEmailField: UITextField?
     var informedConsentEmailErrorLabel: UILabel?
+    var informedConsentEmailErrorLabelText: String? {
+        didSet {
+            if informedConsentEmailErrorLabelText != nil {
+                informedConsentEmailErrorLabel?.text = informedConsentEmailErrorLabelText
+            }
+            if informedConsentEmailErrorLabelText != oldValue {
+                UIView.animate(withDuration: 0.3) { [weak self] in
+                    guard let self = self else { return }
+                    self.informedConsentEmailErrorLabel?.isHidden = self.informedConsentEmailErrorLabelText == nil
+                }
+            }
+        }
+    }
     var informedConsentErrorLabel: UILabel?
+    var informedConsentErrorLabelText: String? {
+        didSet {
+            if informedConsentErrorLabelText != nil {
+                informedConsentErrorLabel?.text = informedConsentErrorLabelText
+            }
+            if informedConsentErrorLabelText != oldValue {
+                UIView.animate(withDuration: 0.3) { [weak self] in
+                    guard let self = self else { return }
+                    self.informedConsentErrorLabel?.isHidden = self.informedConsentErrorLabelText == nil
+                }
+            }
+        }
+    }
     var informedConsentSubmitButton: UIButton?
     var informedConsentAllConsentsChecked = false {
-        didSet { informedConsentSetSubmitEnable() }
+        didSet { informedConsentSetValidationUI() }
     }
     var informedConsentIsSubmitting = false {
         didSet {
@@ -103,17 +142,20 @@ class InfoViewController: UIViewController {
             informedConsentSubmitButton.setTitle(!informedConsentIsSubmitting ? "Submit" : "Submitting...", for: .normal)
         }
     }
-    func informedConsentSetSubmitEnable() {
+    func informedConsentSetValidationUI() {
         guard
             let button = informedConsentSubmitButton,
-            let name = informedConsentNameField?.text,
-            let email = informedConsentEmailField?.text
+            let nameField = informedConsentNameField,
+            let emailField = informedConsentEmailField
         else
             { return }
+        let nameValid = isValidName(nameField.text ?? "")
+        let emailValid = isValidEmail(emailField.text ?? "")
         
-        button.isEnabled = informedConsentAllConsentsChecked &&
-            isValidName(name) &&
-            isValidEmail(email)
+        informedConsentErrorLabelText = nil
+        informedConsentNameErrorLabelText = nameValid ? nil : "Name is too short"
+        informedConsentEmailErrorLabelText = emailValid ? nil : "Email is not a valid address"
+        button.isEnabled = informedConsentAllConsentsChecked && nameValid && emailValid
     }
     @objc func informedConsentSubmitAction() {
         guard
@@ -459,28 +501,10 @@ extension InfoViewController: UITextFieldDelegate {
     
     /// On the user entering name or email, validate to enable the submit button
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if textField === informedConsentNameField,
-           let errorLabel = informedConsentNameErrorLabel
-        {
-            let shouldBeHidden = isValidName(textField.text ?? "")
-            if errorLabel.isHidden != shouldBeHidden {
-                UIView.animate(withDuration: 0.3) {
-                    errorLabel.isHidden = shouldBeHidden
-                }
-            }
-        }
-        if textField === informedConsentEmailField,
-           let errorLabel = informedConsentEmailErrorLabel
-        {
-            let shouldBeHidden = isValidEmail(textField.text ?? "")
-            if errorLabel.isHidden != shouldBeHidden {
-                UIView.animate(withDuration: 0.3) {
-                    errorLabel.isHidden = shouldBeHidden
-                }
-            }
-        }
-        
-        informedConsentSetSubmitEnable()
+        informedConsentSetValidationUI()
         return true
+    }
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        informedConsentSetValidationUI()
     }
 }
