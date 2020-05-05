@@ -49,6 +49,7 @@
 		4BA680EC243C968C0092DAEF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB72405730700E31D93 /* AppDelegate.swift */; };
 		4BA680ED243C96910092DAEF /* AppNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD162409D4A4007AB630 /* AppNetwork.swift */; };
 		4BA680F2243DE7CD0092DAEF /* UIAccessibility+Focus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA680F1243DE7CD0092DAEF /* UIAccessibility+Focus.swift */; };
+		4BD4A16924617FF800817FF4 /* ErrorLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD4A16824617FF800817FF4 /* ErrorLabel.swift */; };
 		4BE50EF52437F07C00BE79C7 /* Collection+SafeSubscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE50EF42437F07C00BE79C7 /* Collection+SafeSubscript.swift */; };
 		4BE50EF72438879E00BE79C7 /* ThingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE50EF62438879E00BE79C7 /* ThingCell.swift */; };
 		4BF14BBA2405730700E31D93 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB92405730700E31D93 /* SceneDelegate.swift */; };
@@ -110,6 +111,7 @@
 		4BA13A59242D6EC4006D838B /* PreviewMetalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewMetalView.swift; sourceTree = "<group>"; };
 		4BA13A5B242D71E4006D838B /* PassThrough.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PassThrough.metal; sourceTree = "<group>"; };
 		4BA680F1243DE7CD0092DAEF /* UIAccessibility+Focus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAccessibility+Focus.swift"; sourceTree = "<group>"; };
+		4BD4A16824617FF800817FF4 /* ErrorLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorLabel.swift; sourceTree = "<group>"; };
 		4BE50EF42437F07C00BE79C7 /* Collection+SafeSubscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+SafeSubscript.swift"; sourceTree = "<group>"; };
 		4BE50EF62438879E00BE79C7 /* ThingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThingCell.swift; sourceTree = "<group>"; };
 		4BF14BB42405730700E31D93 /* ORBIT Camera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ORBIT Camera.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -211,6 +213,7 @@
 				4B87FD2F240EC756007AB630 /* MultipartFormData.swift */,
 				4B8409B224499B470001F654 /* OrbitPagerView.swift */,
 				4B9AA9FE2418EA49002380B1 /* RecordButton.swift */,
+				4BD4A16824617FF800817FF4 /* ErrorLabel.swift */,
 				4B3119B62452F75700E28452 /* MarkdownParser.swift */,
 				4B3D772524332C740077DFD0 /* VideoKindPickerView.swift */,
 				4BE50EF42437F07C00BE79C7 /* Collection+SafeSubscript.swift */,
@@ -364,6 +367,7 @@
 				4BF14C192405B81900E31D93 /* AppDatabase.swift in Sources */,
 				4B87FD1124098D57007AB630 /* Participant.swift in Sources */,
 				4B3D772624332C740077DFD0 /* VideoKindPickerView.swift in Sources */,
+				4BD4A16924617FF800817FF4 /* ErrorLabel.swift in Sources */,
 				4BFC5F27245B11A300E5A3C1 /* InfoViewController+requestCredential.swift in Sources */,
 				4B87FD30240EC757007AB630 /* MultipartFormData.swift in Sources */,
 				4B9AA9FF2418EA49002380B1 /* RecordButton.swift in Sources */,
@@ -567,7 +571,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0.0;
+				CURRENT_PROJECT_VERSION = 1.0.3;
 				DEVELOPMENT_TEAM = 56VGQ4L2V3;
 				INFOPLIST_FILE = "ORBIT Camera/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -587,7 +591,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1.0.0;
+				CURRENT_PROJECT_VERSION = 1.0.3;
 				DEVELOPMENT_TEAM = 56VGQ4L2V3;
 				INFOPLIST_FILE = "ORBIT Camera/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
