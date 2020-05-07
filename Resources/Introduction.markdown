@@ -24,7 +24,7 @@ Your first task is to decide what you would like the A.I. to learn about. To do 
 
 ## Choosing where to record 
 
-Your next task is to choose at least six different places where you will record the training videos for the things you can move around. It is important that each of these locations is different so that the app can learn to recognise your things when they are in different places! This can mean surfaces in different rooms of your house, in different corners of the same room,in a public space like a library, in outdoor locations like your garden or garage, in indoor locations with a lot of natural light like near a window, or in locations with no natural light at all, like a cupboard.   
+Your next task is to choose at least six different places where you will record the training videos for the things you can move around. It is important that each of these locations is different so that the app can learn to recognise your things when they are in different places! This can mean surfaces in different rooms of your house, in different corners of the same room, in a public space like a library, in outdoor locations like your garden or garage, in indoor locations with a lot of natural light like near a window, or in locations with no natural light at all, like a cupboard.   
 
 It is okay if you reuse locations and record a training video of one thing on the same surface as the training video of another thing. What is important is that you do not record multiple training videos of the same thing in the same locations. If your things can be easily moved, you can speed up the process by taking several things at once to one location and then taking a training video of each separately before moving them all to the next location.  
 
