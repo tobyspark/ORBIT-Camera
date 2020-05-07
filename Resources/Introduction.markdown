@@ -40,7 +40,7 @@ Your Things list will be empty on your first use. To add something, select the _
 
 2. Add new video button. Brings up the camera controls. Bringing up the camera controls will provide a record button that can be used to start and stop a recording. Upon stop, the camera controls will dismiss and the video will be selected in the video review selector. There will be a tic sound every 5 seconds to help you time your recording. 
 
-3. Video review selector. Adjust to change the video detailed in the rest of the screen, as follows. 
+3. Video review selector. Brings up the videos you have already taken. Adjust to change the video detailed in the rest of the screen, as follows.Adjust to change the video detailed in the rest of the screen, as follows. 
 
 4. Video recorded date. 
 
