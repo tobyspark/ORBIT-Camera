@@ -32,9 +32,9 @@ If the items you choose cannot be moved to different locations because they are 
 
 ## Navigating the ORBIT Camera app 
 
-The app has two main screens. The first is called the Things list screen and is a list of the things you have chosen to video. If you select one of your things, you will be taken to a second screen called the Thing record and review screen. This is where you can record videos of that thing. 
+The app has two main screens. The first is called the _Things list screen_ and is a list of the things you have chosen to video. If you select one of your things, you will be taken to a second screen called the _Thing record and review screen_. This is where you can record videos of that thing. 
 
-Your Things list will be empty on your first use. To add something, select the Thing name text field and type a name. When you click "Go” or the “Add thing” button, you will be taken to the record and review screen. On this screen you can choose whether you want the training or testing video collections for this thing, and then add videos to that collection. You can also review, re-record, and delete these videos. Here is how the screen is structured: 
+Your Things list will be empty on your first use. To add something, select the _Thing name_ text field and type a name. When you click _Go_ or the _Add thing_ button, you will be taken to the _record and review screen_. On this screen you can choose whether you want the training or testing video collections for this thing, and then add videos to that collection. You can also review, re-record, and delete these videos. Here is how the screen is structured: 
 
 1. Buttons for _Train_, _Zoom Out Test_, and _Pan Test_ video collections. Use these buttons to add that kind of video, or review ones you have already taken. 
 
@@ -44,19 +44,19 @@ Your Things list will be empty on your first use. To add something, select the T
 
 4. Video recorded date. 
 
-5. Re-record video button. If you wish to re-record, use the re-record button to bring up the camera controls. 
+5. Re-record video button. If you wish to re-record, use the _re-record_ button to bring up the camera controls. 
 
-6. Orbit dataset status: uploaded. Once the app has uploaded the video to our online repository, this status will say “uploaded” The app needs power and Wi-Fi to upload your videos.
+6. Orbit dataset status: uploaded. Once the app has uploaded the video to our online repository, this status will say _uploaded_ The app needs power and Wi-Fi to upload your videos.
 
-7. Orbit dataset status:Ckecked. Once we have checked that your video is appropriate, this status will say “checked”.
+7. Orbit dataset status: cHecked. Once we have checked that your video is appropriate, this status will say _checked_.
 
-8. Orbit dataset status: published. Once the ORBIT dataset has been created and published, this status will say “published”. Once published, any further changes in your app will not be registered. 
+8. Orbit dataset status: published. Once the ORBIT dataset has been created and published, this status will say _published_. Once published, any further changes in your app will not be registered. 
 
 9. Delete video button. Removes this video from your thing’s video collection. If the video has not yet been published, this will delete the video from your device and our online repository. Once published, this will only delete the video from your device.  
 
-You can freely navigate between the Things list screen and the Thing record and review screen for each of your things. This means you can add things, and videos of any of those things, as opportunities arise. You do not have to add all the videos for a thing in one go. 
+You can freely navigate between the _Things list screen_ and the _Thing record and review screen_ for each of your things. This means you can add things, and videos of any of those things, as opportunities arise. You do not have to add all the videos for a thing in one go. 
 
-Each screen has a button that brings up a sheet with more information. The Things list screen has an ORBIT instructions button that brings up a sheet with this text. The Thing record and review screen has a Recording instructions button that brings up the relevant recording instructions.  
+Each screen has a button that brings up a sheet with more information. The _Things list screen_ has an _ORBIT instructions_ button that brings up a sheet with this text. The _Thing record and review screen_ has a _Recording instructions_ button that brings up the relevant recording instructions.  
 
 # Contacting the ORBIT team
 If you have any questions, difficulties, or concerns about using the ORBIT Camera app or these instructions, please email us at info@orbit.city.ac.uk
