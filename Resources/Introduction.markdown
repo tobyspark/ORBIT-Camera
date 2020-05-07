@@ -48,7 +48,7 @@ Your Things list will be empty on your first use. To add something, select the _
 
 6. Orbit dataset status: uploaded. Once the app has uploaded the video to our online repository, this status will say _uploaded_ The app needs power and Wi-Fi to upload your videos.
 
-7. Orbit dataset status: cHecked. Once we have checked that your video is appropriate, this status will say _checked_.
+7. Orbit dataset status: checked. Once we have checked that your video is appropriate, this status will say _checked_.
 
 8. Orbit dataset status: published. Once the ORBIT dataset has been created and published, this status will say _published_. Once published, any further changes in your app will not be registered. 
 
