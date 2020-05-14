@@ -1,5 +1,66 @@
 # ORBIT Camera
 
+An iOS app used by blind and low-vision people to collect videos for the ORBIT dataset project. The client for [ORBIT Data](https://github.com/tobyspark/orbit_data) server.
+
+Developed by Toby Harris – https://tobyz.net  
+For ORBIT Object Recognition for Blind Image Training – https://orbit.city.ac.uk  
+At City, University of London – https://hcid.city https://www.city.ac.uk  
+Funded by Microsoft AI for Accessibility – https://www.microsoft.com/en-us/research/blog/wheres-my-stuff-developing-ai-with-help-from-people-who-are-blind-or-low-vision-to-meet-their-needs/  
+
+![ORBIT Camera v1.0](Documentation/ORBIT Camera - Available.jpg)
+
+## A quick tour
+
+### First-run
+On first-run, the user gives research project consent. This is a two-page modal screen, first with the ethics committee approved participant information, then the consent form. The participant information page has a share button, which will produce a HTML file. This provides an appropriate and accessible equivalent to providing a physical copy of a participant info hand-out.
+
+On providing consent, the server creates the participant record and supplies credentials that the app will then use to further access the API endpoints. The app does not have any record of which participant ID it represents, it only has a set of credentials. The server identifies the app instance by these credentials, internally assigning the participant from them.
+
+`InfoViewController.swift`, with content from `ParticipantInformation.markdown` and `InformedConsent.markdown`
+
+### Things list screen
+The app follows the Master-Detail pattern. The Master screen lists all the `Things` the user has added. A thing is something that is important to the user, that they would like a future AI to be able to recognise. Things are created with a user-supplied label.
+
+`MasterViewController.swift`
+`Thing.swift`
+
+Plus an app/project information screen.
+
+`InfoViewController.swift`, with content from `Introduction.markdown`
+
+### Thing record and review screen
+This is the detail screen, of the thing-centric Master-Detail pattern. The aim of the app is to record videos of a thing, following a certain filming procedure. Visually, this screen presents a carousel of videos organised into the different categories of procedure. For each category, there are the videos already taken, plus a live-camera view as the last entry to add a new video. Information and options relating to the video selected in the carousel appear below, with a camera control overlay when appropriate.
+
+The voiceover experience has a different structure. Here, the user first selects the procedure category, within which they can add a new video to that category or review existing videos for that category.
+
+`DetailViewController.swift`
+`Video.swift`
+
+Plus a filming instructions screen.
+
+`HelpViewController.swift`, with content from `Recording.markdown`
+
+### ORBIT Data API Endpoints
+Endpoints are set in `settings.swift`. The API access credentials the app ships with are set in `Settings+secrets.swift`, which as far as `Git` is concerned, should only have an `xxx` value. See note about relevant git command there.
+
+The app requests credentials using a syncronous connection; the device must be online for consent to be granted.
+`InfoViewController+requestCredential.swift`
+
+Upload of `Things` and `Videos` are managed by an autonomous part of the app that tracks database state and connectivity. It will keep up trying to upload until they are done.
+`AppUploader.swift`
+
+Things are created using a syncronous connection, this is just a small JSON request with the participant supplied label and JSON response with the server ID of the freshly created record. Videos will only be uploaded once that server record has been obtained. Given the potential of 1GB+ of upload required in total, videos are uploaded in the background. Typically iOS will wait until the phone has power and Wi-Fi to upload. Once given to the iOS system they are mostly managed by the system from there. The app can be suspended and uploads will continue, the only thing that will cancel this is a force-quit of the app. At which point, the app should detect the upload failure and re-submit those videos.
+`AppNetwork.swift`
+`Uploadable.swift`
+`Thing+upload.swift`
+`Video+upload.swift`
+
+### UI Notes
+
+For voiceover, the touch targets of the UI elements were often inadequate. The clearest example of this is the close button of the first-run / app info / help screen. As there is long-form text on this screen, swiping left and right to get to this control was impractical, and the button was hard to find partly because it's small and top-right, and partly of being swamped by this content. So the accessible experience was re-jigged to have this close control be a strip along the right-hand-side edge. Another clear example is the camera's start/stop button accessible touch target extends to the screen edges. This means that most screens actually have an entirely bespoke accessiblity layer. A starting point would be `viewDidLayoutSubviews` in `InfoViewController.swift`.
+
+More gratuitously, the slick UX of the carousel took some coding. It features multiple camera viewfinders, which meant a lower-level approach than `AVCaptureVideoPreviewLayer` was required. Start at `attachPreview` in `Camera.swift`. The pager having categories meant `UIPageControl` was inadequate, requiring a custom `UIControl`. See `OrbitPagerView.swift`. 
+
 ## Informational content
 
 The non-UI text such as introduction prose is parsed into the app from markdown files in the `Resources` folder of this repository.
