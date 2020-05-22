@@ -16,7 +16,7 @@ However, we also need to measure how well the A.I. works by seeing how it handle
 
 The ORBIT Camera app is designed to collect both training and testing videos. These instructions should help you to record videos that will be used for both purposes.
 
-# Collecting videos with the ORBIT Camre app
+# Collecting videos with the ORBIT Camera app
 
 ## Choosing your things
 
@@ -40,17 +40,17 @@ Your Things list will be empty on your first use. To add something, select the _
 
 2. Add new video button. Brings up the camera controls. Bringing up the camera controls will provide a record button that can be used to start and stop a recording. Upon stop, the camera controls will dismiss and the video will be selected in the video review selector. There will be a tic sound every 5 seconds to help you time your recording. 
 
-3. Video review selector. Brings up the videos you have already taken. Adjust to change the video detailed in the rest of the screen, as follows.Adjust to change the video detailed in the rest of the screen, as follows. 
+3. Video review selector. Brings up the videos you have already taken. Adjust to change the video detailed in the rest of the screen, as follows. 
 
 4. Video recorded date. 
 
 5. Re-record video button. If you wish to re-record, use the _re-record_ button to bring up the camera controls. 
 
-6. Orbit dataset status: uploaded. Once the app has uploaded the video to our online repository, this status will say _uploaded_ The app needs power and Wi-Fi to upload your videos.
+6. Orbit dataset status:Once the app has uploaded the video to our online repository, this status will say _uploaded_ The app needs power and Wi-Fi to upload your videos.
 
-7. Orbit dataset status: checked. Once we have checked that your video is appropriate, this status will say _checked_.
+7. Orbit dataset status:Once we have checked that your video is appropriate, this status will say _checked_.
 
-8. Orbit dataset status: published. Once the ORBIT dataset has been created and published, this status will say _published_. Once published, any further changes in your app will not be registered. 
+8. Orbit dataset status:Once the ORBIT dataset has been created and published, this status will say _published_. Once published, any further changes in your app will not be registered. 
 
 9. Delete video button. Removes this video from your thing’s video collection. If the video has not yet been published, this will delete the video from your device and our online repository. Once published, this will only delete the video from your device.  
 
