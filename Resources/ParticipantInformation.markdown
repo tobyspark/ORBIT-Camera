@@ -18,9 +18,9 @@ REC reference number: ETH1920-1126 City, University of London
 
 Smartphones are really useful in making visual information accessible to visually impaired people. For instance, the SeeingAI app allows you to take a picture of your surroundings and then it reads aloud common things that are recognised in the picture, for example “a person sitting on a sofa”.
 
-The problem is that while these kinds of AI currently can say “this is a mug”, they can’t tell you which of your mugs is which, and they don’t know what a white cane is. We are trying to change this. We want these assistive technologies to work for you, so we are working with people like you to identify what things are important to your everyday life, and figure out how best to get the phone to recognise them. To recognise a particular thing by an app, we need first to show what that thing looks like.
+The problem is that while these kinds of A.I. currently can say “this is a mug”, they can’t tell you which of your mugs is which, and they don’t know what a white cane is. We are trying to change this. We want these assistive technologies to work for you, so we are working with people like you to identify what things are important to your everyday life, and figure out how best to get the phone to recognise them. To recognise a particular thing by an app, we need first to show what that thing looks like.
 
-Specifically, the aim of this project is to create a large open dataset of videos taken by visually impaired people. The videos will show things those people judge important in their lives and then the dataset will be used to train AI systems to recognise those things. We made this iOS app to do this, so that we can involve hundreds or thousands of people. 
+Specifically, the aim of this project is to create a large open dataset of videos taken by visually impaired people. The videos will show things those people judge important in their lives and then the dataset will be used to train A.I. systems to recognise those things. We made this iOS app to do this, so that we can involve hundreds or thousands of people. 
 
 ## Why have I been invited to take part?
 
@@ -44,7 +44,7 @@ Your participation in this research is appreciated and you will receive a £50 A
 
 ## How is the project being funded?
 
-The project is funded by Microsoft. We have an ‘AI for Accessibility grant’, see ‘Personalized object recognition through AI’ on https://www.microsoft.com/en-us/ai/ai-for-accessibility-projects?activetab=pivot1%3aprimaryr2
+The project is funded by Microsoft. We have an ‘A.I. for Accessibility grant’, see ‘Personalized object recognition through A.I.’ on https://www.microsoft.com/en-us/ai/ai-for-accessibility-projects?activetab=pivot1%3aprimaryr2
 
 ## Conflicts of interests
 
@@ -73,7 +73,7 @@ Your participation will be kept confidential and we will take some precautions t
 
 ## What will happen to the results?
 
-We will use the videos collected by this app to create a large open dataset. The dataset will be used to train AI systems to recognise the things that are important for visually impaired people.
+We will use the videos collected by this app to create a large open dataset. The dataset will be used to train A.I. systems to recognise the things that are important for visually impaired people.
 
 A summarised version of the findings of the study will be posted on the project website at https://orbit.city.ac.uk/. Subsequent to the study, we may report our work, for example through publishing articles in academic journals or speaking at conferences. Anonymised and in the aggregate, all the data from the study may be provided as evidence for our conclusions. If you desire to have a copy of the result, please send a request by email to the researcher.
 
@@ -97,7 +97,7 @@ City holds insurance policies which apply to this study. If you feel you have be
 
 ## Further information and contact details
 
-Lida Theodorou – info@orbit.city.ac.uk
+Lida Theodorou – Lida.Theodorou.2@city.ac.uk
 
 ## Sign-up
 
