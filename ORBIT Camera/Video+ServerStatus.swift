@@ -12,7 +12,6 @@ import os
 
 extension Video {
     struct APIGETItemResponse: Codable {
-        /// The server database ID of the successfully inserted upload
         let id: Int
         let thing: Int
         let file: String
@@ -21,7 +20,6 @@ extension Video {
     }
     
     struct APIGETPageResponse: Codable {
-        /// The server database ID of the successfully inserted upload
         let count: Int
         let next: String?
         let previous: String?
@@ -61,12 +59,20 @@ extension Video {
             // Update videos
             try! dbQueue.write { db in
                 for result in pageData.results {
-                    guard let video = try Video.filter(Video.Columns.orbitID == result.id).fetchOne(db)
+                    guard var video = try Video.filter(Video.Columns.orbitID == result.id).fetchOne(db)
                     else {
                         os_log("Video GET returned unknown orbitID: %d", log: appNetLog, type: .error, result.id)
                         continue
                     }
-                    print(video, result)
+                    guard let verifiedServerStatus = Video.Verified.init(rawValue: result.validation)
+                    else {
+                        os_log("Video GET returned unknown validation: %{public}s", log: appNetLog, type: .error, result.validation)
+                        continue
+                    }
+                    if video.verified != verifiedServerStatus {
+                        video.verified = verifiedServerStatus
+                        try video.save(db)
+                    }
                 }
             }
             
