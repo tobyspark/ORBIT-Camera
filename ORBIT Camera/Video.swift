@@ -58,6 +58,25 @@ struct Video: Codable, Equatable {
     }
     var kind: Kind
     
+    enum Verified: String, Codable, CustomStringConvertible {
+        case unvalidated = "-"
+        case rejectPII = "P"
+        case rejectInappropriate = "I"
+        case rejectMissingObject = "M"
+        case clean = "C"
+        
+        var description: String {
+            switch self {
+            case .unvalidated: return "Not yet checked"
+            case .rejectPII: return "Rejected, video shows PII"
+            case .rejectInappropriate: return "Rejected, video is inappropriate"
+            case .rejectMissingObject: return "Rejected, video does not show object"
+            case .clean: return "Video checked suitable"
+            }
+        }
+    }
+    var verified: Verified
+    
     init?(of thing: Thing, url: URL, kind: Kind) {
         guard
             let thingID = thing.id
@@ -72,6 +91,7 @@ struct Video: Codable, Equatable {
         self.recorded = Date()
         self.orbitID = nil
         self.kind = kind
+        self.verified = .unvalidated
         
         self.url = url
     }
@@ -83,6 +103,26 @@ struct Video: Codable, Equatable {
     private static var storageURL: URL {
         try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true) // FIXME: try!
     }
+    
+    // Private type property backing `url`
+    private static var storageCacheURL: URL {
+        try! FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true) // FIXME: try!
+    }
+    
+    private static var placeholderURL: URL {
+        Bundle.main.url(forResource: "orbit-cup-photoreal", withExtension: "mp4")! // FIXME: !
+    }
+    
+    private func moveToCacheStorage() {
+        do {
+            try FileManager.default.moveItem(
+                at: URL(fileURLWithPath: filename, relativeTo: Video.storageURL),
+                to: URL(fileURLWithPath: filename, relativeTo: Video.storageCacheURL)
+            )
+        } catch {
+            print(error)
+        }
+    }
 }
 
 extension Video: FetchableRecord, MutablePersistableRecord {
@@ -93,6 +133,7 @@ extension Video: FetchableRecord, MutablePersistableRecord {
         static let recorded = Column(CodingKeys.recorded)
         static let orbitID = Column(CodingKeys.orbitID)
         static let kind = Column(CodingKeys.kind)
+        static let verified = Column(CodingKeys.verified)
     }
     
     // Update auto-incremented id upon successful insertion

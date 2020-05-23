@@ -77,6 +77,15 @@ struct AppDatabase {
             }
         }
         
+        migrator.registerMigration("addVerifiedToVideo") { db in
+            try db.alter(table: "video") { t in
+                // Column names as per CodingKeys
+                t.add(column: "verified", .text)
+            }
+            
+            try Video.updateAll(db, [Video.Columns.verified <- Video.Verified.unvalidated.rawValue])
+        }
+        
         return migrator
     }
 }
