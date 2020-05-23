@@ -278,7 +278,15 @@ class DetailViewController: UIViewController {
             videoUploadedLabel.text = video.orbitID == nil ? "Not yet uploaded" : "Uploaded"
             uploadedElement.accessibilityLabel = "ORBIT dataset status: \(videoUploadedLabel.text!)"
             
-            // TODO: videoVerified
+            switch video.verified {
+            case .unvalidated:
+                videoVerifiedIcon.image = UIImage(systemName: "checkmark.circle")
+            case .rejectInappropriate, .rejectMissingObject, .rejectPII:
+                videoVerifiedIcon.image = UIImage(systemName: "x.circle.fill")
+            case .clean:
+                videoVerifiedIcon.image = UIImage(systemName: "checkmark.circle.fill")
+            }
+            videoVerifiedLabel.text = video.verified.description
             verifiedElement.accessibilityLabel = "\(videoVerifiedLabel.text!)"
             
             // TODO: videoPublished
