@@ -289,7 +289,23 @@ class DetailViewController: UIViewController {
             videoVerifiedLabel.text = video.verified.description
             verifiedElement.accessibilityLabel = "\(videoVerifiedLabel.text!)"
             
-            // TODO: videoPublished
+            switch video.verified {
+            case .unvalidated:
+                videoPublishedIcon.image = UIImage(systemName: "lock.circle")
+                videoPublishedLabel.text = "Not yet published"
+            case .rejectInappropriate, .rejectMissingObject, .rejectPII:
+                videoPublishedIcon.image = UIImage(systemName: "lock.circle")
+                videoPublishedLabel.text = "Re-record to publish"
+            case .clean:
+                let published: Bool
+                if let studyEnd = try! Participant.appParticipant().studyEnd {
+                    published = studyEnd < Date()
+                } else {
+                    published = false
+                }
+                videoPublishedIcon.image = published ? UIImage(systemName: "lock.circle.fill") : UIImage(systemName: "lock.circle")
+                videoPublishedLabel.text = published ? "Published in dataset" : "Not yet published"
+            }
             publishedElement.accessibilityLabel = "\(videoPublishedLabel.text!)"
         }
         
