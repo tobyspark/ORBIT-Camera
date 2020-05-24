@@ -19,10 +19,28 @@ struct Video: Codable, Equatable {
     var thingID: Int64?
     
     /// On-device file URL of a video the participant has recorded
-    /// As the app's data folder is named dynamically, only store the filename and get/set the URL relative to a type set storage location
+    /// To minimise iCloud backup size and low-storage scenarios, the video file will be moved to the cache folder when upload is complete.
+    /// If the system then culls the video file from the cache folder, a bundled-with-the-app placeholder video URL will be returned instead.
+    /// Plus, as the app's data folder is named dynamically, only store the filename and get/set the URL relative to a type set storage location
     var url: URL {
-        get { URL(fileURLWithPath: filename, relativeTo: Video.storageURL) }
-        set { filename = newValue.lastPathComponent }
+        get {
+            var url = URL(fileURLWithPath: filename, relativeTo: Video.storageURL)
+            do {
+                try _ = url.checkResourceIsReachable()
+                return url
+            }
+            catch {}
+            url = URL(fileURLWithPath: filename, relativeTo: Video.storageCacheURL)
+            do {
+                try _ = url.checkResourceIsReachable()
+                return url
+            }
+            catch {}
+            return Video.placeholderURL
+        }
+        set {
+            filename = newValue.lastPathComponent
+        }
     }
     
     /// When the video was recorded
@@ -30,7 +48,9 @@ struct Video: Codable, Equatable {
     
     /// A unique ID for the thing in the ORBIT dataset (or rather, the database the dataset will be produced from)
     // Note this was handled more elegantly by orbitID being an UploadStatus enum, but the supporting code was getting ridiculous.
-    var orbitID: Int?
+    var orbitID: Int? {
+        didSet { if oldValue == nil && orbitID != nil { moveToCacheStorage() } }
+    }
     
     /// The kind of video this is.
     /// Current terminology: videos are taken with one of two goals: "train" or "test", with two "techniques" used for test videos: "zoom" and "pan".
@@ -96,23 +116,38 @@ struct Video: Codable, Equatable {
         self.url = url
     }
     
+    /// Reset in preparation for a new video URL to be set. Deletes the file, deletes the server record, resets statuses pertaining to previous video
+    mutating func rerecordReset() {
+        // Cancel any in-progress upload
+        cancelUploading()
+        
+        // Delete video from server
+        deleteUpload()
+        
+        // Remove file
+        for url in [URL(fileURLWithPath: filename, relativeTo: Video.storageURL), URL(fileURLWithPath: filename, relativeTo: Video.storageURL)] {
+            do {
+                try FileManager.default.removeItem(at: url)
+                break
+            } catch {}
+        }
+        
+        // Reset statuses
+        verified = .unvalidated
+        orbitID = nil
+    }
+    
+    /// Generate a URL suitable for recording a video and then setting this URL as the video's property
+    static func mintRecordURL() -> URL {
+        Video.storageURL
+            .appendingPathComponent(NSUUID().uuidString)
+            .appendingPathExtension("mov")
+    }
+
     // Private property backing `url`
     private var filename: String
     
-    // Private type property backing `url`
-    private static var storageURL: URL {
-        try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true) // FIXME: try!
-    }
-    
-    // Private type property backing `url`
-    private static var storageCacheURL: URL {
-        try! FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true) // FIXME: try!
-    }
-    
-    private static var placeholderURL: URL {
-        Bundle.main.url(forResource: "orbit-cup-photoreal", withExtension: "mp4")! // FIXME: !
-    }
-    
+    // Private method backing `url`
     private func moveToCacheStorage() {
         do {
             try FileManager.default.moveItem(
@@ -120,9 +155,18 @@ struct Video: Codable, Equatable {
                 to: URL(fileURLWithPath: filename, relativeTo: Video.storageCacheURL)
             )
         } catch {
-            print(error)
+            os_log("Move of %{public}s file to cache failed", self.description)
         }
     }
+    
+    // Private type property backing `url`
+    private static let storageURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true) // FIXME: try!
+    
+    // Private type property backing `url`
+    private static let storageCacheURL = try! FileManager.default.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true) // FIXME: try!
+    
+    // Private type property backing `url`
+    private static let placeholderURL = Bundle.main.url(forResource: "orbit-cup-photoreal", withExtension: "mp4")! // FIXME: !
 }
 
 extension Video: FetchableRecord, MutablePersistableRecord {
@@ -152,7 +196,14 @@ extension Video: FetchableRecord, MutablePersistableRecord {
         deleteUpload()
         
         // Remove file
-        try FileManager.default.removeItem(at: url)
+        for url in [URL(fileURLWithPath: filename, relativeTo: Video.storageURL), URL(fileURLWithPath: filename, relativeTo: Video.storageURL)] {
+            do {
+                try FileManager.default.removeItem(at: url)
+                break
+            } catch {}
+        }
+        
+        // Delete record
         let deleted = try performDelete(db)
         if !deleted { os_log("Failed to delete Video") }
         return deleted
