@@ -596,27 +596,20 @@ class DetailViewController: UIViewController {
                     os_log("Could not get video for re-record recordStart", log: appUILog)
                     return
                 }
-                do {
-                    try FileManager.default.removeItem(at: video.url)
-                } catch {
-                    os_log("Could not delete previous recording to re-record", log: appUILog)
-                    return
-                }
                 
                 // Go, configuring completion handler that updates the UI
+                let url = Video.mintRecordURL()
                 let videoPageIndex = pageIndex
-                camera.recordStart(to: video.url) { [weak self] in
+                camera.recordStart(to: url) { [weak self] in
                     guard let self = self
                     else { return }
                     
                     // Update controller state
                     self.rerecordPageIndexes.remove(videoPageIndex)
                     
-                    // Delete server record
-                    video.deleteUpload()
-                    video.orbitID = nil
-                    
                     // Update record
+                    video.rerecordReset()
+                    video.url = url
                     video.recorded = Date()
                     try! dbQueue.write { db in try video.save(db) }
                     
@@ -628,16 +621,9 @@ class DetailViewController: UIViewController {
                     os_log("No thing on recordStart", log: appUILog)
                     return
                 }
-                guard let url = try? FileManager.default
-                        .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-                        .appendingPathComponent(NSUUID().uuidString)
-                        .appendingPathExtension("mov")
-                else {
-                    os_log("Could not create URL for recordStart", log: appUILog)
-                    return
-                }
                 
                 // Go, setting completion handler that creates a Video record and updates the UI
+                let url = Video.mintRecordURL()
                 let kind = videoKind(description: videoPageControl.currentCategoryName!)
                 camera.recordStart(to: url) {
                     // Create a Video record
