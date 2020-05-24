@@ -33,8 +33,7 @@ class PersistenceTests: XCTestCase {
         }
         
         // Mint participant
-        var participant = Settings.participant
-        try dbQueue.write { db in try participant.save(db) }
+        _ = try Participant.appParticipant()
         
         // Mint five things, with five videos each
         let testVideoURL = Bundle(for: type(of: self)).url(forResource: "orbit-cup-photoreal", withExtension:"mp4")!
@@ -84,9 +83,16 @@ class PersistenceTests: XCTestCase {
         XCTAssertNotNil(participant.id, "Stored thing should have an ID")
         try dbQueue.write { db in try participant.save(db) } // Extra save, should not insert new
         
-        let participants = try dbQueue.read { db in try Participant.fetchAll(db) }
+        var participants = try dbQueue.read { db in try Participant.fetchAll(db) }
         XCTAssertEqual(participants.count, 1, "Persisting a participant should result in one thing persisted")
         XCTAssertEqual(participant, participants[0], "Retreiving a persisted participant should return an identical participant")
+        
+        participant.studyStart = Date()
+        participant.studyEnd = Date()
+        try dbQueue.write { db in try participant.save(db) }
+        participants = try dbQueue.read { db in try Participant.fetchAll(db) }
+        XCTAssertEqual(participant.studyStart!.description, participants[0].studyStart!.description, "Retreiving a persisted participant should return an identical participant")
+        XCTAssertEqual(participant.studyEnd!.description, participants[0].studyEnd!.description, "Retreiving a persisted participant should return an identical participant")
     }
     
     /// Persist a thing. Create it, write it to storage, read it from storage, check it's the same.
@@ -128,6 +134,7 @@ class PersistenceTests: XCTestCase {
         XCTAssertEqual(video.recorded.description, videos[0].recorded.description, "Retreiving a persisted thing should return an identical thing") // Floating point internal representation is rounded to three decimal places on coding, so for expediency let's just compare the description.
         XCTAssertEqual(video.orbitID, videos[0].orbitID, "Retreiving a persisted thing should return an identical thing")
         XCTAssertEqual(video.kind, videos[0].kind, "Retreiving a persisted thing should return an identical thing")
+        XCTAssertEqual(video.verified, videos[0].verified, "Retreiving a persisted thing should return an identical thing")
         
         video.orbitID = 456
         try dbQueue.write { db in try video.save(db) }
