@@ -45,6 +45,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, UISplitViewControllerDe
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
+        
+        // Update video statuses from server
+        // Delay allows authCredential be set on app launch
+        DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + .seconds(1)) {
+            Participant.updateServerStatuses()
+            Video.updateServerStatuses()
+        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {

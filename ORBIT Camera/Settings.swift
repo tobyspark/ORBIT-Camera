@@ -18,6 +18,8 @@ struct Settings {
     struct endpointCreateParticipantResponse: Codable {
         let auth_credential: String
     }
+
+    static let endpointParticipant = "https://example.com/phaseone/api/participant/"
     
     static let endpointThing = "https://example.com/phaseone/api/thing/"
     static func endpointThing(id orbitID: Int) -> URL {
@@ -48,6 +50,12 @@ struct Settings {
         let df = DateFormatter()
         df.dateStyle = .long
         df.timeStyle = .short
+        return df
+    }()
+    
+    static let apiDateFomatter: DateFormatter = {
+        let df = DateFormatter()
+        df.dateFormat = "yyyy-MM-dd"
         return df
     }()
 }
