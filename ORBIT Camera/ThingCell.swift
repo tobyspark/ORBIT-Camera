@@ -46,20 +46,19 @@ class ThingCell: UITableViewCell {
                         let detailTextLabel =  self.detailTextLabel
                     else { return }
                     
-                    let message = NSMutableAttributedString(
-                        string: "Videos – ",
-                        attributes: [NSAttributedString.Key.foregroundColor: UIColor.placeholderText.cgColor]
-                    )
+                    let smallCapsFont = ThingCell.smallCapsVariant(of: detailTextLabel.font)
+                    
+                    let message = NSMutableAttributedString()
                     for (index, kind) in Video.Kind.allCases.enumerated() {
                         let kindVideos = videos.filter( { video in video.kind == kind } )
-                        let separator = index > 0 ? ", " : ""
+                        let separator = index == 0 ? "" : " " // <- thin space
                         message.append(NSMutableAttributedString(
-                            string: "\(separator)\(kind.description):",
-                            attributes: [NSAttributedString.Key.foregroundColor: UIColor.placeholderText.cgColor]
+                            string: "\(separator)\(kind.rawValue)",
+                            attributes: [NSAttributedString.Key.font: smallCapsFont]
                             )
                         )
                         message.append(NSAttributedString(
-                            string: " \(kindVideos.count)",
+                            string: "\(kindVideos.count)",
                             attributes: [NSAttributedString.Key.foregroundColor: UIColor.label.cgColor]
                             )
                         )
@@ -79,4 +78,16 @@ class ThingCell: UITableViewCell {
     
     private var thingObserver: TransactionObserver?
     private var videosObserver: TransactionObserver?
+    
+    private static func smallCapsVariant(of font: UIFont) -> UIFont {
+        let descriptor = font.fontDescriptor.addingAttributes([
+            UIFontDescriptor.AttributeName.featureSettings: [
+                [
+                    UIFontDescriptor.FeatureKey.featureIdentifier: kUpperCaseType,
+                    UIFontDescriptor.FeatureKey.typeIdentifier: kUpperCaseSmallCapsSelector
+                ]
+            ]
+        ])
+        return UIFont(descriptor: descriptor, size: font.pointSize)
+    }
 }
