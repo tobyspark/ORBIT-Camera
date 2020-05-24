@@ -299,7 +299,7 @@ class DetailViewController: UIViewController {
             case .clean:
                 let published: Bool
                 if let studyEnd = try! Participant.appParticipant().studyEnd {
-                    published = studyEnd < Date()
+                    published = studyEnd < Date(timeIntervalSinceNow: -60*60*24) // comparing a date to a datetime, add a day on to get end of day
                 } else {
                     published = false
                 }
