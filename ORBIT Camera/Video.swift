@@ -68,10 +68,10 @@ struct Video: Codable, Equatable {
         var description: String {
             switch self {
             case .unvalidated: return "Not yet checked"
-            case .rejectPII: return "Rejected, video reveals identity"
-            case .rejectInappropriate: return "Rejected, video is inappropriate"
-            case .rejectMissingObject: return "Rejected, video does not show object"
-            case .clean: return "Video checked suitable"
+            case .rejectPII: return "Can't use as reveals identity"
+            case .rejectInappropriate: return "Can't use as is inappropriate"
+            case .rejectMissingObject: return "Can't use as does not show object"
+            case .clean: return "Checked and is suitable"
             }
         }
     }
