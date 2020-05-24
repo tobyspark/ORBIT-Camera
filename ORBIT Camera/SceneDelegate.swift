@@ -46,9 +46,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate, UISplitViewControllerDe
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
         
-        // Update server statuses
+        // Update video statuses from server
         // Delay allows authCredential be set on app launch
         DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + .seconds(1)) {
+            Participant.updateServerStatuses()
             Video.updateServerStatuses()
         }
     }

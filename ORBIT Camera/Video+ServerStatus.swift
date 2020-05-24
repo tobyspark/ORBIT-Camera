@@ -32,18 +32,18 @@ extension Video {
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                os_log("updateServerStatuses failed, received error", log: appNetLog)
+                os_log("Video.updateServerStatuses failed, received error", log: appNetLog)
                 print(error)
                 return
             }
             guard let httpResponse = response as? HTTPURLResponse
             else {
-                os_log("updateServerStatuses failed, cannot parse response", log: appNetLog)
+                os_log("Video.updateServerStatuses failed, cannot parse response", log: appNetLog)
                 return
             }
             guard httpResponse.statusCode == 200
             else {
-                os_log("updateServerStatuses failed: %d", log: appNetLog, httpResponse.statusCode)
+                os_log("Video.updateServerStatuses failed: %d", log: appNetLog, httpResponse.statusCode)
                 return
             }
             guard
@@ -52,7 +52,7 @@ extension Video {
                 let data = data,
                 let pageData = try? JSONDecoder().decode(APIGETPageResponse.self, from: data)
             else {
-                os_log("updateServerStatuses failed, could not decode data")
+                os_log("Video.updateServerStatuses failed, could not decode data")
                 return
             }
             
