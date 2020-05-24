@@ -52,6 +52,8 @@
 		4BD4A16924617FF800817FF4 /* ErrorLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BD4A16824617FF800817FF4 /* ErrorLabel.swift */; };
 		4BE50EF52437F07C00BE79C7 /* Collection+SafeSubscript.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE50EF42437F07C00BE79C7 /* Collection+SafeSubscript.swift */; };
 		4BE50EF72438879E00BE79C7 /* ThingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE50EF62438879E00BE79C7 /* ThingCell.swift */; };
+		4BE77689247910470088562D /* Video+ServerStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE77688247910470088562D /* Video+ServerStatus.swift */; };
+		4BE7768C247A98360088562D /* Participant+ServerStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE7768B247A98350088562D /* Participant+ServerStatus.swift */; };
 		4BF14BBA2405730700E31D93 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB92405730700E31D93 /* SceneDelegate.swift */; };
 		4BF14BBC2405730700E31D93 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBB2405730700E31D93 /* MasterViewController.swift */; };
 		4BF14BBE2405730700E31D93 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BBD2405730700E31D93 /* DetailViewController.swift */; };
@@ -114,6 +116,8 @@
 		4BD4A16824617FF800817FF4 /* ErrorLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorLabel.swift; sourceTree = "<group>"; };
 		4BE50EF42437F07C00BE79C7 /* Collection+SafeSubscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+SafeSubscript.swift"; sourceTree = "<group>"; };
 		4BE50EF62438879E00BE79C7 /* ThingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThingCell.swift; sourceTree = "<group>"; };
+		4BE77688247910470088562D /* Video+ServerStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Video+ServerStatus.swift"; sourceTree = "<group>"; };
+		4BE7768B247A98350088562D /* Participant+ServerStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Participant+ServerStatus.swift"; sourceTree = "<group>"; };
 		4BF14BB42405730700E31D93 /* ORBIT Camera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ORBIT Camera.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BF14BB72405730700E31D93 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4BF14BB92405730700E31D93 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -205,11 +209,13 @@
 				4BA13A59242D6EC4006D838B /* PreviewMetalView.swift */,
 				4BA13A5B242D71E4006D838B /* PassThrough.metal */,
 				4B87FD1024098D57007AB630 /* Participant.swift */,
+				4BE7768B247A98350088562D /* Participant+ServerStatus.swift */,
 				4B87FD32240EF49F007AB630 /* Uploadable.swift */,
 				4BF14BCF2405771900E31D93 /* Thing.swift */,
 				4B87FD0D2406A5DF007AB630 /* Thing+upload.swift */,
 				4B87FD1D240D4E93007AB630 /* Video.swift */,
 				4B87FD20240D53FC007AB630 /* Video+upload.swift */,
+				4BE77688247910470088562D /* Video+ServerStatus.swift */,
 				4B87FD2F240EC756007AB630 /* MultipartFormData.swift */,
 				4B8409B224499B470001F654 /* OrbitPagerView.swift */,
 				4B9AA9FE2418EA49002380B1 /* RecordButton.swift */,
@@ -364,6 +370,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4BFC5F252459DA6000E5A3C1 /* Settings+secrets.swift in Sources */,
+				4BE7768C247A98360088562D /* Participant+ServerStatus.swift in Sources */,
 				4BF14C192405B81900E31D93 /* AppDatabase.swift in Sources */,
 				4B87FD1124098D57007AB630 /* Participant.swift in Sources */,
 				4B3D772624332C740077DFD0 /* VideoKindPickerView.swift in Sources */,
@@ -393,6 +400,7 @@
 				4B87FD3924126110007AB630 /* VideoViewCell.swift in Sources */,
 				4BE50EF72438879E00BE79C7 /* ThingCell.swift in Sources */,
 				4B87FD3624111E57007AB630 /* AppDatabase+TestData.swift in Sources */,
+				4BE77689247910470088562D /* Video+ServerStatus.swift in Sources */,
 				4B5A6B992424CB9200A5C45B /* NewThingCell.swift in Sources */,
 				4B87FD21240D53FC007AB630 /* Video+upload.swift in Sources */,
 				4B3119B52451E99D00E28452 /* HelpViewController.swift in Sources */,
