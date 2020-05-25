@@ -88,6 +88,9 @@ The consent markdown file has the introductory prose preceded by the consent ite
 
 ## Version history
 
+v1.1.1
+- Thing list screen font size and dark mode fixes
+
 v1.1.0
 - Verified and published statuses are displayed (requires ORBIT Data v1.1)
 - Once uploaded, the video files are cached rather than stored (i.e. not part of iCloud backup, will be culled by the system on low storage)
