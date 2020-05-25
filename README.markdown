@@ -43,7 +43,7 @@ Plus a filming instructions screen.
 ### ORBIT Data API Endpoints
 Endpoints are set in `settings.swift`. The API access credentials the app ships with are set in `Settings+secrets.swift`, which as far as `Git` is concerned, should only have an `xxx` value. See note about relevant git command there.
 
-The app requests credentials using a syncronous connection; the device must be online for consent to be granted.
+The app requests credentials using a synchronous connection; the device must be online for consent to be granted.
 `InfoViewController+requestCredential.swift`
 
 Upload of `Things` and `Videos` are managed by an autonomous part of the app that tracks database state and connectivity. It will keep up trying to upload until they are done.
@@ -54,6 +54,10 @@ Things are created using a syncronous connection, this is just a small JSON requ
 `Uploadable.swift`
 `Thing+upload.swift`
 `Video+upload.swift`
+
+On coming into the foreground, the app checks study dates and video statuses from the server using a synchronous connection
+`Participant+ServerStatus.swift`
+`Video+ServerStatus.swift`
 
 ### UI Notes
 
@@ -83,6 +87,15 @@ The consent markdown file has the introductory prose preceded by the consent ite
 - Contrast effect and control for viewfinder / videos
 
 ## Version history
+
+v1.1.0
+- Verified and published statuses are displayed (requires ORBIT Data v1.1)
+- Once uploaded, the video files are cached rather than stored (i.e. not part of iCloud backup, will be culled by the system on low storage)
+- A placeholder video (orbit cup) will show if a cached video file has been culled by the system
+- Redesigned Things list screen video counts display
+- Informational content updates
+- PR: [Feature: Move video file to purgeable storage once uploaded](https://github.com/tobyspark/ORBIT-Camera/pull/42)
+- PR: [Feature: Thing screen verified + published status updates from server](https://github.com/tobyspark/ORBIT-Camera/pull/41)
 
 v1.0.3
 - Consent form as-you-type validation labels
