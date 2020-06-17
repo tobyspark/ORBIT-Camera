@@ -10,11 +10,11 @@ Once you have chosen your things and identified your surfaces and locations, you
 
 ## Training videos
 
-Let’s first talk about training videos. Let’s say you want your recognition app to recognise your keys. First, the A.I. needs to be taught what your keys look like, so you will need to record several training videos of your keys. Importantly, your training videos must meet three criteria:  
+Let’s first talk about training videos. Let’s say you want your recognition app to recognise your keys. First, the A.I. needs to be taught what your keys look like, so you will need to record several training videos of your keys. Importantly, your training videos must meet three criteria:
 
 1.	Each training video should record only one thing at a time. There should be no other objects in the background or on the same surface as the keys. 
-2. Each training video must show the keys in at least six different settings. For example, you might take one training video when the keys are on a kitchen counter, one when they have dropped on the floor, one when they are on the couch, etc.    
-3.	When filming your keys, you must rotate them around on the surface to show them from different sides. You will need to think about what parts of the keys are the most identifiable. Do they have a keyring? Maybe you have a whistle on the ring as well. The way you will do this will differ depending on the size of your selected item and is explained in detail in the two following sections.     
+2. Each training video must show the keys in at least six different settings. For example, you might take one training video when the keys are on a kitchen counter, one when they have dropped on the floor, one when they are on the couch, etc.
+3.	When filming your keys, you must rotate them around on the surface to show them from different sides. You will need to think about what parts of the keys are the most identifiable. Do they have a keyring? Maybe you have a whistle on the ring as well. The way you will do this will differ depending on the size of your selected item and is explained in detail in the two following sections.
 
 Let’s get started!
 
@@ -22,7 +22,7 @@ Select one of the three things you’ve chosen to record. If your thing is small
 
 ### Training videos for small/medium things
 
-Follow these step-by-step instructions on how to record a training video of a small to medium sized item that you can move around. A small to medium sized item can be your mug, your keys, your headphones or anything smaller than the distance from your elbow to your fingertips. These are just examples – feel free to select any other small to medium sized item. You will need to record videos for each of your things in six different environments inside or outside of your house. Remember each environment must be different, so that the app can learn to recognise your things when they are in different places!   
+Follow these step-by-step instructions on how to record a training video of a small to medium sized item that you can move around. A small to medium sized item can be your mug, your keys, your headphones or anything smaller than the distance from your elbow to your fingertips. These are just examples – feel free to select any other small to medium sized item. You will need to record videos for each of your things in six different environments inside or outside of your house. Remember each environment must be different, so that the app can learn to recognise your things when they are in different places!
 
 #### Step 1. Go to your selected environment.
 
@@ -30,9 +30,9 @@ Go to where you want to film your thing and clear it so nothing else is on the s
 
 #### Step 2. Position your thing on the clear surface.
 
-Place your thing on the surface, about an arm’s length away from you. Placing the object an arm’s length away will help you keep it in frame when filming.   
+Place your thing on the surface, about an arm’s length away from you. Placing the object an arm’s length away will help you keep it in frame when filming.
 
-#### Step 3. Open the ORBIT Camera app.  
+#### Step 3. Open the ORBIT Camera app.
 
 If you want to record a new thing, enter the name of your thing in the text field and either select _Go_ on the keyboard or use the _Add thing button_. If you have already added your thing to the library, simply select it from your Things list. You will then be taken to the _Thing record and review screen_. Since this is a _Training video_, check that _Train_ is selected. If not, use the Train button to set the selection. Then select the _Add new video_ button to bring up the camera controls. 
 
@@ -44,7 +44,7 @@ Place one hand on the surface next and very close to your thing. You should keep
 
 If your thing is large or immovable, you might not be able to rotate it or move it to different places to record your videos. You will instead take all its training videos in one place, but rather than rotating your item around on a surface, you will move yourself around your large or immovable item. You will record multiple videos, each taken from a different position or angle facing your thing.  You will need to repeat this technique 2 times for each of your large or immovable things. 
 
-Follow these step-by-step instructions on how to record a training video of a large sized or immovable item:  
+Follow these step-by-step instructions on how to record a training video of a large sized or immovable item:
 
 #### Step 1. Go to your selected environment. 
 
@@ -70,13 +70,13 @@ Then take a second set of videos from each of the 3 positions. This should give 
 
 Now let’s talk about testing videos. We call these testing videos because we will use them to test our A.I. algorithms to see how well they are working in real-life scenarios. To do this, you will need to place each of your things on a surface where there are at least five other objects and then take a video of the whole scene. It is important that these five other objects are not any of your ten things. This will help us test the A.I. to see if it can find and recognise your things in a more realistic setting.  
 
-Because we want this to be as realistic as possible, you will need to record a video of your thing on a surface where you commonly look for it.  You will need to construct a realistic scene by arranging your thing and at least five other objects on this same surface. These other objects should not be any of your ten things but completely different items that would likely also be on that surface. For immovable objects like your front door, try to position some likely objects around or in front of it, such as packages, umbrellas, or shoes. When you are arranging your scene, try to imagine how your thing might be placed with the other objects by someone who doesn’t know your habits. This might be tricky but try to do your best. Remember, the more realistic your arrangement of different objects together with your thing, the better. The point is to create a scene where we can test if the app would find your thing even among other stuff.   
+Because we want this to be as realistic as possible, you will need to record a video of your thing on a surface where you commonly look for it.  You will need to construct a realistic scene by arranging your thing and at least five other objects on this same surface. These other objects should not be any of your ten things but completely different items that would likely also be on that surface. For immovable objects like your front door, try to position some likely objects around or in front of it, such as packages, umbrellas, or shoes. When you are arranging your scene, try to imagine how your thing might be placed with the other objects by someone who doesn’t know your habits. This might be tricky but try to do your best. Remember, the more realistic your arrangement of different objects together with your thing, the better. The point is to create a scene where we can test if the app would find your thing even among other stuff.
 
 There are two kinds of testing videos: [zoom out](#how-to-record-a-zoom-out-testing-video) and [pan](#how-to-record-a-pan-testing-video). We would like you to record both testing videos for each of your things. 
 
-### How to record a “Zoom out” testing video  
+### How to record a “Zoom out” testing video
 
-The first type of testing video is called a Zoom out testing video and uses a similar technique to the training videos. You will need take one Zoom out testing video for each of your things.  
+The first type of testing video is called a Zoom out testing video and uses a similar technique to the training videos. You will need take one Zoom out testing video for each of your things.
 
 #### Step 1. Select one of your things.
 
@@ -98,9 +98,9 @@ Start by facing your scene. Reach out and place one hand in your scene. If your 
 
 Repeat these five steps for each of your things! 
 
-### How to record a “Pan” testing video  
+### How to record a “Pan” testing video
 
-The second type of testing video is called a Pan testing video. You will need to take one pan testing video for each of your things.  
+The second type of testing video is called a Pan testing video. You will need to take one pan testing video for each of your things.
 
 #### Step 1. Select one of your things.
 
