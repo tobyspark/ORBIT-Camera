@@ -88,7 +88,7 @@ class DetailViewController: UIViewController {
                                 
                                 // Update pager, from which the collection view pulls its number of pages etc.
                                 self.videoPageControl.categoryCounts = Video.Kind.allCases.map({ kind in
-                                    (kind.description, self.videos[kind]!.count)
+                                    (kind.description, self.videos[kind]!.count, 1)
                                 })
                                 
                                 // Now update collection view
@@ -713,7 +713,7 @@ class DetailViewController: UIViewController {
         try? AVAudioSession.sharedInstance().setCategory(.ambient)
         
         // Set categories to enable addNew pages
-        videoPageControl.categoryCounts = Video.Kind.allCases.map { ($0.description, 0) }
+        videoPageControl.categoryCounts = Video.Kind.allCases.map { ($0.description, 0, 1) }
         
         // Set gesture handlers
         videoPageControl.actionNextPage = { [weak self] in
