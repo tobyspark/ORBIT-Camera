@@ -46,6 +46,11 @@ struct Settings {
         return df
     }()
     
+    static let videoKindSlots = [
+        (kind: Video.Kind.test, slots: 2),
+        (kind: Video.Kind.train, slots: 5),
+    ]
+    
     static let verboseDateFormatter: DateFormatter = {
         let df = DateFormatter()
         df.dateStyle = .long
