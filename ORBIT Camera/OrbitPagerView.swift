@@ -16,15 +16,16 @@ struct OrbitPagerSettings {
     static let itemImage = UIImage(
         systemName: "circle.fill",
         withConfiguration: UIImage.SymbolConfiguration(
-            pointSize: 7
+            pointSize: 7,
+            weight: .black
         )
     )
     
     /// The add new page marker image
     static let addImage = UIImage(
-        systemName: "plus",
+        systemName: "circle",
         withConfiguration: UIImage.SymbolConfiguration(
-            pointSize: 10,
+            pointSize: 7,
             weight: .black
         )
     )
