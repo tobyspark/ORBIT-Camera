@@ -249,7 +249,7 @@ class DetailViewController: UIViewController {
         
         // Update add new shortcut button
         UIView.animate(withDuration: 0.3) {
-            self.addNewPageShortcutButton.alpha = (self.pageStyle == .addNew) ? 0 : 1
+            self.addNewPageShortcutButton.alpha = (self.pageStyle != .addNew && self.videoPageControl.pageIndexForCurrentAddNew != nil) ? 1 : 0
         }
         
         // Update video label
@@ -571,11 +571,16 @@ class DetailViewController: UIViewController {
     
     /// Action the addNewPageShortcutButton
     @IBAction func addNewPageShortcutButtonAction(sender: UIButton) {
+        guard let pageIndexForCurrentAddNew = videoPageControl.pageIndexForCurrentAddNew
+        else {
+            os_log("addNewPageShortcutButtonAction called when no pageIndexForCurrentAddNew")
+            return
+        }
         os_log("Add new shortcut action", log: appUILog, type: .debug)
         // Start it now so it has the best chance of running by the time the scroll completes
         camera.start()
         // Action going to the page, will start the scroll
-        pageIndex = videoPageControl.pageIndexForCurrentAddNew!
+        pageIndex = pageIndexForCurrentAddNew
         // Accessibility steps through this button to bring up the camera controls
         view.accessibilityElements = [
             kindElement,
