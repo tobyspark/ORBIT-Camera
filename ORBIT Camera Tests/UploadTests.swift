@@ -63,7 +63,7 @@ class UploadTests: XCTestCase {
         thing.orbitID = testID
         try dbQueue.write { db in try thing.save(db) }
         
-        var video = Video(of: thing, url: testURL, kind:.testPan)!
+        var video = Video(of: thing, url: testURL, kind:.test)!
         try dbQueue.write { db in try video.save(db) }
 
         guard let taskIdentifier = video.upload(with: Settings.authCredential, in: uploadableSession.session)
