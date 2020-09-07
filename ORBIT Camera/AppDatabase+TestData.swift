@@ -37,8 +37,8 @@ extension AppDatabase {
                 var videoKind: Video.Kind
                 switch technique {
                 case "No technique": videoKind = .train // arbitrary mapping of pilot to phase one kinds
-                case "Rotate": videoKind = .testPan
-                case "Zoom": videoKind = .testZoom
+                case "Rotate": videoKind = .test
+                case "Zoom": videoKind = .test
                 default: throw TestDataError.unknownTechnique
                 }
                 for videoFilename in videoFilenames{

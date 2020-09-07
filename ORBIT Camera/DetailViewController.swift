@@ -797,6 +797,8 @@ class DetailViewController: UIViewController {
         switch description {
         case Video.Kind.train.description:
             return Video.Kind.train
+        case Video.Kind.test.description:
+            return Video.Kind.test
         case Video.Kind.testPan.description:
             return Video.Kind.testPan
         case Video.Kind.testZoom.description:
