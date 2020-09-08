@@ -37,8 +37,8 @@ If you have any questions, difficulties, or concerns about using the ORBIT app t
 
 We also have more information and tips to share with you on our website: 
 
-*Tutorial on how to record videos 
+- Tutorial on how to record videos 
 
-*More information on the ORBIT app 
+- More information on the ORBIT app 
 
-*Frequently Asked Questions (FAQ) 
+- Frequently Asked Questions (FAQ) 
