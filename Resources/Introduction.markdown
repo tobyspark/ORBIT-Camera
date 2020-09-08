@@ -1,20 +1,16 @@
 # Introduction
 
-Hello and welcome to the ORBIT dataset project! 
+## How to collect data for the ORBIT dataset project?
 
-We are collecting a dataset to help develop A.I. recognition apps that will use your mobile phone’s camera to find and identify the things that are important to you. For example, has someone moved your house keys? Do you regularly need to identify specific items while out shopping? What about your guide cane – have you forgotten where you put it, or gotten it confused with someone else’s? Maybe you want to recognise the door of a friend’s house? Imagine if you did not have to know exactly where your things were in order to find or identify them again.
+Hello and welcome to the ORBIT dataset project! Thank you for joining blind and low vision people across the world to create a large dataset of videos. The first use of this dataset will be to build an app like Seeing A.I. that uses artificial intelligence, abbreviated to A.I., and your phone’s camera to identify things that are important to you, not just generic things. For example, your keys that are no longer where you put them or a friend’s car that is parked somewhere in front of your house.  
 
-To build these recognition apps, a large dataset of videos taken by blind and visually impaired users is needed. As part of the ORBIT dataset project, you will be asked to take multiple videos of at least ten things that are meaningful to you or that you regularly need to find or identify. We will combine these videos with submissions from other ORBIT contributors to form a large dataset of different objects. This dataset can then be used to develop new A.I. algorithms to help build apps that will work for blind and visually impaired users all over the world.
+To contribute, you will be asked to take several short videos of five things that are important to you. To make sure our algorithms ultimately work for blind and low vision people, it is really important that the videos comes from you and not from sighted helpers. Below are instructions which will help you to take good videos. You can expect to spend about 2 hours reading the instructions and then recording the videos.  
 
-This document includes step-by-step instructions for how to use this app to record videos of different objects in a way that will help us build new A.I. systems. Because taking videos that can be used for developing A.I. can be tricky for blind users, these instructions are fairly detailed. Keep in mind that the main aim of the project is not to get the perfect videos but to collect videos that are as realistic as the ones you would take when using an A.I. recognition app. Please read these instructions carefully and feel free to revisit the different sections of this guide as often as you need.
+Participants who record all their videos at once found it easier to complete their contribution. A donation will be made to a charity of your choice after you submit 5 complete things during our data collection period.
 
 ## How does A.I. work?
 
-Before you begin taking videos, it might help to understand how they will be used. Apps like Seeing A.I. use Artificial Intelligence, or A.I., to automatically recognise the things users shot with their phone camera. To do this, these systems have to be “taught” what to look for by analysing images or videos of the things you want it to recognise. This is called training the A.I.. By collecting different examples of an object taken with different views and backgrounds, you teach the A.I. what is important and what can be ignored. This is similar to teaching a child a new object by showing it to them in different ways.
-
-However, we also need to measure how well the A.I. works by seeing how it handles images of real-life scenarios. This is called testing the A.I.. It’s not helpful if the A.I. works perfectly for identifying your keys sitting on a table by themselves but not when they are next to a phone or cutlery! So, we need to have different videos of objects for training and testing the A.I..
-
-The ORBIT Camera app is designed to collect both training and testing videos. These instructions should help you to record videos that will be used for both purposes.
+Before you begin taking videos, it might help to understand how they will be used. Apps like Seeing A.I. use Artificial Intelligence, or A.I., to automatically recognise the things users record with their phone camera. To do this, these A.I. algorithms have to be “taught” what to look for by analysing videos of the things you want it to recognise – these are calling training videos. A.I. algorithms learn best when each training video shows each object on its own from different angles and in different locations. This helps the algorithm learn what is important and what to ignore. Once the algorithm has learned to recognise a thing, we need to test its ability to find that thing in a realistic place and in amongst other things, like keys on a bookshelf. We call this a scene. For us to be able to test the A.I., we need you to record the testing videos.   
 
 # Collecting videos with the ORBIT Camera app
 
