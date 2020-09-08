@@ -48,21 +48,24 @@ class RecordButton: UIControl {
                 guard let self = self else { return }
                 self.pipCount += 1
                 if let everyPipAfter = self.everyPipAfter,
-                   self.pipCount > everyPipAfter
+                   self.pipCount >= everyPipAfter
                 {
                     AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PRetry)
+                    self.hapticHeavy.impactOccurred()
                     return
                 }
                 if let majorPip = self.majorPip,
                    self.pipCount % majorPip == 0
                 {
                     AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PStop)
+                    self.hapticMedium.impactOccurred()
                     return
                 }
                 if let minorPip = self.minorPip,
                    self.pipCount % minorPip == 0
                 {
                     AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PStart)
+                    self.hapticLight.impactOccurred()
                     return
                 }
             })
@@ -111,6 +114,10 @@ class RecordButton: UIControl {
     
     private var pipTimer: Timer?
     private var pipCount: Int = 0
+    private let hapticLight = UIImpactFeedbackGenerator(style: .light)
+    private let hapticMedium = UIImpactFeedbackGenerator(style: .medium)
+    private let hapticHeavy = UIImpactFeedbackGenerator(style: .heavy)
+    
     // SystemSoundID    File name    Category
     // 1117    begin_video_record.caf    BeginVideoRecording
     private static let systemSoundVideoBegin: SystemSoundID = 1117
