@@ -96,10 +96,10 @@ class DetailViewController: UIViewController {
                                     switch change {
                                     case let .remove(offset, _, _):
                                         let pageIndex = self.videoPageControl.pageIndexFor(category: kind.description, index: offset)!
-                                        self.videoCollectionView.deleteItems(at: [IndexPath(row: pageIndex, section: 0)])
+                                        self.videoCollectionView.reloadItems(at: [IndexPath(row: pageIndex, section: 0)])
                                     case let .insert(offset, _, _):
                                         let pageIndex = self.videoPageControl.pageIndexFor(category: kind.description, index: offset)!
-                                        self.videoCollectionView.insertItems(at: [IndexPath(row: pageIndex, section: 0)])
+                                        self.videoCollectionView.reloadItems(at: [IndexPath(row: pageIndex, section: 0)])
                                     }
                                 }
                             }, completion: { _ in
