@@ -33,14 +33,13 @@ class RecordButton: UIControl {
         set {}
     }
     
+    var everyPipAfter: Int?
+    var majorPip: Int?
+    var minorPip: Int?
+    
     func toggleRecord() {
         switch recordingState {
         case .idle:
-            // TODO: configurable by app
-            let minorPip = 5
-            let majorPip = 20
-            let everyPipAfter = 25
-            
             recordingState = .active(Date())
             os_log("RecordButton.state active", log: appUILog)
             AudioServicesPlaySystemSound(RecordButton.systemSoundVideoBegin)
@@ -48,15 +47,21 @@ class RecordButton: UIControl {
             pipTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self](timer) in
                 guard let self = self else { return }
                 self.pipCount += 1
-                if self.pipCount > everyPipAfter {
+                if let everyPipAfter = self.everyPipAfter,
+                   self.pipCount > everyPipAfter
+                {
                     AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PRetry)
                     return
                 }
-                if self.pipCount % majorPip == 0 {
+                if let majorPip = self.majorPip,
+                   self.pipCount % majorPip == 0
+                {
                     AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PStop)
                     return
                 }
-                if self.pipCount % minorPip == 0 {
+                if let minorPip = self.minorPip,
+                   self.pipCount % minorPip == 0
+                {
                     AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PStart)
                     return
                 }
