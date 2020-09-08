@@ -36,6 +36,11 @@ class RecordButton: UIControl {
     func toggleRecord() {
         switch recordingState {
         case .idle:
+            // TODO: configurable by app
+            let minorPip = 5
+            let majorPip = 20
+            let everyPipAfter = 25
+            
             recordingState = .active(Date())
             os_log("RecordButton.state active", log: appUILog)
             AudioServicesPlaySystemSound(RecordButton.systemSoundVideoBegin)
@@ -43,12 +48,16 @@ class RecordButton: UIControl {
             pipTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self](timer) in
                 guard let self = self else { return }
                 self.pipCount += 1
-                if self.pipCount > Int(Settings.recordTimeOutSecs) - 5 {
-                    AudioServicesPlaySystemSound(RecordButton.systemSoundTink)
+                if self.pipCount > everyPipAfter {
+                    AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PRetry)
                     return
                 }
-                if self.pipCount % 5 == 0 {
-                    AudioServicesPlaySystemSound(RecordButton.systemSoundTink)
+                if self.pipCount % majorPip == 0 {
+                    AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PStop)
+                    return
+                }
+                if self.pipCount % minorPip == 0 {
+                    AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PStart)
                     return
                 }
             })
@@ -108,4 +117,39 @@ class RecordButton: UIControl {
     private static let systemSoundTock: SystemSoundID = 1104
     // 1105    Tock.caf    sq_tock.caf    KeyPressed
     private static let systemSoundTockAlt: SystemSoundID = 1105
+    
+    private static let systemSoundCameraTimerCountdown: SystemSoundID = {
+        let url = URL(fileURLWithPath: "/System/Library/Audio/UISounds/camera_timer_countdown.caf")
+        var soundID: SystemSoundID = 0
+        AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
+        return soundID
+    }()
+    
+    private static let systemSoundCameraTimerFinalSecond: SystemSoundID = {
+        let url = URL(fileURLWithPath: "/System/Library/Audio/UISounds/camera_timer_final_second.caf")
+        var soundID: SystemSoundID = 0
+        AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
+        return soundID
+    }()
+    
+    private static let systemSoundCamera3PRetry: SystemSoundID = {
+        let url = URL(fileURLWithPath: "/System/Library/Audio/UISounds/nano/3rdParty_Retry_Haptic.caf")
+        var soundID: SystemSoundID = 0
+        AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
+        return soundID
+    }()
+    
+    private static let systemSoundCamera3PStart: SystemSoundID = {
+        let url = URL(fileURLWithPath: "/System/Library/Audio/UISounds/nano/3rdParty_Start_Haptic.caf")
+        var soundID: SystemSoundID = 0
+        AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
+        return soundID
+    }()
+    
+    private static let systemSoundCamera3PStop: SystemSoundID = {
+        let url = URL(fileURLWithPath: "/System/Library/Audio/UISounds/nano/3rdParty_Stop_Haptic.caf")
+        var soundID: SystemSoundID = 0
+        AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
+        return soundID
+    }()
 }
