@@ -9,7 +9,7 @@
 import UIKit
 
 /// An array of category tuples, a name, item count and add count triplet
-typealias CategoryCounts = [(String, Int, Int)]
+typealias CategoryCounts = [(name: String, item: Int, addNew: Int)]
 
 struct OrbitPagerSettings {
     /// The page marker image for an item (in UIPageControl, a dot)
@@ -95,6 +95,18 @@ class OrbitPagerView: UIView {
             }
             return nil
         }
+    }
+    
+    var pageRangesForCurrentCategory: (items: Range<Int>, addNew: Range<Int>)? {
+        var categoryStartIndex = 0
+        for categoryView in categoryViews {
+            if categoryView.pageIndex != nil {
+                let addNewStartIndex = categoryStartIndex + categoryView.itemCount
+                return (categoryStartIndex..<addNewStartIndex, addNewStartIndex..<addNewStartIndex + categoryView.addNewCount)
+            }
+            categoryStartIndex += categoryView.pageCount
+        }
+        return nil
     }
     
     /// The page index corresponding to the category, and index within that category

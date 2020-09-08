@@ -251,6 +251,8 @@ class DetailViewController: UIViewController {
         UIView.animate(withDuration: 0.3) {
             self.addNewPageShortcutButton.alpha = (self.pageStyle != .addNew && self.videoPageControl.pageIndexForCurrentAddNew != nil) ? 1 : 0
         }
+        if self.videoPageControl.pageIndexForCurrentAddNew != nil { self.addNewElement.accessibilityTraits.remove(.notEnabled) }
+        else { self.addNewElement.accessibilityTraits.insert(.notEnabled)}
         
         // Update video label
         let accessibilityDescription: String
@@ -362,10 +364,10 @@ class DetailViewController: UIViewController {
     func configureAccessibilityElements() {
         // Kind element mocks a UISegmentedControl
         kindElement.isAccessibilityElement = false
-        kindElement.accessibilityElements = Video.Kind.allCases.map { kind in
+        kindElement.accessibilityElements = Settings.videoKindSlots.map { (kind, slots) in
             let segment = AccessibilityElementUsingClosures(accessibilityContainer: kindElement)
             segment.accessibilityLabel = kind.description
-            segment.accessibilityHint = "Activate to add \(kind.verboseDescription) videos, or review ones you have already taken."
+            segment.accessibilityHint = "Activate to add any remaining \(kind.verboseDescription) videos, or review ones already taken."
             segment.accessibilityTraits = super.accessibilityTraits.union(.button)
             segment.activateClosure = { [weak self] in
                 guard let self = self
@@ -397,7 +399,7 @@ class DetailViewController: UIViewController {
         pagerElement.incrementClosure = { [weak self] in
             guard
                 let self = self,
-                self.pageIndex + 1 < self.videoPageControl.pageIndexForCurrentAddNew!
+                self.videoPageControl.pageRangesForCurrentCategory!.items.contains(self.pageIndex + 1)
             else
                 { return }
             self.pageIndex += 1
@@ -405,7 +407,7 @@ class DetailViewController: UIViewController {
         pagerElement.decrementClosure = { [weak self] in
             guard
                 let self = self,
-                self.pageIndex > self.videoPageControl.pageIndexFor(category: self.videoPageControl.currentCategoryName!, index: 0)!
+                self.videoPageControl.pageRangesForCurrentCategory!.items.contains(self.pageIndex - 1)
             else
                 { return }
             self.pageIndex -= 1
