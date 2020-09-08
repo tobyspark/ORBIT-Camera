@@ -38,6 +38,8 @@ class RecordButton: UIControl {
     var minorPip: Int?
     
     func toggleRecord() {
+        self.hapticHeavy.impactOccurred()
+        
         switch recordingState {
         case .idle:
             recordingState = .active(Date())
@@ -51,7 +53,7 @@ class RecordButton: UIControl {
                    self.pipCount >= everyPipAfter
                 {
                     AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PRetry)
-                    self.hapticHeavy.impactOccurred()
+                    self.hapticMedium.impactOccurred()
                     return
                 }
                 if let majorPip = self.majorPip,
