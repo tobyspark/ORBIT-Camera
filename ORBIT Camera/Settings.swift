@@ -35,7 +35,10 @@ struct Settings {
     static let captureSessionStablisesVideo = false
     static let recordingResolution = CGSize(width: 1080, height: 1080)
     
-    static let recordTimeOutSecs: TimeInterval = 120
+    static let desiredVideoLength: [Video.Kind: TimeInterval] = [
+        .test: 20,
+        .train: 10,
+    ]
     
     static let recordButtonRingWidth: CGFloat = 6
     

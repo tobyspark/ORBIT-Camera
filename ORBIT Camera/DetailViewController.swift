@@ -322,7 +322,16 @@ class DetailViewController: UIViewController {
         videoPublishedLabel.isEnabled = (pageStyle == .status)
         videoDeleteButton.isEnabled = (pageStyle == .status)
         
-        recordButton.isEnabled = [.rerecord, .addNew].contains(pageStyle)
+        let enableRecordButton = [.rerecord, .addNew].contains(pageStyle)
+        recordButton.isEnabled = enableRecordButton
+        if enableRecordButton,
+           let desired = Settings.desiredVideoLength[pageKind]
+        {
+            recordButton.everyPipAfter = Int(desired) + 5
+            recordButton.majorPip = Int(desired)
+            recordButton.minorPip = 5
+        }
+        
         
         switch pageStyle {
         case .disable:
@@ -659,13 +668,15 @@ class DetailViewController: UIViewController {
             cameraRecordElement.accessibilityFrame = UIAccessibility.convertToScreenCoordinates(view.bounds, in: view)
             
             // Start the time-out
-            recordTimeOut = Timer.scheduledTimer(withTimeInterval: Settings.recordTimeOutSecs, repeats: false, block: { [weak self] (timer) in
-                guard let self = self else { return }
-                if case .active = self.recordButton.recordingState {
-                    self.recordButton.toggleRecord() // This is a bit shonky, chance of a simultaneous press.
-                    self.recordButtonAction(sender: self.recordButton)
-                }
-            })
+            if let desired = Settings.desiredVideoLength[pageKind] {
+                recordTimeOut = Timer.scheduledTimer(withTimeInterval: desired + 10, repeats: false, block: { [weak self] (timer) in
+                    guard let self = self else { return }
+                    if case .active = self.recordButton.recordingState {
+                        self.recordButton.toggleRecord() // This is a bit shonky, chance of a simultaneous press.
+                        self.recordButtonAction(sender: self.recordButton)
+                    }
+                })
+            }
         case .idle:
             camera.recordStop()
             
