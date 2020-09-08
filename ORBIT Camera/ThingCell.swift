@@ -55,32 +55,35 @@ class ThingCell: UITableViewCell {
                     let detailTextLabel =  self.detailTextLabel
                 else { return }
                 
-                let smallCapsFont = ThingCell.smallCapsVariant(of: detailTextLabel.font)
+                let count = videos.count
+                let total = Settings.videoKindSlots.reduce(0) { return $0 + $1.slots }
                 
+                // "3 / 7"
                 let message = NSMutableAttributedString()
-                for (index, kind) in Video.Kind.allCases.enumerated() {
-                    let kindVideos = videos.filter( { video in video.kind == kind } )
-                    let separator = index == 0 ? "" : " " // <- thin space
-                    message.append(NSMutableAttributedString(
-                        string: "\(separator)\(kind.rawValue)",
-                        attributes: [NSAttributedString.Key.font: smallCapsFont]
-                        )
+                message.append(NSAttributedString(
+                    string: "\(count)",
+                    attributes: count < total ? [NSAttributedString.Key.foregroundColor: UIColor.label.cgColor] : nil
                     )
-                    message.append(NSAttributedString(
-                        string: "\(kindVideos.count)",
-                        attributes: [NSAttributedString.Key.foregroundColor: UIColor.label.cgColor]
-                        )
+                )
+                message.append(NSAttributedString(
+                    string: "  ̷ \(total)"
                     )
-                }
+                )
                 detailTextLabel.attributedText = message
                 
-                let accessibilityCountStrings: [String] = Video.Kind.allCases.map { kind in
-                    let kindVideos = videos.filter( { video in video.kind == kind } )
-                    let count = (kindVideos.count == 0) ? "No" : "\(kindVideos.count)"
-                    let videoPluralised = (kindVideos.count > 1) ? "videos" : "video"
-                    return "\(count) \(kind.verboseDescription) \(videoPluralised) "
+                // "3 videos. 2 testing videos to go. 2 training videos to go"
+                // "7 videos. Complete."
+                if count >= total {
+                    detailTextLabel.accessibilityLabel = "\(count) videos. Complete."
+                } else {
+                    let accessibilityCountStrings: [String] = Settings.videoKindSlots.reduce(into: []) { (acc, x) in
+                        let kindVideos = videos.filter( { video in video.kind == x.kind } )
+                        let kindToGo = x.slots - kindVideos.count
+                        if kindToGo <= 0 { return }
+                        acc.append("\(kindToGo) \(x.kind.verboseDescription) video\(kindToGo == 1 ? "" : "s") to go")
+                    }
+                    detailTextLabel.accessibilityLabel = "\(count) videos. \(accessibilityCountStrings.joined(separator: ". "))"
                 }
-                detailTextLabel.accessibilityLabel = accessibilityCountStrings.joined(separator: ", ")
         })
     }
     
@@ -97,5 +100,9 @@ class ThingCell: UITableViewCell {
             ]
         ])
         return UIFont(descriptor: descriptor, size: font.pointSize)
+    }
+    
+    private static func smallVariant(of font: UIFont) -> UIFont {
+        UIFont(descriptor: font.fontDescriptor, size: font.pointSize*2/3)
     }
 }
