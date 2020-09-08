@@ -308,6 +308,9 @@ fileprivate class OrbitPagerCategoryView: UIView {
                 itemStack.removeArrangedSubview(view)
                 view.removeFromSuperview()
             }
+            if pageIndex != nil {
+                displaySelectedInItems()
+            }
             layoutIfNeeded()
         }
     }
@@ -324,6 +327,9 @@ fileprivate class OrbitPagerCategoryView: UIView {
                 addStack.removeArrangedSubview(view)
                 view.removeFromSuperview()
             }
+            if pageIndex != nil {
+                displaySelectedInAddNew()
+            }
             layoutIfNeeded()
         }
     }
@@ -336,13 +342,8 @@ fileprivate class OrbitPagerCategoryView: UIView {
     
     var pageIndex: Int? {
         didSet {
-            for (index, view) in itemStackViews.enumerated() {
-                view.color = (index == pageIndex) ? UIColor.label : UIColor.placeholderText
-            }
-            for (index, view) in addStackViews.enumerated() {
-                let selected = pageIndex != nil && index == (pageIndex! - itemCount)
-                view.color = selected ? UIColor.label : UIColor.placeholderText
-            }
+            displaySelectedInItems()
+            displaySelectedInAddNew()
             if OrbitPagerSettings.emphasiseSelectedLabel {
                 categoryLabel.textColor = (pageIndex == nil) ? .placeholderText : .label
             }
@@ -375,7 +376,7 @@ fileprivate class OrbitPagerCategoryView: UIView {
         initCommon()
     }
     
-    func initCommon() {
+    private func initCommon() {
         borderView.backgroundColor = UIColor.placeholderText
         
         itemStack.axis = .horizontal
@@ -440,6 +441,18 @@ fileprivate class OrbitPagerCategoryView: UIView {
     }
     private var addStackViews: [OrbitPagerPageView] {
         addStack.arrangedSubviews as! [OrbitPagerPageView]
+    }
+    
+    private func displaySelectedInItems() {
+        for (index, view) in itemStackViews.enumerated() {
+            view.color = (index == pageIndex) ? UIColor.label : UIColor.placeholderText
+        }
+    }
+    private func displaySelectedInAddNew() {
+        for (index, view) in addStackViews.enumerated() {
+            let selected = pageIndex != nil && index == (pageIndex! - itemCount)
+            view.color = selected ? UIColor.label : UIColor.placeholderText
+        }
     }
 }
 
