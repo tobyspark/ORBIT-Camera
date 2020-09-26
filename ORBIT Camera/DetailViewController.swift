@@ -858,26 +858,10 @@ extension DetailViewController: UICollectionViewDataSource {
         os_log("DetailViewController.cellForItemAt entered with page %d", log: appUILog, type: .debug, indexPath.row)
         if cameraPageIndexes.contains(indexPath.row) {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Camera Cell", for: indexPath)
-            guard let view = cell.contentView as? PreviewMetalView else {
-                fatalError("Expected a `\(PreviewMetalView.self)` but did not receive one.")
-            }
-            camera.attachPreview(to: view)
             os_log("DetailViewController.cellForItemAt returning camera cell", log: appUILog, type: .debug, indexPath.row)
             return cell
         } else {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Video Cell", for: indexPath) as? VideoViewCell
-            else {
-                fatalError("Expected a `\(VideoViewCell.self)` but did not receive one.")
-            }
-            guard
-                let (name, index) = videoPageControl.categoryIndex(pageIndex: indexPath.row),
-                let video = videos[videoKind(description: name)]![safe: index]
-            else {
-                os_log("No video found", log: appUILog)
-                assertionFailure()
-                return cell
-            }
-            cell.videoURL = video.url
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Video Cell", for: indexPath)
             os_log("DetailViewController.cellForItemAt returning video cell", log: appUILog, type: .debug, indexPath.row)
             return cell
         }
@@ -888,6 +872,58 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout {
     /// The videoCollectionView cells should fill the view
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return videoCollectionView.bounds.size
+    }
+}
+
+extension DetailViewController: UICollectionViewDelegate {
+    // Set camera preview and video on willDisplay
+    // Note this is insufficient for optimal resource usage, as these "visible" cells are present either side of the displayed cell.
+    // So the actual start/stop is handled with the more precise information in scrollViewDidScroll (the leftIndex, rightIndex we compute).
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        switch cell.reuseIdentifier {
+        case "Camera Cell":
+            guard let view = cell.contentView as? PreviewMetalView
+            else {
+                fatalError("Expected a `\(PreviewMetalView.self)` but did not receive one.")
+            }
+            camera.attachPreview(to: view)
+        case "Video Cell":
+            guard let videoCell = cell as? VideoViewCell
+            else {
+                fatalError("Expected a `\(VideoViewCell.self)` but did not receive one.")
+            }
+            guard
+                let (name, index) = videoPageControl.categoryIndex(pageIndex: indexPath.row),
+                let video = videos[videoKind(description: name)]![safe: index]
+            else {
+                os_log("No video found", log: appUILog)
+                assertionFailure()
+                return
+            }
+            videoCell.videoURL = video.url
+        case .none, .some(_):
+            os_log("Could not handle willDisplay cell", log: appUILog)
+        }
+    }
+    
+    // Clear camera preview and video on didEndDisplay
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        switch cell.reuseIdentifier {
+        case "Camera Cell":
+            guard let view = cell.contentView as? PreviewMetalView
+            else {
+                fatalError("Expected a `\(PreviewMetalView.self)` but did not receive one.")
+            }
+            camera.detachPreview(from: view)
+        case "Video Cell":
+            guard let videoCell = cell as? VideoViewCell
+            else {
+                fatalError("Expected a `\(VideoViewCell.self)` but did not receive one.")
+            }
+            videoCell.videoURL = nil
+        case .none, .some(_):
+            os_log("Could not handle willDisplay cell", log: appUILog)
+        }
     }
 }
 
@@ -913,11 +949,24 @@ extension DetailViewController: UIScrollViewDelegate {
         cameraControlVisibility = (1 - transition) * (isLeftCamera ? 1.0 : 0.0) + transition * (isRightCamera ? 1.0 : 0.0)
         
         // Only run capture session when a camera cell is visible
-        let visiblePageIndexes = IndexSet(videoCollectionView.indexPathsForVisibleItems.map { $0.row })
+        // See note on collectionView willDisplay cell above
+        let visiblePageIndexes = IndexSet([Int(leftIndex), Int(rightIndex)])
         if cameraPageIndexes.intersection(visiblePageIndexes).isEmpty {
             camera.stopCancellable() // Perform the stop after a period of grace, to avoid stop/starting while scrolling through
         } else {
             camera.start()
+        }
+        
+        // Only play video when visible
+        // See note on collectionView willDisplay cell above
+        videoCollectionView.indexPathsForVisibleItems.forEach { indexPath in
+            guard let cell = videoCollectionView.cellForItem(at: indexPath) as? VideoViewCell
+            else { return }
+            if visiblePageIndexes.contains(indexPath.row) {
+                cell.play()
+            } else {
+                cell.pause()
+            }
         }
     }
     

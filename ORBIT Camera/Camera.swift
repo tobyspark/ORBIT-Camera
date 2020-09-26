@@ -34,7 +34,20 @@ class Camera {
                 os_log("Camera adding preview", log: appCamLog, type: .debug)
             }
         }
-        start()
+        #endif
+    }
+
+    func detachPreview(from view: PreviewMetalView) {
+        #if !targetEnvironment(simulator)
+        videoDataDelegate.queue.async {
+            self.previewViews = self.previewViews.filter({ (viewRef) -> Bool in
+                let found = viewRef.object == view
+                if found {
+                    os_log("Camera removing preview", log: appCamLog, type: .debug)
+                }
+                return !found
+            })
+        }
         #endif
     }
     

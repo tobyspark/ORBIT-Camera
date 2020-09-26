@@ -31,6 +31,9 @@ class VideoViewCell: UICollectionViewCell {
         }
     }
     
+    func play() { queuePlayer?.play() }
+    func pause() { queuePlayer?.pause() }
+    
     private var queuePlayer: AVQueuePlayer?
     private var playerLooper: AVPlayerLooper?
 
