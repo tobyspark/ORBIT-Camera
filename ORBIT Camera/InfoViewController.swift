@@ -182,7 +182,7 @@ class InfoViewController: UIViewController {
             
             let button = UIButton(type: .system)
             button.setTitle("Continue", for: .normal)
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 17)
+            button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
             button.addTarget(self, action: #selector(participantInfoContinueAction), for: .touchUpInside)
             stackView.addArrangedSubview(button)
         case .informedConsent:
@@ -234,10 +234,12 @@ class InfoViewController: UIViewController {
             webView.configuration.userContentController.addUserScript(userScript)
             
             let signedLabel = UILabel()
+            signedLabel.font = UIFont.preferredFont(forTextStyle: .body)
             signedLabel.text = "Signed –"
             stackView.addArrangedSubview(signedLabel)
             
             let nameField = UITextField()
+            nameField.font = UIFont.preferredFont(forTextStyle: .body)
             nameField.placeholder = "Enter your name"
             nameField.accessibilityLabel = "Name"
             nameField.returnKeyType = .next
@@ -250,6 +252,7 @@ class InfoViewController: UIViewController {
             stackView.addArrangedSubview(nameErrorLabel)
             
             let emailField = UITextField()
+            emailField.font = UIFont.preferredFont(forTextStyle: .body)
             emailField.placeholder = "Enter your email address"
             emailField.accessibilityLabel = "Email address"
             emailField.autocapitalizationType = .none

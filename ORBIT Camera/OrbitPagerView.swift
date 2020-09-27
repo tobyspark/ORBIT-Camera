@@ -379,6 +379,9 @@ fileprivate class OrbitPagerCategoryView: UIView {
     private func initCommon() {
         borderView.backgroundColor = UIColor.placeholderText
         
+        categoryLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        categoryLabel.adjustsFontForContentSizeCategory = true
+        
         itemStack.axis = .horizontal
         itemStack.spacing = 0
         itemStack.distribution = .equalCentering

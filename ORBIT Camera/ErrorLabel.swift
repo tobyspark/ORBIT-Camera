@@ -40,6 +40,6 @@ class ErrorLabel: UILabel {
     func initCommon() {
         text = nil
         textColor = .red
-        font = UIFont.systemFont(ofSize: 12)
+        font = UIFont.preferredFont(forTextStyle: .body)
     }
 }

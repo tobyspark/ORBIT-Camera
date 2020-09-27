@@ -63,7 +63,7 @@ struct MarkdownParser {
     // Use only single-quotes.
     static let css = """
     body {
-        font-family: system-ui, sans-serif;
+        font: -apple-system-body;
         color: \(UIColor.label.css);
         background-color: \(UIColor.systemBackground.css);
     }
@@ -73,7 +73,7 @@ struct MarkdownParser {
         margin-block-start: unset;
     }
     form li {
-        margin-bottom: 0.5em;
+        margin-bottom: 0.5rem;
     }
     form label, input {
         display: inline-block;
@@ -82,7 +82,7 @@ struct MarkdownParser {
         width: 10vw;
         vertical-align: top;
         position: relative;
-        top: 0.1875em;
+        top: 0.1875rem;
     }
     form label {
         width: 80vw;
