@@ -17,26 +17,38 @@ class VideoViewCell: UICollectionViewCell {
             guard
                 let videoURL = newValue
             else {
-                queuePlayer = nil
-                playerLooper = nil
+                playerLayer.player = nil
+                looper = nil
                 return
             }
-
+            
+            // Ideal UX: loop videos. However, if low power, just show a still frame.
             let playerItem = AVPlayerItem(url: videoURL)
-            queuePlayer = AVQueuePlayer()
-            playerLooper = AVPlayerLooper(player: queuePlayer!, templateItem: playerItem)
-            queuePlayer!.play()
-                
-            playerLayer.player = queuePlayer
+            if Settings.lowPowerModeDoesNotHaveVideoPlayback && ProcessInfo.processInfo.isLowPowerModeEnabled {
+                let player = AVPlayer(playerItem: playerItem)
+                player.seek(to: CMTime(seconds: 5, preferredTimescale: 1)) // Jump a little in
+                playerLayer.player = player
+            } else {
+                let queuePlayer = AVQueuePlayer()
+                looper = AVPlayerLooper(player: queuePlayer, templateItem: playerItem)
+                playerLayer.player = queuePlayer
+            }
         }
     }
     
-    func play() { queuePlayer?.play() }
-    func pause() { queuePlayer?.pause() }
-    
-    private var queuePlayer: AVQueuePlayer?
-    private var playerLooper: AVPlayerLooper?
+    func play() {
+        guard ProcessInfo.processInfo.isLowPowerModeEnabled == false
+        else { return }
+        playerLayer.player?.play()
+    }
+    func pause() {
+        guard ProcessInfo.processInfo.isLowPowerModeEnabled == false
+        else { return }
+        playerLayer.player?.pause()
+    }
 
+    private var looper: AVPlayerLooper?
+    
     var playerLayer: AVPlayerLayer {
         return layer as! AVPlayerLayer
     }
