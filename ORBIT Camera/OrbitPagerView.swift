@@ -8,9 +8,6 @@
 
 import UIKit
 
-/// An array of category tuples, a name, item count and add count triplet
-typealias CategoryCounts = [(name: String, item: Int, addNew: Int)]
-
 struct OrbitPagerSettings {
     /// The page marker image for an item (in UIPageControl, a dot)
     static let itemImage = UIImage(
@@ -21,11 +18,20 @@ struct OrbitPagerSettings {
         )
     )
     
-    /// The add new page marker image
-    static let addImage = UIImage(
+    /// The empty page marker image for an item
+    static let emptyImage = UIImage(
         systemName: "circle",
         withConfiguration: UIImage.SymbolConfiguration(
             pointSize: 7,
+            weight: .black
+        )
+    )
+    
+    /// The add new page marker image
+    static let addImage = UIImage(
+        systemName: "plus",
+        withConfiguration: UIImage.SymbolConfiguration(
+            pointSize: 10,
             weight: .black
         )
     )
@@ -42,19 +48,28 @@ struct OrbitPagerSettings {
 
 /// Akin to UIPageControl, OrbitPagerView displays a row of dots corresponding to pages. However here, these dots are sectioned into categories, and each section has an 'add new' page at the end.
 class OrbitPagerView: UIView {
+    enum PageKind {
+        case item
+        case empty
+        case add
+    }
+    
+    /// An array of category tuples, a name, item count and add count triplet
+    typealias CategoryPages = [(name: String, pages: [PageKind])]
+    
     /// The overall page index currently selected
     var pageIndex: Int = 0 {
         didSet {
             var pageIndexRemaining: Int? = pageIndex
             for categoryView in categoryViews {
                 if pageIndexRemaining != nil {
-                    if pageIndexRemaining! < categoryView.pageCount
+                    if pageIndexRemaining! < categoryView.pages.count
                     {
                         categoryView.pageIndex = pageIndexRemaining!
                         pageIndexRemaining = nil
                     } else {
                         categoryView.pageIndex = nil
-                        pageIndexRemaining! -= categoryView.pageCount
+                        pageIndexRemaining! -= categoryView.pages.count
                     }
                 } else {
                     categoryView.pageIndex = nil
@@ -68,43 +83,40 @@ class OrbitPagerView: UIView {
     }
     
     /// The set of page indexes that are 'add new' pages
-    var addNewPageIndexes: IndexSet {
-        get {
-            var currentIndex = 0
-            var indexes: [Int] = []
-            for categoryView in categoryViews {
-                currentIndex += categoryView.itemCount
-                for _ in 0..<categoryView.addNewCount {
-                    indexes.append(currentIndex)
-                    currentIndex += 1
-                }
-            }
-            return IndexSet(indexes)
+    func pageIndexes(of kind: PageKind) -> IndexSet {
+        var currentCategoryStartIndex = 0
+        var indexes: [Int] = []
+        for categoryView in categoryViews {
+            let addNewIndexes = categoryView.pages.enumerated().reduce(into: [Int](), { (result, x) in
+                if x.element == kind { result.append(x.offset)}
+            })
+            indexes += addNewIndexes.map { $0 + currentCategoryStartIndex}
+            currentCategoryStartIndex += categoryView.pages.count
         }
+        return IndexSet(indexes)
     }
     
-    /// The page index for the 'add new' page of the category containing the currently selected page
-    var pageIndexForCurrentAddNew: Int? {
-        get {
-            var categoryStartIndex = 0
-            for categoryView in categoryViews {
-                if categoryView.pageIndex != nil {
-                    return categoryView.addNewCount > 0 ? categoryStartIndex + categoryView.itemCount : nil
-                }
-                categoryStartIndex += categoryView.pageCount
-            }
-            return nil
+    /// The first add new page index after the currently selected page. Loops back to beginning.
+    func pageIndexForNext(_ kind: PageKind) -> Int? {
+        let allPages = Array(categoryPages.map({ $0.pages }).joined())
+        if pageIndex < allPages.endIndex,
+           let addNewIndex = allPages[pageIndex+1..<allPages.endIndex].firstIndex(of: kind)
+        {
+            return addNewIndex
         }
+        if let addNewIndex = allPages[0..<pageIndex].firstIndex(of: kind) {
+            return addNewIndex
+        }
+        return nil
     }
     
-    var pageRangesForCurrentCategory: (items: Range<Int>, addNew: Range<Int>)? {
+    var pageRangeForCurrentCategory: Range<Int>? {
         var categoryStartIndex = 0
         for categoryView in categoryViews {
             if categoryView.pageIndex != nil {
-                let addNewStartIndex = categoryStartIndex + categoryView.itemCount
-                return (categoryStartIndex..<addNewStartIndex, addNewStartIndex..<addNewStartIndex + categoryView.addNewCount)
+                return categoryStartIndex ..< categoryStartIndex + categoryView.pages.count
             }
-            categoryStartIndex += categoryView.pageCount
+            categoryStartIndex += categoryView.pages.count
         }
         return nil
     }
@@ -114,10 +126,10 @@ class OrbitPagerView: UIView {
         var categoryStartIndex = 0
         for categoryView in categoryViews {
             if categoryView.name == category {
-                assert(index < categoryView.pageCount)
+                assert(index < categoryView.pages.count)
                 return categoryStartIndex + index
             }
-            categoryStartIndex += categoryView.pageCount
+            categoryStartIndex += categoryView.pages.count
         }
         return nil
     }
@@ -148,33 +160,33 @@ class OrbitPagerView: UIView {
     
     /// The total number of pages
     var pageCount: Int {
-        get { categoryViews.reduce(0) { $0 + $1.pageCount} }
+        get { categoryViews.reduce(0) { $0 + $1.pages.count} }
     }
     
     /// The index within the category corresponding to the overall page index
     func categoryIndex(pageIndex: Int) -> (String, Int)? {
         var categoryStartIndex = 0
         for categoryView in categoryViews {
-            if pageIndex >= categoryStartIndex && pageIndex < categoryStartIndex + categoryView.itemCount {
+            let categoryPageIndexes = categoryStartIndex..<categoryStartIndex + categoryView.pages.count
+            if categoryPageIndexes.contains(pageIndex) {
                 return (categoryView.name, pageIndex - categoryStartIndex)
             }
-            categoryStartIndex += categoryView.pageCount
+            categoryStartIndex += categoryView.pages.count
         }
         return nil
     }
     
     /// The categories and corresponding counts to display
-    var categoryCounts: CategoryCounts {
+    var categoryPages: CategoryPages {
         set {
             // Add or update category views
-            for (index, (name, itemCount, addNewCount)) in newValue.enumerated() {
+            for (index, (name, pages)) in newValue.enumerated() {
                 if !stack.arrangedSubviews.indices.contains(index) {
                     stack.insertArrangedSubview(OrbitPagerCategoryView(), at: index)
                 }
                 let categoryView = categoryViews[index]
                 categoryView.name = name
-                categoryView.itemCount = itemCount
-                categoryView.addNewCount = addNewCount
+                categoryView.pages = pages
             }
             // Remove extra category views
             while stack.arrangedSubviews.count > newValue.count {
@@ -185,7 +197,7 @@ class OrbitPagerView: UIView {
             layoutIfNeeded()
         }
         get {
-            categoryViews.map { ($0.name, $0.itemCount, $0.addNewCount)}
+            categoryViews.map { ($0.name, $0.pages) }
         }
     }
     
@@ -295,55 +307,42 @@ fileprivate class OrbitPagerCategoryView: UIView {
             layoutIfNeeded()
         }
     }
-
-    var itemCount: Int = 0 {
+    
+    var pages: [OrbitPagerView.PageKind] = [] {
         didSet {
-            while itemStackViews.count < itemCount {
-                guard let itemImage = OrbitPagerSettings.itemImage
-                else { fatalError("Cannot get item image") }
-                itemStack.addArrangedSubview(OrbitPagerPageView(image: itemImage))
+            for change in pages.difference(from: oldValue) {
+                switch change {
+                case let .remove(offset, _, _):
+                    let view = pageStack.arrangedSubviews[offset]
+                    pageStack.removeArrangedSubview(view)
+                    view.removeFromSuperview()
+                case let .insert(offset, kind, _):
+                    let image: UIImage?
+                    switch kind {
+                    case .item:
+                        image = OrbitPagerSettings.itemImage
+                    case .empty:
+                        image = OrbitPagerSettings.emptyImage
+                    case .add:
+                        image = OrbitPagerSettings.addImage
+                    }
+                    guard let itemImage = image
+                    else { fatalError("Cannot get item image") }
+                    pageStack.insertArrangedSubview(OrbitPagerPageView(image: itemImage), at: offset)
+                }
             }
-            while itemStackViews.count > itemCount {
-                let view = itemStack.arrangedSubviews[0]
-                itemStack.removeArrangedSubview(view)
-                view.removeFromSuperview()
-            }
-            if pageIndex != nil {
-                displaySelectedInItems()
+            for (index, view) in pageStackViews.enumerated() {
+                view.color = (index == pageIndex) ? UIColor.label : UIColor.placeholderText
             }
             layoutIfNeeded()
-        }
-    }
-    
-    var addNewCount: Int = 1 {
-        didSet {
-            while addStackViews.count < addNewCount {
-                guard let addImage = OrbitPagerSettings.addImage
-                else { fatalError("Cannot get add image") }
-                addStack.addArrangedSubview(OrbitPagerPageView(image: addImage))
-            }
-            while addStackViews.count > addNewCount {
-                let view = addStack.arrangedSubviews[0]
-                addStack.removeArrangedSubview(view)
-                view.removeFromSuperview()
-            }
-            if pageIndex != nil {
-                displaySelectedInAddNew()
-            }
-            layoutIfNeeded()
-        }
-    }
-    
-    var pageCount: Int {
-        get {
-            itemCount + addNewCount
         }
     }
     
     var pageIndex: Int? {
         didSet {
-            displaySelectedInItems()
-            displaySelectedInAddNew()
+            for (index, view) in pageStackViews.enumerated() {
+                view.color = (index == pageIndex) ? UIColor.label : UIColor.placeholderText
+            }
             if OrbitPagerSettings.emphasiseSelectedLabel {
                 categoryLabel.textColor = (pageIndex == nil) ? .placeholderText : .label
             }
@@ -382,26 +381,20 @@ fileprivate class OrbitPagerCategoryView: UIView {
         categoryLabel.font = UIFont.preferredFont(forTextStyle: .body)
         categoryLabel.adjustsFontForContentSizeCategory = true
         
-        itemStack.axis = .horizontal
-        itemStack.spacing = 0
-        itemStack.distribution = .equalCentering
-        itemStack.alignment = .center
-        addStack.axis = .horizontal
-        addStack.spacing = 0
-        addStack.distribution = .equalCentering
-        addStack.alignment = .center
+        pageStack.axis = .horizontal
+        pageStack.spacing = 0
+        pageStack.distribution = .equalCentering
+        pageStack.alignment = .center
         
         categoryLabel.lineBreakMode = .byClipping
         
         translatesAutoresizingMaskIntoConstraints = false
         borderView.translatesAutoresizingMaskIntoConstraints = false
-        itemStack.translatesAutoresizingMaskIntoConstraints = false
-        addStack.translatesAutoresizingMaskIntoConstraints = false
+        pageStack.translatesAutoresizingMaskIntoConstraints = false
         categoryLabel.translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(borderView)
-        addSubview(itemStack)
-        addSubview(addStack)
+        addSubview(pageStack)
         addSubview(categoryLabel)
         
         let constraints = [
@@ -410,16 +403,12 @@ fileprivate class OrbitPagerCategoryView: UIView {
             borderView.bottomAnchor.constraint(equalTo: bottomAnchor),
             borderView.widthAnchor.constraint(equalToConstant: OrbitPagerSettings.borderWidth),
             
-            itemStack.leadingAnchor.constraint(equalTo: borderView.trailingAnchor),
-            itemStack.topAnchor.constraint(equalTo: topAnchor, constant: OrbitPagerSettings.pageTopSpacing),
-            
-            addStack.leadingAnchor.constraint(equalTo: itemStack.trailingAnchor),
-            addStack.topAnchor.constraint(equalTo: topAnchor, constant: OrbitPagerSettings.pageTopSpacing),
-            addStack.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor),
+            pageStack.leadingAnchor.constraint(equalTo: borderView.trailingAnchor),
+            pageStack.topAnchor.constraint(equalTo: topAnchor, constant: OrbitPagerSettings.pageTopSpacing),
+            pageStack.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor),
             
             categoryLabel.leadingAnchor.constraint(equalTo: borderView.trailingAnchor, constant: OrbitPagerSettings.labelLeftSpacing),
-            categoryLabel.topAnchor.constraint(greaterThanOrEqualTo: itemStack.bottomAnchor, constant: OrbitPagerSettings.labelTopSpacing),
-            categoryLabel.topAnchor.constraint(greaterThanOrEqualTo: addStack.bottomAnchor, constant: OrbitPagerSettings.labelTopSpacing),
+            categoryLabel.topAnchor.constraint(equalTo: pageStack.bottomAnchor, constant: OrbitPagerSettings.labelTopSpacing),
             categoryLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor),
             categoryLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
         ]
@@ -435,27 +424,11 @@ fileprivate class OrbitPagerCategoryView: UIView {
     }
     
     private var borderView = UIView()
-    private var itemStack = UIStackView()
-    private var addStack = UIStackView()
+    private var pageStack = UIStackView()
     private var categoryLabel = UILabel()
     
-    private var itemStackViews: [OrbitPagerPageView] {
-        itemStack.arrangedSubviews as! [OrbitPagerPageView]
-    }
-    private var addStackViews: [OrbitPagerPageView] {
-        addStack.arrangedSubviews as! [OrbitPagerPageView]
-    }
-    
-    private func displaySelectedInItems() {
-        for (index, view) in itemStackViews.enumerated() {
-            view.color = (index == pageIndex) ? UIColor.label : UIColor.placeholderText
-        }
-    }
-    private func displaySelectedInAddNew() {
-        for (index, view) in addStackViews.enumerated() {
-            let selected = pageIndex != nil && index == (pageIndex! - itemCount)
-            view.color = selected ? UIColor.label : UIColor.placeholderText
-        }
+    private var pageStackViews: [OrbitPagerPageView] {
+        pageStack.arrangedSubviews as! [OrbitPagerPageView]
     }
 }
 
