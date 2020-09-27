@@ -50,10 +50,17 @@ class RecordButton: UIControl {
                 guard let self = self else { return }
                 self.pipCount += 1
                 if let everyPipAfter = self.everyPipAfter,
-                   self.pipCount >= everyPipAfter
+                   self.pipCount > everyPipAfter
+                {
+                    AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PStart)
+                    self.hapticLight.impactOccurred()
+                    return
+                }
+                if let everyPipAfter = self.everyPipAfter,
+                   self.pipCount == everyPipAfter
                 {
                     AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PRetry)
-                    self.hapticMedium.impactOccurred()
+                    self.hapticHeavy.impactOccurred()
                     return
                 }
                 if let majorPip = self.majorPip,
@@ -80,6 +87,17 @@ class RecordButton: UIControl {
             AudioServicesPlaySystemSound(RecordButton.systemSoundVideoEnd)
         }
         setNeedsDisplay()
+    }
+    
+    func startTimeout(_ duration: TimeInterval) {
+        stopTimer?.invalidate()
+        stopTimer = Timer.scheduledTimer(withTimeInterval: duration, repeats: false, block: { [weak self] (timer) in
+            guard let self = self else { return }
+            if case .active = self.recordingState {
+                self.toggleRecord()
+                self.sendActions(for: .touchUpInside)
+            }
+        })
     }
     
     override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
@@ -113,6 +131,8 @@ class RecordButton: UIControl {
         }
         context.fillEllipse(in: CGRect(origin: buttonOrigin, size: buttonSize))
     }
+    
+    private var stopTimer: Timer?
     
     private var pipTimer: Timer?
     private var pipCount: Int = 0
