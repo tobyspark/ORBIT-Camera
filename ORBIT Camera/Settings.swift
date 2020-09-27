@@ -40,6 +40,11 @@ struct Settings {
         .train: 15,
     ]
     
+    static let videoTip: [Video.Kind: String] = [
+        .test: "Test: a sweep across a setting",
+        .train: "Train: placed on a clear surface, showing what's important",
+    ]
+    
     static let lowPowerModeDoesNotHaveVideoPlayback = true
     
     static let recordButtonRingWidth: CGFloat = 6

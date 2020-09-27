@@ -346,7 +346,7 @@
                                         </constraints>
                                     </view>
                                     <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1ke-NA-qCX" customClass="RecordButton" customModule="ORBIT_Camera" customModuleProvider="target">
-                                        <rect key="frame" x="157" y="110" width="100" height="100"/>
+                                        <rect key="frame" x="157" y="62" width="100" height="100"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="100" id="PCf-9f-upf"/>
@@ -356,15 +356,25 @@
                                             <action selector="recordButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="6fg-tj-52s"/>
                                         </connections>
                                     </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LiI-wZ-scq">
+                                        <rect key="frame" x="20" y="214" width="374" height="20.5"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstItem="1ke-NA-qCX" firstAttribute="centerX" secondItem="c1p-EG-7ue" secondAttribute="centerX" id="0Yj-33-CcE"/>
                                     <constraint firstAttribute="trailing" secondItem="0NL-dH-rxH" secondAttribute="trailing" constant="20" symbolic="YES" id="5Iy-PQ-ZTP"/>
                                     <constraint firstItem="0NL-dH-rxH" firstAttribute="leading" secondItem="c1p-EG-7ue" secondAttribute="leading" constant="20" symbolic="YES" id="FkI-W5-qqQ"/>
-                                    <constraint firstItem="1ke-NA-qCX" firstAttribute="centerY" secondItem="c1p-EG-7ue" secondAttribute="centerY" id="VSD-N9-Woq"/>
+                                    <constraint firstItem="LiI-wZ-scq" firstAttribute="leading" secondItem="c1p-EG-7ue" secondAttribute="leading" constant="20" symbolic="YES" id="V93-OY-Jq5"/>
+                                    <constraint firstItem="1ke-NA-qCX" firstAttribute="centerY" secondItem="c1p-EG-7ue" secondAttribute="centerY" multiplier="0.7" id="VSD-N9-Woq"/>
                                     <constraint firstAttribute="height" constant="320" id="XyU-oE-jbW"/>
+                                    <constraint firstAttribute="trailing" secondItem="LiI-wZ-scq" secondAttribute="trailing" constant="20" symbolic="YES" id="da0-qz-gOC"/>
                                     <constraint firstItem="0NL-dH-rxH" firstAttribute="top" secondItem="c1p-EG-7ue" secondAttribute="top" id="ecl-Lw-BdN"/>
+                                    <constraint firstItem="LiI-wZ-scq" firstAttribute="centerX" secondItem="c1p-EG-7ue" secondAttribute="centerX" id="rZ1-ZV-Smc"/>
+                                    <constraint firstItem="LiI-wZ-scq" firstAttribute="centerY" secondItem="c1p-EG-7ue" secondAttribute="centerY" multiplier="1.4" id="uLx-jt-4Kk"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -417,6 +427,7 @@
                         <outlet property="cameraControlView" destination="c1p-EG-7ue" id="ICN-PS-Way"/>
                         <outlet property="cameraControlYConstraint" destination="27Y-Dc-F5G" id="pwH-ph-j7G"/>
                         <outlet property="recordButton" destination="1ke-NA-qCX" id="ezf-Xd-TUp"/>
+                        <outlet property="recordLabel" destination="LiI-wZ-scq" id="jyy-4t-ZhF"/>
                         <outlet property="thingNavigationItem" destination="mOI-FS-AaM" id="jez-io-TVJ"/>
                         <outlet property="videoCollectionView" destination="5oc-lW-9vf" id="uQ7-7e-jO7"/>
                         <outlet property="videoDeleteButton" destination="m1S-o9-9xV" id="0Ic-hl-C2g"/>

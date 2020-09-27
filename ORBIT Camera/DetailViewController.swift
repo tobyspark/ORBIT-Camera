@@ -38,6 +38,7 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var cameraControlYConstraint: NSLayoutConstraint!
     @IBOutlet weak var cameraControlHConstraint: NSLayoutConstraint!
     @IBOutlet weak var recordButton: RecordButton!
+    @IBOutlet weak var recordLabel: UILabel!
     
     lazy var kindElement = UIAccessibilityElement(accessibilityContainer: view!)
     lazy var addNewElement = AccessibilityElementUsingClosures(accessibilityContainer: view!)
@@ -331,7 +332,8 @@ class DetailViewController: UIViewController {
             recordButton.majorPip = Int(desired) - 5
             recordButton.minorPip = 5
         }
-        
+        recordLabel.text = Settings.videoTip[pageKind]
+        cameraHeaderElement.accessibilityHint = Settings.videoTip[pageKind]
         
         switch pageStyle {
         case .disable:
