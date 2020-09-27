@@ -699,17 +699,8 @@
                                                     <constraint firstAttribute="width" constant="200" id="XAt-iE-Qga"/>
                                                 </constraints>
                                             </imageView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="ORBIT Camera" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7I2-IG-5Lu">
-                                                <rect key="frame" x="0.0" y="260" width="414" height="41"/>
-                                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle0"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="boolean" keyPath="isAccessibilityElement" value="NO"/>
-                                                </userDefinedRuntimeAttributes>
-                                            </label>
                                             <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y6i-mN-HVc">
-                                                <rect key="frame" x="20" y="341" width="374" height="100"/>
+                                                <rect key="frame" x="20" y="248" width="374" height="100"/>
                                                 <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="100" id="bPI-WX-iAf"/>
@@ -729,14 +720,11 @@
                                             <constraint firstItem="W4X-x0-kh1" firstAttribute="top" secondItem="Y6i-mN-HVc" secondAttribute="bottom" constant="8" symbolic="YES" id="L1l-fu-qnl"/>
                                             <constraint firstItem="2aO-i4-d58" firstAttribute="top" secondItem="WCh-lR-RMy" secondAttribute="top" constant="40" id="LRN-XK-U2u"/>
                                             <constraint firstItem="W4X-x0-kh1" firstAttribute="width" secondItem="Y6i-mN-HVc" secondAttribute="width" id="OZw-9f-O42"/>
-                                            <constraint firstAttribute="trailing" secondItem="7I2-IG-5Lu" secondAttribute="trailing" id="RXM-Va-t6B"/>
-                                            <constraint firstItem="7I2-IG-5Lu" firstAttribute="leading" secondItem="WCh-lR-RMy" secondAttribute="leading" id="SLV-gj-bBh"/>
                                             <constraint firstAttribute="bottom" secondItem="W4X-x0-kh1" secondAttribute="bottom" constant="40" id="V4c-fN-asT"/>
+                                            <constraint firstItem="Y6i-mN-HVc" firstAttribute="top" secondItem="2aO-i4-d58" secondAttribute="bottom" constant="8" symbolic="YES" id="ee0-0e-cdn"/>
                                             <constraint firstItem="Y6i-mN-HVc" firstAttribute="leading" secondItem="WCh-lR-RMy" secondAttribute="leading" constant="20" id="kDd-1z-bwg"/>
                                             <constraint firstItem="W4X-x0-kh1" firstAttribute="centerX" secondItem="WCh-lR-RMy" secondAttribute="centerX" id="nKx-vz-Kj1"/>
-                                            <constraint firstItem="Y6i-mN-HVc" firstAttribute="top" secondItem="7I2-IG-5Lu" secondAttribute="bottom" constant="40" id="qfL-g3-cFD"/>
                                             <constraint firstItem="2aO-i4-d58" firstAttribute="centerX" secondItem="WCh-lR-RMy" secondAttribute="centerX" id="ru2-1p-AoZ"/>
-                                            <constraint firstItem="7I2-IG-5Lu" firstAttribute="top" secondItem="2aO-i4-d58" secondAttribute="bottom" constant="20" id="xzJ-Tf-Hui"/>
                                         </constraints>
                                     </view>
                                 </subviews>
