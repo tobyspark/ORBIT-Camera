@@ -88,8 +88,12 @@ class DetailViewController: UIViewController {
                                 self.videos[kind] = videos
                                 
                                 // Update pager, from which the collection view pulls its number of pages etc.
-                                self.videoPageControl.categoryCounts = Settings.videoKindSlots.map({
-                                    ($0.kind.description, self.videos[$0.kind]!.count, max(0, $0.slots - self.videos[$0.kind]!.count))
+                                self.videoPageControl.categoryPages = Settings.videoKindSlots.map({
+                                    (
+                                        $0.kind.description,
+                                        Array(repeating: OrbitPagerView.PageKind.item, count: self.videos[$0.kind]!.count) +
+                                            Array(repeating: OrbitPagerView.PageKind.empty, count: $0.slots - self.videos[$0.kind]!.count)
+                                    )
                                 })
                                 
                                 // Now update collection view
@@ -134,7 +138,7 @@ class DetailViewController: UIViewController {
     
     /// The page index where the camera to take new videos is placed. Currently the first, but an alternative could be the last
     private var addNewPageIndexes: IndexSet {
-        get { videoPageControl.addNewPageIndexes }
+        get { videoPageControl.pageIndexes(of: .empty) }
     }
     
     /// A dynamic set of page indexes where the videos are flagged for re-recording
@@ -250,9 +254,9 @@ class DetailViewController: UIViewController {
         
         // Update add new shortcut button
         UIView.animate(withDuration: 0.3) {
-            self.addNewPageShortcutButton.alpha = (self.pageStyle != .addNew && self.videoPageControl.pageIndexForCurrentAddNew != nil) ? 1 : 0
+            self.addNewPageShortcutButton.alpha = (self.pageStyle != .addNew && self.videoPageControl.pageIndexForNext(.empty) != nil) ? 1 : 0
         }
-        if self.videoPageControl.pageIndexForCurrentAddNew != nil { self.addNewElement.accessibilityTraits.remove(.notEnabled) }
+        if self.videoPageControl.pageIndexForNext(.empty) != nil { self.addNewElement.accessibilityTraits.remove(.notEnabled) }
         else { self.addNewElement.accessibilityTraits.insert(.notEnabled)}
         
         // Update video label
@@ -333,7 +337,7 @@ class DetailViewController: UIViewController {
         }
         recordLabel.text = Settings.videoTip[pageKind]
         cameraHeaderElement.accessibilityHint = Settings.videoTip[pageKind]
-        recordNextButton.isEnabled = videoPageControl.pageIndexForCurrentAddNew != nil
+        recordNextButton.isEnabled = videoPageControl.pageIndexForNext(.empty) != nil
         
         switch pageStyle {
         case .disable:
@@ -410,7 +414,7 @@ class DetailViewController: UIViewController {
         pagerElement.incrementClosure = { [weak self] in
             guard
                 let self = self,
-                self.videoPageControl.pageRangesForCurrentCategory!.items.contains(self.pageIndex + 1)
+                self.videoPageControl.pageRangeForCurrentCategory!.contains(self.pageIndex + 1)
             else
                 { return }
             self.pageIndex += 1
@@ -418,7 +422,7 @@ class DetailViewController: UIViewController {
         pagerElement.decrementClosure = { [weak self] in
             guard
                 let self = self,
-                self.videoPageControl.pageRangesForCurrentCategory!.items.contains(self.pageIndex - 1)
+                self.videoPageControl.pageRangeForCurrentCategory!.contains(self.pageIndex - 1)
             else
                 { return }
             self.pageIndex -= 1
@@ -580,16 +584,16 @@ class DetailViewController: UIViewController {
     
     /// Action the addNewPageShortcutButton
     @IBAction func addNewPageShortcutButtonAction(sender: UIButton) {
-        guard let pageIndexForCurrentAddNew = videoPageControl.pageIndexForCurrentAddNew
+        guard let pageIndexForNext = videoPageControl.pageIndexForNext(.empty)
         else {
-            os_log("addNewPageShortcutButtonAction called when no pageIndexForCurrentAddNew")
+            os_log("addNewPageShortcutButtonAction called when no pageIndexForNext(.empty)")
             return
         }
         os_log("Add new shortcut action", log: appUILog, type: .debug)
         // Start it now so it has the best chance of running by the time the scroll completes
         camera.start()
         // Action going to the page, will start the scroll
-        pageIndex = pageIndexForCurrentAddNew
+        pageIndex = pageIndexForNext
         // Accessibility steps through this button to bring up the camera controls
         view.accessibilityElements = [
             kindElement,
@@ -723,8 +727,8 @@ class DetailViewController: UIViewController {
         try? AVAudioSession.sharedInstance().setCategory(.ambient)
         
         // Set categories to enable addNew pages
-        videoPageControl.categoryCounts = Settings.videoKindSlots.map {
-            ($0.kind.description, 0, $0.slots)
+        videoPageControl.categoryPages = Settings.videoKindSlots.map {
+            ($0.kind.description, Array(repeating: OrbitPagerView.PageKind.empty, count: $0.slots))
         }
         
         // Set gesture handlers
