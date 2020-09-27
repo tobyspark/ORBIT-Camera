@@ -887,6 +887,10 @@ extension DetailViewController: UICollectionViewDelegate {
                 fatalError("Expected a `\(PreviewMetalView.self)` but did not receive one.")
             }
             camera.attachPreview(to: view)
+            // If we've got battery, warm the camera
+            if ProcessInfo.processInfo.isLowPowerModeEnabled == false {
+                camera.start()
+            }
         case "Video Cell":
             guard let videoCell = cell as? VideoViewCell
             else {
