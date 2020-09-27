@@ -40,6 +40,8 @@ struct Settings {
         .train: 15,
     ]
     
+    static let lowPowerModeDoesNotHaveVideoPlayback = true
+    
     static let recordButtonRingWidth: CGFloat = 6
     
     static let dateFormatter: DateFormatter = {
