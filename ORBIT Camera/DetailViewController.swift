@@ -25,7 +25,6 @@ class DetailViewController: UIViewController {
     @IBOutlet weak var videoStatusView: UIStackView!
     @IBOutlet weak var videoRecordedIcon: UIImageView!
     @IBOutlet weak var videoRecordedLabel: UILabel!
-    @IBOutlet weak var videoRerecordButton: UIButton!
     @IBOutlet weak var videoUploadedIcon: UIImageView!
     @IBOutlet weak var videoUploadedLabel: UILabel!
     @IBOutlet weak var videoVerifiedIcon: UIImageView!
@@ -316,7 +315,6 @@ class DetailViewController: UIViewController {
         // The cameraControlView animation on/off is not reflected by VoiceOver, so doing here (the animation on/off is set elsewhere by cameraControlVisibility which is set by scrollViewDidScroll).
         // The controls should be unresponsive when no thing set
         
-        videoRerecordButton.isEnabled = (pageStyle == .status)
         videoRecordedLabel.isEnabled = (pageStyle == .status)
         videoUploadedLabel.isEnabled = (pageStyle == .status)
         videoVerifiedLabel.isEnabled = (pageStyle == .status)
@@ -571,14 +569,10 @@ class DetailViewController: UIViewController {
         
         
         let cameraControlFrame = UIAccessibility.convertToScreenCoordinates(cameraControlView.bounds, in: cameraControlView)
-        
         cameraHeaderElement.accessibilityFrame = cameraControlFrame
         cameraRecordElement.accessibilityFrame = cameraControlFrame
         
-        let videoRerecordButtonFrame = UIAccessibility.convertToScreenCoordinates(videoRerecordButton.bounds, in: videoRerecordButton)
         let videoDeleteButtonFrame = UIAccessibility.convertToScreenCoordinates(videoDeleteButton.bounds, in: videoDeleteButton)
-        
-        rerecordElement.accessibilityActivationPoint = CGPoint(x: videoRerecordButtonFrame.midX, y: videoRerecordButtonFrame.midY)
         deleteElement.accessibilityActivationPoint = CGPoint(x: videoDeleteButtonFrame.midX, y: videoDeleteButtonFrame.midY)
     }
     
