@@ -372,6 +372,9 @@
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="boolean" keyPath="adjustsFontForContentSizeCategory" value="YES"/>
                                                         </userDefinedRuntimeAttributes>
+                                                        <connections>
+                                                            <action selector="addNewPageShortcutButtonActionWithSender:" destination="JEX-9P-axG" eventType="touchUpInside" id="EgR-Fa-b37"/>
+                                                        </connections>
                                                     </button>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wBc-JI-8aY" userLabel="Spacer View">
                                                         <rect key="frame" x="172" y="49.5" width="1" height="1"/>
@@ -463,6 +466,7 @@
                         <outlet property="cameraControlYConstraint" destination="27Y-Dc-F5G" id="pwH-ph-j7G"/>
                         <outlet property="recordButton" destination="1ke-NA-qCX" id="ezf-Xd-TUp"/>
                         <outlet property="recordLabel" destination="LiI-wZ-scq" id="jyy-4t-ZhF"/>
+                        <outlet property="recordNextButton" destination="QHv-c7-pdW" id="eeU-xs-wev"/>
                         <outlet property="thingNavigationItem" destination="mOI-FS-AaM" id="jez-io-TVJ"/>
                         <outlet property="videoCollectionView" destination="5oc-lW-9vf" id="uQ7-7e-jO7"/>
                         <outlet property="videoDeleteButton" destination="m1S-o9-9xV" id="0Ic-hl-C2g"/>
