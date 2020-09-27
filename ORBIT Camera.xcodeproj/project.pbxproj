@@ -64,6 +64,7 @@
 		4BF14BD02405771900E31D93 /* Thing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BCF2405771900E31D93 /* Thing.swift */; };
 		4BF14C172405952500E31D93 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 4BF14C162405952500E31D93 /* GRDB */; };
 		4BF14C192405B81900E31D93 /* AppDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14C182405B81900E31D93 /* AppDatabase.swift */; };
+		4BF9736D2520D85200509F95 /* UIButton+DynamicType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF9736C2520D85200509F95 /* UIButton+DynamicType.swift */; };
 		4BFC5F212458ACE200E5A3C1 /* ParticipantInformation.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4BFC5F202458ACE200E5A3C1 /* ParticipantInformation.markdown */; };
 		4BFC5F232458B12800E5A3C1 /* InformedConsent.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4BFC5F222458B12800E5A3C1 /* InformedConsent.markdown */; };
 		4BFC5F252459DA6000E5A3C1 /* Settings+secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BFC5F242459DA6000E5A3C1 /* Settings+secrets.swift */; };
@@ -133,6 +134,7 @@
 		4BF14C09240580B900E31D93 /* ORBIT Camera Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ORBIT Camera Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4BF14C0D240580B900E31D93 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4BF14C182405B81900E31D93 /* AppDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDatabase.swift; sourceTree = "<group>"; };
+		4BF9736C2520D85200509F95 /* UIButton+DynamicType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+DynamicType.swift"; sourceTree = "<group>"; };
 		4BFC5F202458ACE200E5A3C1 /* ParticipantInformation.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = ParticipantInformation.markdown; path = Resources/ParticipantInformation.markdown; sourceTree = SOURCE_ROOT; };
 		4BFC5F222458B12800E5A3C1 /* InformedConsent.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = InformedConsent.markdown; path = Resources/InformedConsent.markdown; sourceTree = SOURCE_ROOT; };
 		4BFC5F242459DA6000E5A3C1 /* Settings+secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Settings+secrets.swift"; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 				4B87FD132409B678007AB630 /* Settings.swift */,
 				4BFC5F242459DA6000E5A3C1 /* Settings+secrets.swift */,
 				4BF14BBF2405730700E31D93 /* Main.storyboard */,
+				4BF9736C2520D85200509F95 /* UIButton+DynamicType.swift */,
 				4BFC5F202458ACE200E5A3C1 /* ParticipantInformation.markdown */,
 				4BFC5F222458B12800E5A3C1 /* InformedConsent.markdown */,
 				4BFC5F28245B6BD600E5A3C1 /* Introduction.markdown */,
@@ -398,6 +401,7 @@
 				4BA680EC243C968C0092DAEF /* AppDelegate.swift in Sources */,
 				4BE50EF52437F07C00BE79C7 /* Collection+SafeSubscript.swift in Sources */,
 				4BA680EA243B3A0C0092DAEF /* AppUploader.swift in Sources */,
+				4BF9736D2520D85200509F95 /* UIButton+DynamicType.swift in Sources */,
 				4B87FD1E240D4E93007AB630 /* Video.swift in Sources */,
 				4B9AA9FC2417E4A8002380B1 /* Camera.swift in Sources */,
 				4BA680ED243C96910092DAEF /* AppNetwork.swift in Sources */,
