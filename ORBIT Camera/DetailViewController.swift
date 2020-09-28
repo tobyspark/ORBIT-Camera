@@ -67,10 +67,9 @@ class DetailViewController: UIViewController {
             if let thing = detailItem,
                let thingID = thing.id
             {
-                for kind in Video.Kind.allCases {
+                for (kind, slots) in Settings.videoKindSlots {
                     let request = Video
                         .filter(Video.Columns.thingID == thingID && Video.Columns.kind == kind.rawValue)
-                        .order(Video.Columns.id.asc)
                     let observation = request.observationForAll()
                     detailItemObservers[kind] = observation.start(
                         in: dbQueue,
@@ -82,19 +81,28 @@ class DetailViewController: UIViewController {
                             guard let self = self
                             else { return }
                             
+                            let updatedVideos = videos.reduce(into: Array<Video?>(repeating: nil, count: slots)) {
+                                guard $0.indices.contains($1.uiOrder)
+                                else {
+                                    os_log("Video with UI Order outside of video slot range")
+                                    assertionFailure()
+                                    return
+                                }
+                                $0[$1.uiOrder] = $1
+                            }
+
                             // Video collection view
-                            let difference = videos.difference(from: self.videos[kind]!)
+                            self.inexplicableToolingFailureWorkaround()
+                            let difference = updatedVideos.difference(from: self.videos[kind]!)
                             self.videoCollectionView.performBatchUpdates({
-                                self.videos[kind] = videos
+                                self.videos[kind] = updatedVideos
                                 
                                 // Update pager, from which the collection view pulls its number of pages etc.
-                                self.videoPageControl.categoryPages = Settings.videoKindSlots.map({
-                                    (
-                                        $0.kind.description,
-                                        Array(repeating: OrbitPagerView.PageKind.item, count: self.videos[$0.kind]!.count) +
-                                            Array(repeating: OrbitPagerView.PageKind.empty, count: $0.slots - self.videos[$0.kind]!.count)
-                                    )
-                                })
+                                self.videoPageControl.categoryPages = self.videoPageControl.categoryPages.map {
+                                    $0.name == kind.description
+                                        ? ($0.name, self.videos[kind]!.map({ video in video != nil ? OrbitPagerView.PageKind.item : OrbitPagerView.PageKind.empty }))
+                                        : $0
+                                }
                                 
                                 // Now update collection view
                                 for change in difference {
@@ -124,7 +132,7 @@ class DetailViewController: UIViewController {
     }
     
     /// Current state of thing's videos
-    private var videos: [Video.Kind: [Video]] = Video.Kind.allCases.reduce(into: [:]) { $0[$1] = []}
+    private var videos: [Video.Kind: [Video?]] = Settings.videoKindSlots.reduce(into: [:]) { $0[$1.kind] = Array(repeating: nil, count: $1.slots)}
     
     /// Handle updates to videos
     private var pagesCount: Int {
@@ -183,7 +191,7 @@ class DetailViewController: UIViewController {
     private var pageKind: Video.Kind { videoKind(description: self.videoPageControl.currentCategoryName!) }
     
     /// What video (if any) this page is displaying
-    private var pageVideo: Video? { videos[pageKind]![safe: videoPageControl.currentCategoryIndex!] }
+    private var pageVideo: Video? { videos[pageKind]![videoPageControl.currentCategoryIndex!] }
     
     /// The index of page within the video kind
     private var pageKindIndex: Int { self.videoPageControl.currentCategoryIndex! }
@@ -726,7 +734,7 @@ class DetailViewController: UIViewController {
         // Don't monopolise audio with our (silent!) videos, e.g. let music continue to play
         try? AVAudioSession.sharedInstance().setCategory(.ambient)
         
-        // Set categories to enable addNew pages
+        // Initialise videoPageControl's categories
         videoPageControl.categoryPages = Settings.videoKindSlots.map {
             ($0.kind.description, Array(repeating: OrbitPagerView.PageKind.empty, count: $0.slots))
         }
@@ -894,7 +902,7 @@ extension DetailViewController: UICollectionViewDelegate {
             }
             guard
                 let (name, index) = videoPageControl.categoryIndex(pageIndex: indexPath.row),
-                let video = videos[videoKind(description: name)]![safe: index]
+                let video = videos[videoKind(description: name)]![index]
             else {
                 os_log("No video found", log: appUILog)
                 assertionFailure()
