@@ -645,7 +645,7 @@ class DetailViewController: UIViewController {
                 let kind = videoKind(description: videoPageControl.currentCategoryName!)
                 camera.recordStart(to: url) {
                     // Create a Video record
-                    guard var video = Video(of: thing, url: url, kind: kind)
+                    guard var video = Video(of: thing, url: url, kind: kind, uiOrder: self.pageKindIndex)
                     else {
                         os_log("Could not create video", log: appUILog)
                         return

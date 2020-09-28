@@ -105,9 +105,35 @@ struct AppDatabase {
         
         migrator.registerMigration("phaseTwo") { db in
             // Be able to test for a phase two app loading phase one data.
-            // In phase 2 the schema is the same but data within is incompatible.
         }
         
+        migrator.registerMigration("addUIOrderToVideo") { db in
+            try db.create(table: "new_video") { t in
+                t.autoIncrementedPrimaryKey("id")
+                t.column("thingID", .integer).references("thing", onDelete: .setNull)
+                t.column("filename", .text).notNull()
+                t.column("recorded", .blob).notNull()
+                t.column("orbitID", .integer)
+                t.column("kind", .text)
+                t.column("verified", .text)
+                t.column("uiOrder", .integer).notNull()
+                t.uniqueKey(["thingID", "kind", "uiOrder"])
+            }
+            for row in try Row.fetchAll(db, sql: "SELECT * FROM video") {
+                let synthesisedUIOrder = try Int.fetchOne(
+                    db,
+                    sql: "SELECT COUNT(*) FROM new_video WHERE thingID = ?",
+                    arguments: [row["thingID"]]
+                )
+                try db.execute(literal: """
+                    INSERT INTO new_video (id, thingID, filename, recorded, orbitID, kind, verified, uiOrder)
+                    VALUES(\(row["id"]), \(row["thingID"]), \(row["filename"]), \(row["recorded"]), \(row["orbitID"]), \(row["kind"]), \(row["verified"]), \(synthesisedUIOrder))
+                    """
+                )
+            }
+            try db.drop(table: "video")
+            try db.rename(table: "new_video", to: "video")
+        }
         return migrator
     }
 }
