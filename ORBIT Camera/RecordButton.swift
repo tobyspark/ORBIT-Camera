@@ -33,9 +33,10 @@ class RecordButton: UIControl {
         set {}
     }
     
-    var everyPipAfter: Int?
-    var majorPip: Int?
-    var minorPip: Int?
+    var stopSecs: TimeInterval?
+    var everySecAfter: Int?
+    var majorSecs: Int?
+    var minorSecs: Int?
     
     func toggleRecord() {
         self.hapticHeavy.impactOccurred()
@@ -49,28 +50,28 @@ class RecordButton: UIControl {
             pipTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self](timer) in
                 guard let self = self else { return }
                 self.pipCount += 1
-                if let everyPipAfter = self.everyPipAfter,
+                if let everyPipAfter = self.everySecAfter,
                    self.pipCount > everyPipAfter
                 {
                     AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PStart)
                     self.hapticLight.impactOccurred()
                     return
                 }
-                if let everyPipAfter = self.everyPipAfter,
+                if let everyPipAfter = self.everySecAfter,
                    self.pipCount == everyPipAfter
                 {
                     AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PRetry)
                     self.hapticHeavy.impactOccurred()
                     return
                 }
-                if let majorPip = self.majorPip,
+                if let majorPip = self.majorSecs,
                    self.pipCount % majorPip == 0
                 {
                     AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PStop)
                     self.hapticMedium.impactOccurred()
                     return
                 }
-                if let minorPip = self.minorPip,
+                if let minorPip = self.minorSecs,
                    self.pipCount % minorPip == 0
                 {
                     AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PStart)
@@ -78,6 +79,16 @@ class RecordButton: UIControl {
                     return
                 }
             })
+            if let timeout = stopSecs {
+                stopTimer?.invalidate()
+                stopTimer = Timer.scheduledTimer(withTimeInterval: timeout, repeats: false, block: { [weak self] (timer) in
+                    guard let self = self else { return }
+                    if case .active = self.recordingState {
+                        self.toggleRecord()
+                        self.sendActions(for: .touchUpInside)
+                    }
+                })
+            }
         case .active(let date):
             recordingState = .idle
             let duration = DateInterval(start: date, end: Date()).duration

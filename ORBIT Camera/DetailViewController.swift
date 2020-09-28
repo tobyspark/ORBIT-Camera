@@ -205,9 +205,6 @@ class DetailViewController: UIViewController {
     /// The camera object that encapsulates capture new video functionality
     private let camera = Camera()
     
-    /// The timer to limit recording length
-    private var recordTimeOut: Timer? = nil
-    
     /// Implementation detail: need to be able to differentiate whether scrolling is happening due to direct manipulation or actioned animation
     private var isManuallyScrolling = false
     
@@ -339,9 +336,9 @@ class DetailViewController: UIViewController {
         if enableRecordButton,
            let desired = Settings.desiredVideoLength[pageKind]
         {
-            recordButton.everyPipAfter = Int(desired)
-            recordButton.majorPip = Int(desired) - 5
-            recordButton.minorPip = 5
+            recordButton.stopSecs = desired + 5
+            recordButton.majorSecs = Int(desired)
+            recordButton.minorSecs = 5
         }
         recordLabel.text = Settings.videoTip[pageKind]
         cameraHeaderElement.accessibilityHint = Settings.videoTip[pageKind]
@@ -676,11 +673,6 @@ class DetailViewController: UIViewController {
             navigationItem.hidesBackButton = true
             accessibilityElements = [cameraRecordElement]
             cameraRecordElement.accessibilityFrame = UIAccessibility.convertToScreenCoordinates(view.bounds, in: view)
-            
-            // Start the time-out
-            if let desired = Settings.desiredVideoLength[pageKind] {
-                recordButton.startTimeout(desired + 5)
-            }
         case .idle:
             camera.recordStop()
             
