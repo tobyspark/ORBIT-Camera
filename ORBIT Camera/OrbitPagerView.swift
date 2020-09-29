@@ -157,6 +157,11 @@ class OrbitPagerView: UIView {
             return nil
         }
     }
+
+    /// The overall page range
+    var pageRange: Range<Int> {
+        get { 0 ..< pageCount }
+    }
     
     /// The total number of pages
     var pageCount: Int {
