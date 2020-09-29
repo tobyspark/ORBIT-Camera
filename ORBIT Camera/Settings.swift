@@ -10,7 +10,7 @@ import QuartzCore
 import AVFoundation
 
 struct Settings {
-    static let endpointCreateParticipant = "https://orbit-data.city.ac.uk/phaseone/api/createparticipant/"
+    static let endpointCreateParticipant = "https://orbit-data.city.ac.uk/phasetwo/api/createparticipant/"
     struct endpointCreateParticipantRequest: Codable {
         let name: String
         let email: String
@@ -19,14 +19,14 @@ struct Settings {
         let auth_credential: String
     }
 
-    static let endpointParticipant = "https://orbit-data.city.ac.uk/phaseone/api/participant/"
+    static let endpointParticipant = "https://orbit-data.city.ac.uk/phasetwo/api/participant/"
     
-    static let endpointThing = "https://orbit-data.city.ac.uk/phaseone/api/thing/"
+    static let endpointThing = "https://orbit-data.city.ac.uk/phasetwo/api/thing/"
     static func endpointThing(id orbitID: Int) -> URL {
         URL(string: Settings.endpointThing)!.appendingPathComponent("\(orbitID)/")
     }
     
-    static let endpointVideo = "https://orbit-data.city.ac.uk/phaseone/api/video/"
+    static let endpointVideo = "https://orbit-data.city.ac.uk/phasetwo/api/video/"
     static func endpointVideo(id orbitID: Int) -> URL {
         URL(string: Settings.endpointVideo)!.appendingPathComponent("\(orbitID)/")
     }
