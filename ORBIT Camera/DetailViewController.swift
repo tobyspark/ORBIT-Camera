@@ -586,7 +586,7 @@ class DetailViewController: UIViewController {
                 // Go, configuring completion handler that updates the UI
                 let url = Video.mintRecordURL()
                 let videoPageIndex = pageIndex
-                camera.recordStart(to: url) { [weak self] in
+                camera.recordStart(to: url) {
                     // Update record
                     video.rerecordReset()
                     video.url = url
