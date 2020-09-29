@@ -368,7 +368,13 @@ class DetailViewController: UIViewController {
             ]
             UIAccessibility.post(notification: .layoutChanged, argument: nil)
         case .rerecord:
-            break // VO UX: keep addNew as-was
+            view.accessibilityElements = [
+                pagerElement,
+                cameraHeaderElement,
+                cameraRecordElement,
+                cameraNextElement
+            ]
+            // Don't announce or change focus, i.e. attempt to keep as-was coming from record stop, but add back pagerElement etc.
         case .addNew:
             view.accessibilityElements = [
                 pagerElement,
