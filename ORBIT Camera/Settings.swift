@@ -41,8 +41,8 @@ struct Settings {
     ]
     
     static let videoTip: [Video.Kind: String] = [
-        .test: "Test: a sweep across a setting",
-        .train: "Train: placed on a clear surface, showing what's important",
+        .test: "Test: sweep across a setting",
+        .train: "Train: place on a clear surface, showing what's important",
     ]
     
     static let lowPowerModeDoesNotHaveVideoPlayback = true

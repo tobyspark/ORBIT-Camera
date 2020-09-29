@@ -82,7 +82,7 @@ class ThingCell: UITableViewCell {
                         if kindToGo <= 0 { return }
                         acc.append("\(kindToGo) \(x.kind.verboseDescription) video\(kindToGo == 1 ? "" : "s") to go")
                     }
-                    detailTextLabel.accessibilityLabel = "\(count) videos. \(accessibilityCountStrings.joined(separator: ". "))"
+                    detailTextLabel.accessibilityLabel = "\(count) video\(count == 1 ? "" : "s"). \(accessibilityCountStrings.joined(separator: ". "))"
                 }
         })
     }
