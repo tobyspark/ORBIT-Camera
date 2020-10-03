@@ -331,8 +331,9 @@ class DetailViewController: UIViewController {
         if let desired = Settings.desiredVideoLength[pageKind]
         {
             recordButton.stopSecs = desired + 5
-            recordButton.majorSecs = Int(desired)
-            recordButton.minorSecs = 5
+            recordButton.everySecAfter = Int(desired)
+            recordButton.majorSecs = 5
+            recordButton.minorSecs = 1
         }
         recordLabel.text = Settings.videoTip[pageKind]
         cameraHeaderElement.accessibilityLabel = "To record for \(Settings.videoTip[pageKind]!)"
