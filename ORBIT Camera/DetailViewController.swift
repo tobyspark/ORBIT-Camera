@@ -336,7 +336,7 @@ class DetailViewController: UIViewController {
             recordButton.minorSecs = 1
         }
         recordLabel.text = Settings.videoTip[pageKind]
-        cameraHeaderElement.accessibilityLabel = "To record for \(Settings.videoTip[pageKind]!)"
+        cameraHeaderElement.accessibilityLabel = Settings.videoTipVerbose[pageKind]!
         
         // Set availability of labels and controls
         // The cameraControlView animation on/off is not reflected by VoiceOver, so doing here (the animation on/off is set elsewhere by cameraControlVisibility which is set by scrollViewDidScroll).
