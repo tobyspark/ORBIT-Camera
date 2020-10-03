@@ -41,8 +41,13 @@ struct Settings {
     ]
     
     static let videoTip: [Video.Kind: String] = [
-        .test: "Test: sweep across a setting",
-        .train: "Train: place on a clear surface, showing what's important",
+        .test: "Testing: the object where you usually keep it, shown amongst your other things",
+        .train: "Training: place on a clear surface, showing what's important",
+    ]
+
+    static let videoTipVerbose: [Video.Kind: String] = [
+        .test: "To take a testing video go to where you usually keep your thing and record the whole scene, including any other objects, using the draw-out technique. Record each testing video from a different angle.",
+        .train: "To take a training video place your thing on a surface that has no other objects and record using the draw-out technique. Record each training video on a different surface.",
     ]
     
     static let lowPowerModeDoesNotHaveVideoPlayback = true
