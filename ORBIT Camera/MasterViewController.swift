@@ -267,12 +267,18 @@ class MasterViewController: UITableViewController {
         }
     }
     
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         switch ThingSection(rawValue: section)! {
         case .addNew:
-            return "Add a new thing"
+            let label = UILabel()
+            label.font = UIFont.preferredFont(forTextStyle: .headline)
+            label.text = "Add a new thing"
+            return label
         case .things:
-            return "Your things"
+            let label = UILabel()
+            label.font = UIFont.preferredFont(forTextStyle: .headline)
+            label.text = "Your things"
+            return label
         }
     }
     
