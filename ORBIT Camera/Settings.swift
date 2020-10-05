@@ -61,6 +61,8 @@ struct Settings {
         return df
     }()
     
+    static let completedThingsTarget = 9
+    
     static let videoKindSlots = [
         (kind: Video.Kind.test, slots: 2),
         (kind: Video.Kind.train, slots: 5),
