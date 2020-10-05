@@ -45,6 +45,7 @@
 		4B9AA9FF2418EA49002380B1 /* RecordButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9AA9FE2418EA49002380B1 /* RecordButton.swift */; };
 		4BA13A5A242D6EC4006D838B /* PreviewMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA13A59242D6EC4006D838B /* PreviewMetalView.swift */; };
 		4BA13A5C242D71E5006D838B /* PassThrough.metal in Sources */ = {isa = PBXBuildFile; fileRef = 4BA13A5B242D71E4006D838B /* PassThrough.metal */; };
+		4BA3B130252BCDD100A5D1F6 /* CompletionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA3B12F252BCDD100A5D1F6 /* CompletionLabel.swift */; };
 		4BA680EA243B3A0C0092DAEF /* AppUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3707B52436161100254ABF /* AppUploader.swift */; };
 		4BA680EC243C968C0092DAEF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BF14BB72405730700E31D93 /* AppDelegate.swift */; };
 		4BA680ED243C96910092DAEF /* AppNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B87FD162409D4A4007AB630 /* AppNetwork.swift */; };
@@ -114,6 +115,7 @@
 		4B9AA9FE2418EA49002380B1 /* RecordButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordButton.swift; sourceTree = "<group>"; };
 		4BA13A59242D6EC4006D838B /* PreviewMetalView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewMetalView.swift; sourceTree = "<group>"; };
 		4BA13A5B242D71E4006D838B /* PassThrough.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = PassThrough.metal; sourceTree = "<group>"; };
+		4BA3B12F252BCDD100A5D1F6 /* CompletionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionLabel.swift; sourceTree = "<group>"; };
 		4BA680F1243DE7CD0092DAEF /* UIAccessibility+Focus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAccessibility+Focus.swift"; sourceTree = "<group>"; };
 		4BD4A16824617FF800817FF4 /* ErrorLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorLabel.swift; sourceTree = "<group>"; };
 		4BE50EF42437F07C00BE79C7 /* Collection+SafeSubscript.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+SafeSubscript.swift"; sourceTree = "<group>"; };
@@ -243,6 +245,7 @@
 				4BF14BC22405730900E31D93 /* Assets.xcassets */,
 				4BF14BC42405730900E31D93 /* LaunchScreen.storyboard */,
 				4BF14BC72405730900E31D93 /* Info.plist */,
+				4BA3B12F252BCDD100A5D1F6 /* CompletionLabel.swift */,
 			);
 			path = "ORBIT Camera";
 			sourceTree = "<group>";
@@ -376,6 +379,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BA3B130252BCDD100A5D1F6 /* CompletionLabel.swift in Sources */,
 				4BFC5F252459DA6000E5A3C1 /* Settings+secrets.swift in Sources */,
 				4BE7768C247A98360088562D /* Participant+ServerStatus.swift in Sources */,
 				4BF14C192405B81900E31D93 /* AppDatabase.swift in Sources */,

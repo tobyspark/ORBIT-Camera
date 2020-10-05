@@ -55,35 +55,14 @@ class ThingCell: UITableViewCell {
                     let detailTextLabel =  self.detailTextLabel
                 else { return }
                 
-                let count = videos.count
-                let total = Settings.videoKindSlots.reduce(0) { return $0 + $1.slots }
-                
-                // "3 / 7"
-                let message = NSMutableAttributedString()
-                message.append(NSAttributedString(
-                    string: "\(count)",
-                    attributes: count < total ? [NSAttributedString.Key.foregroundColor: UIColor.label.cgColor] : nil
-                    )
-                )
-                message.append(NSAttributedString(
-                    string: "  ̷ \(total)"
-                    )
-                )
-                detailTextLabel.attributedText = message
-                
-                // "3 videos. 2 testing videos to go. 2 training videos to go"
-                // "7 videos. Complete."
-                if count >= total {
-                    detailTextLabel.accessibilityLabel = "\(count) videos. Complete."
-                } else {
-                    let accessibilityCountStrings: [String] = Settings.videoKindSlots.reduce(into: []) { (acc, x) in
-                        let kindVideos = videos.filter( { video in video.kind == x.kind } )
-                        let kindToGo = x.slots - kindVideos.count
-                        if kindToGo <= 0 { return }
-                        acc.append("\(kindToGo) \(x.kind.verboseDescription) video\(kindToGo == 1 ? "" : "s") to go")
-                    }
-                    detailTextLabel.accessibilityLabel = "\(count) video\(count == 1 ? "" : "s"). \(accessibilityCountStrings.joined(separator: ". "))"
+                let counts: [CompletionCount] = Settings.videoKindSlots.reduce(into: []) { (acc, x) in
+                    let kindVideos = videos.filter( { video in video.kind == x.kind } )
+                    acc.append(CompletionCount(name: x.kind.description, count: kindVideos.count, target: x.slots))
                 }
+                let label = completionLabel("video", items: counts)
+                
+                detailTextLabel.attributedText = label.attributedText
+                detailTextLabel.accessibilityLabel = label.accessibilityLabel
         })
     }
     
