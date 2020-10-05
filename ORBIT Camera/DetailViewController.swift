@@ -63,6 +63,7 @@ class DetailViewController: UIViewController {
             configureView()
             
             // Register for changes
+            detailItemObservers = [:]
             if let thing = detailItem,
                let thingID = thing.id
             {
@@ -91,7 +92,7 @@ class DetailViewController: UIViewController {
                             }
 
                             // Video collection view
-                            self.inexplicableToolingFailureWorkaround()
+                            //self.inexplicableToolingFailureWorkaround()
                             let difference = updatedVideos.difference(from: self.videos[kind]!)
                             self.videoCollectionView.performBatchUpdates({
                                 self.videos[kind] = updatedVideos
@@ -108,10 +109,10 @@ class DetailViewController: UIViewController {
                                     switch change {
                                     case let .remove(offset, _, _):
                                         let pageIndex = self.videoPageControl.pageIndexFor(category: kind.description, index: offset)!
-                                        self.videoCollectionView.reloadItems(at: [IndexPath(row: pageIndex, section: 0)])
+                                        self.videoCollectionView.deleteItems(at: [IndexPath(row: pageIndex, section: 0)])
                                     case let .insert(offset, _, _):
                                         let pageIndex = self.videoPageControl.pageIndexFor(category: kind.description, index: offset)!
-                                        self.videoCollectionView.reloadItems(at: [IndexPath(row: pageIndex, section: 0)])
+                                        self.videoCollectionView.insertItems(at: [IndexPath(row: pageIndex, section: 0)])
                                     }
                                 }
                             }, completion: { _ in
@@ -124,8 +125,6 @@ class DetailViewController: UIViewController {
                         }
                     )
                 }
-            } else {
-                detailItemObservers = [:]
             }
         }
     }
