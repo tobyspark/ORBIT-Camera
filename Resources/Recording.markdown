@@ -7,13 +7,13 @@ In the ORBIT Camera App home screen, enter the name of your thing and hit the Ad
 
 #### Step 2. Record 2 testing videos of the thing.
 
-#### Step 2.1. Go to the thing. Go to wherever you would normally keep the thing. 
+#### Step 2.1. Go to the thing. Go to wherever you would normally keep the thing.
 A testing video must capture the whole scene your thing is part of, including any other objects that are usually there. For example, if your keys are on your desk, you should capture your keys and any other objects that are on your desk.
 
 #### Step 2.2. Navigate to a new testing video in the app.
 From your thing's Record screen, make sure test is selected, and click the Add new video button to bring up the camera controls.
  
-#### Step 2.3. Record a testing video of your thing in the whole scene. 
+#### Step 2.3. Record a testing video of your thing in the whole scene.
 Place one hand anywhere on your scene, for example, at the edge of the surface, to act as a reference point, and keep it there. Holding the phone in your other hand, bring your phone as close as possible to your reference hand with the camera pointed towards your scene. Use the Record button to start recording the video. Now, draw your phone away from the anchored hand until it reaches your chest. Once you have reached your chest, click the record button again to stop recording. The testing video should last 15 seconds. A tic sound and a vibration will start to play every 5 seconds to help you time your recording. You will hear a double tic sound and a strong vibration when 15 seconds are up. When you reach 20 seconds your recording will automatically stop, and your video will be uploaded to the server.
 
 #### Step 2.4. Repeat from a different position.
