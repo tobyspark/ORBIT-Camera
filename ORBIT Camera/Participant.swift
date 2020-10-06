@@ -22,6 +22,7 @@ struct Participant: Codable, Equatable {
     /// Authorisation string for HTTP requests made for this participant. Should only be populated with validated credential.
     var authCredential: String?
     
+    var charityChoice: String?
     var studyStart: Date?
     var studyEnd: Date?
 }
