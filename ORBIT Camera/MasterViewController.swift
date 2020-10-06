@@ -44,7 +44,7 @@ class MasterViewController: UITableViewController {
     private var things: [Thing] = []
     
     /// Database observer for things changes
-    private var thingsObserver: TransactionObserver?
+    private var thingsObserver: DatabaseCancellable?
     
     /// Segue to detail, creating the new `Thing`
     // Triggered by 'go' on keyboard only
@@ -79,10 +79,11 @@ class MasterViewController: UITableViewController {
         }
         
         // Register for changes
-        let request = Thing
+        let thingFetch = Thing
             .all()
             .order(Thing.Columns.id.desc)
-        let observation = request.observationForAll()
+            .fetchAll
+        let observation = ValueObservation.tracking(thingFetch)
         thingsObserver = observation.start(
             in: dbQueue,
             onError: { error in
