@@ -17,7 +17,7 @@ VICTA - Empowering blind chindren and yound adults
 
 https://www.victa.org.uk/
 
-### Charity Two
+### RNIB - Royal National Institute of Blind People
 RNIB - Royal National Institute of Blind People
 
 https://www.rnib.org.uk/
