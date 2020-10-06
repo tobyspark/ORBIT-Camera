@@ -68,9 +68,10 @@ class DetailViewController: UIViewController {
                let thingID = thing.id
             {
                 for (kind, slots) in Settings.videoKindSlots {
-                    let request = Video
+                    let videoFetch = Video
                         .filter(Video.Columns.thingID == thingID && Video.Columns.kind == kind.rawValue)
-                    let observation = request.observationForAll()
+                        .fetchAll
+                    let observation = ValueObservation.tracking(videoFetch)
                     detailItemObservers[kind] = observation.start(
                         in: dbQueue,
                         onError: { error in
@@ -198,7 +199,7 @@ class DetailViewController: UIViewController {
     private var pageKindVideoCount: Int { videos[pageKind]!.count }
     
     /// Database observers for detailItem changes
-    private var detailItemObservers: [Video.Kind: TransactionObserver] = [:]
+    private var detailItemObservers: [Video.Kind: DatabaseCancellable] = [:]
     
     /// The camera object that encapsulates capture new video functionality
     private let camera = Camera()

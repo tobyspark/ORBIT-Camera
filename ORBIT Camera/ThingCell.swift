@@ -32,10 +32,14 @@ class ThingCell: UITableViewCell {
             return
         }
         
-        let thingRequest = Thing.filter(Video.Columns.id == thingID)
-        let thingObservation = thingRequest.observationForFirst()
-        thingObserver = try! thingObservation.start(
+        let thingFetch = Thing.filter(Video.Columns.id == thingID).fetchOne
+        let thingObservation = ValueObservation.tracking(thingFetch)
+        thingObserver = thingObservation.start(
             in: dbQueue,
+            onError: { error in
+                print(error)
+                assertionFailure()
+            },
             onChange: { [weak self] thing in
                 guard
                     let self = self,
@@ -45,10 +49,14 @@ class ThingCell: UITableViewCell {
                 self.textLabel!.text = thing.labelParticipant
         })
         
-        let videosRequest = Video.filter(Video.Columns.thingID == thingID)
-        let videosObservation = videosRequest.observationForAll()
-        videosObserver = try! videosObservation.start(
+        let videosFetch = Video.filter(Video.Columns.thingID == thingID).fetchAll
+        let videosObservation = ValueObservation.tracking(videosFetch)
+        videosObserver = videosObservation.start(
             in: dbQueue,
+            onError: { error in
+                print(error)
+                assertionFailure()
+            },
             onChange: { [weak self] videos in
                 guard
                     let self = self,
@@ -66,8 +74,8 @@ class ThingCell: UITableViewCell {
         })
     }
     
-    private var thingObserver: TransactionObserver?
-    private var videosObserver: TransactionObserver?
+    private var thingObserver: DatabaseCancellable?
+    private var videosObserver: DatabaseCancellable?
     
     private static func smallCapsVariant(of font: UIFont) -> UIFont {
         let descriptor = font.fontDescriptor.addingAttributes([
