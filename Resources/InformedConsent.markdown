@@ -10,7 +10,7 @@ Consent7: I agree to take part in the above study, titled: “ORBIT Dataset Phas
 
 # Informed Consent
 
-To participate in the study we ask you to read and tick the following 7 statements, then sign this consent form by entering your name at the end and submitting it to us. 
+To participate in the study we ask you to read and tick the following 7 statements, then sign this consent form by entering your name at the end and submitting it to us.
 
 ## The study
 

@@ -16,9 +16,9 @@ REC reference number: ETH2021-0032 City, University of London
 
 ## What is the purpose of the study?
 
-Smartphones are really useful in making visual information accessible to visually impaired people. For instance, the SeeingAI app allows you to take a picture of your surroundings and then it reads aloud common things that are recognised in the picture, for example “a person sitting on a sofa”. 
+Smartphones are really useful in making visual information accessible to visually impaired people. For instance, the SeeingAI app allows you to take a picture of your surroundings and then it reads aloud common things that are recognised in the picture, for example “a person sitting on a sofa”.
 
-The problem is that while these kinds of AI currently can say “this is a mug”, they can’t tell you which of your mugs is which, and they don’t know what a white cane is. We are trying to change this. We want these assistive technologies to work for you, so we are working with people like you to identify what things are important to your everyday life, and figure out how best to get the phone to recognise them. To recognise a particular thing by an app, we need first to show what that thing looks like. 
+The problem is that while these kinds of AI currently can say “this is a mug”, they can’t tell you which of your mugs is which, and they don’t know what a white cane is. We are trying to change this. We want these assistive technologies to work for you, so we are working with people like you to identify what things are important to your everyday life, and figure out how best to get the phone to recognise them. To recognise a particular thing by an app, we need first to show what that thing looks like.
 
 Specifically, the aim of this project is to create a large open dataset of videos taken by visually impaired people. The videos will show things those people judge important in their lives and then the dataset will be used to train AI systems to recognise those things. We made this iPhone app to do this, so that we can involve lots of people who are blind or low vision.
 
@@ -28,15 +28,15 @@ You have been invited to participate in this study as a blind or low vision adul
 
 ## Do I have to take part?
 
-Participation in the study is voluntary, and you can choose not to participate in part or all of the project. You can withdraw at any stage of the data collection period without being penalised or disadvantaged in any way. If you decide to withdraw from the study, any data collected already will be permanently deleted. Once the data has been added to the open dataset and anonymised, it will not be possible to withdraw your data. 
+Participation in the study is voluntary, and you can choose not to participate in part or all of the project. You can withdraw at any stage of the data collection period without being penalised or disadvantaged in any way. If you decide to withdraw from the study, any data collected already will be permanently deleted. Once the data has been added to the open dataset and anonymised, it will not be possible to withdraw your data.
 
-It is up to you to decide whether or not to take part. If you do decide to take part you will be asked to complete a consent form. If you decide to take part you are still free to withdraw at any time and without giving a reason.  
+It is up to you to decide whether or not to take part. If you do decide to take part you will be asked to complete a consent form. If you decide to take part you are still free to withdraw at any time and without giving a reason.
 
 ## What will happen if I take part? What do I have to do?
 
-You will use the ORBIT camera app to film short videos of at least 5 to up to 10 objects you might like your phone to recognise. For each video you need to provide 2 testing and 5 training videos. You will take up to 70 of these videos using different filming techniques and in different locations. More details about the types of videos and the filming techniques can be found in the user instructions document. With setup and reviewing the data we anticipate that the overall time that you will spend collecting data over the study period is no longer than 2 hours. However, you will be able to take videos of your objects using the ORBIT camera app at any time until the 11th of November 2020.  
+You will use the ORBIT camera app to film short videos of at least 5 to up to 10 objects you might like your phone to recognise. For each video you need to provide 2 testing and 5 training videos. You will take up to 70 of these videos using different filming techniques and in different locations. More details about the types of videos and the filming techniques can be found in the user instructions document. With setup and reviewing the data we anticipate that the overall time that you will spend collecting data over the study period is no longer than 2 hours. However, you will be able to take videos of your objects using the ORBIT camera app at any time until the 11th of November 2020.
 
-After taking a video, it will be automatically uploaded to the ORBIT server for approval. If the video doesn’t include any personal identifying information and is considered appropriate for this study, it will be added to the open dataset.  
+After taking a video, it will be automatically uploaded to the ORBIT server for approval. If the video doesn’t include any personal identifying information and is considered appropriate for this study, it will be added to the open dataset.
 
 ## What are the possible disadvantages and risks of taking part?
 
@@ -56,9 +56,9 @@ N/A
 
 ## What should I do if I want to take part?
 
-Before you download the app and start recording your videos, you will need to read the user instructions carefully. If you would like to continue with the study, you will need to download the app and follow the steps to give us consent by signing the consent form provided in the app. Once you have provided consent you can start using the app. The link to access the user instructions and download the app can be found at the end of this document. 
+Before you download the app and start recording your videos, you will need to read the user instructions carefully. If you would like to continue with the study, you will need to download the app and follow the steps to give us consent by signing the consent form provided in the app. Once you have provided consent you can start using the app. The link to access the user instructions and download the app can be found at the end of this document.
 
-If you have any questions, get in touch with Lida on the following email address lida.theodorou.2@city.ac.uk 
+If you have any questions, get in touch with Lida on the following email address lida.theodorou.2@city.ac.uk
 
 ## Data privacy statement
 
@@ -69,11 +69,11 @@ City will use your name and contact details to contact you about the research st
 You can find out more about how City handles data by visiting https://www.city.ac.uk/about/governance/legal. If you are concerned about how we have processed your personal data, you can contact the Information Commissioner’s Office (IOC) https://ico.org.uk/.
 
 ## Will my taking part in the study be kept confidential?
-Your participation will be kept confidential and we will take some precautions to guarantee your anonymity: 
 
-- Your identity will be kept separate to the data collected for the study. The two will be tied with a randomly chosen participant number so people other than the research team will not be able to link your name with your data. 
+Your participation will be kept confidential and we will take some precautions to guarantee your anonymity:
 
-- All the videos published in the open dataset will be cleared from any personal identifying information such as name, addresses, phone numbers, pictures, QR codes. 
+- Your identity will be kept separate to the data collected for the study. The two will be tied with a randomly chosen participant number so people other than the research team will not be able to link your name with your data.
+- All the videos published in the open dataset will be cleared from any personal identifying information such as name, addresses, phone numbers, pictures, QR codes.
 
 ## What will happen to the results?
 
@@ -105,6 +105,6 @@ Lida Theodorou – Lida.Theodorou.2@city.ac.uk
 
 ## Sign-up
 
-Thank you for taking the time to read this information sheet
+Thank you for taking the time to read this information sheet.
 
 If you would like to participate, please continue to the sign-up screen.
