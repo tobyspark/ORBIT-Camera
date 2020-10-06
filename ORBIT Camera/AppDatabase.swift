@@ -8,6 +8,7 @@
 
 import UIKit
 import GRDB
+import os
 
 // The shared database queue
 var dbQueue: DatabaseQueue!
@@ -23,10 +24,6 @@ struct AppDatabase {
             .url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
             .appendingPathComponent("db.sqlite")
         dbQueue = try openDatabase(atPath: databaseURL.path)
-        
-        // Be a nice iOS citizen, and don't consume too much memory
-        // See https://github.com/groue/GRDB.swift/blob/master/README.md#memory-management
-        dbQueue.setupMemoryManagement(in: application)
     }
     
     /// Creates a fully initialized database at path
@@ -35,6 +32,20 @@ struct AppDatabase {
         // See https://github.com/groue/GRDB.swift/blob/master/README.md#database-connections
         let dbQueue = try DatabaseQueue(path: path)
         
+        // Clear content if phase one data present
+        if let migrations = try? dbQueue.read({ db in try migrator.completedMigrations(db) }),
+           migrations.contains("createParticipant"),
+           !migrations.contains("phaseTwo")
+        {
+            os_log("Removing Phase One participant")
+            try dbQueue.write { db in
+                let participants = try Participant.fetchAll(db)
+                for participant in participants {
+                    try participant.delete(db)
+                }
+            }
+        }
+           
         // Define the database schema
         try migrator.migrate(dbQueue)
         
@@ -82,7 +93,7 @@ struct AppDatabase {
                 t.add(column: "verified", .text)
             }
             
-            try Video.updateAll(db, [Video.Columns.verified <- Video.Verified.unvalidated.rawValue])
+            try Video.updateAll(db, [Video.Columns.verified.set(to: Video.Verified.unvalidated.rawValue)])
         }
         
         migrator.registerMigration("addStudyDatesToParticipant") { db in
@@ -90,6 +101,11 @@ struct AppDatabase {
                 t.add(column: "studyStart", .blob)
                 t.add(column: "studyEnd", .blob)
             }
+        }
+        
+        migrator.registerMigration("phaseTwo") { db in
+            // Be able to test for a phase two app loading phase one data.
+            // In phase 2 the schema is the same but data within is incompatible.
         }
         
         return migrator
