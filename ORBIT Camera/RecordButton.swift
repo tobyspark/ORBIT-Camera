@@ -66,14 +66,15 @@ class RecordButton: UIControl {
                 if let majorPip = self.majorSecs,
                    self.pipCount % majorPip == 0
                 {
-                    AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PStart)
-                    self.hapticMedium.impactOccurred()
+                    AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PStop)
+                    self.hapticHeavy.impactOccurred()
                     return
                 }
                 if let minorPip = self.minorSecs,
                    self.pipCount % minorPip == 0
                 {
-                    self.hapticLight.impactOccurred()
+                    AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PStart)
+                    self.hapticMedium.impactOccurred()
                     return
                 }
             })
