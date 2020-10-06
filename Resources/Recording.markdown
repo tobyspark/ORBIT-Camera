@@ -25,7 +25,7 @@ Face your scene from a different position. Take a second testing video following
 You may have to move other things to ensure this. Examples could be a cleared kitchen counter, work desk, or coffee table. Place your thing on the surface, about an arm’s length away from you. This will help you keep it in frame when recording.
 
 #### Step 3.2. Navigate to a new training video in the app. 
-From your thing’s Record screen, make sure train is seFrom your thing’s Record screen, make sure train is selected, and click the Add new video button to bring up the camera controls. lected, and click the Add new video button to bring up the camera controls. 
+From your thing’s Record screen, make sure train is selected, and click the Add new video button to bring up the camera controls. lected, and click the Add new video button to bring up the camera controls. 
 
 #### Step 3.3. Record a training video of your thing. 
 Like with the testing video, place one hand on the surface, very close to your thing. Holding the phone in your other hand, bring your phone as close as possible to your reference hand with the camera pointed towards your scene. Use the Record button to start recording the video. Now, draw your phone away from the anchored hand until it reaches your chest. Continue filming your thing by rotating it on the surface so that a different side is facing you. Bring your phone close to the thing again, and then slowly draw it away towards your chest. Repeat this for a third side of the thing, and then click the Record button to stop the recording. In total, a training video should be about 25 seconds. A tic sound and a vibration will start to play every 5 seconds to help you time your recording. You should hear a tic sound and a vibration every time you have moved the phone to your chest. You will hear a double tic sound and a stronger vibration when 25 seconds is up. When you reach 30 seconds your recording will automatically stop, and your video will be uploaded to the server.
@@ -45,7 +45,8 @@ If you have any questions, difficulties, or concerns about using the ORBIT app t
 
 We also have more information and tips to share with you on our website: 
 
-- Tutorial on how to record videos 
+- [Tutorial on how to record videos](https://orbit.city.ac.uk/help-us-build-better-ai-systems-test/#Tutorial)
+ 
 
 - More information on the ORBIT app 
 
