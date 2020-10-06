@@ -6,13 +6,12 @@ abcd4: Charity Four
 abcd5: Charity Five
 ---
 
-# We'll donate to your choice of charity
+# On behalf of your participation, a £10 donation will be offered to a charity that supports blind and low vision communities. The higher the number of videos we collect, the higher the amount of the donation! 
 
-Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio, cumque nihil impedit, quo minus id, quod maxime placeat, facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet, ut et voluptates repudiandae sint et molestiae non-recusandae.
+
 
 ## The charities
-Before choosing, here is some information about each charity
-
+Please select one from the five charities below?
 ### Charity One
 Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo.
 
