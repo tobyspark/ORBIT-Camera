@@ -76,6 +76,9 @@ i.e. at the time of writing, one document has the link `[Training videos for sma
 ### Consent form
 The consent markdown file has the introductory prose preceded by the consent items as metadata key:value pairs. These will be rendered into a list of checkbox items. Keys are not displayed but are used for sorting (i.e. dispay is not set by order in metadata). No markdown parsing on the text to display.
 
+### Charity choice
+The charity choice markdown file has the introductory prose preceded by the database and presentation values as metadata key:value pairs. The key (left hand side) must be five characters or less with no spaces, and is what you will see in the `participant` CSV export. The value (right hand side) is what is displayed in the picker.
+
 ## Known issues
 - Thing labels cannot be edited #12
 - Thing list editing not accessible, i.e. can't delete via voiceover. #19
