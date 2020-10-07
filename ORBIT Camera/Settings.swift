@@ -36,8 +36,8 @@ struct Settings {
     static let recordingResolution = CGSize(width: 1080, height: 1080)
     
     static let desiredVideoLength: [Video.Kind: TimeInterval] = [
-        .test: 25,
-        .train: 15,
+        .test: 15,
+        .train: 25,
     ]
     
     static let videoTip: [Video.Kind: String] = [
