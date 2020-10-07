@@ -491,20 +491,27 @@ extension InfoViewController: WKNavigationDelegate {
         }
     }
     
-    /// On clicking a link, scroll the overall view to the appropriate place (as the webview is sized to be static)
+    /// On clicking a local link, scroll the overall view to the appropriate place (as the webview is sized to be static)
+    /// Otherwise, open in device's web browser
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         let aboutBlank = "about:blank%23"
         if navigationAction.navigationType == .linkActivated,
-           let link = navigationAction.request.url?.absoluteString,
-           link.hasPrefix(aboutBlank)
+           let link = navigationAction.request.url
         {
-            let anchor = link.dropFirst(aboutBlank.count)
-            webView.evaluateJavaScript("document.getElementById('\(anchor)').offsetTop") { [weak self] (offset, error) in
-                guard let self = self else { return }
-                self.scrollView.contentOffset.y = webView.frame.minY + (offset as! CGFloat) - 8
+            if link.absoluteString.hasPrefix(aboutBlank) {
+                let anchor = link.absoluteString.dropFirst(aboutBlank.count)
+                webView.evaluateJavaScript("document.getElementById('\(anchor)').offsetTop") { [weak self] (offset, error) in
+                    guard let self = self else { return }
+                    self.scrollView.contentOffset.y = webView.frame.minY + (offset as! CGFloat) - 8
+                }
+                decisionHandler(WKNavigationActionPolicy.allow)
+            } else {
+                UIApplication.shared.open(link)
+                decisionHandler(WKNavigationActionPolicy.cancel)
             }
+        } else {
+            decisionHandler(WKNavigationActionPolicy.allow)
         }
-        decisionHandler(WKNavigationActionPolicy.allow)
     }
 }
 
