@@ -10,7 +10,7 @@ NFB: NFB
 
 On behalf of your participation, we are making a donation to a charity that supports blind and low vision communities. The higher the number of videos we collect, the higher the amount of the donation!
 
-## Please select one from the five charities below
+## Please select your preferred charity
 
 ### VICTA – Empowering blind chindren and yound adults
 VICTA is a national charity that provides support to children and young adults from 0 to 29 who are blind or partially sighted and their families. 
