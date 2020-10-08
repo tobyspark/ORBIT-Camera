@@ -4,7 +4,7 @@
 
 Hello and welcome to the ORBIT dataset project! Thank you for joining blind and low vision people across the world to create a large dataset of videos. The first use of this dataset will be to build an app like Seeing A.I. that uses artificial intelligence, abbreviated to A.I., and your phone’s camera to identify things that are important to you, not just generic things. For example, your keys that are no longer where you put them or a friend’s car that is parked somewhere in front of your house.
 
-To contribute, you will be asked to take several short videos of five things that are important to you. To make sure our algorithms ultimately work for blind and low vision people, it is really important that the videos come from you and not from sighted helpers. Below are instructions which will help you to take good videos. You can expect to spend about 2 hours reading the instructions and then recording the videos.
+To contribute, you will be asked to take several short videos of five things that are important to you. To make sure our algorithms ultimately work for blind and low vision people, it is really important that the videos come from you and not from sighted helpers. Below are instructions which will help you to take good videos. You can expect to spend about 1 hour reading the instructions and then recording the videos.
 
 Participants who record all their videos at once found it easier to complete their contribution. A 10£ donation will be made to a charity of your choice after you submit 5 complete things during our data collection period.
 
