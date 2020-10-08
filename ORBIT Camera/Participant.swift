@@ -55,7 +55,11 @@ extension Participant: FetchableRecord, MutablePersistableRecord {
                 os_log("New participant, failed to clear any prior content")
             }
         })
-
+        // The simulator does not have a camera device, so must load test data
+        #if targetEnvironment(simulator)
+            try! AppDatabase.loadTestData()
+        #endif
+        
         return participant
     }
     

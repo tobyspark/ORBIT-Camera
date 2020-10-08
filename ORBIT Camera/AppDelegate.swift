@@ -16,11 +16,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         try! AppDatabase.setup(application)
         AppUploader.setup()
         
-        // The simulator does not have a camera device, so must load test data
-        #if targetEnvironment(simulator)
-            try! AppDatabase.loadTestData()
-        #endif
-        
         return true
     }
     
