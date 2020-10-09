@@ -48,7 +48,7 @@ Your participation in this research is appreciated and your contribution is very
 
 ## How is the project being funded?
 
-The project is funded by Microsoft. We have an ‘AI for Accessibility grant’, see ‘Personalized object recognition through AI’ on https://www.microsoft.com/en-us/ai/ai-for-accessibility-projects?activetab=pivot1%3aprimaryr2 
+The project is funded by Microsoft. We have an ‘AI for Accessibility grant’: [‘Personalized object recognition through AI’](https://www.microsoft.com/en-us/ai/ai-for-accessibility-projects?activetab=pivot1%3aprimaryr2)
 
 ## Conflicts of interests
 
