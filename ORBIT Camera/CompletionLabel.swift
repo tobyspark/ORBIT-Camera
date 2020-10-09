@@ -23,15 +23,23 @@ func completionLabel(_ noun: String, items: [CompletionCount]) -> UILabel {
     
     // "3 / 7"
     let message = NSMutableAttributedString()
-    message.append(NSAttributedString(
-        string: "\(countTotal)",
-        attributes: countTotal < targetTotal ? [NSAttributedString.Key.foregroundColor: UIColor.label.cgColor] : nil
+    if countTotal > targetTotal {
+        message.append(NSAttributedString(
+            string: "\(targetTotal)+ ✓"
+            )
         )
-    )
-    message.append(NSAttributedString(
-        string: "  ̷ \(targetTotal)"
+    }
+    else {
+        message.append(NSAttributedString(
+            string: "\(countTotal)",
+            attributes: countTotal < targetTotal ? [NSAttributedString.Key.foregroundColor: UIColor.label.cgColor] : nil
+            )
         )
-    )
+        message.append(NSAttributedString(
+            string: "  ̷ \(targetTotal)"
+            )
+        )
+    }
     label.attributedText = message
     
     // "3 videos. 2 testing videos to go. 2 training videos to go"
