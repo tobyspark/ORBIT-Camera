@@ -155,7 +155,9 @@ class InfoViewController: UIViewController {
         //   So, announce something else here, that won't interfere if that does magically start working
         if let presentingViewController = presentingViewController {
             if UIAccessibility.isVoiceOverRunning {
-                UIAccessibility.post(notification: .announcement, argument: "Consent and charity choice successful. You are now a participant in the ORBIT research project. The app will load shortly")
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+                    UIAccessibility.post(notification: .announcement, argument: "Consent and charity choice successful. You are now a participant in the ORBIT research project. The app will load shortly")
+                }
                 DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(7)) {
                     presentingViewController.dismiss(animated: true) {
                         presentingViewController.viewDidAppear(true)
