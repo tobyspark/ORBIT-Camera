@@ -2,7 +2,7 @@
 VICTA: VICTA
 CNIB: CNIB
 VisAu: Vision Australia
-BlSA: Blind SA
+BlSA: Blind S.A.
 NFB: NFB
 ---
 
@@ -27,8 +27,8 @@ Vision Australia is a not-for-profit organisation and Australia's largest provid
 
 For more infrormation go to: https://www.visionaustralia.org/
 
-### Blind SA
-Blind SA equips blind people in South Africa with the skills they need to fully and independently participate in society.
+### Blind S.A.
+Blind S.A. equips blind people in South Africa with the skills they need to fully and independently participate in society.
 
 For more infrormation go to: https://blindsa.org.za/
 
