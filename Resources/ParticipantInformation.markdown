@@ -16,7 +16,7 @@ REC reference number: ETH2021-0032 City, University of London
 
 ## What is the purpose of the study?
 
-Smartphones are really useful in making visual information accessible to visually impaired people. For instance, the Seeing A.I. app allows you to take a picture of your surroundings and then it reads aloud common things that are recognised in the picture, for example “a person sitting on a sofa”.
+Smartphones are really useful in making visual information accessible to blind and low vision people. For instance, the Seeing A.I. app allows you to take a picture of your surroundings and then it reads aloud common things that are recognised in the picture, for example “a person sitting on a sofa”.
 
 The problem is that while these kinds of A.I. currently can say “this is a mug”, they can’t tell you which of your mugs is which, and they don’t know what a white cane is. We are trying to change this. We want these assistive technologies to work for you, so we are working with people like you to identify what things are important to your everyday life, and figure out how best to get the phone to recognise them. To recognise a particular thing by an app, we need first to show what that thing looks like.
 
@@ -40,8 +40,7 @@ After taking a video, it will be automatically uploaded to the ORBIT server for 
 
 ## What are the possible disadvantages and risks of taking part?
 
-This study is completely confidential, and we have identified no reasonably foreseeable risks of harm, safety, or side effects to you as a result of taking part in this study. You may find it complex to record the videos and share them with us. In order to make this easier, we provide simple step-by-step [instructions](https://orbit.city.ac.uk/phase-2-data-collection/#instructions)
-, [video tutorials](https://orbit.city.ac.uk/phase-2-data-collection/#Tutorial) and online training sessions to assist you recording the videos. If this is not working for you, you can tell us at any point, and we will try to find an alternative way to help you with collecting the data.
+This study is completely confidential, and we have identified no reasonably foreseeable risks of harm, safety, or side effects to you as a result of taking part in this study. You may find it complex to record the videos and share them with us. In order to make this easier, we provide simple step-by-step [instructions](https://orbit.city.ac.uk/phase-2-data-collection/#instructions) and [video tutorials](https://orbit.city.ac.uk/phase-2-data-collection/#Tutorial) to assist you recording the videos. If this is not working for you, you can tell us at any point, and we will try to find an alternative way to help you with collecting the data.
 
 ## What are the possible benefits of taking part?
 
