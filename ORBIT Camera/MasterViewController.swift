@@ -46,6 +46,9 @@ class MasterViewController: UITableViewController {
     /// Database observer for things changes
     private var thingsObserver: DatabaseCancellable?
     
+    /// Table view header that needs to be kept updated as things change
+    private var thingsHeaderView = ThingsHeaderView(label: "Your things")
+    
     /// Segue to detail, creating the new `Thing`
     // Triggered by 'go' on keyboard only
     // cell in storyboard is wired to trigger segue there
@@ -109,6 +112,7 @@ class MasterViewController: UITableViewController {
                                 self.tableView.selectRow(at: IndexPath(row: offset, section: ThingSection.things.rawValue), animated: true, scrollPosition: .none)
                             }
                         }
+                        self.thingsHeaderView.detail = completionLabel("thing", items: [CompletionCount(count: things.count, target: Settings.completedThingsTarget)])
                     }, completion: nil)
                 }
             }
@@ -269,53 +273,15 @@ class MasterViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.alignment = .center
-        stack.distribution = .equalSpacing
-        stack.spacing = 8
-        
-        let leftLine = UIView()
-        leftLine.backgroundColor = UIColor.label
-        leftLine.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        leftLine.widthAnchor.constraint(equalToConstant: 16).isActive = true
-        stack.addArrangedSubview(leftLine)
-        
-        
-        let label = UILabel()
-        label.font = UIFont.preferredFont(forTextStyle: .headline)
-        switch ThingSection(rawValue: section)! {
+        switch ThingSection(rawValue: section) {
         case .addNew:
-            label.text = "Add a new thing"
+            return ThingsHeaderView(label: "Add new thing")
         case .things:
-            label.text = "Your things"
+            return thingsHeaderView
+        case .none:
+            assertionFailure()
+            return nil
         }
-        stack.addArrangedSubview(label)
-        
-        let line = UIView()
-        line.backgroundColor = UIColor.label
-        line.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        let lineWidthConstraint = line.widthAnchor.constraint(equalToConstant: 1000)
-        lineWidthConstraint.priority = .defaultLow
-        lineWidthConstraint.isActive = true
-        stack.addArrangedSubview(line)
-        
-        if section == ThingSection.things.rawValue {
-            let detail = completionLabel("thing", items: [CompletionCount(count: things.count, target: Settings.completedThingsTarget)])
-            stack.addArrangedSubview(detail)
-            stack.accessibilityHint = detail.accessibilityLabel
-            
-            let line = UIView()
-            line.backgroundColor = UIColor.label
-            line.heightAnchor.constraint(equalToConstant: 1).isActive = true
-            line.widthAnchor.constraint(equalToConstant: 16).isActive = true
-            stack.addArrangedSubview(line)
-        }
-
-        stack.isAccessibilityElement = true
-        stack.accessibilityTraits.formUnion(.header)
-        stack.accessibilityLabel = label.accessibilityLabel
-        return stack
     }
     
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

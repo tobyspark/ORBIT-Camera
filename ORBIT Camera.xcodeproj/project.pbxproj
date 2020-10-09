@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B09591F253052CE00A58560 /* ThingsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B09591E253052CE00A58560 /* ThingsHeaderView.swift */; };
 		4B3119AB245091ED00E28452 /* Ink in Frameworks */ = {isa = PBXBuildFile; productRef = 4B3119AA245091ED00E28452 /* Ink */; };
 		4B3119AE2450977100E28452 /* Recording.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4B3119AC2450977100E28452 /* Recording.markdown */; };
 		4B3119B12451030B00E28452 /* UIColor+CSS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3119B02451030B00E28452 /* UIColor+CSS.swift */; };
@@ -86,6 +87,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4B09591E253052CE00A58560 /* ThingsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThingsHeaderView.swift; sourceTree = "<group>"; };
 		4B3119AC2450977100E28452 /* Recording.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = Recording.markdown; path = Resources/Recording.markdown; sourceTree = SOURCE_ROOT; };
 		4B3119B02451030B00E28452 /* UIColor+CSS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSS.swift"; sourceTree = "<group>"; };
 		4B3119B22451B06600E28452 /* String+slugify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+slugify.swift"; sourceTree = "<group>"; };
@@ -206,6 +208,7 @@
 				4BFC5F2A245C4E2500E5A3C1 /* AppLogging.swift */,
 				4BF14BB92405730700E31D93 /* SceneDelegate.swift */,
 				4BF14BBB2405730700E31D93 /* MasterViewController.swift */,
+				4B09591E253052CE00A58560 /* ThingsHeaderView.swift */,
 				4B5A6B982424CB9200A5C45B /* NewThingCell.swift */,
 				4BE50EF62438879E00BE79C7 /* ThingCell.swift */,
 				4BF14BBD2405730700E31D93 /* DetailViewController.swift */,
@@ -387,6 +390,7 @@
 				4BFC5F252459DA6000E5A3C1 /* Settings+secrets.swift in Sources */,
 				4BE7768C247A98360088562D /* Participant+ServerStatus.swift in Sources */,
 				4BF14C192405B81900E31D93 /* AppDatabase.swift in Sources */,
+				4B09591F253052CE00A58560 /* ThingsHeaderView.swift in Sources */,
 				4B87FD1124098D57007AB630 /* Participant.swift in Sources */,
 				4B3D772624332C740077DFD0 /* VideoKindPickerView.swift in Sources */,
 				4BD4A16924617FF800817FF4 /* ErrorLabel.swift in Sources */,
