@@ -231,6 +231,7 @@
 				4B8409B224499B470001F654 /* OrbitPagerView.swift */,
 				4B9AA9FE2418EA49002380B1 /* RecordButton.swift */,
 				4BD4A16824617FF800817FF4 /* ErrorLabel.swift */,
+				4BA3B12F252BCDD100A5D1F6 /* CompletionLabel.swift */,
 				4B3119B62452F75700E28452 /* MarkdownParser.swift */,
 				4B3D772524332C740077DFD0 /* VideoKindPickerView.swift */,
 				4BE50EF42437F07C00BE79C7 /* Collection+SafeSubscript.swift */,
@@ -251,7 +252,6 @@
 				4BF14BC22405730900E31D93 /* Assets.xcassets */,
 				4BF14BC42405730900E31D93 /* LaunchScreen.storyboard */,
 				4BF14BC72405730900E31D93 /* Info.plist */,
-				4BA3B12F252BCDD100A5D1F6 /* CompletionLabel.swift */,
 			);
 			path = "ORBIT Camera";
 			sourceTree = "<group>";
