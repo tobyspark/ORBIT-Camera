@@ -66,6 +66,7 @@ struct MarkdownParser {
         font: -apple-system-body;
         color: \(UIColor.label.css);
         background-color: \(UIColor.systemBackground.css);
+        overflow-wrap: break-word;
     }
     form ul {
         list-style-type: none;
