@@ -37,4 +37,4 @@ The National Federation of the Blind is an organization of blind people in the U
 
 For more infrormation go to: https://www.nfb.org/
 
-## Please submit your choice:
+## Please make your choice:
