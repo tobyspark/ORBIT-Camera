@@ -10,7 +10,7 @@ In the ORBIT Camera App home screen, enter the name of your thing and hit the Ad
 ### Step 2. Record 2 testing videos of the thing.
 
 #### Step 2.1. Go to the thing. 
-Go to wherever you would normally keep the thing. A testing video must capture the whole scene your thing is part of. It is important that this includes other objects that are usually beside your thing. For example, if your keys are on your desk, the scene is the whole desk.
+Go to wherever you would normally keep the thing. Capture a testing video of your thing and all the things around it - the whole scene. It is important that this video includes other objects that are usually there. For example, if your keys are on your desk, the scene is the whole desk and includes lamp, books etc.
 
 #### Step 2.2. Navigate to a new testing video in the app.
 From your Things list screen, either enter a name for your thing or select your thing from the list. This will bring up the Thing record and review screen. Make sure you’re in the correct test video slot by swiping up or down in the recording slots. You are now ready to record a testing video!
