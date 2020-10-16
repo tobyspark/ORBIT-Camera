@@ -1,6 +1,6 @@
 # Recording your videos with the ORBIT Camera app
 
-You will collect two kinds of videos for each of your 5 things: training videos for teaching the A.I. algorithm to recognise the thing, and testing videos for testing the performance of the A.I. algorithm. Before you begin using the ORBIT Camera app, it is highly recommended that you complete our [tutorial](https://orbit.city.ac.uk/phase-2-data-collection/#Tutorial
+You will collect two kinds of videos for each of your 5 things: training videos for teaching the AI algorithm to recognise the thing, and testing videos for testing the performance of the AI algorithm. Before you begin using the ORBIT Camera app, it is highly recommended that you complete our [tutorial](https://orbit.city.ac.uk/phase-2-data-collection/#Tutorial
 ) to learn the technique to record your videos. You will be using one of your hands as a reference point to make sure the things you record are in frame because if you point your camera towards your hand there’s a good chance that the thing you record is also captured.  
 
 #### Step 1. Think of a thing and enter it into the app.
