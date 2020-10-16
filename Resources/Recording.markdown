@@ -35,7 +35,7 @@ Like with the testing video, place one hand on the surface, very close to your t
 #### Step 3.4. Repeat on another 4 surfaces.
 Move your object to a new clear surface, and take another training video. Repeat this for 4 completely different clear surfaces. 
 
-That's it! Repeat these steps to take testing and training videos for at least 5 things.
+### Step 4. Repeat these steps to take testing and training videos for at least 5 things.
 
 ## After recording
 When you finish your recordings, the videos will automatically be uploaded to the ORBIT online repository. We will then check your videos and the thing names to make sure that they don’t have any information in them that could reveal your identity or contain anything explicit or offensive. Once your videos pass our checks, they will be added to the final dataset which will be made public after the study ends. Going through each thing you’ve created in the main thing list screen tells you whether you have completed all videos for that thing, and whether any videos are still waiting to be checked by the research team. If a video includes any personal identified information or the object is not visible in the video, you should receive a notification to re-record your video. You can delete or re-record any of your videos until the end of the study.  When all your videos are completed and checked, you will receive a notification to delete the videos and the app.    
