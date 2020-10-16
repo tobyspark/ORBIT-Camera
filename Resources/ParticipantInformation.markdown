@@ -16,11 +16,11 @@ REC reference number: ETH2021-0032 City, University of London
 
 ## What is the purpose of the study?
 
-Smartphones are really useful in making visual information accessible to blind and low vision people. For instance, the Seeing A.I. app allows you to take a picture of your surroundings and then it reads aloud common things that are recognised in the picture, for example “a person sitting on a sofa”.
+Smartphones are really useful in making visual information accessible to blind and low vision people. For instance, the Seeing AI app allows you to take a picture of your surroundings and then it reads aloud common things that are recognised in the picture, for example “a person sitting on a sofa”.
 
-The problem is that while these kinds of A.I. currently can say “this is a mug”, they can’t tell you which of your mugs is which, and they don’t know what a white cane is. We are trying to change this. We want these assistive technologies to work for you, so we are working with people like you to identify what things are important to your everyday life, and figure out how best to get the phone to recognise them. To recognise a particular thing by an app, we need first to show what that thing looks like.
+The problem is that while these kinds of AI currently can say “this is a mug”, they can’t tell you which of your mugs is which, and they don’t know what a white cane is. We are trying to change this. We want these assistive technologies to work for you, so we are working with people like you to identify what things are important to your everyday life, and figure out how best to get the phone to recognise them. To recognise a particular thing by an app, we need first to show what that thing looks like.
 
-Specifically, the aim of this project is to create a large open dataset of videos taken by visually impaired people. The videos will show things those people judge important in their lives and then the dataset will be used to train A.I. systems to recognise those things. We made this iPhone app to do this, so that we can involve lots of people who are blind or low vision.
+Specifically, the aim of this project is to create a large open dataset of videos taken by visually impaired people. The videos will show things those people judge important in their lives and then the dataset will be used to train AI systems to recognise those things. We made this iPhone app to do this, so that we can involve lots of people who are blind or low vision.
 
 ## Why have I been invited to take part?
 
