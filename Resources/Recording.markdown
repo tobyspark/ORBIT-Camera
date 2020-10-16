@@ -10,7 +10,7 @@ In the ORBIT Camera App home screen, enter the name of your thing and hit the Ad
 ### Step 2. Record 2 testing videos of the thing.
 
 #### Step 2.1. Go to the thing. 
-Go to wherever you would normally keep the thing. Capture a testing video of your thing and all the things around it - the whole scene. It is important that this video includes other objects that are usually there. For example, if your keys are on your desk, the scene is the whole desk and includes lamp, books etc.
+Go to wherever you would normally keep the thing. Capture a testing video of your thing and all the things around it - the whole scene. It is important that this video includes other things that are usually there. For example, if your keys are on your desk, the scene is the whole desk and includes lamp, books etc.
 
 #### Step 2.2. Navigate to a new testing video in the app.
 From your Things list screen, either enter a name for your thing or select your thing from the list. This will bring up the Thing record and review screen. Make sure you’re in the correct test video slot by swiping up or down in the recording slots. You are now ready to record a testing video!
@@ -38,7 +38,7 @@ Move your object to a new clear surface, and take another training video. Repeat
 ### Step 4. Repeat these steps to take testing and training videos for at least 5 things.
 
 ## After recording
-When you finish your recordings, the videos will automatically be uploaded to the ORBIT online repository. We will then check your videos and the thing names to make sure that they don’t have any information in them that could reveal your identity or contain anything explicit or offensive. Once your videos pass our checks, they will be added to the final dataset which will be made public after the study ends. Going through each thing you’ve created in the main thing list screen tells you whether you have completed all videos for that thing, and whether any videos are still waiting to be checked by the research team. If a video includes any personal identified information or the object is not visible in the video, you should receive a notification to re-record your video. You can delete or re-record any of your videos until the end of the study.  When all your videos are completed and checked, you will receive a notification to delete the videos and the app.    
+When you finish your recordings, the videos will automatically be uploaded to the ORBIT online repository. We will then check your videos and the thing names to make sure that they don’t have any information in them that could reveal your identity or contain anything explicit or offensive. Once your videos pass our checks, they will be added to the final dataset which will be made public after the study ends. Going through each thing you’ve created in the main thing list screen tells you whether you have completed all videos for that thing, and whether any videos are still waiting to be checked by the research team. If a video includes any personal identified information or the thing is not visible in the video, you should receive a notification to re-record your video. You can delete or re-record any of your videos until the end of the study.  When all your videos are completed and checked, you will receive a notification to delete the videos and the app.    
 
 ## More information
 
