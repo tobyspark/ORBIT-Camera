@@ -1,11 +1,9 @@
 # Recording your videos with the ORBIT Camera app
 
-You will collect two kinds of videos for each of your 5 things: training videos for teaching the AI algorithm to recognise the thing, and testing videos for testing the performance of the AI algorithm. Before you begin using the ORBIT Camera app, it is highly recommended that you complete our [tutorial](https://orbit.city.ac.uk/phase-2-data-collection/#Tutorial
-) to learn the technique to record your videos. You will be using one of your hands as a reference point to make sure the things you record are in frame because if you point your camera towards your hand there’s a good chance that the thing you record is also captured.  
+You will collect two kinds of videos for each of your 5 things: training videos for teaching the AI algorithm to recognise the thing, and testing videos for testing the performance of the AI algorithm. Before you begin using the ORBIT Camera app, it is highly recommended that you complete our [tutorial](https://orbit.city.ac.uk/phase-2-data-collection/#Tutorial) to learn the technique to record your videos. You will be using one of your hands as a reference point to make sure the things you record are in frame because if you point your camera towards your hand there’s a good chance that the thing you record is also captured.  
 
 #### Step 1. Think of a thing and enter it into the app.
-In the ORBIT Camera App home screen, enter the name of your thing and hit the Add thing button. A thing is any item that you regularly need to find or identify. It could be an item that easily gets moved or misplaced, or an item that is difficult or inconvenient to identify by touch alone. If you are stuck for ideas, see the [FAQ](https://orbit.city.ac.uk/phase-2-data-collection/#FAQs
-) for a list of things other people have collected. 
+In the ORBIT Camera App home screen, enter the name of your thing and hit the Add thing button. A thing is any item that you regularly need to find or identify. It could be an item that easily gets moved or misplaced, or an item that is difficult or inconvenient to identify by touch alone. If you are stuck for ideas, see the [FAQ](https://orbit.city.ac.uk/phase-2-data-collection/#FAQs) for a list of things other people have collected. 
 
 ### Step 2. Record 2 testing videos of the thing.
 
