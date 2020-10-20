@@ -32,7 +32,7 @@ Blind SA equips blind people in South Africa with the skills they need to fully 
 
 For more infrormation go to: https://blindsa.org.za/
 
-### NFB – National Federation of the Blind
+### N.F.B. – National Federation of the Blind
 The National Federation of the Blind is an organization of blind people in the United States. It coordinates many programs, services, and resources to defend the rights of blind Americans, provides information and support to blind children and adults, and builds a community that creates a future full of opportunities.
 
 For more infrormation go to: https://www.nfb.org/
