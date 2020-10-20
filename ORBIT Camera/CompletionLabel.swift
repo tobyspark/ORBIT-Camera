@@ -42,17 +42,19 @@ func completionLabel(_ noun: String, items: [CompletionCount]) -> UILabel {
     }
     label.attributedText = message
     
+    // "No videos yet. 2 testing videos to go. 5 training videos to go"
     // "3 videos. 2 testing videos to go. 2 training videos to go"
     // "7 videos. Complete."
     if countTotal >= targetTotal {
-        label.accessibilityLabel = "\(countTotal) videos. Complete."
+        label.accessibilityLabel = "\(countTotal) \(noun). Complete."
     } else {
+        let overallCountString = countTotal == 0 ? "No \(noun)s yet" : "\(countTotal) \(noun)\(countTotal == 1 ? "" : "s")"
         let accessibilityCountStrings: [String] = items.reduce(into: []) { (acc, x) in
             let remaining = x.target - x.count
             if remaining <= 0 { return }
             acc.append("\(remaining) \(x.name) \(noun)\(remaining == 1 ? "" : "s") to go")
         }
-        label.accessibilityLabel = "\(countTotal) \(noun)\(countTotal == 1 ? "" : "s"). \(accessibilityCountStrings.joined(separator: ". "))"
+        label.accessibilityLabel = "\(overallCountString). \(accessibilityCountStrings.joined(separator: ". "))"
     }
     
     return label
