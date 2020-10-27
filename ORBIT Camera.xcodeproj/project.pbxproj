@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4B09591F253052CE00A58560 /* ThingsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B09591E253052CE00A58560 /* ThingsHeaderView.swift */; };
+		4B0D893B254636E400250C8B /* APNS+upload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B0D893A254636E400250C8B /* APNS+upload.swift */; };
 		4B3119AB245091ED00E28452 /* Ink in Frameworks */ = {isa = PBXBuildFile; productRef = 4B3119AA245091ED00E28452 /* Ink */; };
 		4B3119AE2450977100E28452 /* Recording.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 4B3119AC2450977100E28452 /* Recording.markdown */; };
 		4B3119B12451030B00E28452 /* UIColor+CSS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B3119B02451030B00E28452 /* UIColor+CSS.swift */; };
@@ -88,6 +89,8 @@
 
 /* Begin PBXFileReference section */
 		4B09591E253052CE00A58560 /* ThingsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThingsHeaderView.swift; sourceTree = "<group>"; };
+		4B0D89372545DF3A00250C8B /* ORBIT Camera.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ORBIT Camera.entitlements"; sourceTree = "<group>"; };
+		4B0D893A254636E400250C8B /* APNS+upload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "APNS+upload.swift"; sourceTree = "<group>"; };
 		4B3119AC2450977100E28452 /* Recording.markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = Recording.markdown; path = Resources/Recording.markdown; sourceTree = SOURCE_ROOT; };
 		4B3119B02451030B00E28452 /* UIColor+CSS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+CSS.swift"; sourceTree = "<group>"; };
 		4B3119B22451B06600E28452 /* String+slugify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+slugify.swift"; sourceTree = "<group>"; };
@@ -200,6 +203,7 @@
 		4BF14BB62405730700E31D93 /* ORBIT Camera */ = {
 			isa = PBXGroup;
 			children = (
+				4B0D89372545DF3A00250C8B /* ORBIT Camera.entitlements */,
 				4BF14BB72405730700E31D93 /* AppDelegate.swift */,
 				4B87FD162409D4A4007AB630 /* AppNetwork.swift */,
 				4BF14C182405B81900E31D93 /* AppDatabase.swift */,
@@ -234,6 +238,7 @@
 				4BA3B12F252BCDD100A5D1F6 /* CompletionLabel.swift */,
 				4B3119B62452F75700E28452 /* MarkdownParser.swift */,
 				4B3D772524332C740077DFD0 /* VideoKindPickerView.swift */,
+				4B0D893A254636E400250C8B /* APNS+upload.swift */,
 				4BE50EF42437F07C00BE79C7 /* Collection+SafeSubscript.swift */,
 				4B318B0424404CA4001F9874 /* Collection+Cycle.swift */,
 				4BA680F1243DE7CD0092DAEF /* UIAccessibility+Focus.swift */,
@@ -394,6 +399,7 @@
 				4B87FD1124098D57007AB630 /* Participant.swift in Sources */,
 				4B3D772624332C740077DFD0 /* VideoKindPickerView.swift in Sources */,
 				4BD4A16924617FF800817FF4 /* ErrorLabel.swift in Sources */,
+				4B0D893B254636E400250C8B /* APNS+upload.swift in Sources */,
 				4BFC5F27245B11A300E5A3C1 /* InfoViewController+requestCredential.swift in Sources */,
 				4B87FD30240EC757007AB630 /* MultipartFormData.swift in Sources */,
 				4B9AA9FF2418EA49002380B1 /* RecordButton.swift in Sources */,
@@ -600,15 +606,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "ORBIT Camera/ORBIT Camera.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2.0.9;
+				CURRENT_PROJECT_VERSION = 2.2.0;
 				DEVELOPMENT_TEAM = 56VGQ4L2V3;
 				INFOPLIST_FILE = "ORBIT Camera/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "uk.ac.city.orbit-camera";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -620,15 +627,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "ORBIT Camera/ORBIT Camera.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2.0.9;
+				CURRENT_PROJECT_VERSION = 2.2.0;
 				DEVELOPMENT_TEAM = 56VGQ4L2V3;
 				INFOPLIST_FILE = "ORBIT Camera/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "uk.ac.city.orbit-camera";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

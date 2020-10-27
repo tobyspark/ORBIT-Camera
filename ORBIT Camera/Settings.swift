@@ -31,6 +31,8 @@ struct Settings {
         URL(string: Settings.endpointVideo)!.appendingPathComponent("\(orbitID)/")
     }
     
+    static let endpointAPNS = "https://orbit-data.city.ac.uk/phasetwo/device/apns/"
+    
     static let captureSessionPreset: AVCaptureSession.Preset = .hd1920x1080
     static let captureSessionStablisesVideo = false
     static let recordingResolution = CGSize(width: 1080, height: 1080)
