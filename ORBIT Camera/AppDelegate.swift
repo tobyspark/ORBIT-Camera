@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import os
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -15,6 +16,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         try! AppDatabase.setup(application)
         AppUploader.setup()
+        
+        // Delay allows authCredential be set on app launch
+        DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + .seconds(2)) {
+            UNUserNotificationCenter.current().getNotificationSettings { (notificationSettings) in
+                if notificationSettings.authorizationStatus == .authorized {
+                    UNUserNotificationCenter.current().requestAuthorization(options: [.alert]) { (granted, error) in
+                        if granted {
+                            DispatchQueue.main.async {
+                                UIApplication.shared.registerForRemoteNotifications()
+                            }
+                        }
+                        os_log("Notifications granted: %{public}s", granted ? "Yes" : "No")
+                    }
+                }
+            }
+        }
         
         return true
     }
@@ -25,6 +42,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         appNetwork.completionHandler = completionHandler
     }
 
+    // MARK: Notifications
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        APNS.uploadDeviceToken(token: deviceToken)
+    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        os_log("didFailToRegisterForRemoteNotificationsWithError")
+        assertionFailure()
+    }
+    
     // MARK: UISceneSession Lifecycle
 
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {

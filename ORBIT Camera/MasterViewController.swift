@@ -151,6 +151,17 @@ class MasterViewController: UITableViewController {
             guard let cell = tableView.cellForRow(at: addNewPath) as? NewThingCell
             else { return }
             cell.labelField.becomeFirstResponder()
+        // If there is a thing, ask if they want notifications of updates
+        } else {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert], completionHandler: { (granted, error) in
+                guard error == nil else {
+                    os_log("notification requestAuthorization error")
+                    return
+                }
+                DispatchQueue.main.async {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+            })
         }
     }
 
