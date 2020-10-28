@@ -2,8 +2,8 @@
 VICTA: VICTA
 CNIB: CNIB
 VisAu: Vision Australia
-BlSA: Blind S.A.
-NFB: N.F.B.
+BlSA: Blind SA
+NFB: NFB
 ---
 
 # Donations to charity
@@ -27,12 +27,12 @@ Vision Australia is a not-for-profit organisation and Australia's largest provid
 
 For more infrormation go to: https://www.visionaustralia.org/
 
-### Blind S.A.
+### Blind SA
 Blind SA equips blind people in South Africa with the skills they need to fully and independently participate in society.
 
 For more infrormation go to: https://blindsa.org.za/
 
-### N.F.B. – National Federation of the Blind
+### NFB – National Federation of the Blind
 The National Federation of the Blind is an organization of blind people in the United States. It coordinates many programs, services, and resources to defend the rights of blind Americans, provides information and support to blind children and adults, and builds a community that creates a future full of opportunities.
 
 For more infrormation go to: https://www.nfb.org/
