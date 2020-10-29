@@ -10,7 +10,7 @@ import UIKit
 import os
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -25,6 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         if granted {
                             DispatchQueue.main.async {
                                 UIApplication.shared.registerForRemoteNotifications()
+                                UNUserNotificationCenter.current().delegate = self
                             }
                         }
                         os_log("Notifications granted: %{public}s", granted ? "Yes" : "No")
@@ -51,6 +52,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         os_log("didFailToRegisterForRemoteNotificationsWithError")
         assertionFailure()
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo
+        guard let updateVideo = userInfo["video"] as? String,
+              let updateThing = userInfo["thing"] as? String
+        else {
+            //FIXME: go do something, or somesuch
+            print("userNotificationCenter didReceive", response)
+            completionHandler()
+            return
+        }
+        //FIXME: go to that video/thing or somesuch
+        print("userNotificationCenter didReceive", response, updateVideo, updateThing)
+        completionHandler()
     }
     
     // MARK: UISceneSession Lifecycle
