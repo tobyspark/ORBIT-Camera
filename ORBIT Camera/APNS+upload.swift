@@ -25,7 +25,7 @@ struct APNS {
         request.setValue(appNetwork.authCredential, forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
-        let uploadStruct = APIPOSTRequest(registrationID: token.reduce("", {$0 + String(format: "%02X", $1)}))
+        let uploadStruct = APIPOSTRequest(registrationID: token.reduce("", {$0 + String(format: "%02.2hhx", $1)})) // Format per WWDC20-10095
         guard let uploadData = try? JSONEncoder().encode(uploadStruct) else {
             os_log("Aborting uploadAPNSDeviceToken", log: appNetLog)
             assertionFailure("uploadStruct: \(uploadStruct)")
