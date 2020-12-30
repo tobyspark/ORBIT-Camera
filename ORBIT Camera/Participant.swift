@@ -22,6 +22,7 @@ struct Participant: Codable, Equatable {
     /// Authorisation string for HTTP requests made for this participant. Should only be populated with validated credential.
     var authCredential: String?
     
+    var charityChoice: String?
     var studyStart: Date?
     var studyEnd: Date?
 }
@@ -34,12 +35,31 @@ extension Participant: FetchableRecord, MutablePersistableRecord {
     
     /// The app is designed for only one participant. This returns the one participant from the database.
     static func appParticipant() throws -> Participant {
-        if let participant = try dbQueue.read({ db in try Participant.filter(key: 1).fetchOne(db) }) {
+        if let participant = try dbQueue.read({ db in try Participant.fetchOne(db) }) {
             return participant
         }
         var participant = Participant()
+        // Save participant
         try dbQueue.write { db in try participant.save(db) }
-        assert(participant.id == 1, "appParticipant created with ID other than 1")
+        // Remove any content for any previous participant
+        dbQueue.asyncWrite({ db in
+            let things = try Thing.fetchAll(db)
+            for thing in things {
+                try thing.delete(db)
+            }
+        }, completion: { db, result in
+            switch result {
+            case .success:
+                os_log("New participant, cleared any prior content")
+            case .failure:
+                os_log("New participant, failed to clear any prior content")
+            }
+        })
+        // The simulator does not have a camera device, so must load test data
+        #if targetEnvironment(simulator)
+            try! AppDatabase.loadTestData()
+        #endif
+        
         return participant
     }
     

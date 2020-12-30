@@ -32,10 +32,14 @@ class ThingCell: UITableViewCell {
             return
         }
         
-        let thingRequest = Thing.filter(Video.Columns.id == thingID)
-        let thingObservation = thingRequest.observationForFirst()
-        thingObserver = try! thingObservation.start(
+        let thingFetch = Thing.filter(Video.Columns.id == thingID).fetchOne
+        let thingObservation = ValueObservation.tracking(thingFetch)
+        thingObserver = thingObservation.start(
             in: dbQueue,
+            onError: { error in
+                print(error)
+                assertionFailure()
+            },
             onChange: { [weak self] thing in
                 guard
                     let self = self,
@@ -45,47 +49,33 @@ class ThingCell: UITableViewCell {
                 self.textLabel!.text = thing.labelParticipant
         })
         
-        let videosRequest = Video.filter(Video.Columns.thingID == thingID)
-        let videosObservation = videosRequest.observationForAll()
-        videosObserver = try! videosObservation.start(
+        let videosFetch = Video.filter(Video.Columns.thingID == thingID).fetchAll
+        let videosObservation = ValueObservation.tracking(videosFetch)
+        videosObserver = videosObservation.start(
             in: dbQueue,
+            onError: { error in
+                print(error)
+                assertionFailure()
+            },
             onChange: { [weak self] videos in
                 guard
                     let self = self,
                     let detailTextLabel =  self.detailTextLabel
                 else { return }
                 
-                let smallCapsFont = ThingCell.smallCapsVariant(of: detailTextLabel.font)
-                
-                let message = NSMutableAttributedString()
-                for (index, kind) in Video.Kind.allCases.enumerated() {
-                    let kindVideos = videos.filter( { video in video.kind == kind } )
-                    let separator = index == 0 ? "" : " " // <- thin space
-                    message.append(NSMutableAttributedString(
-                        string: "\(separator)\(kind.rawValue)",
-                        attributes: [NSAttributedString.Key.font: smallCapsFont]
-                        )
-                    )
-                    message.append(NSAttributedString(
-                        string: "\(kindVideos.count)",
-                        attributes: [NSAttributedString.Key.foregroundColor: UIColor.label.cgColor]
-                        )
-                    )
+                let counts: [CompletionCount] = Settings.videoKindSlots.reduce(into: []) { (acc, x) in
+                    let kindVideos = videos.filter( { video in video.kind == x.kind } )
+                    acc.append(CompletionCount(name: x.kind.description, count: kindVideos.count, target: x.slots))
                 }
-                detailTextLabel.attributedText = message
+                let label = completionLabel("video", items: counts)
                 
-                let accessibilityCountStrings: [String] = Video.Kind.allCases.map { kind in
-                    let kindVideos = videos.filter( { video in video.kind == kind } )
-                    let count = (kindVideos.count == 0) ? "No" : "\(kindVideos.count)"
-                    let videoPluralised = (kindVideos.count > 1) ? "videos" : "video"
-                    return "\(count) \(kind.verboseDescription) \(videoPluralised) "
-                }
-                detailTextLabel.accessibilityLabel = accessibilityCountStrings.joined(separator: ", ")
+                detailTextLabel.attributedText = label.attributedText
+                detailTextLabel.accessibilityLabel = label.accessibilityLabel
         })
     }
     
-    private var thingObserver: TransactionObserver?
-    private var videosObserver: TransactionObserver?
+    private var thingObserver: DatabaseCancellable?
+    private var videosObserver: DatabaseCancellable?
     
     private static func smallCapsVariant(of font: UIFont) -> UIFont {
         let descriptor = font.fontDescriptor.addingAttributes([
@@ -97,5 +87,9 @@ class ThingCell: UITableViewCell {
             ]
         ])
         return UIFont(descriptor: descriptor, size: font.pointSize)
+    }
+    
+    private static func smallVariant(of font: UIFont) -> UIFont {
+        UIFont(descriptor: font.fontDescriptor, size: font.pointSize*2/3)
     }
 }

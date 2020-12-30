@@ -33,7 +33,14 @@ class RecordButton: UIControl {
         set {}
     }
     
+    var stopSecs: TimeInterval?
+    var everySecAfter: Int?
+    var majorSecs: Int?
+    var minorSecs: Int?
+    
     func toggleRecord() {
+        self.hapticHeavy.impactOccurred()
+        
         switch recordingState {
         case .idle:
             recordingState = .active(Date())
@@ -43,15 +50,44 @@ class RecordButton: UIControl {
             pipTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self](timer) in
                 guard let self = self else { return }
                 self.pipCount += 1
-                if self.pipCount > Int(Settings.recordTimeOutSecs) - 5 {
-                    AudioServicesPlaySystemSound(RecordButton.systemSoundTink)
+                if let everyPipAfter = self.everySecAfter,
+                   self.pipCount > everyPipAfter
+                {
+                    self.hapticLight.impactOccurred()
                     return
                 }
-                if self.pipCount % 5 == 0 {
-                    AudioServicesPlaySystemSound(RecordButton.systemSoundTink)
+                if let everyPipAfter = self.everySecAfter,
+                   self.pipCount == everyPipAfter
+                {
+                    AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PStop)
+                    self.hapticHeavy.impactOccurred()
+                    return
+                }
+                if let majorPip = self.majorSecs,
+                   self.pipCount % majorPip == 0
+                {
+                    AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PStop)
+                    self.hapticHeavy.impactOccurred()
+                    return
+                }
+                if let minorPip = self.minorSecs,
+                   self.pipCount % minorPip == 0
+                {
+                    AudioServicesPlaySystemSound(RecordButton.systemSoundCamera3PStart)
+                    self.hapticMedium.impactOccurred()
                     return
                 }
             })
+            if let timeout = stopSecs {
+                stopTimer?.invalidate()
+                stopTimer = Timer.scheduledTimer(withTimeInterval: timeout, repeats: false, block: { [weak self] (timer) in
+                    guard let self = self else { return }
+                    if case .active = self.recordingState {
+                        self.toggleRecord()
+                        self.sendActions(for: .touchUpInside)
+                    }
+                })
+            }
         case .active(let date):
             recordingState = .idle
             let duration = DateInterval(start: date, end: Date()).duration
@@ -61,6 +97,17 @@ class RecordButton: UIControl {
             AudioServicesPlaySystemSound(RecordButton.systemSoundVideoEnd)
         }
         setNeedsDisplay()
+    }
+    
+    func startTimeout(_ duration: TimeInterval) {
+        stopTimer?.invalidate()
+        stopTimer = Timer.scheduledTimer(withTimeInterval: duration, repeats: false, block: { [weak self] (timer) in
+            guard let self = self else { return }
+            if case .active = self.recordingState {
+                self.toggleRecord()
+                self.sendActions(for: .touchUpInside)
+            }
+        })
     }
     
     override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
@@ -95,8 +142,14 @@ class RecordButton: UIControl {
         context.fillEllipse(in: CGRect(origin: buttonOrigin, size: buttonSize))
     }
     
+    private var stopTimer: Timer?
+    
     private var pipTimer: Timer?
     private var pipCount: Int = 0
+    private let hapticLight = UIImpactFeedbackGenerator(style: .light)
+    private let hapticMedium = UIImpactFeedbackGenerator(style: .medium)
+    private let hapticHeavy = UIImpactFeedbackGenerator(style: .heavy)
+    
     // SystemSoundID    File name    Category
     // 1117    begin_video_record.caf    BeginVideoRecording
     private static let systemSoundVideoBegin: SystemSoundID = 1117
@@ -108,4 +161,25 @@ class RecordButton: UIControl {
     private static let systemSoundTock: SystemSoundID = 1104
     // 1105    Tock.caf    sq_tock.caf    KeyPressed
     private static let systemSoundTockAlt: SystemSoundID = 1105
+    
+    private static let systemSoundCamera3PRetry: SystemSoundID = {
+        let url = URL(fileURLWithPath: "/System/Library/Audio/UISounds/nano/3rdParty_Retry_Haptic.caf")
+        var soundID: SystemSoundID = 0
+        AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
+        return soundID
+    }()
+    
+    private static let systemSoundCamera3PStart: SystemSoundID = {
+        let url = URL(fileURLWithPath: "/System/Library/Audio/UISounds/nano/3rdParty_Start_Haptic.caf")
+        var soundID: SystemSoundID = 0
+        AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
+        return soundID
+    }()
+    
+    private static let systemSoundCamera3PStop: SystemSoundID = {
+        let url = URL(fileURLWithPath: "/System/Library/Audio/UISounds/nano/3rdParty_Stop_Haptic.caf")
+        var soundID: SystemSoundID = 0
+        AudioServicesCreateSystemSoundID(url as CFURL, &soundID)
+        return soundID
+    }()
 }

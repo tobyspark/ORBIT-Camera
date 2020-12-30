@@ -56,6 +56,12 @@ class InfoViewController: UIViewController {
         /// - Submit button
         case informedConsent
         
+        /// Charity Choice
+        /// - Markdown text
+        /// - Picker
+        /// - Submit button
+        case charityChoice
+        
         /// App Information
         /// - Dismiss button
         /// - Markdown text
@@ -75,6 +81,8 @@ class InfoViewController: UIViewController {
             shareParticipantInfo()
         case .informedConsent:
             page = .participantInfo
+        case .charityChoice:
+            break
         case .appInfo:
             dismiss(animated: true)
         }
@@ -127,6 +135,42 @@ class InfoViewController: UIViewController {
         requestCredential(name: name, email: email)
     }
     
+    var charityChoiceChoiceKeys: [String]?
+    var charityChoiceChoices: [String]?
+    var charityChoiceSubmitButton: UIButton?
+    var charityChoicePicker: UIPickerView?
+    @objc func charityChoiceSubmitAction() {
+        guard
+            let charityChoicePicker = charityChoicePicker,
+            let charityChoiceChoiceKeys = charityChoiceChoiceKeys
+        else {
+            assertionFailure(); return
+        }
+        
+        let choiceIndex = charityChoicePicker.selectedRow(inComponent: 0)
+        Participant.setCharityChoice(charityChoiceChoiceKeys[choiceIndex])
+        
+        // Dismiss this screen, i.e. enter app proper
+        //   Accessibility: the things screen doesn't seem to announce itself despire viewDidAppear below, for some unknown reason
+        //   So, announce something else here, that won't interfere if that does magically start working
+        if let presentingViewController = presentingViewController {
+            if UIAccessibility.isVoiceOverRunning {
+                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(100)) {
+                    UIAccessibility.post(notification: .announcement, argument: "Consent and charity choice successful. You are now a participant in the ORBIT research project. The app will load shortly")
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(7)) {
+                    presentingViewController.dismiss(animated: true) {
+                        presentingViewController.viewDidAppear(true)
+                    }
+                }
+            } else {
+                presentingViewController.dismiss(animated: true) {
+                    presentingViewController.viewDidAppear(true)
+                }
+            }
+        }
+    }
+    
     func shareParticipantInfo() {
         // Create document. HTML good for accessibility and more known than markdown.
         let html = MarkdownParser.html(markdownResource: "ParticipantInformation")
@@ -140,6 +184,14 @@ class InfoViewController: UIViewController {
         
         let docController = UIDocumentInteractionController(url: tempURL)
         docController.presentOpenInMenu(from: sheetButton.frame, in: view, animated: true)
+    }
+    
+    
+    @objc func linkButtonAction(sender: UIButton) {
+        if let urlString = sender.currentTitle,
+           let url = URL(string: urlString) {
+            UIApplication.shared.open(url)
+        }
     }
     
     func configurePage(accessibilityScreenChangedMessage: String? = nil) {
@@ -182,7 +234,7 @@ class InfoViewController: UIViewController {
             
             let button = UIButton(type: .system)
             button.setTitle("Continue", for: .normal)
-            button.titleLabel?.font = UIFont.systemFont(ofSize: 17)
+            button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
             button.addTarget(self, action: #selector(participantInfoContinueAction), for: .touchUpInside)
             stackView.addArrangedSubview(button)
         case .informedConsent:
@@ -234,10 +286,12 @@ class InfoViewController: UIViewController {
             webView.configuration.userContentController.addUserScript(userScript)
             
             let signedLabel = UILabel()
+            signedLabel.font = UIFont.preferredFont(forTextStyle: .body)
             signedLabel.text = "Signed –"
             stackView.addArrangedSubview(signedLabel)
             
             let nameField = UITextField()
+            nameField.font = UIFont.preferredFont(forTextStyle: .body)
             nameField.placeholder = "Enter your name"
             nameField.accessibilityLabel = "Name"
             nameField.returnKeyType = .next
@@ -250,6 +304,7 @@ class InfoViewController: UIViewController {
             stackView.addArrangedSubview(nameErrorLabel)
             
             let emailField = UITextField()
+            emailField.font = UIFont.preferredFont(forTextStyle: .body)
             emailField.placeholder = "Enter your email address"
             emailField.accessibilityLabel = "Email address"
             emailField.autocapitalizationType = .none
@@ -276,6 +331,33 @@ class InfoViewController: UIViewController {
             button.addTarget(self, action: #selector(informedConsentSubmitAction), for: .touchUpInside)
             informedConsentSubmitButton = button
             stackView.addArrangedSubview(button)
+        case .charityChoice:
+            headingElement.accessibilityLabel = "Charity choice sheet"
+            
+            let closeImage = UIImage(systemName: "xmark.circle")!
+            sheetButton.setImage(closeImage, for: .normal)
+            sheetButton.accessibilityLabel = "Close"
+            sheetButtonElement.accessibilityLabel = sheetButton.accessibilityLabel
+            sheetButton.isEnabled = false
+            sheetButtonElement.accessibilityTraits.insert(.notEnabled)
+            
+            let result = MarkdownParser.parse(markdownResource: "CharityChoice")
+            charityChoiceChoices = Array(result.metadata.values) // already randomised
+            charityChoiceChoiceKeys = Array(result.metadata.keys)
+            html = result.html
+            
+            let picker = UIPickerView()
+            picker.dataSource = self
+            picker.delegate = self
+            charityChoicePicker = picker
+            stackView.addArrangedSubview(picker)
+            
+            let button = UIButton(type: .system)
+            button.setTitle("Submit choice", for: .normal)
+            button.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+            button.addTarget(self, action: #selector(charityChoiceSubmitAction), for: .touchUpInside)
+            charityChoiceSubmitButton = button
+            stackView.addArrangedSubview(button)
         case .appInfo:
             isModalInPresentation = false
             
@@ -287,6 +369,9 @@ class InfoViewController: UIViewController {
             sheetButton.accessibilityHint = "Returns you to the Things list screen"
             sheetButtonElement.accessibilityLabel = sheetButton.accessibilityLabel
             sheetButtonElement.accessibilityHint = sheetButton.accessibilityHint
+            
+            sheetButton.isEnabled = true
+            sheetButtonElement.accessibilityTraits.remove(.notEnabled)
             
             html = MarkdownParser.html(markdownResource: "Introduction")
         }
@@ -408,20 +493,27 @@ extension InfoViewController: WKNavigationDelegate {
         }
     }
     
-    /// On clicking a link, scroll the overall view to the appropriate place (as the webview is sized to be static)
+    /// On clicking a local link, scroll the overall view to the appropriate place (as the webview is sized to be static)
+    /// Otherwise, open in device's web browser
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         let aboutBlank = "about:blank%23"
         if navigationAction.navigationType == .linkActivated,
-           let link = navigationAction.request.url?.absoluteString,
-           link.hasPrefix(aboutBlank)
+           let link = navigationAction.request.url
         {
-            let anchor = link.dropFirst(aboutBlank.count)
-            webView.evaluateJavaScript("document.getElementById('\(anchor)').offsetTop") { [weak self] (offset, error) in
-                guard let self = self else { return }
-                self.scrollView.contentOffset.y = webView.frame.minY + (offset as! CGFloat) - 8
+            if link.absoluteString.hasPrefix(aboutBlank) {
+                let anchor = link.absoluteString.dropFirst(aboutBlank.count)
+                webView.evaluateJavaScript("document.getElementById('\(anchor)').offsetTop") { [weak self] (offset, error) in
+                    guard let self = self else { return }
+                    self.scrollView.contentOffset.y = webView.frame.minY + (offset as! CGFloat) - 8
+                }
+                decisionHandler(WKNavigationActionPolicy.allow)
+            } else {
+                UIApplication.shared.open(link)
+                decisionHandler(WKNavigationActionPolicy.cancel)
             }
+        } else {
+            decisionHandler(WKNavigationActionPolicy.allow)
         }
-        decisionHandler(WKNavigationActionPolicy.allow)
     }
 }
 
@@ -457,5 +549,25 @@ extension InfoViewController: UITextFieldDelegate {
     }
     func textFieldDidEndEditing(_ textField: UITextField) {
         informedConsentSetValidationUI()
+    }
+}
+
+extension InfoViewController: UIPickerViewDelegate, UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        guard let charityChoiceChoices = charityChoiceChoices
+        else { return 0 }
+        
+        return charityChoiceChoices.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        guard let charityChoiceChoices = charityChoiceChoices
+        else { return nil }
+        
+        return charityChoiceChoices[row]
     }
 }
