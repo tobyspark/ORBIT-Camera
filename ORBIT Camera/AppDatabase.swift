@@ -134,13 +134,6 @@ struct AppDatabase {
             try db.drop(table: "video")
             try db.rename(table: "new_video", to: "video")
         }
-        
-        migrator.registerMigration("addCharityChoiceToParticipant") { db in
-            try db.alter(table: "participant") { t in
-                t.add(column: "charityChoice", .text)
-            }
-        }
-        
         return migrator
     }
 }
