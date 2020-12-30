@@ -16,7 +16,7 @@ REC reference number: ETH2021-0032 City, University of London
 
 ## What is the purpose of the study?
 
-Smartphones are really useful in making visual information accessible to visually impaired people. For instance, the SeeingAI app allows you to take a picture of your surroundings and then it reads aloud common things that are recognised in the picture, for example “a person sitting on a sofa”.
+Smartphones are really useful in making visual information accessible to blind and low vision people. For instance, the Seeing AI app allows you to take a picture of your surroundings and then it reads aloud common things that are recognised in the picture, for example “a person sitting on a sofa”.
 
 The problem is that while these kinds of AI currently can say “this is a mug”, they can’t tell you which of your mugs is which, and they don’t know what a white cane is. We are trying to change this. We want these assistive technologies to work for you, so we are working with people like you to identify what things are important to your everyday life, and figure out how best to get the phone to recognise them. To recognise a particular thing by an app, we need first to show what that thing looks like.
 
@@ -34,13 +34,13 @@ It is up to you to decide whether or not to take part. If you do decide to take 
 
 ## What will happen if I take part? What do I have to do?
 
-You will use the ORBIT camera app to film short videos of at least 5 to up to 10 objects you might like your phone to recognise. For each video you need to provide 2 testing and 5 training videos. You will take up to 70 of these videos using different filming techniques and in different locations. More details about the types of videos and the filming techniques can be found in the user instructions document. With setup and reviewing the data we anticipate that the overall time that you will spend collecting data over the study period is no longer than 2 hours. However, you will be able to take videos of your objects using the ORBIT camera app at any time until the 11th of November 2020.
+You will use the ORBIT camera app to film short videos of at least 5 things you might like your phone to recognise. For each video you need to provide 2 testing and 5 training videos. You will take these videos using different filming techniques and in different locations. More details about the types of videos and the filming techniques can be found in the [filming instructions](https://orbit.city.ac.uk/phase-2-data-collection/#instructions). With setup and reviewing the data we anticipate that the overall time that you will spend collecting data over the study period is no longer than 2 hours. However, you will be able to take videos of your things using the ORBIT camera app at any time until the 11th of November 2020.
 
-After taking a video, it will be automatically uploaded to the ORBIT server for approval. If the video doesn’t include any personal identifying information and is considered appropriate for this study, it will be added to the open dataset.
+After taking a video, it will be automatically uploaded to the ORBIT server for approval. If the video doesn’t include any personal identifying information and is considered appropriate for this study, it will be added to the open dataset. We will use push notifications to inform you about your progress and keep you posted about the project.
 
 ## What are the possible disadvantages and risks of taking part?
 
-This study is completely confidential, and we have identified no reasonably foreseeable risks of harm, safety, or side effects to you as a result of taking part in this study. You may find it complex to record the videos and share them with us. In order to make this easier, we provide simple step-by-step instructions and online training sessions to assist you recording the videos.  If this is not working for you, you can tell us at any point, and we will try to find an alternative way to help you with collecting the data.
+This study is completely confidential, and we have identified no reasonably foreseeable risks of harm, safety, or side effects to you as a result of taking part in this study. You may find it complex to record the videos and share them with us. In order to make this easier, we provide simple step-by-step [instructions](https://orbit.city.ac.uk/phase-2-data-collection/#instructions) and [video tutorials](https://orbit.city.ac.uk/phase-2-data-collection/#Tutorial) to assist you recording the videos. If this is not working for you, you can tell us at any point, and we will try to find an alternative way to help you with collecting the data.
 
 ## What are the possible benefits of taking part?
 
@@ -48,7 +48,7 @@ Your participation in this research is appreciated and your contribution is very
 
 ## How is the project being funded?
 
-The project is funded by Microsoft. We have an ‘AI for Accessibility grant’, see ‘Personalized object recognition through AI’ on https://www.microsoft.com/en-us/ai/ai-for-accessibility-projects?activetab=pivot1%3aprimaryr2 
+The project is funded by Microsoft. We have an ‘AI for Accessibility grant’: [‘Personalized object recognition through AI’](https://www.microsoft.com/en-us/ai/ai-for-accessibility-projects?activetab=pivot1%3aprimaryr2)
 
 ## Conflicts of interests
 
@@ -56,7 +56,7 @@ N/A
 
 ## What should I do if I want to take part?
 
-Before you download the app and start recording your videos, you will need to read the user instructions carefully. If you would like to continue with the study, you will need to download the app and follow the steps to give us consent by signing the consent form provided in the app. Once you have provided consent you can start using the app. The link to access the user instructions and download the app can be found at the end of this document.
+Before you download the app and start recording your videos, you will need to read the [filming instructions](https://orbit.city.ac.uk/phase-2-data-collection/#instructions) carefully. If you would like to continue with the study, you will need to give us consent by signing the consent form provided in the app. Once you have provided consent you can start using the app.
 
 If you have any questions, get in touch with Lida on the following email address lida.theodorou.2@city.ac.uk
 

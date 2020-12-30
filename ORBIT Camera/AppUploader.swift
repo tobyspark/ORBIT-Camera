@@ -21,9 +21,9 @@ var appUploader: AppUploader!
 struct AppUploader {
     
     // Database observation
-    let thingsObserver: TransactionObserver
-    let videosObserver: TransactionObserver
-    let participantObserver: TransactionObserver
+    let thingsObserver: DatabaseCancellable
+    let videosObserver: DatabaseCancellable
+    let participantObserver: DatabaseCancellable
     
     // Network observation
     let networkMonitor = NWPathMonitor()
@@ -41,8 +41,8 @@ struct AppUploader {
         // Background serial queue. Upload work should be atomised onto this, to not block foreground (or other background) activity
         let uploadQueue = DispatchQueue(label: "Upload Queue", qos: .background, attributes: [], autoreleaseFrequency: .inherit, target: nil)
         
-        let thingsRequest = Thing.filter(Thing.Columns.orbitID == nil)
-        let thingsObservation = thingsRequest.observationForAll()
+        let thingsFetch = Thing.filter(Thing.Columns.orbitID == nil).fetchAll
+        let thingsObservation = ValueObservation.tracking(thingsFetch)
         thingsObserver = thingsObservation.start(
             in: dbQueue,
             onError: { error in
@@ -60,8 +60,8 @@ struct AppUploader {
             }
         )
         
-        let videosRequest = Video.filter(Video.Columns.orbitID == nil)
-        let videosObservation = videosRequest.observationForAll()
+        let videosFetch = Video.filter(Video.Columns.orbitID == nil).fetchAll
+        let videosObservation = ValueObservation.tracking(videosFetch)
         videosObserver = videosObservation.start(
             in: dbQueue,
             onError: { error in
@@ -79,8 +79,8 @@ struct AppUploader {
             }
         )
         
-        let participantRequest = Participant.all()
-        let participantObservation = participantRequest.observationForFirst()
+        let participantFetch = Participant.all().fetchOne // TODO: check why `all` is there
+        let participantObservation = ValueObservation.tracking(participantFetch)
         participantObserver = participantObservation.start(
             in: dbQueue,
             onError: { error in
@@ -91,7 +91,7 @@ struct AppUploader {
                 appNetwork.authCredential = participant?.authCredential
                 
                 // Action pending API tasks
-                let things = try! dbQueue.read { db in try thingsRequest.fetchAll(db) }
+                let things = try! dbQueue.read { db in try thingsFetch(db) }
                 for thing in things {
                     uploadQueue.async {
                         guard let authCredential = appNetwork.authCredential
@@ -100,7 +100,7 @@ struct AppUploader {
                         appNetwork.thingsSession.upload(thing, with: authCredential)
                     }
                 }
-                let videos = try! dbQueue.read { db in try videosRequest.fetchAll(db) }
+                let videos = try! dbQueue.read { db in try videosFetch(db) }
                 for video in videos {
                     uploadQueue.async {
                         guard let authCredential = appNetwork.authCredential
@@ -117,7 +117,7 @@ struct AppUploader {
             if path.status == .satisfied,
                 Self.networkNextBackoffTime.compare(Date()) == .orderedAscending
             {
-                let things = try! dbQueue.read { db in try thingsRequest.fetchAll(db) }
+                let things = try! dbQueue.read { db in try thingsFetch(db) }
                 for thing in things {
                     uploadQueue.async {
                         guard let authCredential = appNetwork.authCredential
@@ -126,7 +126,7 @@ struct AppUploader {
                         appNetwork.thingsSession.upload(thing, with: authCredential)
                     }
                 }
-                let videos = try! dbQueue.read { db in try videosRequest.fetchAll(db) }
+                let videos = try! dbQueue.read { db in try videosFetch(db) }
                 for video in videos {
                     uploadQueue.async {
                         guard let authCredential = appNetwork.authCredential

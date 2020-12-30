@@ -44,7 +44,10 @@ class MasterViewController: UITableViewController {
     private var things: [Thing] = []
     
     /// Database observer for things changes
-    private var thingsObserver: TransactionObserver?
+    private var thingsObserver: DatabaseCancellable?
+    
+    /// Table view header that needs to be kept updated as things change
+    private var thingsHeaderView = ThingsHeaderView(label: "Your things")
     
     /// Segue to detail, creating the new `Thing`
     // Triggered by 'go' on keyboard only
@@ -79,10 +82,11 @@ class MasterViewController: UITableViewController {
         }
         
         // Register for changes
-        let request = Thing
+        let thingFetch = Thing
             .all()
             .order(Thing.Columns.id.desc)
-        let observation = request.observationForAll()
+            .fetchAll
+        let observation = ValueObservation.tracking(thingFetch)
         thingsObserver = observation.start(
             in: dbQueue,
             onError: { error in
@@ -108,6 +112,7 @@ class MasterViewController: UITableViewController {
                                 self.tableView.selectRow(at: IndexPath(row: offset, section: ThingSection.things.rawValue), animated: true, scrollPosition: .none)
                             }
                         }
+                        self.thingsHeaderView.detail = completionLabel("thing", items: [CompletionCount(count: things.count, target: Settings.completedThingsTarget)])
                     }, completion: nil)
                 }
             }
@@ -146,6 +151,17 @@ class MasterViewController: UITableViewController {
             guard let cell = tableView.cellForRow(at: addNewPath) as? NewThingCell
             else { return }
             cell.labelField.becomeFirstResponder()
+        // If there is a thing, ask if they want notifications of updates
+        } else {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert], completionHandler: { (granted, error) in
+                guard error == nil else {
+                    os_log("notification requestAuthorization error")
+                    return
+                }
+                DispatchQueue.main.async {
+                    UIApplication.shared.registerForRemoteNotifications()
+                }
+            })
         }
     }
 
@@ -267,12 +283,15 @@ class MasterViewController: UITableViewController {
         }
     }
     
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        switch ThingSection(rawValue: section)! {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        switch ThingSection(rawValue: section) {
         case .addNew:
-            return "Add a new thing"
+            return ThingsHeaderView(label: "Add new thing")
         case .things:
-            return "Your things"
+            return thingsHeaderView
+        case .none:
+            assertionFailure()
+            return nil
         }
     }
     

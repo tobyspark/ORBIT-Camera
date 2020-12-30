@@ -57,12 +57,14 @@ struct Video: Codable, Equatable {
     // Note String rather than Character is currently required for automatic codable compliance
     enum Kind: String, Codable, CaseIterable, Equatable, CustomStringConvertible {
         case train = "T"
+        case test = "S"
         case testZoom = "Z"
         case testPan = "P"
         
         var description: String {
             switch self {
             case .train: return "train"
+            case .test: return "test"
             case .testZoom: return "zoom out test"
             case .testPan: return "pan test"
             }
@@ -71,6 +73,7 @@ struct Video: Codable, Equatable {
         var verboseDescription: String {
             switch self {
             case .train: return "training"
+            case .test: return "testing"
             case .testZoom: return "testing with zoom"
             case .testPan: return "testing with pan"
             }
@@ -97,7 +100,9 @@ struct Video: Codable, Equatable {
     }
     var verified: Verified
     
-    init?(of thing: Thing, url: URL, kind: Kind) {
+    var uiOrder: Int
+    
+    init?(of thing: Thing, url: URL, kind: Kind, uiOrder: Int) {
         guard
             let thingID = thing.id
         else {
@@ -112,6 +117,7 @@ struct Video: Codable, Equatable {
         self.orbitID = nil
         self.kind = kind
         self.verified = .unvalidated
+        self.uiOrder = uiOrder
         
         self.url = url
     }
@@ -178,6 +184,7 @@ extension Video: FetchableRecord, MutablePersistableRecord {
         static let orbitID = Column(CodingKeys.orbitID)
         static let kind = Column(CodingKeys.kind)
         static let verified = Column(CodingKeys.verified)
+        static let uiOrder = Column(CodingKeys.uiOrder)
     }
     
     // Update auto-incremented id upon successful insertion

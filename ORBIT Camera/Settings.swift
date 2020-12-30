@@ -10,7 +10,7 @@ import QuartzCore
 import AVFoundation
 
 struct Settings {
-    static let endpointCreateParticipant = "https://orbit-data.city.ac.uk/phaseone/api/createparticipant/"
+    static let endpointCreateParticipant = "https://orbit-data.city.ac.uk/phasetwo/api/createparticipant/"
     struct endpointCreateParticipantRequest: Codable {
         let name: String
         let email: String
@@ -19,23 +19,40 @@ struct Settings {
         let auth_credential: String
     }
 
-    static let endpointParticipant = "https://orbit-data.city.ac.uk/phaseone/api/participant/"
+    static let endpointParticipant = "https://orbit-data.city.ac.uk/phasetwo/api/participant/"
     
-    static let endpointThing = "https://orbit-data.city.ac.uk/phaseone/api/thing/"
+    static let endpointThing = "https://orbit-data.city.ac.uk/phasetwo/api/thing/"
     static func endpointThing(id orbitID: Int) -> URL {
         URL(string: Settings.endpointThing)!.appendingPathComponent("\(orbitID)/")
     }
     
-    static let endpointVideo = "https://orbit-data.city.ac.uk/phaseone/api/video/"
+    static let endpointVideo = "https://orbit-data.city.ac.uk/phasetwo/api/video/"
     static func endpointVideo(id orbitID: Int) -> URL {
         URL(string: Settings.endpointVideo)!.appendingPathComponent("\(orbitID)/")
     }
+    
+    static let endpointAPNS = "https://orbit-data.city.ac.uk/phasetwo/device/apns/"
     
     static let captureSessionPreset: AVCaptureSession.Preset = .hd1920x1080
     static let captureSessionStablisesVideo = false
     static let recordingResolution = CGSize(width: 1080, height: 1080)
     
-    static let recordTimeOutSecs: TimeInterval = 120
+    static let desiredVideoLength: [Video.Kind: TimeInterval] = [
+        .test: 15,
+        .train: 25,
+    ]
+    
+    static let videoTip: [Video.Kind: String] = [
+        .test: "Testing: the whole scene, amongst your other stuff",
+        .train: "Training: place on a clear surface, with no other stuff",
+    ]
+
+    static let videoTipVerbose: [Video.Kind: String] = [
+        .test: "To take a video to test the A.I. go to where you usually keep your thing and record the whole scene, showing the thing amongst your other stuff. Take each testing video from a different angle.",
+        .train: "To take a video to train the A.I. place your thing on a clear surface with no other objects. Take each training video on a different surface.",
+    ]
+    
+    static let lowPowerModeDoesNotHaveVideoPlayback = true
     
     static let recordButtonRingWidth: CGFloat = 6
     
@@ -45,6 +62,13 @@ struct Settings {
         df.timeStyle = .short
         return df
     }()
+    
+    static let completedThingsTarget = 5
+    
+    static let videoKindSlots = [
+        (kind: Video.Kind.test, slots: 2),
+        (kind: Video.Kind.train, slots: 5),
+    ]
     
     static let verboseDateFormatter: DateFormatter = {
         let df = DateFormatter()

@@ -32,16 +32,26 @@ extension AppDatabase {
         for (label, techniques) in pilotData {
             var thing = Thing(withLabel: label)
             try dbQueue.write { db in try thing.save(db) }
-                
+            
+            var videoKindCounts = Settings.videoKindSlots.reduce(into: [:]) { $0[$1.kind] = 0 }
+            let videoKindMaxCounts = Settings.videoKindSlots.reduce(into: [:]) { $0[$1.kind] = $1.slots }
             for (technique, videoFilenames) in techniques {
                 var videoKind: Video.Kind
                 switch technique {
                 case "No technique": videoKind = .train // arbitrary mapping of pilot to phase one kinds
-                case "Rotate": videoKind = .testPan
-                case "Zoom": videoKind = .testZoom
+                case "Rotate": videoKind = .test
+                case "Zoom": videoKind = .test
                 default: throw TestDataError.unknownTechnique
                 }
                 for videoFilename in videoFilenames{
+                    // Roll the dice to miss a slot
+                    if [true, false, false].randomElement()! {
+                        videoKindCounts[videoKind]! += 1
+                    }
+                    
+                    guard videoKindCounts[videoKind]! < videoKindMaxCounts[videoKind]!
+                    else { continue }
+                    
                     let videoURL = URL(fileURLWithPath: videoFilename, relativeTo: documentsDirectory)
                     do {
                         try _ = videoURL.checkResourceIsReachable()
@@ -56,10 +66,12 @@ extension AppDatabase {
                     } catch {
                         assertionFailure("When loading test data could not locate video file")
                     }
-                    var video = Video(of: thing, url: videoURL, kind: videoKind)!
+                    var video = Video(of: thing, url: videoURL, kind: videoKind, uiOrder: videoKindCounts[videoKind]!)!
                     video.recorded = Date(timeIntervalSinceNow: -Double.random(in: 0...7*24*60*60))
                     video.orbitID = 1
                     try dbQueue.write { db in try video.save(db) }
+                    
+                    videoKindCounts[videoKind]! += 1
                 }
             }
         }

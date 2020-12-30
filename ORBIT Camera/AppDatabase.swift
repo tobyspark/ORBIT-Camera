@@ -8,6 +8,7 @@
 
 import UIKit
 import GRDB
+import os
 
 // The shared database queue
 var dbQueue: DatabaseQueue!
@@ -23,10 +24,6 @@ struct AppDatabase {
             .url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
             .appendingPathComponent("db.sqlite")
         dbQueue = try openDatabase(atPath: databaseURL.path)
-        
-        // Be a nice iOS citizen, and don't consume too much memory
-        // See https://github.com/groue/GRDB.swift/blob/master/README.md#memory-management
-        dbQueue.setupMemoryManagement(in: application)
     }
     
     /// Creates a fully initialized database at path
@@ -35,6 +32,20 @@ struct AppDatabase {
         // See https://github.com/groue/GRDB.swift/blob/master/README.md#database-connections
         let dbQueue = try DatabaseQueue(path: path)
         
+        // Clear content if phase one data present
+        if let migrations = try? dbQueue.read({ db in try migrator.completedMigrations(db) }),
+           migrations.contains("createParticipant"),
+           !migrations.contains("phaseTwo")
+        {
+            os_log("Removing Phase One participant")
+            try dbQueue.write { db in
+                let participants = try Participant.fetchAll(db)
+                for participant in participants {
+                    try participant.delete(db)
+                }
+            }
+        }
+           
         // Define the database schema
         try migrator.migrate(dbQueue)
         
@@ -82,13 +93,51 @@ struct AppDatabase {
                 t.add(column: "verified", .text)
             }
             
-            try Video.updateAll(db, [Video.Columns.verified <- Video.Verified.unvalidated.rawValue])
+            try Video.updateAll(db, [Video.Columns.verified.set(to: Video.Verified.unvalidated.rawValue)])
         }
         
         migrator.registerMigration("addStudyDatesToParticipant") { db in
             try db.alter(table: "participant") { t in
                 t.add(column: "studyStart", .blob)
                 t.add(column: "studyEnd", .blob)
+            }
+        }
+        
+        migrator.registerMigration("phaseTwo") { db in
+            // Be able to test for a phase two app loading phase one data.
+        }
+        
+        migrator.registerMigration("addUIOrderToVideo") { db in
+            try db.create(table: "new_video") { t in
+                t.autoIncrementedPrimaryKey("id")
+                t.column("thingID", .integer).references("thing", onDelete: .setNull)
+                t.column("filename", .text).notNull()
+                t.column("recorded", .blob).notNull()
+                t.column("orbitID", .integer)
+                t.column("kind", .text)
+                t.column("verified", .text)
+                t.column("uiOrder", .integer).notNull()
+                t.uniqueKey(["thingID", "kind", "uiOrder"])
+            }
+            for row in try Row.fetchAll(db, sql: "SELECT * FROM video") {
+                let synthesisedUIOrder = try Int.fetchOne(
+                    db,
+                    sql: "SELECT COUNT(*) FROM new_video WHERE thingID = ?",
+                    arguments: [row["thingID"]]
+                )
+                try db.execute(literal: """
+                    INSERT INTO new_video (id, thingID, filename, recorded, orbitID, kind, verified, uiOrder)
+                    VALUES(\(row["id"]), \(row["thingID"]), \(row["filename"]), \(row["recorded"]), \(row["orbitID"]), \(row["kind"]), \(row["verified"]), \(synthesisedUIOrder))
+                    """
+                )
+            }
+            try db.drop(table: "video")
+            try db.rename(table: "new_video", to: "video")
+        }
+        
+        migrator.registerMigration("addCharityChoiceToParticipant") { db in
+            try db.alter(table: "participant") { t in
+                t.add(column: "charityChoice", .text)
             }
         }
         
