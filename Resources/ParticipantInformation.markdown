@@ -44,7 +44,7 @@ This study is completely confidential, and we have identified no reasonably fore
 
 ## What are the possible benefits of taking part?
 
-Your participation in this research is appreciated and your contribution is very valuable to the blind communities around the world. On behalf of your participation, a donation will be offered to a charity that supports blind and low vision communities. The higher the number of videos we collect, the higher the amount of the donation!
+Your participation in this research is appreciated and your contribution is very valuable to the blind communities around the world. 
 
 ## How is the project being funded?
 
