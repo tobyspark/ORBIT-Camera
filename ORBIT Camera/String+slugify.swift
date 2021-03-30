@@ -3,7 +3,7 @@
 //  ORBIT Camera
 //
 //  Created by Toby Harris on 23/04/2020.
-//  Copyright © 2020 Toby Harris. All rights reserved.
+//  Copyright © 2020 City, University of London. All rights reserved.
 //
 
 import Foundation

@@ -3,7 +3,7 @@
 //  ORBIT Camera
 //
 //  Created by Toby Harris on 28/02/2020.
-//  Copyright © 2020 Toby Harris. All rights reserved.
+//  Copyright © 2020 City, University of London. All rights reserved.
 //
 
 /// Abstract: Support network transfers, including in the background.
