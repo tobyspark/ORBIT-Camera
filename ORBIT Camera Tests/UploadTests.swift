@@ -3,7 +3,10 @@
 //  ORBIT Camera Tests
 //
 //  Created by Toby Harris on 03/03/2020.
+//  https://tobyz.net
+//
 //  Copyright © 2020 City, University of London. All rights reserved.
+//  https://hcid.city
 //
 
 // FIXME: This is the happiest of happy-path testing. Served to get a known-good implementation of upload, but doesn't test any adverse situation.
