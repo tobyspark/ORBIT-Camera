@@ -9,6 +9,10 @@ Funded by Microsoft AI for Accessibility – https://www.microsoft.com/en-us/res
 
 ![ORBIT Camera v1.0](Documentation/ORBIT Camera - Available.jpg)
 
+## Open-sourcing note
+
+This app was developed in private, and has been subsequently open-sourced as part of the dataset it created. As such, the repository has been cleaned of ORBIT specific content, URLs and so on. The Xcode project has also been removed as part of this; a good-faith developer should be able to re-create and/or ask for assistance. You will need to add 'GRDB' and 'Ink' using the Swift Package Manager built into XCode.
+
 ## A quick tour
 
 ### First-run
