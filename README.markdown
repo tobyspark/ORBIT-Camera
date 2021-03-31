@@ -1,6 +1,6 @@
 # ORBIT Camera
 
-An iOS app used by blind and low-vision people to collect videos for the ORBIT dataset project. The client for [ORBIT Data](https://github.com/tobyspark/orbit_data) server.
+An iOS app used by blind and low-vision people to collect videos for the ORBIT dataset project. The client for [ORBIT Data](https://github.com/orbit-a11y/orbit_data) server.
 
 Developed by Toby Harris – https://tobyz.net  
 For ORBIT Object Recognition for Blind Image Training – https://orbit.city.ac.uk  
